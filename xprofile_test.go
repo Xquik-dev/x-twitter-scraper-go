@@ -1,0 +1,100 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package xtwitterscraper_test
+
+import (
+	"bytes"
+	"context"
+	"errors"
+	"io"
+	"os"
+	"testing"
+
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+)
+
+func TestXProfilePatchAllWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Profile.PatchAll(context.TODO(), xtwitterscraper.XProfilePatchAllParams{
+		Account:     "account",
+		Description: xtwitterscraper.String("description"),
+		Location:    xtwitterscraper.String("location"),
+		Name:        xtwitterscraper.String("name"),
+		URL:         xtwitterscraper.String("url"),
+	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXProfileUpdateAvatar(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Profile.UpdateAvatar(context.TODO(), xtwitterscraper.XProfileUpdateAvatarParams{
+		Account: "account",
+		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
+	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXProfileUpdateBanner(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Profile.UpdateBanner(context.TODO(), xtwitterscraper.XProfileUpdateBannerParams{
+		Account: "account",
+		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
+	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
