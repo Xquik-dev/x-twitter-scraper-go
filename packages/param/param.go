@@ -2,7 +2,7 @@ package param
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json/sentinel"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/sentinel"
 	"reflect"
 )
 

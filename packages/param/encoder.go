@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	shimjson "github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json"
+	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
 
 	"github.com/tidwall/sjson"
 )
