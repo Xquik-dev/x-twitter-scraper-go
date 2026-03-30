@@ -47,9 +47,9 @@ func (r *PaginatedTweets) UnmarshalJSON(data []byte) error {
 }
 
 type PaginatedUsers struct {
-	HasNextPage bool   `json:"has_next_page" api:"required"`
-	NextCursor  string `json:"next_cursor" api:"required"`
-	Users       []any  `json:"users" api:"required"`
+	HasNextPage bool                          `json:"has_next_page" api:"required"`
+	NextCursor  string                        `json:"next_cursor" api:"required"`
+	Users       []xtwitterscraper.UserProfile `json:"users" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		HasNextPage respjson.Field
