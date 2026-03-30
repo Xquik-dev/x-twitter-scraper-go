@@ -48,11 +48,14 @@ func main() {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("X_TWITTER_SCRAPER_API_KEY")
 	)
-	account, err := client.Account.Get(context.TODO())
+	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+		Q:     "from:elonmusk",
+		Limit: xtwitterscraper.Int(10),
+	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", account.MonitorsAllowed)
+	fmt.Printf("%+v\n", paginatedTweets.HasNextPage)
 }
 
 ```
@@ -258,7 +261,7 @@ client := xtwitterscraper.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Account.Get(context.TODO(), ...,
+client.X.Tweets.Search(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -289,14 +292,17 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Account.Get(context.TODO())
+_, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+	Q:     "from:elonmusk",
+	Limit: xtwitterscraper.Int(10),
+})
 if err != nil {
 	var apierr *xtwitterscraper.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/account": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/x/tweets/search": 400 Bad Request { ... }
 }
 ```
 
@@ -314,8 +320,12 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Account.Get(
+client.X.Tweets.Search(
 	ctx,
+	xtwitterscraper.XTweetSearchParams{
+		Q:     "from:elonmusk",
+		Limit: xtwitterscraper.Int(10),
+	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -337,19 +347,19 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-xtwitterscraper.XMediaNewParams{
+xtwitterscraper.XMediaUploadParams{
 	Account: "account",
 	File:    file,
 }
 
 // A file from a string
-xtwitterscraper.XMediaNewParams{
+xtwitterscraper.XMediaUploadParams{
 	Account: "account",
 	File:    strings.NewReader("my file contents"),
 }
 
 // With a custom filename and contentType
-xtwitterscraper.XMediaNewParams{
+xtwitterscraper.XMediaUploadParams{
 	Account: "account",
 	File:    xtwitterscraper.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 }
@@ -370,7 +380,14 @@ client := xtwitterscraper.NewClient(
 )
 
 // Override per-request:
-client.Account.Get(context.TODO(), option.WithMaxRetries(5))
+client.X.Tweets.Search(
+	context.TODO(),
+	xtwitterscraper.XTweetSearchParams{
+		Q:     "from:elonmusk",
+		Limit: xtwitterscraper.Int(10),
+	},
+	option.WithMaxRetries(5),
+)
 ```
 
 ### Accessing raw response data (e.g. response headers)
@@ -381,11 +398,18 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-account, err := client.Account.Get(context.TODO(), option.WithResponseInto(&response))
+paginatedTweets, err := client.X.Tweets.Search(
+	context.TODO(),
+	xtwitterscraper.XTweetSearchParams{
+		Q:     "from:elonmusk",
+		Limit: xtwitterscraper.Int(10),
+	},
+	option.WithResponseInto(&response),
+)
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", account)
+fmt.Printf("%+v\n", paginatedTweets)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

@@ -46,8 +46,7 @@ type Client struct {
 	// X data lookups (subscription required)
 	X XService
 	// Trending topics by region
-	Trends TrendService
-	// Telegram bot service endpoints
+	Trends  TrendService
 	Bot     BotService
 	Support SupportService
 	// Subscription & billing

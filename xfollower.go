@@ -37,14 +37,14 @@ func NewXFollowerService(opts ...option.RequestOption) (r XFollowerService) {
 }
 
 // Check follow relationship
-func (r *XFollowerService) GetCheck(ctx context.Context, query XFollowerGetCheckParams, opts ...option.RequestOption) (res *XFollowerGetCheckResponse, err error) {
+func (r *XFollowerService) Check(ctx context.Context, query XFollowerCheckParams, opts ...option.RequestOption) (res *XFollowerCheckResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/followers/check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
-type XFollowerGetCheckResponse struct {
+type XFollowerCheckResponse struct {
 	IsFollowedBy   bool   `json:"isFollowedBy" api:"required"`
 	IsFollowing    bool   `json:"isFollowing" api:"required"`
 	SourceUsername string `json:"sourceUsername" api:"required"`
@@ -61,12 +61,12 @@ type XFollowerGetCheckResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XFollowerGetCheckResponse) RawJSON() string { return r.JSON.raw }
-func (r *XFollowerGetCheckResponse) UnmarshalJSON(data []byte) error {
+func (r XFollowerCheckResponse) RawJSON() string { return r.JSON.raw }
+func (r *XFollowerCheckResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type XFollowerGetCheckParams struct {
+type XFollowerCheckParams struct {
 	// Username to check (without @)
 	Source string `query:"source" api:"required" json:"-"`
 	// Target username (without @)
@@ -74,9 +74,8 @@ type XFollowerGetCheckParams struct {
 	paramObj
 }
 
-// URLQuery serializes [XFollowerGetCheckParams]'s query parameters as
-// `url.Values`.
-func (r XFollowerGetCheckParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [XFollowerCheckParams]'s query parameters as `url.Values`.
+func (r XFollowerCheckParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

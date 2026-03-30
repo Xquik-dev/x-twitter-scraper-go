@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
-func TestXProfilePatchAllWithOptionalParams(t *testing.T) {
+func TestXProfileUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -29,7 +29,7 @@ func TestXProfilePatchAllWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.Profile.PatchAll(context.TODO(), xtwitterscraper.XProfilePatchAllParams{
+	_, err := client.X.Profile.Update(context.TODO(), xtwitterscraper.XProfileUpdateParams{
 		Account:     "account",
 		Description: xtwitterscraper.String("description"),
 		Location:    xtwitterscraper.String("location"),

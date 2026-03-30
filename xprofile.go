@@ -40,7 +40,7 @@ func NewXProfileService(opts ...option.RequestOption) (r XProfileService) {
 }
 
 // Update X profile
-func (r *XProfileService) PatchAll(ctx context.Context, body XProfilePatchAllParams, opts ...option.RequestOption) (res *XProfilePatchAllResponse, err error) {
+func (r *XProfileService) Update(ctx context.Context, body XProfileUpdateParams, opts ...option.RequestOption) (res *XProfileUpdateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/profile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
@@ -63,7 +63,7 @@ func (r *XProfileService) UpdateBanner(ctx context.Context, body XProfileUpdateB
 	return res, err
 }
 
-type XProfilePatchAllResponse struct {
+type XProfileUpdateResponse struct {
 	Success bool `json:"success" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -74,8 +74,8 @@ type XProfilePatchAllResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XProfilePatchAllResponse) RawJSON() string { return r.JSON.raw }
-func (r *XProfilePatchAllResponse) UnmarshalJSON(data []byte) error {
+func (r XProfileUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *XProfileUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -111,7 +111,7 @@ func (r *XProfileUpdateBannerResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type XProfilePatchAllParams struct {
+type XProfileUpdateParams struct {
 	// X account (@username or account ID)
 	Account string `json:"account" api:"required"`
 	// Bio description
@@ -124,11 +124,11 @@ type XProfilePatchAllParams struct {
 	paramObj
 }
 
-func (r XProfilePatchAllParams) MarshalJSON() (data []byte, err error) {
-	type shadow XProfilePatchAllParams
+func (r XProfileUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow XProfileUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *XProfilePatchAllParams) UnmarshalJSON(data []byte) error {
+func (r *XProfileUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

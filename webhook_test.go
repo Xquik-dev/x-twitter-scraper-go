@@ -11,6 +11,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 func TestWebhookNew(t *testing.T) {
@@ -28,7 +29,7 @@ func TestWebhookNew(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), xtwitterscraper.WebhookNewParams{
-		EventTypes: []string{"tweet.new"},
+		EventTypes: []shared.EventType{shared.EventTypeTweetNew},
 		URL:        "https://example.com",
 	})
 	if err != nil {
@@ -58,7 +59,7 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.WebhookUpdateParams{
-			EventTypes: []string{"tweet.new"},
+			EventTypes: []shared.EventType{shared.EventTypeTweetNew},
 			IsActive:   xtwitterscraper.Bool(true),
 			URL:        xtwitterscraper.String("https://example.com"),
 		},

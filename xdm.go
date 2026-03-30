@@ -37,18 +37,6 @@ func NewXDmService(opts ...option.RequestOption) (r XDmService) {
 	return
 }
 
-// Send direct message
-func (r *XDmService) Update(ctx context.Context, userID string, body XDmUpdateParams, opts ...option.RequestOption) (res *XDmUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	if userID == "" {
-		err = errors.New("missing required userId parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("x/dm/%s", url.PathEscape(userID))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
-}
-
 // Get DM conversation history
 func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGetHistoryParams, opts ...option.RequestOption) (res *XDmGetHistoryResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -61,22 +49,16 @@ func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGet
 	return res, err
 }
 
-type XDmUpdateResponse struct {
-	MessageID string `json:"messageId" api:"required"`
-	Success   bool   `json:"success" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MessageID   respjson.Field
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XDmUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *XDmUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+// Send direct message
+func (r *XDmService) Send(ctx context.Context, userID string, body XDmSendParams, opts ...option.RequestOption) (res *XDmSendResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if userID == "" {
+		err = errors.New("missing required userId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/dm/%s", url.PathEscape(userID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type XDmGetHistoryResponse struct {
@@ -123,20 +105,21 @@ func (r *XDmGetHistoryResponseMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type XDmUpdateParams struct {
-	// X account (@username or account ID)
-	Account          string            `json:"account" api:"required"`
-	Text             string            `json:"text" api:"required"`
-	ReplyToMessageID param.Opt[string] `json:"reply_to_message_id,omitzero"`
-	MediaIDs         []string          `json:"media_ids,omitzero"`
-	paramObj
+type XDmSendResponse struct {
+	MessageID string `json:"messageId" api:"required"`
+	Success   bool   `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MessageID   respjson.Field
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-func (r XDmUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow XDmUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *XDmUpdateParams) UnmarshalJSON(data []byte) error {
+// Returns the unmodified JSON received from the API
+func (r XDmSendResponse) RawJSON() string { return r.JSON.raw }
+func (r *XDmSendResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -154,4 +137,21 @@ func (r XDmGetHistoryParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type XDmSendParams struct {
+	// X account (@username or account ID)
+	Account          string            `json:"account" api:"required"`
+	Text             string            `json:"text" api:"required"`
+	ReplyToMessageID param.Opt[string] `json:"reply_to_message_id,omitzero"`
+	MediaIDs         []string          `json:"media_ids,omitzero"`
+	paramObj
+}
+
+func (r XDmSendParams) MarshalJSON() (data []byte, err error) {
+	type shadow XDmSendParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XDmSendParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

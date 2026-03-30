@@ -70,6 +70,32 @@ func (r *APIKeyService) Revoke(ctx context.Context, id string, opts ...option.Re
 	return res, err
 }
 
+type APIKey struct {
+	ID         string    `json:"id" api:"required"`
+	CreatedAt  time.Time `json:"createdAt" api:"required" format:"date-time"`
+	IsActive   bool      `json:"isActive" api:"required"`
+	Name       string    `json:"name" api:"required"`
+	Prefix     string    `json:"prefix" api:"required"`
+	LastUsedAt time.Time `json:"lastUsedAt" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		IsActive    respjson.Field
+		Name        respjson.Field
+		Prefix      respjson.Field
+		LastUsedAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APIKey) RawJSON() string { return r.JSON.raw }
+func (r *APIKey) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type APIKeyNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -95,7 +121,7 @@ func (r *APIKeyNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type APIKeyListResponse struct {
-	Keys []APIKeyListResponseKey `json:"keys" api:"required"`
+	Keys []APIKey `json:"keys" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Keys        respjson.Field
@@ -107,32 +133,6 @@ type APIKeyListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r APIKeyListResponse) RawJSON() string { return r.JSON.raw }
 func (r *APIKeyListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type APIKeyListResponseKey struct {
-	ID         string    `json:"id" api:"required"`
-	CreatedAt  time.Time `json:"createdAt" api:"required" format:"date-time"`
-	IsActive   bool      `json:"isActive" api:"required"`
-	Name       string    `json:"name" api:"required"`
-	Prefix     string    `json:"prefix" api:"required"`
-	LastUsedAt time.Time `json:"lastUsedAt" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		IsActive    respjson.Field
-		Name        respjson.Field
-		Prefix      respjson.Field
-		LastUsedAt  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APIKeyListResponseKey) RawJSON() string { return r.JSON.raw }
-func (r *APIKeyListResponseKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
