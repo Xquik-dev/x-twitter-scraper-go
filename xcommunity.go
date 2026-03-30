@@ -110,6 +110,26 @@ func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSe
 	return err
 }
 
+type CommunityActionResult struct {
+	CommunityID   string `json:"communityId" api:"required"`
+	CommunityName string `json:"communityName" api:"required"`
+	Success       bool   `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CommunityID   respjson.Field
+		CommunityName respjson.Field
+		Success       respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityActionResult) RawJSON() string { return r.JSON.raw }
+func (r *CommunityActionResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type XCommunityNewResponse struct {
 	CommunityID   string `json:"communityId" api:"required"`
 	Success       bool   `json:"success" api:"required"`

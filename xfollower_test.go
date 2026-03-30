@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
-func TestXFollowerGetCheck(t *testing.T) {
+func TestXFollowerCheck(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,7 +27,7 @@ func TestXFollowerGetCheck(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.Followers.GetCheck(context.TODO(), xtwitterscraper.XFollowerGetCheckParams{
+	_, err := client.X.Followers.Check(context.TODO(), xtwitterscraper.XFollowerCheckParams{
 		Source: "source",
 		Target: "target",
 	})

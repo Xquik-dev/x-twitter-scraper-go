@@ -39,14 +39,6 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 	return
 }
 
-// Upload media
-func (r *XMediaService) New(ctx context.Context, body XMediaNewParams, opts ...option.RequestOption) (res *XMediaNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	path := "x/media"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
-}
-
 // Download tweet media
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -55,22 +47,12 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 	return res, err
 }
 
-type XMediaNewResponse struct {
-	MediaID string `json:"mediaId" api:"required"`
-	Success bool   `json:"success" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MediaID     respjson.Field
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XMediaNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *XMediaNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+// Upload media
+func (r *XMediaService) Upload(ctx context.Context, body XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/media"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type XMediaDownloadResponse struct {
@@ -97,31 +79,22 @@ func (r *XMediaDownloadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type XMediaNewParams struct {
-	// X account (@username or account ID)
-	Account string `json:"account" api:"required"`
-	// Media file to upload
-	File        io.Reader       `json:"file,omitzero" api:"required" format:"binary"`
-	IsLongVideo param.Opt[bool] `json:"is_long_video,omitzero"`
-	paramObj
+type XMediaUploadResponse struct {
+	MediaID string `json:"mediaId" api:"required"`
+	Success bool   `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MediaID     respjson.Field
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-func (r XMediaNewParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+// Returns the unmodified JSON received from the API
+func (r XMediaUploadResponse) RawJSON() string { return r.JSON.raw }
+func (r *XMediaUploadResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XMediaDownloadParams struct {
@@ -138,4 +111,31 @@ func (r XMediaDownloadParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *XMediaDownloadParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type XMediaUploadParams struct {
+	// X account (@username or account ID)
+	Account string `json:"account" api:"required"`
+	// Media file to upload
+	File        io.Reader       `json:"file,omitzero" api:"required" format:"binary"`
+	IsLongVideo param.Opt[bool] `json:"is_long_video,omitzero"`
+	paramObj
+}
+
+func (r XMediaUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err == nil {
+		err = apiform.WriteExtras(writer, r.ExtraFields())
+	}
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
 }

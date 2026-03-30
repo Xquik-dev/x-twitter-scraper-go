@@ -49,7 +49,7 @@ func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts 
 }
 
 // Get X account details
-func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountGetResponse, err error) {
+func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDetail, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
@@ -96,14 +96,16 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 	return res, err
 }
 
-type XAccountNewResponse struct {
-	ID        string `json:"id" api:"required"`
-	Status    string `json:"status" api:"required"`
-	XUserID   string `json:"xUserId" api:"required"`
-	XUsername string `json:"xUsername" api:"required"`
+type XAccount struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	Status    string    `json:"status" api:"required"`
+	XUserID   string    `json:"xUserId" api:"required"`
+	XUsername string    `json:"xUsername" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		CreatedAt   respjson.Field
 		Status      respjson.Field
 		XUserID     respjson.Field
 		XUsername   respjson.Field
@@ -113,12 +115,12 @@ type XAccountNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *XAccountNewResponse) UnmarshalJSON(data []byte) error {
+func (r XAccount) RawJSON() string { return r.JSON.raw }
+func (r *XAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type XAccountGetResponse struct {
+type XAccountDetail struct {
 	ID                string    `json:"id" api:"required"`
 	CreatedAt         time.Time `json:"createdAt" api:"required" format:"date-time"`
 	Status            string    `json:"status" api:"required"`
@@ -143,13 +145,35 @@ type XAccountGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *XAccountGetResponse) UnmarshalJSON(data []byte) error {
+func (r XAccountDetail) RawJSON() string { return r.JSON.raw }
+func (r *XAccountDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XAccountNewResponse struct {
+	ID        string `json:"id" api:"required"`
+	Status    string `json:"status" api:"required"`
+	XUserID   string `json:"xUserId" api:"required"`
+	XUsername string `json:"xUsername" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *XAccountNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type XAccountListResponse struct {
-	Accounts []XAccountListResponseAccount `json:"accounts" api:"required"`
+	Accounts []XAccount `json:"accounts" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Accounts    respjson.Field
@@ -161,30 +185,6 @@ type XAccountListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountListResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XAccountListResponseAccount struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	Status    string    `json:"status" api:"required"`
-	XUserID   string    `json:"xUserId" api:"required"`
-	XUsername string    `json:"xUsername" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Status      respjson.Field
-		XUserID     respjson.Field
-		XUsername   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XAccountListResponseAccount) RawJSON() string { return r.JSON.raw }
-func (r *XAccountListResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

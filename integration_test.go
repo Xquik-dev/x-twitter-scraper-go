@@ -11,6 +11,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 func TestIntegrationNew(t *testing.T) {
@@ -31,7 +32,7 @@ func TestIntegrationNew(t *testing.T) {
 		Config: xtwitterscraper.IntegrationNewParamsConfig{
 			ChatID: "chatId",
 		},
-		EventTypes: []string{"tweet.new"},
+		EventTypes: []shared.EventType{shared.EventTypeTweetNew},
 		Name:       "name",
 		Type:       xtwitterscraper.IntegrationNewParamsTypeTelegram,
 	})
@@ -86,7 +87,7 @@ func TestIntegrationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.IntegrationUpdateParams{
-			EventTypes: []string{"tweet.new"},
+			EventTypes: []shared.EventType{shared.EventTypeTweetNew},
 			Filters: map[string]any{
 				"foo": "bar",
 			},
