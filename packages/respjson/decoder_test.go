@@ -3,8 +3,8 @@ package respjson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	rj "github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	rj "github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 	"reflect"
 	"testing"
 )
