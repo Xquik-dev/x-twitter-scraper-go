@@ -90,7 +90,8 @@ func (r *ExtractionService) Run(ctx context.Context, body ExtractionRunParams, o
 }
 
 type ExtractionGetResponse struct {
-	HasMore    bool             `json:"hasMore" api:"required"`
+	HasMore bool `json:"hasMore" api:"required"`
+	// Extraction job metadata — shape varies by tool type (JSON)
 	Job        map[string]any   `json:"job" api:"required"`
 	Results    []map[string]any `json:"results" api:"required"`
 	NextCursor string           `json:"nextCursor"`

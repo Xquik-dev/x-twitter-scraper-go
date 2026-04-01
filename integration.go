@@ -117,7 +117,8 @@ func (r *IntegrationService) SendTest(ctx context.Context, id string, opts ...op
 }
 
 type IntegrationNewResponse struct {
-	ID        string         `json:"id" api:"required"`
+	ID string `json:"id" api:"required"`
+	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
@@ -126,11 +127,12 @@ type IntegrationNewResponse struct {
 	IsActive   bool     `json:"isActive" api:"required"`
 	Name       string   `json:"name" api:"required"`
 	// Any of "telegram".
-	Type             IntegrationNewResponseType `json:"type" api:"required"`
-	Filters          map[string]any             `json:"filters"`
-	MessageTemplate  string                     `json:"messageTemplate"`
-	ScopeAllMonitors bool                       `json:"scopeAllMonitors"`
-	SilentPush       bool                       `json:"silentPush"`
+	Type IntegrationNewResponseType `json:"type" api:"required"`
+	// Event filter rules (JSON)
+	Filters          map[string]any `json:"filters"`
+	MessageTemplate  string         `json:"messageTemplate"`
+	ScopeAllMonitors bool           `json:"scopeAllMonitors"`
+	SilentPush       bool           `json:"silentPush"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -162,7 +164,8 @@ const (
 )
 
 type IntegrationGetResponse struct {
-	ID        string         `json:"id" api:"required"`
+	ID string `json:"id" api:"required"`
+	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
@@ -171,11 +174,12 @@ type IntegrationGetResponse struct {
 	IsActive   bool     `json:"isActive" api:"required"`
 	Name       string   `json:"name" api:"required"`
 	// Any of "telegram".
-	Type             IntegrationGetResponseType `json:"type" api:"required"`
-	Filters          map[string]any             `json:"filters"`
-	MessageTemplate  string                     `json:"messageTemplate"`
-	ScopeAllMonitors bool                       `json:"scopeAllMonitors"`
-	SilentPush       bool                       `json:"silentPush"`
+	Type IntegrationGetResponseType `json:"type" api:"required"`
+	// Event filter rules (JSON)
+	Filters          map[string]any `json:"filters"`
+	MessageTemplate  string         `json:"messageTemplate"`
+	ScopeAllMonitors bool           `json:"scopeAllMonitors"`
+	SilentPush       bool           `json:"silentPush"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -207,7 +211,8 @@ const (
 )
 
 type IntegrationUpdateResponse struct {
-	ID        string         `json:"id" api:"required"`
+	ID string `json:"id" api:"required"`
+	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
@@ -216,11 +221,12 @@ type IntegrationUpdateResponse struct {
 	IsActive   bool     `json:"isActive" api:"required"`
 	Name       string   `json:"name" api:"required"`
 	// Any of "telegram".
-	Type             IntegrationUpdateResponseType `json:"type" api:"required"`
-	Filters          map[string]any                `json:"filters"`
-	MessageTemplate  string                        `json:"messageTemplate"`
-	ScopeAllMonitors bool                          `json:"scopeAllMonitors"`
-	SilentPush       bool                          `json:"silentPush"`
+	Type IntegrationUpdateResponseType `json:"type" api:"required"`
+	// Event filter rules (JSON)
+	Filters          map[string]any `json:"filters"`
+	MessageTemplate  string         `json:"messageTemplate"`
+	ScopeAllMonitors bool           `json:"scopeAllMonitors"`
+	SilentPush       bool           `json:"silentPush"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -268,7 +274,8 @@ func (r *IntegrationListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type IntegrationListResponseIntegration struct {
-	ID        string         `json:"id" api:"required"`
+	ID string `json:"id" api:"required"`
+	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
@@ -277,7 +284,8 @@ type IntegrationListResponseIntegration struct {
 	IsActive   bool     `json:"isActive" api:"required"`
 	Name       string   `json:"name" api:"required"`
 	// Any of "telegram".
-	Type             string         `json:"type" api:"required"`
+	Type string `json:"type" api:"required"`
+	// Event filter rules (JSON)
 	Filters          map[string]any `json:"filters"`
 	MessageTemplate  string         `json:"messageTemplate"`
 	ScopeAllMonitors bool           `json:"scopeAllMonitors"`
@@ -437,8 +445,10 @@ type IntegrationUpdateParams struct {
 	SilentPush       param.Opt[bool]   `json:"silentPush,omitzero"`
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
-	EventTypes      []string       `json:"eventTypes,omitzero"`
-	Filters         map[string]any `json:"filters,omitzero"`
+	EventTypes []string `json:"eventTypes,omitzero"`
+	// Event filter rules (JSON)
+	Filters map[string]any `json:"filters,omitzero"`
+	// Custom message template (JSON)
 	MessageTemplate map[string]any `json:"messageTemplate,omitzero"`
 	paramObj
 }

@@ -55,7 +55,7 @@ func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsern
 
 // Update account locale
 func (r *AccountService) UpdateLocale(ctx context.Context, body AccountUpdateLocaleParams, opts ...option.RequestOption) (res *AccountUpdateLocaleResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
+	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
