@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.1.0'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.2.0'
 ```
 
 <!-- x-release-please-end -->
@@ -56,14 +56,14 @@ func main() {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("X_TWITTER_SCRAPER_API_KEY")
 	)
-	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
 		Limit: xtwitterscraper.Int(10),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", paginatedTweets.HasNextPage)
+	fmt.Printf("%+v\n", response.HasNextPage)
 }
 
 ```
@@ -406,7 +406,7 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-paginatedTweets, err := client.X.Tweets.Search(
+response, err := client.X.Tweets.Search(
 	context.TODO(),
 	xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
@@ -417,7 +417,7 @@ paginatedTweets, err := client.X.Tweets.Search(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", paginatedTweets)
+fmt.Printf("%+v\n", response)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

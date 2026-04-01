@@ -17,7 +17,6 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // Activity events from monitored accounts
@@ -42,7 +41,7 @@ func NewEventService(opts ...option.RequestOption) (r EventService) {
 }
 
 // Get event
-func (r *EventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EventDetail, err error) {
+func (r *EventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EventGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -62,44 +61,16 @@ func (r *EventService) List(ctx context.Context, query EventListParams, opts ...
 	return res, err
 }
 
-type Event struct {
+type EventGetResponse struct {
 	ID         string         `json:"id" api:"required"`
 	Data       map[string]any `json:"data" api:"required"`
 	MonitorID  string         `json:"monitorId" api:"required"`
 	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
-	Type     shared.EventType `json:"type" api:"required"`
-	Username string           `json:"username" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Data        respjson.Field
-		MonitorID   respjson.Field
-		OccurredAt  respjson.Field
-		Type        respjson.Field
-		Username    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Event) RawJSON() string { return r.JSON.raw }
-func (r *Event) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EventDetail struct {
-	ID         string         `json:"id" api:"required"`
-	Data       map[string]any `json:"data" api:"required"`
-	MonitorID  string         `json:"monitorId" api:"required"`
-	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	Type     shared.EventType `json:"type" api:"required"`
-	Username string           `json:"username" api:"required"`
-	XEventID string           `json:"xEventId"`
+	Type     EventGetResponseType `json:"type" api:"required"`
+	Username string               `json:"username" api:"required"`
+	XEventID string               `json:"xEventId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -115,15 +86,26 @@ type EventDetail struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EventDetail) RawJSON() string { return r.JSON.raw }
-func (r *EventDetail) UnmarshalJSON(data []byte) error {
+func (r EventGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *EventGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EventGetResponseType string
+
+const (
+	EventGetResponseTypeTweetNew       EventGetResponseType = "tweet.new"
+	EventGetResponseTypeTweetReply     EventGetResponseType = "tweet.reply"
+	EventGetResponseTypeTweetRetweet   EventGetResponseType = "tweet.retweet"
+	EventGetResponseTypeTweetQuote     EventGetResponseType = "tweet.quote"
+	EventGetResponseTypeFollowerGained EventGetResponseType = "follower.gained"
+	EventGetResponseTypeFollowerLost   EventGetResponseType = "follower.lost"
+)
+
 type EventListResponse struct {
-	Events     []Event `json:"events" api:"required"`
-	HasMore    bool    `json:"hasMore" api:"required"`
-	NextCursor string  `json:"nextCursor"`
+	Events     []EventListResponseEvent `json:"events" api:"required"`
+	HasMore    bool                     `json:"hasMore" api:"required"`
+	NextCursor string                   `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Events      respjson.Field
@@ -140,6 +122,34 @@ func (r *EventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EventListResponseEvent struct {
+	ID         string         `json:"id" api:"required"`
+	Data       map[string]any `json:"data" api:"required"`
+	MonitorID  string         `json:"monitorId" api:"required"`
+	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`
+	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
+	// "follower.gained", "follower.lost".
+	Type     string `json:"type" api:"required"`
+	Username string `json:"username" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		MonitorID   respjson.Field
+		OccurredAt  respjson.Field
+		Type        respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventListResponseEvent) RawJSON() string { return r.JSON.raw }
+func (r *EventListResponseEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type EventListParams struct {
 	// Cursor for pagination
 	After     param.Opt[string] `query:"after,omitzero" json:"-"`
@@ -147,7 +157,7 @@ type EventListParams struct {
 	MonitorID param.Opt[string] `query:"monitorId,omitzero" json:"-"`
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
-	EventType shared.EventType `query:"eventType,omitzero" json:"-"`
+	EventType EventListParamsEventType `query:"eventType,omitzero" json:"-"`
 	paramObj
 }
 
@@ -158,3 +168,14 @@ func (r EventListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+type EventListParamsEventType string
+
+const (
+	EventListParamsEventTypeTweetNew       EventListParamsEventType = "tweet.new"
+	EventListParamsEventTypeTweetReply     EventListParamsEventType = "tweet.reply"
+	EventListParamsEventTypeTweetRetweet   EventListParamsEventType = "tweet.retweet"
+	EventListParamsEventTypeTweetQuote     EventListParamsEventType = "tweet.quote"
+	EventListParamsEventTypeFollowerGained EventListParamsEventType = "follower.gained"
+	EventListParamsEventTypeFollowerLost   EventListParamsEventType = "follower.lost"
+)

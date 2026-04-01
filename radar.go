@@ -46,7 +46,25 @@ func (r *RadarService) GetTrendingTopics(ctx context.Context, query RadarGetTren
 	return res, err
 }
 
-type RadarItem struct {
+type RadarGetTrendingTopicsResponse struct {
+	Items []RadarGetTrendingTopicsResponseItem `json:"items" api:"required"`
+	Total int64                                `json:"total" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Items       respjson.Field
+		Total       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RadarGetTrendingTopicsResponse) RawJSON() string { return r.JSON.raw }
+func (r *RadarGetTrendingTopicsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RadarGetTrendingTopicsResponseItem struct {
 	Category    string    `json:"category" api:"required"`
 	PublishedAt time.Time `json:"publishedAt" api:"required" format:"date-time"`
 	Region      string    `json:"region" api:"required"`
@@ -73,26 +91,8 @@ type RadarItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RadarItem) RawJSON() string { return r.JSON.raw }
-func (r *RadarItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RadarGetTrendingTopicsResponse struct {
-	Items []RadarItem `json:"items" api:"required"`
-	Total int64       `json:"total" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Items       respjson.Field
-		Total       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RadarGetTrendingTopicsResponse) RawJSON() string { return r.JSON.raw }
-func (r *RadarGetTrendingTopicsResponse) UnmarshalJSON(data []byte) error {
+func (r RadarGetTrendingTopicsResponseItem) RawJSON() string { return r.JSON.raw }
+func (r *RadarGetTrendingTopicsResponseItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

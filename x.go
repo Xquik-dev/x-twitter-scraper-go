@@ -16,7 +16,6 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // X data lookups (subscription required)
@@ -80,7 +79,7 @@ func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...optio
 }
 
 // Get home timeline
-func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelineParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
+func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelineParams, opts ...option.RequestOption) (res *XGetHomeTimelineResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/timeline"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -106,7 +105,7 @@ func (r *XService) GetTrends(ctx context.Context, opts ...option.RequestOption) 
 
 type XGetArticleResponse struct {
 	Article XGetArticleResponseArticle `json:"article" api:"required"`
-	Author  TweetAuthor                `json:"author"`
+	Author  XGetArticleResponseAuthor  `json:"author"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Article     respjson.Field
@@ -178,6 +177,106 @@ type XGetArticleResponseArticleContent struct {
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponseArticleContent) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XGetArticleResponseAuthor struct {
+	ID             string `json:"id" api:"required"`
+	Followers      int64  `json:"followers" api:"required"`
+	Username       string `json:"username" api:"required"`
+	Verified       bool   `json:"verified" api:"required"`
+	ProfilePicture string `json:"profilePicture"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		Followers      respjson.Field
+		Username       respjson.Field
+		Verified       respjson.Field
+		ProfilePicture respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetArticleResponseAuthor) RawJSON() string { return r.JSON.raw }
+func (r *XGetArticleResponseAuthor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XGetHomeTimelineResponse struct {
+	HasNextPage bool                            `json:"has_next_page" api:"required"`
+	NextCursor  string                          `json:"next_cursor" api:"required"`
+	Tweets      []XGetHomeTimelineResponseTweet `json:"tweets" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		NextCursor  respjson.Field
+		Tweets      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetHomeTimelineResponse) RawJSON() string { return r.JSON.raw }
+func (r *XGetHomeTimelineResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XGetHomeTimelineResponseTweet struct {
+	ID            string                              `json:"id" api:"required"`
+	Text          string                              `json:"text" api:"required"`
+	Author        XGetHomeTimelineResponseTweetAuthor `json:"author"`
+	BookmarkCount int64                               `json:"bookmarkCount"`
+	CreatedAt     string                              `json:"createdAt"`
+	LikeCount     int64                               `json:"likeCount"`
+	QuoteCount    int64                               `json:"quoteCount"`
+	ReplyCount    int64                               `json:"replyCount"`
+	RetweetCount  int64                               `json:"retweetCount"`
+	ViewCount     int64                               `json:"viewCount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Text          respjson.Field
+		Author        respjson.Field
+		BookmarkCount respjson.Field
+		CreatedAt     respjson.Field
+		LikeCount     respjson.Field
+		QuoteCount    respjson.Field
+		ReplyCount    respjson.Field
+		RetweetCount  respjson.Field
+		ViewCount     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetHomeTimelineResponseTweet) RawJSON() string { return r.JSON.raw }
+func (r *XGetHomeTimelineResponseTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XGetHomeTimelineResponseTweetAuthor struct {
+	ID       string `json:"id" api:"required"`
+	Name     string `json:"name" api:"required"`
+	Username string `json:"username" api:"required"`
+	Verified bool   `json:"verified"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetHomeTimelineResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
+func (r *XGetHomeTimelineResponseTweetAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

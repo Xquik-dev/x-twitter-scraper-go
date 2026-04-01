@@ -36,9 +36,3 @@ const EventTypeFollowerGained = shared.EventTypeFollowerGained
 
 // Equals "follower.lost"
 const EventTypeFollowerLost = shared.EventTypeFollowerLost
-
-// This is an alias to an internal type.
-type PaginatedTweets = shared.PaginatedTweets
-
-// This is an alias to an internal type.
-type PaginatedUsers = shared.PaginatedUsers

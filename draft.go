@@ -41,7 +41,7 @@ func NewDraftService(opts ...option.RequestOption) (r DraftService) {
 }
 
 // Save a tweet draft
-func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...option.RequestOption) (res *DraftDetail, err error) {
+func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...option.RequestOption) (res *DraftNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "drafts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -49,7 +49,7 @@ func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...opt
 }
 
 // Get draft by ID
-func (r *DraftService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DraftDetail, err error) {
+func (r *DraftService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DraftGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -81,31 +81,7 @@ func (r *DraftService) Delete(ctx context.Context, id string, opts ...option.Req
 	return err
 }
 
-type Draft struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	Text      string    `json:"text" api:"required"`
-	Goal      string    `json:"goal"`
-	Topic     string    `json:"topic"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Text        respjson.Field
-		Goal        respjson.Field
-		Topic       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Draft) RawJSON() string { return r.JSON.raw }
-func (r *Draft) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DraftDetail struct {
+type DraftNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	Text      string    `json:"text" api:"required"`
@@ -126,15 +102,41 @@ type DraftDetail struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DraftDetail) RawJSON() string { return r.JSON.raw }
-func (r *DraftDetail) UnmarshalJSON(data []byte) error {
+func (r DraftNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *DraftNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DraftGetResponse struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	Text      string    `json:"text" api:"required"`
+	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
+	Goal      string    `json:"goal"`
+	Topic     string    `json:"topic"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Text        respjson.Field
+		UpdatedAt   respjson.Field
+		Goal        respjson.Field
+		Topic       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DraftGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *DraftGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type DraftListResponse struct {
-	Drafts     []Draft `json:"drafts" api:"required"`
-	HasMore    bool    `json:"hasMore" api:"required"`
-	NextCursor string  `json:"nextCursor"`
+	Drafts     []DraftListResponseDraft `json:"drafts" api:"required"`
+	HasMore    bool                     `json:"hasMore" api:"required"`
+	NextCursor string                   `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Drafts      respjson.Field
@@ -148,6 +150,30 @@ type DraftListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DraftListResponse) RawJSON() string { return r.JSON.raw }
 func (r *DraftListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DraftListResponseDraft struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	Text      string    `json:"text" api:"required"`
+	Goal      string    `json:"goal"`
+	Topic     string    `json:"topic"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Text        respjson.Field
+		Goal        respjson.Field
+		Topic       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DraftListResponseDraft) RawJSON() string { return r.JSON.raw }
+func (r *DraftListResponseDraft) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

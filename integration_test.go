@@ -11,7 +11,6 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 func TestIntegrationNew(t *testing.T) {
@@ -32,7 +31,7 @@ func TestIntegrationNew(t *testing.T) {
 		Config: xtwitterscraper.IntegrationNewParamsConfig{
 			ChatID: "chatId",
 		},
-		EventTypes: []shared.EventType{shared.EventTypeTweetNew},
+		EventTypes: []string{"tweet.new"},
 		Name:       "name",
 		Type:       xtwitterscraper.IntegrationNewParamsTypeTelegram,
 	})
@@ -87,7 +86,7 @@ func TestIntegrationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.IntegrationUpdateParams{
-			EventTypes: []shared.EventType{shared.EventTypeTweetNew},
+			EventTypes: []string{"tweet.new"},
 			Filters: map[string]any{
 				"foo": "bar",
 			},
