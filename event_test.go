@@ -11,7 +11,6 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 func TestEventGet(t *testing.T) {
@@ -54,7 +53,7 @@ func TestEventListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Events.List(context.TODO(), xtwitterscraper.EventListParams{
 		After:     xtwitterscraper.String("after"),
-		EventType: shared.EventTypeTweetNew,
+		EventType: xtwitterscraper.EventListParamsEventTypeTweetNew,
 		Limit:     xtwitterscraper.Int(1),
 		MonitorID: xtwitterscraper.String("monitorId"),
 	})

@@ -14,7 +14,6 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // X data lookups (subscription required)
@@ -39,7 +38,7 @@ func NewXBookmarkService(opts ...option.RequestOption) (r XBookmarkService) {
 }
 
 // Get bookmarked tweets
-func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
+func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *XBookmarkListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/bookmarks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -52,6 +51,82 @@ func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.Reques
 	path := "x/bookmarks/folders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
+}
+
+type XBookmarkListResponse struct {
+	HasNextPage bool                         `json:"has_next_page" api:"required"`
+	NextCursor  string                       `json:"next_cursor" api:"required"`
+	Tweets      []XBookmarkListResponseTweet `json:"tweets" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		NextCursor  respjson.Field
+		Tweets      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XBookmarkListResponse) RawJSON() string { return r.JSON.raw }
+func (r *XBookmarkListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XBookmarkListResponseTweet struct {
+	ID            string                           `json:"id" api:"required"`
+	Text          string                           `json:"text" api:"required"`
+	Author        XBookmarkListResponseTweetAuthor `json:"author"`
+	BookmarkCount int64                            `json:"bookmarkCount"`
+	CreatedAt     string                           `json:"createdAt"`
+	LikeCount     int64                            `json:"likeCount"`
+	QuoteCount    int64                            `json:"quoteCount"`
+	ReplyCount    int64                            `json:"replyCount"`
+	RetweetCount  int64                            `json:"retweetCount"`
+	ViewCount     int64                            `json:"viewCount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Text          respjson.Field
+		Author        respjson.Field
+		BookmarkCount respjson.Field
+		CreatedAt     respjson.Field
+		LikeCount     respjson.Field
+		QuoteCount    respjson.Field
+		ReplyCount    respjson.Field
+		RetweetCount  respjson.Field
+		ViewCount     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XBookmarkListResponseTweet) RawJSON() string { return r.JSON.raw }
+func (r *XBookmarkListResponseTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XBookmarkListResponseTweetAuthor struct {
+	ID       string `json:"id" api:"required"`
+	Name     string `json:"name" api:"required"`
+	Username string `json:"username" api:"required"`
+	Verified bool   `json:"verified"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XBookmarkListResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
+func (r *XBookmarkListResponseTweetAuthor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XBookmarkGetFoldersResponse struct {
