@@ -62,7 +62,8 @@ func (r *EventService) List(ctx context.Context, query EventListParams, opts ...
 }
 
 type EventGetResponse struct {
-	ID         string         `json:"id" api:"required"`
+	ID string `json:"id" api:"required"`
+	// Event payload — shape varies by event type (JSON)
 	Data       map[string]any `json:"data" api:"required"`
 	MonitorID  string         `json:"monitorId" api:"required"`
 	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`

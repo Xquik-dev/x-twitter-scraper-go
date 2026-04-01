@@ -148,7 +148,7 @@ func (r *XCommunityDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type XCommunityGetInfoResponse struct {
 	// Community info object
-	Community any `json:"community" api:"required"`
+	Community XCommunityGetInfoResponseCommunity `json:"community" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Community   respjson.Field
@@ -160,6 +160,90 @@ type XCommunityGetInfoResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityGetInfoResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityGetInfoResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Community info object
+type XCommunityGetInfoResponseCommunity struct {
+	// Community ID
+	ID string `json:"id" api:"required"`
+	// Community banner image URL
+	BannerURL string `json:"banner_url"`
+	// Community creation timestamp
+	CreatedAt string `json:"created_at"`
+	// Community description
+	Description string `json:"description"`
+	// Join policy (open or restricted)
+	JoinPolicy string `json:"join_policy"`
+	// Total member count
+	MemberCount int64 `json:"member_count"`
+	// Total moderator count
+	ModeratorCount int64 `json:"moderator_count"`
+	// Community name
+	Name string `json:"name"`
+	// Primary topic
+	PrimaryTopic XCommunityGetInfoResponseCommunityPrimaryTopic `json:"primary_topic"`
+	// Community rules
+	Rules []XCommunityGetInfoResponseCommunityRule `json:"rules"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		BannerURL      respjson.Field
+		CreatedAt      respjson.Field
+		Description    respjson.Field
+		JoinPolicy     respjson.Field
+		MemberCount    respjson.Field
+		ModeratorCount respjson.Field
+		Name           respjson.Field
+		PrimaryTopic   respjson.Field
+		Rules          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityGetInfoResponseCommunity) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityGetInfoResponseCommunity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Primary topic
+type XCommunityGetInfoResponseCommunityPrimaryTopic struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityGetInfoResponseCommunityPrimaryTopic) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityGetInfoResponseCommunityPrimaryTopic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XCommunityGetInfoResponseCommunityRule struct {
+	ID          string `json:"id"`
+	Description string `json:"description"`
+	Name        string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Description respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityGetInfoResponseCommunityRule) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityGetInfoResponseCommunityRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
