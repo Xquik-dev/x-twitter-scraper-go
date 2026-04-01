@@ -2,7 +2,7 @@
 package json
 
 import (
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json/shims"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/shims"
 	"reflect"
 	"time"
 )
