@@ -11,7 +11,6 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 func TestMonitorNew(t *testing.T) {
@@ -29,7 +28,7 @@ func TestMonitorNew(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Monitors.New(context.TODO(), xtwitterscraper.MonitorNewParams{
-		EventTypes: []shared.EventType{shared.EventTypeTweetNew},
+		EventTypes: []string{"tweet.new"},
 		Username:   "username",
 	})
 	if err != nil {
@@ -83,7 +82,7 @@ func TestMonitorUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.MonitorUpdateParams{
-			EventTypes: []shared.EventType{shared.EventTypeTweetNew},
+			EventTypes: []string{"tweet.new"},
 			IsActive:   xtwitterscraper.Bool(true),
 		},
 	)
