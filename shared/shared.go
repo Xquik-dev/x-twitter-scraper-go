@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding
