@@ -4,8 +4,6 @@ package xtwitterscraper
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -40,49 +38,12 @@ func NewStyleService(opts ...option.RequestOption) (r StyleService) {
 	return
 }
 
-// Get cached style profile
-func (r *StyleService) Get(ctx context.Context, username string, opts ...option.RequestOption) (res *StyleGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	if username == "" {
-		err = errors.New("missing required username parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("styles/%s", url.PathEscape(username))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Save style profile with custom tweets
-func (r *StyleService) Update(ctx context.Context, username string, body StyleUpdateParams, opts ...option.RequestOption) (res *StyleUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	if username == "" {
-		err = errors.New("missing required username parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("styles/%s", url.PathEscape(username))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return res, err
-}
-
 // List cached style profiles
 func (r *StyleService) List(ctx context.Context, opts ...option.RequestOption) (res *StyleListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "styles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
-}
-
-// Delete a style profile
-func (r *StyleService) Delete(ctx context.Context, username string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	if username == "" {
-		err = errors.New("missing required username parameter")
-		return err
-	}
-	path := fmt.Sprintf("styles/%s", url.PathEscape(username))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return err
 }
 
 // Analyze writing style from recent tweets
@@ -99,110 +60,6 @@ func (r *StyleService) Compare(ctx context.Context, query StyleCompareParams, op
 	path := "styles/compare"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
-}
-
-// Get engagement metrics for style tweets
-func (r *StyleService) GetPerformance(ctx context.Context, username string, opts ...option.RequestOption) (res *StyleGetPerformanceResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	if username == "" {
-		err = errors.New("missing required username parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("styles/%s/performance", url.PathEscape(username))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-type StyleGetResponse struct {
-	FetchedAt    time.Time               `json:"fetchedAt" api:"required" format:"date-time"`
-	IsOwnAccount bool                    `json:"isOwnAccount" api:"required"`
-	TweetCount   int64                   `json:"tweetCount" api:"required"`
-	Tweets       []StyleGetResponseTweet `json:"tweets" api:"required"`
-	XUsername    string                  `json:"xUsername" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FetchedAt    respjson.Field
-		IsOwnAccount respjson.Field
-		TweetCount   respjson.Field
-		Tweets       respjson.Field
-		XUsername    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StyleGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *StyleGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StyleGetResponseTweet struct {
-	ID             string `json:"id" api:"required"`
-	Text           string `json:"text" api:"required"`
-	AuthorUsername string `json:"authorUsername"`
-	CreatedAt      string `json:"createdAt"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Text           respjson.Field
-		AuthorUsername respjson.Field
-		CreatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StyleGetResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *StyleGetResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StyleUpdateResponse struct {
-	FetchedAt    time.Time                  `json:"fetchedAt" api:"required" format:"date-time"`
-	IsOwnAccount bool                       `json:"isOwnAccount" api:"required"`
-	TweetCount   int64                      `json:"tweetCount" api:"required"`
-	Tweets       []StyleUpdateResponseTweet `json:"tweets" api:"required"`
-	XUsername    string                     `json:"xUsername" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FetchedAt    respjson.Field
-		IsOwnAccount respjson.Field
-		TweetCount   respjson.Field
-		Tweets       respjson.Field
-		XUsername    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StyleUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *StyleUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StyleUpdateResponseTweet struct {
-	ID             string `json:"id" api:"required"`
-	Text           string `json:"text" api:"required"`
-	AuthorUsername string `json:"authorUsername"`
-	CreatedAt      string `json:"createdAt"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Text           respjson.Field
-		AuthorUsername respjson.Field
-		CreatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StyleUpdateResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *StyleUpdateResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type StyleListResponse struct {
@@ -396,84 +253,6 @@ type StyleCompareResponseStyle2Tweet struct {
 // Returns the unmodified JSON received from the API
 func (r StyleCompareResponseStyle2Tweet) RawJSON() string { return r.JSON.raw }
 func (r *StyleCompareResponseStyle2Tweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StyleGetPerformanceResponse struct {
-	TweetCount int64                              `json:"tweetCount" api:"required"`
-	Tweets     []StyleGetPerformanceResponseTweet `json:"tweets" api:"required"`
-	XUsername  string                             `json:"xUsername" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		TweetCount  respjson.Field
-		Tweets      respjson.Field
-		XUsername   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StyleGetPerformanceResponse) RawJSON() string { return r.JSON.raw }
-func (r *StyleGetPerformanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StyleGetPerformanceResponseTweet struct {
-	ID           string `json:"id" api:"required"`
-	Text         string `json:"text" api:"required"`
-	CreatedAt    string `json:"createdAt"`
-	LikeCount    int64  `json:"likeCount"`
-	ReplyCount   int64  `json:"replyCount"`
-	RetweetCount int64  `json:"retweetCount"`
-	ViewCount    int64  `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		Text         respjson.Field
-		CreatedAt    respjson.Field
-		LikeCount    respjson.Field
-		ReplyCount   respjson.Field
-		RetweetCount respjson.Field
-		ViewCount    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StyleGetPerformanceResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *StyleGetPerformanceResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StyleUpdateParams struct {
-	// Display label for the style
-	Label string `json:"label" api:"required"`
-	// Array of tweet objects
-	Tweets []StyleUpdateParamsTweet `json:"tweets,omitzero" api:"required"`
-	paramObj
-}
-
-func (r StyleUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow StyleUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *StyleUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Text is required.
-type StyleUpdateParamsTweet struct {
-	Text string `json:"text" api:"required"`
-	paramObj
-}
-
-func (r StyleUpdateParamsTweet) MarshalJSON() (data []byte, err error) {
-	type shadow StyleUpdateParamsTweet
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *StyleUpdateParamsTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

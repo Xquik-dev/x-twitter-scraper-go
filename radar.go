@@ -107,7 +107,10 @@ type RadarGetTrendingTopicsParams struct {
 	Region param.Opt[string] `query:"region,omitzero" json:"-"`
 	// Source filter. One of: github, google_trends, hacker_news, polymarket, reddit,
 	// trustmrr, wikipedia
-	Source param.Opt[string] `query:"source,omitzero" json:"-"`
+	//
+	// Any of "github", "google_trends", "hacker_news", "polymarket", "reddit",
+	// "trustmrr", "wikipedia".
+	Source RadarGetTrendingTopicsParamsSource `query:"source,omitzero" json:"-"`
 	paramObj
 }
 
@@ -119,3 +122,17 @@ func (r RadarGetTrendingTopicsParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Source filter. One of: github, google_trends, hacker_news, polymarket, reddit,
+// trustmrr, wikipedia
+type RadarGetTrendingTopicsParamsSource string
+
+const (
+	RadarGetTrendingTopicsParamsSourceGitHub       RadarGetTrendingTopicsParamsSource = "github"
+	RadarGetTrendingTopicsParamsSourceGoogleTrends RadarGetTrendingTopicsParamsSource = "google_trends"
+	RadarGetTrendingTopicsParamsSourceHackerNews   RadarGetTrendingTopicsParamsSource = "hacker_news"
+	RadarGetTrendingTopicsParamsSourcePolymarket   RadarGetTrendingTopicsParamsSource = "polymarket"
+	RadarGetTrendingTopicsParamsSourceReddit       RadarGetTrendingTopicsParamsSource = "reddit"
+	RadarGetTrendingTopicsParamsSourceTrustmrr     RadarGetTrendingTopicsParamsSource = "trustmrr"
+	RadarGetTrendingTopicsParamsSourceWikipedia    RadarGetTrendingTopicsParamsSource = "wikipedia"
+)

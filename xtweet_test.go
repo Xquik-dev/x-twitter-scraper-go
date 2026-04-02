@@ -45,30 +45,6 @@ func TestXTweetNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestXTweetGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := xtwitterscraper.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
-	)
-	_, err := client.X.Tweets.Get(context.TODO(), "tweetId")
-	if err != nil {
-		var apierr *xtwitterscraper.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestXTweetList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -86,36 +62,6 @@ func TestXTweetList(t *testing.T) {
 	err := client.X.Tweets.List(context.TODO(), xtwitterscraper.XTweetListParams{
 		IDs: "ids",
 	})
-	if err != nil {
-		var apierr *xtwitterscraper.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestXTweetDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := xtwitterscraper.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
-	)
-	_, err := client.X.Tweets.Delete(
-		context.TODO(),
-		"tweetId",
-		xtwitterscraper.XTweetDeleteParams{
-			Account: "account",
-		},
-	)
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

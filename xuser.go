@@ -28,8 +28,7 @@ import (
 // the [NewXUserService] method instead.
 type XUserService struct {
 	options []option.RequestOption
-	// X write actions (tweets, likes, follows, DMs)
-	Follow XUserFollowService
+	Follow  XUserFollowService
 }
 
 // NewXUserService generates a new service that applies the given options to each
@@ -40,18 +39,6 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	r.options = opts
 	r.Follow = NewXUserFollowService(opts...)
 	return
-}
-
-// Look up X user
-func (r *XUserService) Get(ctx context.Context, username string, opts ...option.RequestOption) (res *XUserGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	if username == "" {
-		err = errors.New("missing required username parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("x/users/%s", url.PathEscape(username))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
 }
 
 // Get multiple users by IDs
@@ -170,42 +157,6 @@ func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, quer
 	path := fmt.Sprintf("x/users/%s/verified-followers", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return err
-}
-
-type XUserGetResponse struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type XUserGetFollowersYouKnowResponse struct {
