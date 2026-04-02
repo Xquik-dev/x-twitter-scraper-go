@@ -26,9 +26,7 @@ import (
 // the [NewXTweetService] method instead.
 type XTweetService struct {
 	options []option.RequestOption
-	// X write actions (tweets, likes, follows, DMs)
-	Like XTweetLikeService
-	// X write actions (tweets, likes, follows, DMs)
+	Like    XTweetLikeService
 	Retweet XTweetRetweetService
 }
 
@@ -51,18 +49,6 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 	return res, err
 }
 
-// Look up tweet
-func (r *XTweetService) Get(ctx context.Context, tweetID string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	if tweetID == "" {
-		err = errors.New("missing required tweetId parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("x/tweets/%s", url.PathEscape(tweetID))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
 // Get multiple tweets by IDs
 func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.options, opts)
@@ -70,18 +56,6 @@ func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts .
 	path := "x/tweets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return err
-}
-
-// Delete tweet
-func (r *XTweetService) Delete(ctx context.Context, tweetID string, body XTweetDeleteParams, opts ...option.RequestOption) (res *XTweetDeleteResponse, err error) {
-	opts = slices.Concat(r.options, opts)
-	if tweetID == "" {
-		err = errors.New("missing required tweetId parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("x/tweets/%s", url.PathEscape(tweetID))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return res, err
 }
 
 // Get users who liked a tweet
@@ -167,96 +141,6 @@ type XTweetNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XTweetNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetGetResponse struct {
-	Tweet  XTweetGetResponseTweet  `json:"tweet" api:"required"`
-	Author XTweetGetResponseAuthor `json:"author"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Tweet       respjson.Field
-		Author      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetGetResponseTweet struct {
-	ID            string `json:"id" api:"required"`
-	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
-	LikeCount     int64  `json:"likeCount" api:"required"`
-	QuoteCount    int64  `json:"quoteCount" api:"required"`
-	ReplyCount    int64  `json:"replyCount" api:"required"`
-	RetweetCount  int64  `json:"retweetCount" api:"required"`
-	Text          string `json:"text" api:"required"`
-	ViewCount     int64  `json:"viewCount" api:"required"`
-	CreatedAt     string `json:"createdAt"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		BookmarkCount respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		Text          respjson.Field
-		ViewCount     respjson.Field
-		CreatedAt     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetGetResponseAuthor struct {
-	ID             string `json:"id" api:"required"`
-	Followers      int64  `json:"followers" api:"required"`
-	Username       string `json:"username" api:"required"`
-	Verified       bool   `json:"verified" api:"required"`
-	ProfilePicture string `json:"profilePicture"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Followers      respjson.Field
-		Username       respjson.Field
-		Verified       respjson.Field
-		ProfilePicture respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetResponseAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetResponseAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetDeleteResponse struct {
-	Success bool `json:"success" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -708,20 +592,6 @@ func (r XTweetListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type XTweetDeleteParams struct {
-	// X account (@username or account ID)
-	Account string `json:"account" api:"required"`
-	paramObj
-}
-
-func (r XTweetDeleteParams) MarshalJSON() (data []byte, err error) {
-	type shadow XTweetDeleteParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *XTweetDeleteParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type XTweetGetFavoritersParams struct {
