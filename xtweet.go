@@ -681,7 +681,7 @@ type XTweetSearchParams struct {
 	Q string `query:"q" api:"required" json:"-"`
 	// Pagination cursor from previous response
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Deprecated — use cursor-based pagination instead
+	// Max tweets to return (server paginates internally). Omit for single page (~20).
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// ISO 8601 timestamp — only return tweets after this time
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
