@@ -226,11 +226,13 @@ type XTweetGetQuotesResponseTweet struct {
 	Author        XTweetGetQuotesResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                              `json:"bookmarkCount"`
 	CreatedAt     string                             `json:"createdAt"`
-	LikeCount     int64                              `json:"likeCount"`
-	QuoteCount    int64                              `json:"quoteCount"`
-	ReplyCount    int64                              `json:"replyCount"`
-	RetweetCount  int64                              `json:"retweetCount"`
-	ViewCount     int64                              `json:"viewCount"`
+	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -238,6 +240,7 @@ type XTweetGetQuotesResponseTweet struct {
 		Author        respjson.Field
 		BookmarkCount respjson.Field
 		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
 		LikeCount     respjson.Field
 		QuoteCount    respjson.Field
 		ReplyCount    respjson.Field
@@ -302,11 +305,13 @@ type XTweetGetRepliesResponseTweet struct {
 	Author        XTweetGetRepliesResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                               `json:"bookmarkCount"`
 	CreatedAt     string                              `json:"createdAt"`
-	LikeCount     int64                               `json:"likeCount"`
-	QuoteCount    int64                               `json:"quoteCount"`
-	ReplyCount    int64                               `json:"replyCount"`
-	RetweetCount  int64                               `json:"retweetCount"`
-	ViewCount     int64                               `json:"viewCount"`
+	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -314,6 +319,7 @@ type XTweetGetRepliesResponseTweet struct {
 		Author        respjson.Field
 		BookmarkCount respjson.Field
 		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
 		LikeCount     respjson.Field
 		QuoteCount    respjson.Field
 		ReplyCount    respjson.Field
@@ -434,11 +440,13 @@ type XTweetGetThreadResponseTweet struct {
 	Author        XTweetGetThreadResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                              `json:"bookmarkCount"`
 	CreatedAt     string                             `json:"createdAt"`
-	LikeCount     int64                              `json:"likeCount"`
-	QuoteCount    int64                              `json:"quoteCount"`
-	ReplyCount    int64                              `json:"replyCount"`
-	RetweetCount  int64                              `json:"retweetCount"`
-	ViewCount     int64                              `json:"viewCount"`
+	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -446,6 +454,7 @@ type XTweetGetThreadResponseTweet struct {
 		Author        respjson.Field
 		BookmarkCount respjson.Field
 		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
 		LikeCount     respjson.Field
 		QuoteCount    respjson.Field
 		ReplyCount    respjson.Field
@@ -510,11 +519,13 @@ type XTweetSearchResponseTweet struct {
 	Author        XTweetSearchResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                           `json:"bookmarkCount"`
 	CreatedAt     string                          `json:"createdAt"`
-	LikeCount     int64                           `json:"likeCount"`
-	QuoteCount    int64                           `json:"quoteCount"`
-	ReplyCount    int64                           `json:"replyCount"`
-	RetweetCount  int64                           `json:"retweetCount"`
-	ViewCount     int64                           `json:"viewCount"`
+	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -522,6 +533,7 @@ type XTweetSearchResponseTweet struct {
 		Author        respjson.Field
 		BookmarkCount respjson.Field
 		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
 		LikeCount     respjson.Field
 		QuoteCount    respjson.Field
 		ReplyCount    respjson.Field
