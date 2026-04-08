@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apierror"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiform"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apierror"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {
