@@ -12,7 +12,6 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/pagination"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
@@ -40,26 +39,11 @@ func NewXBookmarkService(opts ...option.RequestOption) (r XBookmarkService) {
 }
 
 // Get bookmarked tweets
-func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *pagination.CursorPage[shared.PaginatedTweets], err error) {
-	var raw *http.Response
+func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "x/bookmarks"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Get bookmarked tweets
-func (r *XBookmarkService) ListAutoPaging(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[shared.PaginatedTweets] {
-	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Get bookmark folders
