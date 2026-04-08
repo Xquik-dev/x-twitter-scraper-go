@@ -34,7 +34,7 @@ func TestIntegrationNew(t *testing.T) {
 		},
 		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeFollowerGained},
 		Name:       "My Telegram Bot",
-		Type:       xtwitterscraper.IntegrationNewParamsTypeTelegram,
+		Type:       "telegram",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

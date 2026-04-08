@@ -17,6 +17,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared/constant"
 )
 
 // Bulk data extraction (20 tool types)
@@ -228,9 +229,8 @@ func (r *ExtractionEstimateCostResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ExtractionRunResponse struct {
-	ID string `json:"id" api:"required"`
-	// Any of "running".
-	Status ExtractionRunResponseStatus `json:"status" api:"required"`
+	ID     string           `json:"id" api:"required"`
+	Status constant.Running `json:"status" default:"running"`
 	// Identifier for the extraction tool used to run a job.
 	//
 	// Any of "article_extractor", "community_extractor",
@@ -256,12 +256,6 @@ func (r ExtractionRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ExtractionRunResponseStatus string
-
-const (
-	ExtractionRunResponseStatusRunning ExtractionRunResponseStatus = "running"
-)
 
 // Identifier for the extraction tool used to run a job.
 type ExtractionRunResponseToolType string
