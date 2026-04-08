@@ -64,6 +64,7 @@ func (r *RadarGetTrendingTopicsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Trending topic with score, category, source, and region.
 type RadarGetTrendingTopicsResponseItem struct {
 	Category    string    `json:"category" api:"required"`
 	PublishedAt time.Time `json:"publishedAt" api:"required" format:"date-time"`

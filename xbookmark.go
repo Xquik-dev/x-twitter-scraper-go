@@ -53,6 +53,7 @@ func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.Reques
 	return res, err
 }
 
+// Paginated list of tweets with cursor-based navigation.
 type XBookmarkListResponse struct {
 	HasNextPage bool                         `json:"has_next_page" api:"required"`
 	NextCursor  string                       `json:"next_cursor" api:"required"`
@@ -73,13 +74,14 @@ func (r *XBookmarkListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tweet returned from search results with inline author info.
 type XBookmarkListResponseTweet struct {
 	ID            string                           `json:"id" api:"required"`
 	Text          string                           `json:"text" api:"required"`
 	Author        XBookmarkListResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                            `json:"bookmarkCount"`
 	CreatedAt     string                           `json:"createdAt"`
-	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	// True for Note Tweets (long-form content, up to 25,000 characters)
 	IsNoteTweet  bool  `json:"isNoteTweet"`
 	LikeCount    int64 `json:"likeCount"`
 	QuoteCount   int64 `json:"quoteCount"`
@@ -171,7 +173,7 @@ func (r *XBookmarkGetFoldersResponseFolder) UnmarshalJSON(data []byte) error {
 }
 
 type XBookmarkListParams struct {
-	// Pagination cursor from previous response
+	// Pagination cursor for bookmarks
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Optional bookmark folder ID
 	FolderID param.Opt[string] `query:"folderId,omitzero" json:"-"`

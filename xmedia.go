@@ -114,7 +114,7 @@ func (r *XMediaDownloadParams) UnmarshalJSON(data []byte) error {
 }
 
 type XMediaUploadParams struct {
-	// X account (@username or account ID)
+	// X account (@username or ID) uploading media
 	Account string `json:"account" api:"required"`
 	// Media file to upload
 	File        io.Reader       `json:"file,omitzero" api:"required" format:"binary"`

@@ -62,6 +62,7 @@ func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, body X
 	return res, err
 }
 
+// Result of a community join or leave action.
 type XCommunityJoinNewResponse struct {
 	CommunityID   string `json:"communityId" api:"required"`
 	CommunityName string `json:"communityName" api:"required"`
@@ -82,6 +83,7 @@ func (r *XCommunityJoinNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Result of a community join or leave action.
 type XCommunityJoinDeleteAllResponse struct {
 	CommunityID   string `json:"communityId" api:"required"`
 	CommunityName string `json:"communityName" api:"required"`
@@ -103,7 +105,7 @@ func (r *XCommunityJoinDeleteAllResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XCommunityJoinNewParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }
@@ -117,7 +119,7 @@ func (r *XCommunityJoinNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type XCommunityJoinDeleteAllParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }

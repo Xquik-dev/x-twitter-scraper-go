@@ -50,12 +50,11 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 }
 
 // Get multiple tweets by IDs
-func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (err error) {
+func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (res *XTweetListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "x/tweets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Get users who liked a tweet
@@ -144,6 +143,88 @@ func (r *XTweetNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of tweets with cursor-based navigation.
+type XTweetListResponse struct {
+	HasNextPage bool                      `json:"has_next_page" api:"required"`
+	NextCursor  string                    `json:"next_cursor" api:"required"`
+	Tweets      []XTweetListResponseTweet `json:"tweets" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		NextCursor  respjson.Field
+		Tweets      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetListResponse) RawJSON() string { return r.JSON.raw }
+func (r *XTweetListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Tweet returned from search results with inline author info.
+type XTweetListResponseTweet struct {
+	ID            string                        `json:"id" api:"required"`
+	Text          string                        `json:"text" api:"required"`
+	Author        XTweetListResponseTweetAuthor `json:"author"`
+	BookmarkCount int64                         `json:"bookmarkCount"`
+	CreatedAt     string                        `json:"createdAt"`
+	// True for Note Tweets (long-form content, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Text          respjson.Field
+		Author        respjson.Field
+		BookmarkCount respjson.Field
+		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
+		LikeCount     respjson.Field
+		QuoteCount    respjson.Field
+		ReplyCount    respjson.Field
+		RetweetCount  respjson.Field
+		ViewCount     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetListResponseTweet) RawJSON() string { return r.JSON.raw }
+func (r *XTweetListResponseTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XTweetListResponseTweetAuthor struct {
+	ID       string `json:"id" api:"required"`
+	Name     string `json:"name" api:"required"`
+	Username string `json:"username" api:"required"`
+	Verified bool   `json:"verified"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetListResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
+func (r *XTweetListResponseTweetAuthor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Paginated list of user profiles with cursor-based navigation.
 type XTweetGetFavoritersResponse struct {
 	HasNextPage bool                              `json:"has_next_page" api:"required"`
 	NextCursor  string                            `json:"next_cursor" api:"required"`
@@ -164,6 +245,7 @@ func (r *XTweetGetFavoritersResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// X user profile with bio, follower counts, and verification status.
 type XTweetGetFavoritersResponseUser struct {
 	ID             string `json:"id" api:"required"`
 	Name           string `json:"name" api:"required"`
@@ -200,6 +282,7 @@ func (r *XTweetGetFavoritersResponseUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of tweets with cursor-based navigation.
 type XTweetGetQuotesResponse struct {
 	HasNextPage bool                           `json:"has_next_page" api:"required"`
 	NextCursor  string                         `json:"next_cursor" api:"required"`
@@ -220,13 +303,14 @@ func (r *XTweetGetQuotesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tweet returned from search results with inline author info.
 type XTweetGetQuotesResponseTweet struct {
 	ID            string                             `json:"id" api:"required"`
 	Text          string                             `json:"text" api:"required"`
 	Author        XTweetGetQuotesResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                              `json:"bookmarkCount"`
 	CreatedAt     string                             `json:"createdAt"`
-	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	// True for Note Tweets (long-form content, up to 25,000 characters)
 	IsNoteTweet  bool  `json:"isNoteTweet"`
 	LikeCount    int64 `json:"likeCount"`
 	QuoteCount   int64 `json:"quoteCount"`
@@ -279,6 +363,7 @@ func (r *XTweetGetQuotesResponseTweetAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of tweets with cursor-based navigation.
 type XTweetGetRepliesResponse struct {
 	HasNextPage bool                            `json:"has_next_page" api:"required"`
 	NextCursor  string                          `json:"next_cursor" api:"required"`
@@ -299,13 +384,14 @@ func (r *XTweetGetRepliesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tweet returned from search results with inline author info.
 type XTweetGetRepliesResponseTweet struct {
 	ID            string                              `json:"id" api:"required"`
 	Text          string                              `json:"text" api:"required"`
 	Author        XTweetGetRepliesResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                               `json:"bookmarkCount"`
 	CreatedAt     string                              `json:"createdAt"`
-	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	// True for Note Tweets (long-form content, up to 25,000 characters)
 	IsNoteTweet  bool  `json:"isNoteTweet"`
 	LikeCount    int64 `json:"likeCount"`
 	QuoteCount   int64 `json:"quoteCount"`
@@ -358,6 +444,7 @@ func (r *XTweetGetRepliesResponseTweetAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of user profiles with cursor-based navigation.
 type XTweetGetRetweetersResponse struct {
 	HasNextPage bool                              `json:"has_next_page" api:"required"`
 	NextCursor  string                            `json:"next_cursor" api:"required"`
@@ -378,6 +465,7 @@ func (r *XTweetGetRetweetersResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// X user profile with bio, follower counts, and verification status.
 type XTweetGetRetweetersResponseUser struct {
 	ID             string `json:"id" api:"required"`
 	Name           string `json:"name" api:"required"`
@@ -414,6 +502,7 @@ func (r *XTweetGetRetweetersResponseUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of tweets with cursor-based navigation.
 type XTweetGetThreadResponse struct {
 	HasNextPage bool                           `json:"has_next_page" api:"required"`
 	NextCursor  string                         `json:"next_cursor" api:"required"`
@@ -434,13 +523,14 @@ func (r *XTweetGetThreadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tweet returned from search results with inline author info.
 type XTweetGetThreadResponseTweet struct {
 	ID            string                             `json:"id" api:"required"`
 	Text          string                             `json:"text" api:"required"`
 	Author        XTweetGetThreadResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                              `json:"bookmarkCount"`
 	CreatedAt     string                             `json:"createdAt"`
-	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	// True for Note Tweets (long-form content, up to 25,000 characters)
 	IsNoteTweet  bool  `json:"isNoteTweet"`
 	LikeCount    int64 `json:"likeCount"`
 	QuoteCount   int64 `json:"quoteCount"`
@@ -493,6 +583,7 @@ func (r *XTweetGetThreadResponseTweetAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of tweets with cursor-based navigation.
 type XTweetSearchResponse struct {
 	HasNextPage bool                        `json:"has_next_page" api:"required"`
 	NextCursor  string                      `json:"next_cursor" api:"required"`
@@ -513,13 +604,14 @@ func (r *XTweetSearchResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tweet returned from search results with inline author info.
 type XTweetSearchResponseTweet struct {
 	ID            string                          `json:"id" api:"required"`
 	Text          string                          `json:"text" api:"required"`
 	Author        XTweetSearchResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                           `json:"bookmarkCount"`
 	CreatedAt     string                          `json:"createdAt"`
-	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	// True for Note Tweets (long-form content, up to 25,000 characters)
 	IsNoteTweet  bool  `json:"isNoteTweet"`
 	LikeCount    int64 `json:"likeCount"`
 	QuoteCount   int64 `json:"quoteCount"`
@@ -607,7 +699,7 @@ func (r XTweetListParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetFavoritersParams struct {
-	// Pagination cursor from previous response
+	// Pagination cursor for favoriters
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	paramObj
 }
@@ -622,13 +714,13 @@ func (r XTweetGetFavoritersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetQuotesParams struct {
-	// Pagination cursor
+	// Pagination cursor for quote tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Include replies (default false)
+	// Include reply quotes (default false)
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
-	// Unix timestamp - filter after
+	// Unix timestamp - return quotes posted after this time
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
-	// Unix timestamp - filter before
+	// Unix timestamp - return quotes posted before this time
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	paramObj
 }
@@ -642,11 +734,11 @@ func (r XTweetGetQuotesParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetRepliesParams struct {
-	// Pagination cursor
+	// Pagination cursor for tweet replies
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Unix timestamp - filter after
+	// Unix timestamp - return replies posted after this time
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
-	// Unix timestamp - filter before
+	// Unix timestamp - return replies posted before this time
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	paramObj
 }
@@ -660,7 +752,7 @@ func (r XTweetGetRepliesParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetRetweetersParams struct {
-	// Pagination cursor
+	// Pagination cursor for retweeters
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	paramObj
 }
@@ -675,7 +767,7 @@ func (r XTweetGetRetweetersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetThreadParams struct {
-	// Pagination cursor
+	// Pagination cursor for thread tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	paramObj
 }

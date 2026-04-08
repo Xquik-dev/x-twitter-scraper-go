@@ -30,11 +30,11 @@ func TestXProfileUpdateWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.Update(context.TODO(), xtwitterscraper.XProfileUpdateParams{
-		Account:     "account",
-		Description: xtwitterscraper.String("description"),
-		Location:    xtwitterscraper.String("location"),
-		Name:        xtwitterscraper.String("name"),
-		URL:         xtwitterscraper.String("url"),
+		Account:     "@elonmusk",
+		Description: xtwitterscraper.String("description_value"),
+		Location:    xtwitterscraper.String("location_value"),
+		Name:        xtwitterscraper.String("Example Name"),
+		URL:         xtwitterscraper.String("https://xquik.com/example"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -60,7 +60,7 @@ func TestXProfileUpdateAvatar(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.UpdateAvatar(context.TODO(), xtwitterscraper.XProfileUpdateAvatarParams{
-		Account: "account",
+		Account: "@elonmusk",
 		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
 	})
 	if err != nil {
@@ -87,7 +87,7 @@ func TestXProfileUpdateBanner(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.UpdateBanner(context.TODO(), xtwitterscraper.XProfileUpdateBannerParams{
-		Account: "account",
+		Account: "@elonmusk",
 		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
 	})
 	if err != nil {

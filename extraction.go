@@ -132,11 +132,14 @@ func (r *ExtractionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Extraction job tracking status, tool type, and result count.
 type ExtractionListResponseExtraction struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Any of "running", "completed", "failed".
 	Status string `json:"status" api:"required"`
+	// Identifier for the extraction tool used to run a job.
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -194,6 +197,8 @@ type ExtractionRunResponse struct {
 	ID string `json:"id" api:"required"`
 	// Any of "running".
 	Status ExtractionRunResponseStatus `json:"status" api:"required"`
+	// Identifier for the extraction tool used to run a job.
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -224,6 +229,7 @@ const (
 	ExtractionRunResponseStatusRunning ExtractionRunResponseStatus = "running"
 )
 
+// Identifier for the extraction tool used to run a job.
 type ExtractionRunResponseToolType string
 
 const (
@@ -250,9 +256,10 @@ const (
 )
 
 type ExtractionGetParams struct {
-	// Cursor for pagination
+	// Cursor for keyset pagination
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	Limit param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Maximum number of results to return (1-1000, default 100)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
 
@@ -265,11 +272,16 @@ func (r ExtractionGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type ExtractionListParams struct {
-	// Cursor for pagination
+	// Cursor for keyset pagination
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	Limit param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Maximum number of items to return (1-100, default 50)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter by job status
+	//
 	// Any of "running", "completed", "failed".
 	Status ExtractionListParamsStatus `query:"status,omitzero" json:"-"`
+	// Filter by extraction tool type
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -289,6 +301,7 @@ func (r ExtractionListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter by job status
 type ExtractionListParamsStatus string
 
 const (
@@ -297,6 +310,7 @@ const (
 	ExtractionListParamsStatusFailed    ExtractionListParamsStatus = "failed"
 )
 
+// Filter by extraction tool type
 type ExtractionListParamsToolType string
 
 const (
@@ -323,6 +337,8 @@ const (
 )
 
 type ExtractionEstimateCostParams struct {
+	// Identifier for the extraction tool used to run a job.
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -331,11 +347,11 @@ type ExtractionEstimateCostParams struct {
 	// "repost_extractor", "space_explorer", "thread_extractor",
 	// "tweet_search_extractor", "verified_follower_explorer".
 	ToolType ExtractionEstimateCostParamsToolType `json:"toolType,omitzero" api:"required"`
-	// Raw advanced search query appended as-is (tweet_search_extractor)
+	// Raw advanced query string appended to the estimate (tweet_search_extractor)
 	AdvancedQuery param.Opt[string] `json:"advancedQuery,omitzero"`
-	// Exact phrase to match (tweet_search_extractor)
+	// Exact phrase filter for search estimation
 	ExactPhrase param.Opt[string] `json:"exactPhrase,omitzero"`
-	// Words to exclude from results (tweet_search_extractor)
+	// Words excluded from estimated search results
 	ExcludeWords      param.Opt[string] `json:"excludeWords,omitzero"`
 	SearchQuery       param.Opt[string] `json:"searchQuery,omitzero"`
 	TargetCommunityID param.Opt[string] `json:"targetCommunityId,omitzero"`
@@ -354,6 +370,7 @@ func (r *ExtractionEstimateCostParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Identifier for the extraction tool used to run a job.
 type ExtractionEstimateCostParamsToolType string
 
 const (
@@ -380,6 +397,8 @@ const (
 )
 
 type ExtractionExportResultsParams struct {
+	// Export file format
+	//
 	// Any of "csv", "json", "md", "md-document", "pdf", "txt", "xlsx".
 	Format ExtractionExportResultsParamsFormat `query:"format,omitzero" json:"-"`
 	paramObj
@@ -394,6 +413,7 @@ func (r ExtractionExportResultsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Export file format
 type ExtractionExportResultsParamsFormat string
 
 const (
@@ -407,6 +427,8 @@ const (
 )
 
 type ExtractionRunParams struct {
+	// Identifier for the extraction tool used to run a job.
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -438,6 +460,7 @@ func (r *ExtractionRunParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Identifier for the extraction tool used to run a job.
 type ExtractionRunParamsToolType string
 
 const (

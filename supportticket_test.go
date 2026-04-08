@@ -28,8 +28,8 @@ func TestSupportTicketNew(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.New(context.TODO(), xtwitterscraper.SupportTicketNewParams{
-		Body:    "body",
-		Subject: "subject",
+		Body:    "I am unable to connect my X account. Please help.",
+		Subject: "Cannot connect X account",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -54,7 +54,7 @@ func TestSupportTicketGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Support.Tickets.Get(context.TODO(), "id")
+	_, err := client.Support.Tickets.Get(context.TODO(), "messages_value")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -82,7 +82,7 @@ func TestSupportTicketUpdate(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.SupportTicketUpdateParams{
-			Status: xtwitterscraper.SupportTicketUpdateParamsStatusOpen,
+			Status: xtwitterscraper.SupportTicketUpdateParamsStatusResolved,
 		},
 	)
 	if err != nil {
@@ -136,7 +136,7 @@ func TestSupportTicketReply(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.SupportTicketReplyParams{
-			Body: "body",
+			Body: "Thank you for the update.",
 		},
 	)
 	if err != nil {

@@ -118,6 +118,7 @@ func (r *XAccountNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Full X account details including proxy, cookies, and update timestamp.
 type XAccountGetResponse struct {
 	ID                string    `json:"id" api:"required"`
 	CreatedAt         time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -164,6 +165,7 @@ func (r *XAccountListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Linked X account summary with username and connection status.
 type XAccountListResponseAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -247,9 +249,9 @@ func (r *XAccountNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type XAccountReauthParams struct {
-	// Account password
+	// Updated account password
 	Password string `json:"password" api:"required"`
-	// TOTP secret for 2FA
+	// TOTP secret for 2FA re-authentication
 	TotpSecret param.Opt[string] `json:"totp_secret,omitzero"`
 	paramObj
 }

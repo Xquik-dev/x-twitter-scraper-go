@@ -61,12 +61,15 @@ func (r *EventService) List(ctx context.Context, query EventListParams, opts ...
 	return res, err
 }
 
+// Full monitor event including payload data and optional X event ID.
 type EventGetResponse struct {
 	ID string `json:"id" api:"required"`
 	// Event payload — shape varies by event type (JSON)
 	Data       map[string]any `json:"data" api:"required"`
 	MonitorID  string         `json:"monitorId" api:"required"`
 	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`
+	// Type of monitor event fired when account activity occurs.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	Type     EventGetResponseType `json:"type" api:"required"`
@@ -92,6 +95,7 @@ func (r *EventGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Type of monitor event fired when account activity occurs.
 type EventGetResponseType string
 
 const (
@@ -123,11 +127,14 @@ func (r *EventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Monitor event summary with type, username, and occurrence time.
 type EventListResponseEvent struct {
 	ID         string         `json:"id" api:"required"`
 	Data       map[string]any `json:"data" api:"required"`
 	MonitorID  string         `json:"monitorId" api:"required"`
 	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`
+	// Type of monitor event fired when account activity occurs.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	Type     string `json:"type" api:"required"`
@@ -152,10 +159,14 @@ func (r *EventListResponseEvent) UnmarshalJSON(data []byte) error {
 }
 
 type EventListParams struct {
-	// Cursor for pagination
-	After     param.Opt[string] `query:"after,omitzero" json:"-"`
-	Limit     param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Cursor for keyset pagination
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
+	// Maximum number of items to return (1-100, default 50)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter events by monitor ID
 	MonitorID param.Opt[string] `query:"monitorId,omitzero" json:"-"`
+	// Filter events by type
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventType EventListParamsEventType `query:"eventType,omitzero" json:"-"`
@@ -170,6 +181,7 @@ func (r EventListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter events by type
 type EventListParamsEventType string
 
 const (

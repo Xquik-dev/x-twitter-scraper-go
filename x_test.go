@@ -105,7 +105,7 @@ func TestXGetTrends(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.GetTrends(context.TODO())
+	_, err := client.X.GetTrends(context.TODO())
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

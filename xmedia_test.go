@@ -30,8 +30,8 @@ func TestXMediaDownloadWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Media.Download(context.TODO(), xtwitterscraper.XMediaDownloadParams{
-		TweetIDs:   []string{"string"},
-		TweetInput: xtwitterscraper.String("tweetInput"),
+		TweetIDs:   []string{"1234567890", "1234567891"},
+		TweetInput: xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -57,7 +57,7 @@ func TestXMediaUploadWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Media.Upload(context.TODO(), xtwitterscraper.XMediaUploadParams{
-		Account:     "account",
+		Account:     "@elonmusk",
 		File:        io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		IsLongVideo: xtwitterscraper.Bool(true),
 	})

@@ -116,11 +116,14 @@ func (r *IntegrationService) SendTest(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
+// Third-party integration (e.g. Telegram) subscribed to monitor events.
 type IntegrationNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -163,11 +166,14 @@ const (
 	IntegrationNewResponseTypeTelegram IntegrationNewResponseType = "telegram"
 )
 
+// Third-party integration (e.g. Telegram) subscribed to monitor events.
 type IntegrationGetResponse struct {
 	ID string `json:"id" api:"required"`
 	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -210,11 +216,14 @@ const (
 	IntegrationGetResponseTypeTelegram IntegrationGetResponseType = "telegram"
 )
 
+// Third-party integration (e.g. Telegram) subscribed to monitor events.
 type IntegrationUpdateResponse struct {
 	ID string `json:"id" api:"required"`
 	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -273,11 +282,14 @@ func (r *IntegrationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Third-party integration (e.g. Telegram) subscribed to monitor events.
 type IntegrationListResponseIntegration struct {
 	ID string `json:"id" api:"required"`
 	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -346,6 +358,7 @@ func (r *IntegrationListDeliveriesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Integration delivery attempt record with status and retry count.
 type IntegrationListDeliveriesResponseDelivery struct {
 	ID             string    `json:"id" api:"required"`
 	Attempts       int64     `json:"attempts" api:"required"`
@@ -399,6 +412,8 @@ func (r *IntegrationSendTestResponse) UnmarshalJSON(data []byte) error {
 type IntegrationNewParams struct {
 	// Integration config (e.g. Telegram chatId)
 	Config IntegrationNewParamsConfig `json:"config,omitzero" api:"required"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes,omitzero" api:"required"`
@@ -443,6 +458,8 @@ type IntegrationUpdateParams struct {
 	Name             param.Opt[string] `json:"name,omitzero"`
 	ScopeAllMonitors param.Opt[bool]   `json:"scopeAllMonitors,omitzero"`
 	SilentPush       param.Opt[bool]   `json:"silentPush,omitzero"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes,omitzero"`
@@ -462,6 +479,7 @@ func (r *IntegrationUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type IntegrationListDeliveriesParams struct {
+	// Maximum number of items to return (1-100, default 50)
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }

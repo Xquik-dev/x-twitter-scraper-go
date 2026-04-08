@@ -27,7 +27,7 @@ func TestXListGetFollowersWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Lists.GetFollowers(
+	_, err := client.X.Lists.GetFollowers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XListGetFollowersParams{
@@ -57,7 +57,7 @@ func TestXListGetMembersWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Lists.GetMembers(
+	_, err := client.X.Lists.GetMembers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XListGetMembersParams{
@@ -87,7 +87,7 @@ func TestXListGetTweetsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Lists.GetTweets(
+	_, err := client.X.Lists.GetTweets(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XListGetTweetsParams{

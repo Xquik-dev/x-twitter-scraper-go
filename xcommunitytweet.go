@@ -8,10 +8,12 @@ import (
 	"net/url"
 	"slices"
 
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // X data lookups (subscription required)
@@ -36,20 +38,100 @@ func NewXCommunityTweetService(opts ...option.RequestOption) (r XCommunityTweetS
 }
 
 // Search tweets across all communities
-func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (err error) {
+func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *XCommunityTweetListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "x/communities/tweets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Paginated list of tweets with cursor-based navigation.
+type XCommunityTweetListResponse struct {
+	HasNextPage bool                               `json:"has_next_page" api:"required"`
+	NextCursor  string                             `json:"next_cursor" api:"required"`
+	Tweets      []XCommunityTweetListResponseTweet `json:"tweets" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		NextCursor  respjson.Field
+		Tweets      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityTweetListResponse) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityTweetListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Tweet returned from search results with inline author info.
+type XCommunityTweetListResponseTweet struct {
+	ID            string                                 `json:"id" api:"required"`
+	Text          string                                 `json:"text" api:"required"`
+	Author        XCommunityTweetListResponseTweetAuthor `json:"author"`
+	BookmarkCount int64                                  `json:"bookmarkCount"`
+	CreatedAt     string                                 `json:"createdAt"`
+	// True for Note Tweets (long-form content, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Text          respjson.Field
+		Author        respjson.Field
+		BookmarkCount respjson.Field
+		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
+		LikeCount     respjson.Field
+		QuoteCount    respjson.Field
+		ReplyCount    respjson.Field
+		RetweetCount  respjson.Field
+		ViewCount     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityTweetListResponseTweet) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityTweetListResponseTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XCommunityTweetListResponseTweetAuthor struct {
+	ID       string `json:"id" api:"required"`
+	Name     string `json:"name" api:"required"`
+	Username string `json:"username" api:"required"`
+	Verified bool   `json:"verified"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityTweetListResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityTweetListResponseTweetAuthor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XCommunityTweetListParams struct {
-	// Search query
+	// Search query for cross-community tweets
 	Q string `query:"q" api:"required" json:"-"`
-	// Pagination cursor
+	// Pagination cursor for cross-community results
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Sort order (Latest or Top)
+	// Sort order for cross-community results (Latest or Top)
 	QueryType param.Opt[string] `query:"queryType,omitzero" json:"-"`
 	paramObj
 }
