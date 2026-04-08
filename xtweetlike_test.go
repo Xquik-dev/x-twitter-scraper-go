@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
-func TestXCommunityJoinNew(t *testing.T) {
+func TestXTweetLikeNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,10 +27,10 @@ func TestXCommunityJoinNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.Communities.Join.New(
+	_, err := client.X.Tweets.Like.New(
 		context.TODO(),
 		"id",
-		xtwitterscraper.XCommunityJoinNewParams{
+		xtwitterscraper.XTweetLikeNewParams{
 			Account: "@elonmusk",
 		},
 	)
@@ -43,7 +43,7 @@ func TestXCommunityJoinNew(t *testing.T) {
 	}
 }
 
-func TestXCommunityJoinDeleteAll(t *testing.T) {
+func TestXTweetLikeDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -57,10 +57,10 @@ func TestXCommunityJoinDeleteAll(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.Communities.Join.DeleteAll(
+	_, err := client.X.Tweets.Like.Delete(
 		context.TODO(),
 		"id",
-		xtwitterscraper.XCommunityJoinDeleteAllParams{
+		xtwitterscraper.XTweetLikeDeleteParams{
 			Account: "@elonmusk",
 		},
 	)

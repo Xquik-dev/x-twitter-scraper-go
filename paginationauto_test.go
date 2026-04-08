@@ -4,7 +4,6 @@ package xtwitterscraper_test
 
 import (
 	"context"
-	"errors"
 	"os"
 	"testing"
 
@@ -13,7 +12,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
-func TestSubscribeNew(t *testing.T) {
+func TestAutoPagination(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,12 +26,15 @@ func TestSubscribeNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Subscribe.New(context.TODO())
-	if err != nil {
-		var apierr *xtwitterscraper.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
+	iter := client.X.Communities.Tweets.ListAutoPaging(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
+		Q: "q",
+	})
+	// The mock server isn't going to give us real pagination
+	for i := 0; i < 3 && iter.Next(); i++ {
+		tweet := iter.Current()
+		t.Logf("%+v\n", tweet.HasNextPage)
+	}
+	if err := iter.Err(); err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }

@@ -11,11 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // Webhook endpoint management & delivery
@@ -48,7 +49,7 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 }
 
 // Update webhook
-func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpdateParams, opts ...option.RequestOption) (res *WebhookUpdateResponse, err error) {
+func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpdateParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -103,142 +104,8 @@ func (r *WebhookService) Test(ctx context.Context, id string, opts ...option.Req
 	return res, err
 }
 
-type WebhookNewResponse struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	Secret     string   `json:"secret" api:"required"`
-	URL        string   `json:"url" api:"required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		Secret      respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Webhook endpoint registered to receive event deliveries.
-type WebhookUpdateResponse struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	URL        string   `json:"url" api:"required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		IsActive    respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WebhookListResponse struct {
-	Webhooks []WebhookListResponseWebhook `json:"webhooks" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Webhooks    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookListResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Webhook endpoint registered to receive event deliveries.
-type WebhookListResponseWebhook struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	URL        string   `json:"url" api:"required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		IsActive    respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookListResponseWebhook) RawJSON() string { return r.JSON.raw }
-func (r *WebhookListResponseWebhook) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WebhookDeactivateResponse struct {
-	Success bool `json:"success" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeactivateResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeactivateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WebhookListDeliveriesResponse struct {
-	Deliveries []WebhookListDeliveriesResponseDelivery `json:"deliveries" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Deliveries  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookListDeliveriesResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookListDeliveriesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Webhook delivery attempt record with status and retry count.
-type WebhookListDeliveriesResponseDelivery struct {
+type Delivery struct {
 	ID             string    `json:"id" api:"required"`
 	Attempts       int64     `json:"attempts" api:"required"`
 	CreatedAt      time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -263,8 +130,107 @@ type WebhookListDeliveriesResponseDelivery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookListDeliveriesResponseDelivery) RawJSON() string { return r.JSON.raw }
-func (r *WebhookListDeliveriesResponseDelivery) UnmarshalJSON(data []byte) error {
+func (r Delivery) RawJSON() string { return r.JSON.raw }
+func (r *Delivery) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Webhook endpoint registered to receive event deliveries.
+type Webhook struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
+	IsActive   bool               `json:"isActive" api:"required"`
+	URL        string             `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		EventTypes  respjson.Field
+		IsActive    respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Webhook) RawJSON() string { return r.JSON.raw }
+func (r *Webhook) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookNewResponse struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
+	Secret     string             `json:"secret" api:"required"`
+	URL        string             `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		EventTypes  respjson.Field
+		Secret      respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookListResponse struct {
+	Webhooks []Webhook `json:"webhooks" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Webhooks    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookListResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookDeactivateResponse struct {
+	Success bool `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookDeactivateResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookDeactivateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookListDeliveriesResponse struct {
+	Deliveries []Delivery `json:"deliveries" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Deliveries  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookListDeliveriesResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookListDeliveriesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -290,10 +256,7 @@ func (r *WebhookTestResponse) UnmarshalJSON(data []byte) error {
 
 type WebhookNewParams struct {
 	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes,omitzero" api:"required"`
+	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
 	// HTTPS URL
 	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
@@ -311,10 +274,7 @@ type WebhookUpdateParams struct {
 	IsActive param.Opt[bool]   `json:"isActive,omitzero"`
 	URL      param.Opt[string] `json:"url,omitzero" format:"uri"`
 	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes,omitzero"`
+	EventTypes []shared.EventType `json:"eventTypes,omitzero"`
 	paramObj
 }
 
