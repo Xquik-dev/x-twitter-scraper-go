@@ -13,7 +13,6 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/pagination"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
@@ -40,53 +39,23 @@ func NewXCommunityTweetService(opts ...option.RequestOption) (r XCommunityTweetS
 }
 
 // Search tweets across all communities
-func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *pagination.CursorPage[shared.PaginatedTweets], err error) {
-	var raw *http.Response
+func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "x/communities/tweets"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Search tweets across all communities
-func (r *XCommunityTweetService) ListAutoPaging(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[shared.PaginatedTweets] {
-	return pagination.NewCursorPageAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Get community tweets
-func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) (res *pagination.CursorPage[shared.PaginatedTweets], err error) {
-	var raw *http.Response
+func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("x/communities/%s/tweets", url.PathEscape(id))
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Get community tweets
-func (r *XCommunityTweetService) ListByCommunityAutoPaging(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) *pagination.CursorPageAutoPager[shared.PaginatedTweets] {
-	return pagination.NewCursorPageAutoPager(r.ListByCommunity(ctx, id, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 type XCommunityTweetListParams struct {

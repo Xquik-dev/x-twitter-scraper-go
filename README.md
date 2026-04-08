@@ -279,37 +279,8 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
-```go
-iter := client.X.Communities.Tweets.ListAutoPaging(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
-	Q: "q",
-})
-// Automatically fetches more pages as needed.
-for iter.Next() {
-	paginatedTweets := iter.Current()
-	fmt.Printf("%+v\n", paginatedTweets)
-}
-if err := iter.Err(); err != nil {
-	panic(err.Error())
-}
-```
-
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
-
-```go
-page, err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
-	Q: "q",
-})
-for page != nil {
-	for _, tweet := range page.data {
-		fmt.Printf("%+v\n", tweet)
-	}
-	page, err = page.GetNextPage()
-}
-if err != nil {
-	panic(err.Error())
-}
-```
 
 ### Errors
 
