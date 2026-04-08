@@ -11,11 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // Real-time X account monitoring
@@ -48,7 +49,7 @@ func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ..
 }
 
 // Get monitor
-func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorGetResponse, err error) {
+func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Monitor, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -60,7 +61,7 @@ func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.Requ
 }
 
 // Update monitor
-func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpdateParams, opts ...option.RequestOption) (res *MonitorUpdateResponse, err error) {
+func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpdateParams, opts ...option.RequestOption) (res *Monitor, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -91,16 +92,41 @@ func (r *MonitorService) Deactivate(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
+// Account monitor that tracks activity for a given X user.
+type Monitor struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
+	IsActive   bool               `json:"isActive" api:"required"`
+	Username   string             `json:"username" api:"required"`
+	XUserID    string             `json:"xUserId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		EventTypes  respjson.Field
+		IsActive    respjson.Field
+		Username    respjson.Field
+		XUserID     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Monitor) RawJSON() string { return r.JSON.raw }
+func (r *Monitor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MonitorNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	Username   string   `json:"username" api:"required"`
-	XUserID    string   `json:"xUserId" api:"required"`
+	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
+	Username   string             `json:"username" api:"required"`
+	XUserID    string             `json:"xUserId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -119,71 +145,9 @@ func (r *MonitorNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Account monitor that tracks activity for a given X user.
-type MonitorGetResponse struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	Username   string   `json:"username" api:"required"`
-	XUserID    string   `json:"xUserId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		IsActive    respjson.Field
-		Username    respjson.Field
-		XUserID     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MonitorGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *MonitorGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Account monitor that tracks activity for a given X user.
-type MonitorUpdateResponse struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	Username   string   `json:"username" api:"required"`
-	XUserID    string   `json:"xUserId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		IsActive    respjson.Field
-		Username    respjson.Field
-		XUserID     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MonitorUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *MonitorUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type MonitorListResponse struct {
-	Monitors []MonitorListResponseMonitor `json:"monitors" api:"required"`
-	Total    int64                        `json:"total" api:"required"`
+	Monitors []Monitor `json:"monitors" api:"required"`
+	Total    int64     `json:"total" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Monitors    respjson.Field
@@ -196,37 +160,6 @@ type MonitorListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Account monitor that tracks activity for a given X user.
-type MonitorListResponseMonitor struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	Username   string   `json:"username" api:"required"`
-	XUserID    string   `json:"xUserId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		IsActive    respjson.Field
-		Username    respjson.Field
-		XUserID     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MonitorListResponseMonitor) RawJSON() string { return r.JSON.raw }
-func (r *MonitorListResponseMonitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -248,10 +181,7 @@ func (r *MonitorDeactivateResponse) UnmarshalJSON(data []byte) error {
 
 type MonitorNewParams struct {
 	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes,omitzero" api:"required"`
+	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
 	// X username (without @)
 	Username string `json:"username" api:"required"`
 	paramObj
@@ -268,10 +198,7 @@ func (r *MonitorNewParams) UnmarshalJSON(data []byte) error {
 type MonitorUpdateParams struct {
 	IsActive param.Opt[bool] `json:"isActive,omitzero"`
 	// Array of event types to subscribe to.
-	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes,omitzero"`
+	EventTypes []shared.EventType `json:"eventTypes,omitzero"`
 	paramObj
 }
 

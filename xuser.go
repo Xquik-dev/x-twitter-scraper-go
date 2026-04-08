@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // X data lookups (subscription required)
@@ -28,7 +29,8 @@ import (
 // the [NewXUserService] method instead.
 type XUserService struct {
 	options []option.RequestOption
-	Follow  XUserFollowService
+	// X write actions (tweets, likes, follows, DMs)
+	Follow XUserFollowService
 }
 
 // NewXUserService generates a new service that applies the given options to each
@@ -41,8 +43,20 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	return
 }
 
+// Look up X user
+func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *UserProfile, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Get multiple users by IDs
-func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, opts ...option.RequestOption) (res *XUserGetBatchResponse, err error) {
+func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/batch"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -50,7 +64,7 @@ func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, 
 }
 
 // Get user followers
-func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserGetFollowersParams, opts ...option.RequestOption) (res *XUserGetFollowersResponse, err error) {
+func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserGetFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -62,7 +76,7 @@ func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserG
 }
 
 // Get followers you know for a user
-func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query XUserGetFollowersYouKnowParams, opts ...option.RequestOption) (res *XUserGetFollowersYouKnowResponse, err error) {
+func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query XUserGetFollowersYouKnowParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -74,7 +88,7 @@ func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query
 }
 
 // Get users this user follows
-func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserGetFollowingParams, opts ...option.RequestOption) (res *XUserGetFollowingResponse, err error) {
+func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserGetFollowingParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -86,7 +100,7 @@ func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserG
 }
 
 // Get tweets liked by a user
-func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLikesParams, opts ...option.RequestOption) (res *XUserGetLikesResponse, err error) {
+func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLikesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -98,7 +112,7 @@ func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLi
 }
 
 // Get media tweets by a user
-func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMediaParams, opts ...option.RequestOption) (res *XUserGetMediaResponse, err error) {
+func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMediaParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -110,7 +124,7 @@ func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMe
 }
 
 // Get tweets mentioning a user
-func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGetMentionsParams, opts ...option.RequestOption) (res *XUserGetMentionsResponse, err error) {
+func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGetMentionsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -122,7 +136,7 @@ func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGe
 }
 
 // Search users by name or username
-func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams, opts ...option.RequestOption) (res *XUserGetSearchResponse, err error) {
+func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -130,7 +144,7 @@ func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams
 }
 
 // Get recent tweets by a user
-func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetTweetsParams, opts ...option.RequestOption) (res *XUserGetTweetsResponse, err error) {
+func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -142,7 +156,7 @@ func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetT
 }
 
 // Get verified followers
-func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, query XUserGetVerifiedFollowersParams, opts ...option.RequestOption) (res *XUserGetVerifiedFollowersResponse, err error) {
+func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, query XUserGetVerifiedFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -153,29 +167,8 @@ func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, quer
 	return res, err
 }
 
-// Paginated list of user profiles with cursor-based navigation.
-type XUserGetBatchResponse struct {
-	HasNextPage bool                        `json:"has_next_page" api:"required"`
-	NextCursor  string                      `json:"next_cursor" api:"required"`
-	Users       []XUserGetBatchResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetBatchResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetBatchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // X user profile with bio, follower counts, and verification status.
-type XUserGetBatchResponseUser struct {
+type UserProfile struct {
 	ID             string `json:"id" api:"required"`
 	Name           string `json:"name" api:"required"`
 	Username       string `json:"username" api:"required"`
@@ -206,622 +199,8 @@ type XUserGetBatchResponseUser struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XUserGetBatchResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetBatchResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of user profiles with cursor-based navigation.
-type XUserGetFollowersResponse struct {
-	HasNextPage bool                            `json:"has_next_page" api:"required"`
-	NextCursor  string                          `json:"next_cursor" api:"required"`
-	Users       []XUserGetFollowersResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetFollowersResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetFollowersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// X user profile with bio, follower counts, and verification status.
-type XUserGetFollowersResponseUser struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetFollowersResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetFollowersResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of user profiles with cursor-based navigation.
-type XUserGetFollowersYouKnowResponse struct {
-	HasNextPage bool                                   `json:"has_next_page" api:"required"`
-	NextCursor  string                                 `json:"next_cursor" api:"required"`
-	Users       []XUserGetFollowersYouKnowResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetFollowersYouKnowResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetFollowersYouKnowResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// X user profile with bio, follower counts, and verification status.
-type XUserGetFollowersYouKnowResponseUser struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetFollowersYouKnowResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetFollowersYouKnowResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of user profiles with cursor-based navigation.
-type XUserGetFollowingResponse struct {
-	HasNextPage bool                            `json:"has_next_page" api:"required"`
-	NextCursor  string                          `json:"next_cursor" api:"required"`
-	Users       []XUserGetFollowingResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetFollowingResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetFollowingResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// X user profile with bio, follower counts, and verification status.
-type XUserGetFollowingResponseUser struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetFollowingResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetFollowingResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XUserGetLikesResponse struct {
-	HasNextPage bool                         `json:"has_next_page" api:"required"`
-	NextCursor  string                       `json:"next_cursor" api:"required"`
-	Tweets      []XUserGetLikesResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetLikesResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetLikesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XUserGetLikesResponseTweet struct {
-	ID            string                           `json:"id" api:"required"`
-	Text          string                           `json:"text" api:"required"`
-	Author        XUserGetLikesResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                            `json:"bookmarkCount"`
-	CreatedAt     string                           `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetLikesResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetLikesResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XUserGetLikesResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetLikesResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetLikesResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XUserGetMediaResponse struct {
-	HasNextPage bool                         `json:"has_next_page" api:"required"`
-	NextCursor  string                       `json:"next_cursor" api:"required"`
-	Tweets      []XUserGetMediaResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetMediaResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetMediaResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XUserGetMediaResponseTweet struct {
-	ID            string                           `json:"id" api:"required"`
-	Text          string                           `json:"text" api:"required"`
-	Author        XUserGetMediaResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                            `json:"bookmarkCount"`
-	CreatedAt     string                           `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetMediaResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetMediaResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XUserGetMediaResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetMediaResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetMediaResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XUserGetMentionsResponse struct {
-	HasNextPage bool                            `json:"has_next_page" api:"required"`
-	NextCursor  string                          `json:"next_cursor" api:"required"`
-	Tweets      []XUserGetMentionsResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetMentionsResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetMentionsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XUserGetMentionsResponseTweet struct {
-	ID            string                              `json:"id" api:"required"`
-	Text          string                              `json:"text" api:"required"`
-	Author        XUserGetMentionsResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                               `json:"bookmarkCount"`
-	CreatedAt     string                              `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetMentionsResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetMentionsResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XUserGetMentionsResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetMentionsResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetMentionsResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of user profiles with cursor-based navigation.
-type XUserGetSearchResponse struct {
-	HasNextPage bool                         `json:"has_next_page" api:"required"`
-	NextCursor  string                       `json:"next_cursor" api:"required"`
-	Users       []XUserGetSearchResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetSearchResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// X user profile with bio, follower counts, and verification status.
-type XUserGetSearchResponseUser struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetSearchResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetSearchResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XUserGetTweetsResponse struct {
-	HasNextPage bool                          `json:"has_next_page" api:"required"`
-	NextCursor  string                        `json:"next_cursor" api:"required"`
-	Tweets      []XUserGetTweetsResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetTweetsResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetTweetsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XUserGetTweetsResponseTweet struct {
-	ID            string                            `json:"id" api:"required"`
-	Text          string                            `json:"text" api:"required"`
-	Author        XUserGetTweetsResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                             `json:"bookmarkCount"`
-	CreatedAt     string                            `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetTweetsResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetTweetsResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XUserGetTweetsResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetTweetsResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetTweetsResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of user profiles with cursor-based navigation.
-type XUserGetVerifiedFollowersResponse struct {
-	HasNextPage bool                                    `json:"has_next_page" api:"required"`
-	NextCursor  string                                  `json:"next_cursor" api:"required"`
-	Users       []XUserGetVerifiedFollowersResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetVerifiedFollowersResponse) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetVerifiedFollowersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// X user profile with bio, follower counts, and verification status.
-type XUserGetVerifiedFollowersResponseUser struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XUserGetVerifiedFollowersResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XUserGetVerifiedFollowersResponseUser) UnmarshalJSON(data []byte) error {
+func (r UserProfile) RawJSON() string { return r.JSON.raw }
+func (r *UserProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

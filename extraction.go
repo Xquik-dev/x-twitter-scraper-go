@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
 // Bulk data extraction (20 tool types)
@@ -89,6 +89,77 @@ func (r *ExtractionService) Run(ctx context.Context, body ExtractionRunParams, o
 	return res, err
 }
 
+// Extraction job tracking status, tool type, and result count.
+type ExtractionJob struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Any of "running", "completed", "failed".
+	Status ExtractionJobStatus `json:"status" api:"required"`
+	// Identifier for the extraction tool used to run a job.
+	//
+	// Any of "article_extractor", "community_extractor",
+	// "community_moderator_explorer", "community_post_extractor", "community_search",
+	// "follower_explorer", "following_explorer", "list_follower_explorer",
+	// "list_member_extractor", "list_post_extractor", "mention_extractor",
+	// "people_search", "post_extractor", "quote_extractor", "reply_extractor",
+	// "repost_extractor", "space_explorer", "thread_extractor",
+	// "tweet_search_extractor", "verified_follower_explorer".
+	ToolType     ExtractionJobToolType `json:"toolType" api:"required"`
+	TotalResults int64                 `json:"totalResults" api:"required"`
+	CompletedAt  time.Time             `json:"completedAt" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		Status       respjson.Field
+		ToolType     respjson.Field
+		TotalResults respjson.Field
+		CompletedAt  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtractionJob) RawJSON() string { return r.JSON.raw }
+func (r *ExtractionJob) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtractionJobStatus string
+
+const (
+	ExtractionJobStatusRunning   ExtractionJobStatus = "running"
+	ExtractionJobStatusCompleted ExtractionJobStatus = "completed"
+	ExtractionJobStatusFailed    ExtractionJobStatus = "failed"
+)
+
+// Identifier for the extraction tool used to run a job.
+type ExtractionJobToolType string
+
+const (
+	ExtractionJobToolTypeArticleExtractor           ExtractionJobToolType = "article_extractor"
+	ExtractionJobToolTypeCommunityExtractor         ExtractionJobToolType = "community_extractor"
+	ExtractionJobToolTypeCommunityModeratorExplorer ExtractionJobToolType = "community_moderator_explorer"
+	ExtractionJobToolTypeCommunityPostExtractor     ExtractionJobToolType = "community_post_extractor"
+	ExtractionJobToolTypeCommunitySearch            ExtractionJobToolType = "community_search"
+	ExtractionJobToolTypeFollowerExplorer           ExtractionJobToolType = "follower_explorer"
+	ExtractionJobToolTypeFollowingExplorer          ExtractionJobToolType = "following_explorer"
+	ExtractionJobToolTypeListFollowerExplorer       ExtractionJobToolType = "list_follower_explorer"
+	ExtractionJobToolTypeListMemberExtractor        ExtractionJobToolType = "list_member_extractor"
+	ExtractionJobToolTypeListPostExtractor          ExtractionJobToolType = "list_post_extractor"
+	ExtractionJobToolTypeMentionExtractor           ExtractionJobToolType = "mention_extractor"
+	ExtractionJobToolTypePeopleSearch               ExtractionJobToolType = "people_search"
+	ExtractionJobToolTypePostExtractor              ExtractionJobToolType = "post_extractor"
+	ExtractionJobToolTypeQuoteExtractor             ExtractionJobToolType = "quote_extractor"
+	ExtractionJobToolTypeReplyExtractor             ExtractionJobToolType = "reply_extractor"
+	ExtractionJobToolTypeRepostExtractor            ExtractionJobToolType = "repost_extractor"
+	ExtractionJobToolTypeSpaceExplorer              ExtractionJobToolType = "space_explorer"
+	ExtractionJobToolTypeThreadExtractor            ExtractionJobToolType = "thread_extractor"
+	ExtractionJobToolTypeTweetSearchExtractor       ExtractionJobToolType = "tweet_search_extractor"
+	ExtractionJobToolTypeVerifiedFollowerExplorer   ExtractionJobToolType = "verified_follower_explorer"
+)
+
 type ExtractionGetResponse struct {
 	HasMore bool `json:"hasMore" api:"required"`
 	// Extraction job metadata — shape varies by tool type (JSON)
@@ -113,9 +184,9 @@ func (r *ExtractionGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ExtractionListResponse struct {
-	Extractions []ExtractionListResponseExtraction `json:"extractions" api:"required"`
-	HasMore     bool                               `json:"hasMore" api:"required"`
-	NextCursor  string                             `json:"nextCursor"`
+	Extractions []ExtractionJob `json:"extractions" api:"required"`
+	HasMore     bool            `json:"hasMore" api:"required"`
+	NextCursor  string          `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Extractions respjson.Field
@@ -129,43 +200,6 @@ type ExtractionListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Extraction job tracking status, tool type, and result count.
-type ExtractionListResponseExtraction struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "running", "completed", "failed".
-	Status string `json:"status" api:"required"`
-	// Identifier for the extraction tool used to run a job.
-	//
-	// Any of "article_extractor", "community_extractor",
-	// "community_moderator_explorer", "community_post_extractor", "community_search",
-	// "follower_explorer", "following_explorer", "list_follower_explorer",
-	// "list_member_extractor", "list_post_extractor", "mention_extractor",
-	// "people_search", "post_extractor", "quote_extractor", "reply_extractor",
-	// "repost_extractor", "space_explorer", "thread_extractor",
-	// "tweet_search_extractor", "verified_follower_explorer".
-	ToolType     string    `json:"toolType" api:"required"`
-	TotalResults int64     `json:"totalResults" api:"required"`
-	CompletedAt  time.Time `json:"completedAt" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Status       respjson.Field
-		ToolType     respjson.Field
-		TotalResults respjson.Field
-		CompletedAt  respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExtractionListResponseExtraction) RawJSON() string { return r.JSON.raw }
-func (r *ExtractionListResponseExtraction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

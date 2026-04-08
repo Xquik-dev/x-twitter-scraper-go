@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // XTweetService contains methods and other services that help with interacting
@@ -26,7 +27,9 @@ import (
 // the [NewXTweetService] method instead.
 type XTweetService struct {
 	options []option.RequestOption
-	Like    XTweetLikeService
+	// X write actions (tweets, likes, follows, DMs)
+	Like XTweetLikeService
+	// X write actions (tweets, likes, follows, DMs)
 	Retweet XTweetRetweetService
 }
 
@@ -49,16 +52,40 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 	return res, err
 }
 
+// Look up tweet
+func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/tweets/%s", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Get multiple tweets by IDs
-func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (res *XTweetListResponse, err error) {
+func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
+// Delete tweet
+func (r *XTweetService) Delete(ctx context.Context, id string, body XTweetDeleteParams, opts ...option.RequestOption) (res *XTweetDeleteResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/tweets/%s", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	return res, err
+}
+
 // Get users who liked a tweet
-func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTweetGetFavoritersParams, opts ...option.RequestOption) (res *XTweetGetFavoritersResponse, err error) {
+func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTweetGetFavoritersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -70,7 +97,7 @@ func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTwe
 }
 
 // Get quote tweets of a tweet
-func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGetQuotesParams, opts ...option.RequestOption) (res *XTweetGetQuotesResponse, err error) {
+func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGetQuotesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -82,7 +109,7 @@ func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGe
 }
 
 // Get replies to a tweet
-func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetGetRepliesParams, opts ...option.RequestOption) (res *XTweetGetRepliesResponse, err error) {
+func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetGetRepliesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -94,7 +121,7 @@ func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetG
 }
 
 // Get users who retweeted a tweet
-func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTweetGetRetweetersParams, opts ...option.RequestOption) (res *XTweetGetRetweetersResponse, err error) {
+func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTweetGetRetweetersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -106,7 +133,7 @@ func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTwe
 }
 
 // Get thread context for a tweet
-func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGetThreadParams, opts ...option.RequestOption) (res *XTweetGetThreadResponse, err error) {
+func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGetThreadParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -118,11 +145,174 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 }
 
 // Search tweets
-func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *XTweetSearchResponse, err error) {
+func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
+}
+
+// Tweet returned from search results with inline author info.
+type SearchTweet struct {
+	ID            string            `json:"id" api:"required"`
+	Text          string            `json:"text" api:"required"`
+	Author        SearchTweetAuthor `json:"author"`
+	BookmarkCount int64             `json:"bookmarkCount"`
+	CreatedAt     string            `json:"createdAt"`
+	// True for Note Tweets (long-form content, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Text          respjson.Field
+		Author        respjson.Field
+		BookmarkCount respjson.Field
+		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
+		LikeCount     respjson.Field
+		QuoteCount    respjson.Field
+		ReplyCount    respjson.Field
+		RetweetCount  respjson.Field
+		ViewCount     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweet) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetAuthor struct {
+	ID       string `json:"id" api:"required"`
+	Name     string `json:"name" api:"required"`
+	Username string `json:"username" api:"required"`
+	Verified bool   `json:"verified"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetAuthor) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetAuthor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Author of a tweet with follower count and verification status.
+type TweetAuthor struct {
+	ID             string `json:"id" api:"required"`
+	Followers      int64  `json:"followers" api:"required"`
+	Username       string `json:"username" api:"required"`
+	Verified       bool   `json:"verified" api:"required"`
+	ProfilePicture string `json:"profilePicture"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		Followers      respjson.Field
+		Username       respjson.Field
+		Verified       respjson.Field
+		ProfilePicture respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetAuthor) RawJSON() string { return r.JSON.raw }
+func (r *TweetAuthor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Full tweet with text, engagement metrics, media, and metadata.
+type TweetDetail struct {
+	ID            string `json:"id" api:"required"`
+	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
+	LikeCount     int64  `json:"likeCount" api:"required"`
+	QuoteCount    int64  `json:"quoteCount" api:"required"`
+	ReplyCount    int64  `json:"replyCount" api:"required"`
+	RetweetCount  int64  `json:"retweetCount" api:"required"`
+	Text          string `json:"text" api:"required"`
+	ViewCount     int64  `json:"viewCount" api:"required"`
+	// ID of the root tweet in the conversation thread
+	ConversationID string `json:"conversationId"`
+	CreatedAt      string `json:"createdAt"`
+	// Parsed entities from the tweet text (URLs, mentions, hashtags, media)
+	Entities map[string]any `json:"entities"`
+	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	IsNoteTweet bool `json:"isNoteTweet"`
+	// Whether this tweet quotes another tweet
+	IsQuoteStatus bool `json:"isQuoteStatus"`
+	// Whether this tweet is a reply to another tweet
+	IsReply bool `json:"isReply"`
+	// Attached media items, omitted when the tweet has no media
+	Media []TweetDetailMedia `json:"media"`
+	// The quoted tweet object, present when isQuoteStatus is true
+	QuotedTweet map[string]any `json:"quoted_tweet"`
+	// Client application used to post this tweet
+	Source string `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		BookmarkCount  respjson.Field
+		LikeCount      respjson.Field
+		QuoteCount     respjson.Field
+		ReplyCount     respjson.Field
+		RetweetCount   respjson.Field
+		Text           respjson.Field
+		ViewCount      respjson.Field
+		ConversationID respjson.Field
+		CreatedAt      respjson.Field
+		Entities       respjson.Field
+		IsNoteTweet    respjson.Field
+		IsQuoteStatus  respjson.Field
+		IsReply        respjson.Field
+		Media          respjson.Field
+		QuotedTweet    respjson.Field
+		Source         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetail) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailMedia struct {
+	MediaURL string `json:"mediaUrl"`
+	// Any of "photo", "video", "animated_gif".
+	Type string `json:"type"`
+	URL  string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MediaURL    respjson.Field
+		Type        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailMedia) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XTweetNewResponse struct {
@@ -143,524 +333,39 @@ func (r *XTweetNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Paginated list of tweets with cursor-based navigation.
-type XTweetListResponse struct {
-	HasNextPage bool                      `json:"has_next_page" api:"required"`
-	NextCursor  string                    `json:"next_cursor" api:"required"`
-	Tweets      []XTweetListResponseTweet `json:"tweets" api:"required"`
+type XTweetGetResponse struct {
+	// Full tweet with text, engagement metrics, media, and metadata.
+	Tweet TweetDetail `json:"tweet" api:"required"`
+	// Author of a tweet with follower count and verification status.
+	Author TweetAuthor `json:"author"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
+		Tweet       respjson.Field
+		Author      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r XTweetListResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetListResponse) UnmarshalJSON(data []byte) error {
+func (r XTweetGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *XTweetGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Tweet returned from search results with inline author info.
-type XTweetListResponseTweet struct {
-	ID            string                        `json:"id" api:"required"`
-	Text          string                        `json:"text" api:"required"`
-	Author        XTweetListResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                         `json:"bookmarkCount"`
-	CreatedAt     string                        `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
+type XTweetDeleteResponse struct {
+	Success bool `json:"success" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetListResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XTweetListResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetListResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
+		Success     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r XTweetListResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XTweetListResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of user profiles with cursor-based navigation.
-type XTweetGetFavoritersResponse struct {
-	HasNextPage bool                              `json:"has_next_page" api:"required"`
-	NextCursor  string                            `json:"next_cursor" api:"required"`
-	Users       []XTweetGetFavoritersResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetFavoritersResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetFavoritersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// X user profile with bio, follower counts, and verification status.
-type XTweetGetFavoritersResponseUser struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetFavoritersResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetFavoritersResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XTweetGetQuotesResponse struct {
-	HasNextPage bool                           `json:"has_next_page" api:"required"`
-	NextCursor  string                         `json:"next_cursor" api:"required"`
-	Tweets      []XTweetGetQuotesResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetQuotesResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetQuotesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XTweetGetQuotesResponseTweet struct {
-	ID            string                             `json:"id" api:"required"`
-	Text          string                             `json:"text" api:"required"`
-	Author        XTweetGetQuotesResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                              `json:"bookmarkCount"`
-	CreatedAt     string                             `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetQuotesResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetQuotesResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetGetQuotesResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetQuotesResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetQuotesResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XTweetGetRepliesResponse struct {
-	HasNextPage bool                            `json:"has_next_page" api:"required"`
-	NextCursor  string                          `json:"next_cursor" api:"required"`
-	Tweets      []XTweetGetRepliesResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetRepliesResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetRepliesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XTweetGetRepliesResponseTweet struct {
-	ID            string                              `json:"id" api:"required"`
-	Text          string                              `json:"text" api:"required"`
-	Author        XTweetGetRepliesResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                               `json:"bookmarkCount"`
-	CreatedAt     string                              `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetRepliesResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetRepliesResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetGetRepliesResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetRepliesResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetRepliesResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of user profiles with cursor-based navigation.
-type XTweetGetRetweetersResponse struct {
-	HasNextPage bool                              `json:"has_next_page" api:"required"`
-	NextCursor  string                            `json:"next_cursor" api:"required"`
-	Users       []XTweetGetRetweetersResponseUser `json:"users" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetRetweetersResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetRetweetersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// X user profile with bio, follower counts, and verification status.
-type XTweetGetRetweetersResponseUser struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetRetweetersResponseUser) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetRetweetersResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XTweetGetThreadResponse struct {
-	HasNextPage bool                           `json:"has_next_page" api:"required"`
-	NextCursor  string                         `json:"next_cursor" api:"required"`
-	Tweets      []XTweetGetThreadResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetThreadResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetThreadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XTweetGetThreadResponseTweet struct {
-	ID            string                             `json:"id" api:"required"`
-	Text          string                             `json:"text" api:"required"`
-	Author        XTweetGetThreadResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                              `json:"bookmarkCount"`
-	CreatedAt     string                             `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetThreadResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetThreadResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetGetThreadResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetGetThreadResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XTweetGetThreadResponseTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated list of tweets with cursor-based navigation.
-type XTweetSearchResponse struct {
-	HasNextPage bool                        `json:"has_next_page" api:"required"`
-	NextCursor  string                      `json:"next_cursor" api:"required"`
-	Tweets      []XTweetSearchResponseTweet `json:"tweets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetSearchResponse) RawJSON() string { return r.JSON.raw }
-func (r *XTweetSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Tweet returned from search results with inline author info.
-type XTweetSearchResponseTweet struct {
-	ID            string                          `json:"id" api:"required"`
-	Text          string                          `json:"text" api:"required"`
-	Author        XTweetSearchResponseTweetAuthor `json:"author"`
-	BookmarkCount int64                           `json:"bookmarkCount"`
-	CreatedAt     string                          `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetSearchResponseTweet) RawJSON() string { return r.JSON.raw }
-func (r *XTweetSearchResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XTweetSearchResponseTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XTweetSearchResponseTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *XTweetSearchResponseTweetAuthor) UnmarshalJSON(data []byte) error {
+func (r XTweetDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *XTweetDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -696,6 +401,20 @@ func (r XTweetListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type XTweetDeleteParams struct {
+	// X account identifier (@username or account ID)
+	Account string `json:"account" api:"required"`
+	paramObj
+}
+
+func (r XTweetDeleteParams) MarshalJSON() (data []byte, err error) {
+	type shadow XTweetDeleteParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XTweetDeleteParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XTweetGetFavoritersParams struct {

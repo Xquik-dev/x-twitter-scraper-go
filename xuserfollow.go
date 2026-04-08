@@ -3,9 +3,22 @@
 package xtwitterscraper
 
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/url"
+	"slices"
+
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
+// X write actions (tweets, likes, follows, DMs)
+//
 // XUserFollowService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
 //
@@ -23,4 +36,88 @@ func NewXUserFollowService(opts ...option.RequestOption) (r XUserFollowService) 
 	r = XUserFollowService{}
 	r.options = opts
 	return
+}
+
+// Follow user
+func (r *XUserFollowService) New(ctx context.Context, id string, body XUserFollowNewParams, opts ...option.RequestOption) (res *XUserFollowNewResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/follow", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Unfollow user
+func (r *XUserFollowService) DeleteAll(ctx context.Context, id string, body XUserFollowDeleteAllParams, opts ...option.RequestOption) (res *XUserFollowDeleteAllResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/follow", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	return res, err
+}
+
+type XUserFollowNewResponse struct {
+	Success bool `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserFollowNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserFollowNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserFollowDeleteAllResponse struct {
+	Success bool `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserFollowDeleteAllResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserFollowDeleteAllResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserFollowNewParams struct {
+	// X account identifier (@username or account ID)
+	Account string `json:"account" api:"required"`
+	paramObj
+}
+
+func (r XUserFollowNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow XUserFollowNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XUserFollowNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserFollowDeleteAllParams struct {
+	// X account identifier (@username or account ID)
+	Account string `json:"account" api:"required"`
+	paramObj
+}
+
+func (r XUserFollowDeleteAllParams) MarshalJSON() (data []byte, err error) {
+	type shadow XUserFollowDeleteAllParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XUserFollowDeleteAllParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

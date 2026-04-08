@@ -11,11 +11,11 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
 // Connected X account management
@@ -49,7 +49,7 @@ func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts 
 }
 
 // Get X account details
-func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountGetResponse, err error) {
+func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDetail, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
@@ -83,6 +83,16 @@ func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
+// Clears loginFailedAt and loginFailureReason for all accounts with transient or
+// automated failure reasons, making them eligible for retry on next use.
+func (r *XAccountService) BulkRetry(ctx context.Context, opts ...option.RequestOption) (res *XAccountBulkRetryResponse, err error) {
+	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
+	opts = slices.Concat(preClientOpts, r.options, opts)
+	path := "x/accounts/bulk-retry"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // Re-authenticate X account
 func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountReauthParams, opts ...option.RequestOption) (res *XAccountReauthResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
@@ -96,14 +106,17 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 	return res, err
 }
 
-type XAccountNewResponse struct {
-	ID        string `json:"id" api:"required"`
-	Status    string `json:"status" api:"required"`
-	XUserID   string `json:"xUserId" api:"required"`
-	XUsername string `json:"xUsername" api:"required"`
+// Linked X account summary with username and connection status.
+type XAccount struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	Status    string    `json:"status" api:"required"`
+	XUserID   string    `json:"xUserId" api:"required"`
+	XUsername string    `json:"xUsername" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		CreatedAt   respjson.Field
 		Status      respjson.Field
 		XUserID     respjson.Field
 		XUsername   respjson.Field
@@ -113,13 +126,13 @@ type XAccountNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *XAccountNewResponse) UnmarshalJSON(data []byte) error {
+func (r XAccount) RawJSON() string { return r.JSON.raw }
+func (r *XAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Full X account details including proxy, cookies, and update timestamp.
-type XAccountGetResponse struct {
+type XAccountDetail struct {
 	ID                string    `json:"id" api:"required"`
 	CreatedAt         time.Time `json:"createdAt" api:"required" format:"date-time"`
 	Status            string    `json:"status" api:"required"`
@@ -144,13 +157,35 @@ type XAccountGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *XAccountGetResponse) UnmarshalJSON(data []byte) error {
+func (r XAccountDetail) RawJSON() string { return r.JSON.raw }
+func (r *XAccountDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XAccountNewResponse struct {
+	ID        string `json:"id" api:"required"`
+	Status    string `json:"status" api:"required"`
+	XUserID   string `json:"xUserId" api:"required"`
+	XUsername string `json:"xUsername" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *XAccountNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type XAccountListResponse struct {
-	Accounts []XAccountListResponseAccount `json:"accounts" api:"required"`
+	Accounts []XAccount `json:"accounts" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Accounts    respjson.Field
@@ -162,31 +197,6 @@ type XAccountListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountListResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Linked X account summary with username and connection status.
-type XAccountListResponseAccount struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	Status    string    `json:"status" api:"required"`
-	XUserID   string    `json:"xUserId" api:"required"`
-	XUsername string    `json:"xUsername" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Status      respjson.Field
-		XUserID     respjson.Field
-		XUsername   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XAccountListResponseAccount) RawJSON() string { return r.JSON.raw }
-func (r *XAccountListResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -203,6 +213,23 @@ type XAccountDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XAccountBulkRetryResponse struct {
+	// Number of accounts cleared
+	Cleared int64 `json:"cleared" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cleared     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountBulkRetryResponse) RawJSON() string { return r.JSON.raw }
+func (r *XAccountBulkRetryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

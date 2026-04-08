@@ -1,7 +1,7 @@
 package apiquery
 
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"reflect"
 )
 

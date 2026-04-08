@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 func TestUsage(t *testing.T) {
@@ -26,12 +26,12 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
 		Limit: xtwitterscraper.Int(10),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", response.HasNextPage)
+	t.Logf("%+v\n", paginatedTweets.HasNextPage)
 }

@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/Xquik-dev/x-twitter-scraper-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/x-twitter-scraper-go.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -13,25 +13,17 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
-<!-- x-release-please-start-version -->
-
 ```go
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
+	"github.com/stainless-sdks/x-twitter-scraper-go" // imported as xtwitterscraper
 )
 ```
 
-<!-- x-release-please-end -->
-
 Or to pin the version:
 
-<!-- x-release-please-start-version -->
-
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.2.0'
+go get -u 'github.com/stainless-sdks/x-twitter-scraper-go@v0.2.0'
 ```
-
-<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -48,22 +40,22 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 func main() {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("X_TWITTER_SCRAPER_API_KEY")
 	)
-	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
 		Limit: xtwitterscraper.Int(10),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", response.HasNextPage)
+	fmt.Printf("%+v\n", paginatedTweets.HasNextPage)
 }
 
 ```
@@ -279,7 +271,7 @@ client.X.Tweets.Search(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/option).
 
 ### Pagination
 
@@ -287,8 +279,37 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
+```go
+iter := client.X.Communities.Tweets.ListAutoPaging(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
+	Q: "q",
+})
+// Automatically fetches more pages as needed.
+for iter.Next() {
+	paginatedTweets := iter.Current()
+	fmt.Printf("%+v\n", paginatedTweets)
+}
+if err := iter.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
+
+```go
+page, err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
+	Q: "q",
+})
+for page != nil {
+	for _, tweet := range page.data {
+		fmt.Printf("%+v\n", tweet)
+	}
+	page, err = page.GetNextPage()
+}
+if err != nil {
+	panic(err.Error())
+}
+```
 
 ### Errors
 
@@ -406,7 +427,7 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-response, err := client.X.Tweets.Search(
+paginatedTweets, err := client.X.Tweets.Search(
 	context.TODO(),
 	xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
@@ -417,7 +438,7 @@ response, err := client.X.Tweets.Search(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", response)
+fmt.Printf("%+v\n", paginatedTweets)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
@@ -518,7 +539,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/Xquik-dev/x-twitter-scraper-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/x-twitter-scraper-go/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 
