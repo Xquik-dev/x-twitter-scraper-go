@@ -18,6 +18,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared/constant"
 )
 
 // Push notification integrations (Telegram)
@@ -127,8 +128,7 @@ type Integration struct {
 	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
 	IsActive   bool               `json:"isActive" api:"required"`
 	Name       string             `json:"name" api:"required"`
-	// Any of "telegram".
-	Type IntegrationType `json:"type" api:"required"`
+	Type       constant.Telegram  `json:"type" default:"telegram"`
 	// Event filter rules (JSON)
 	Filters          map[string]any `json:"filters"`
 	MessageTemplate  string         `json:"messageTemplate"`
@@ -157,12 +157,6 @@ func (r Integration) RawJSON() string { return r.JSON.raw }
 func (r *Integration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type IntegrationType string
-
-const (
-	IntegrationTypeTelegram IntegrationType = "telegram"
-)
 
 // Integration delivery attempt record with status and retry count.
 type IntegrationDelivery struct {
@@ -269,8 +263,8 @@ type IntegrationNewParams struct {
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
 	Name       string             `json:"name" api:"required"`
-	// Any of "telegram".
-	Type IntegrationNewParamsType `json:"type,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "telegram".
+	Type constant.Telegram `json:"type" default:"telegram"`
 	paramObj
 }
 
@@ -297,12 +291,6 @@ func (r IntegrationNewParamsConfig) MarshalJSON() (data []byte, err error) {
 func (r *IntegrationNewParamsConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type IntegrationNewParamsType string
-
-const (
-	IntegrationNewParamsTypeTelegram IntegrationNewParamsType = "telegram"
-)
 
 type IntegrationUpdateParams struct {
 	IsActive         param.Opt[bool]   `json:"isActive,omitzero"`
