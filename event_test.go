@@ -11,6 +11,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 func TestEventGet(t *testing.T) {
@@ -53,7 +54,7 @@ func TestEventListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Events.List(context.TODO(), xtwitterscraper.EventListParams{
 		After:     xtwitterscraper.String("after"),
-		EventType: xtwitterscraper.EventListParamsEventTypeTweetNew,
+		EventType: shared.EventTypeTweetNew,
 		Limit:     xtwitterscraper.Int(1),
 		MonitorID: xtwitterscraper.String("monitorId"),
 	})

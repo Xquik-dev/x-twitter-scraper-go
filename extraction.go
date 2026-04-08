@@ -17,6 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // Bulk data extraction (20 tool types)
@@ -89,8 +90,80 @@ func (r *ExtractionService) Run(ctx context.Context, body ExtractionRunParams, o
 	return res, err
 }
 
+// Extraction job tracking status, tool type, and result count.
+type ExtractionJob struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Any of "running", "completed", "failed".
+	Status ExtractionJobStatus `json:"status" api:"required"`
+	// Identifier for the extraction tool used to run a job.
+	//
+	// Any of "article_extractor", "community_extractor",
+	// "community_moderator_explorer", "community_post_extractor", "community_search",
+	// "follower_explorer", "following_explorer", "list_follower_explorer",
+	// "list_member_extractor", "list_post_extractor", "mention_extractor",
+	// "people_search", "post_extractor", "quote_extractor", "reply_extractor",
+	// "repost_extractor", "space_explorer", "thread_extractor",
+	// "tweet_search_extractor", "verified_follower_explorer".
+	ToolType     ExtractionJobToolType `json:"toolType" api:"required"`
+	TotalResults int64                 `json:"totalResults" api:"required"`
+	CompletedAt  time.Time             `json:"completedAt" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		Status       respjson.Field
+		ToolType     respjson.Field
+		TotalResults respjson.Field
+		CompletedAt  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtractionJob) RawJSON() string { return r.JSON.raw }
+func (r *ExtractionJob) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtractionJobStatus string
+
+const (
+	ExtractionJobStatusRunning   ExtractionJobStatus = "running"
+	ExtractionJobStatusCompleted ExtractionJobStatus = "completed"
+	ExtractionJobStatusFailed    ExtractionJobStatus = "failed"
+)
+
+// Identifier for the extraction tool used to run a job.
+type ExtractionJobToolType string
+
+const (
+	ExtractionJobToolTypeArticleExtractor           ExtractionJobToolType = "article_extractor"
+	ExtractionJobToolTypeCommunityExtractor         ExtractionJobToolType = "community_extractor"
+	ExtractionJobToolTypeCommunityModeratorExplorer ExtractionJobToolType = "community_moderator_explorer"
+	ExtractionJobToolTypeCommunityPostExtractor     ExtractionJobToolType = "community_post_extractor"
+	ExtractionJobToolTypeCommunitySearch            ExtractionJobToolType = "community_search"
+	ExtractionJobToolTypeFollowerExplorer           ExtractionJobToolType = "follower_explorer"
+	ExtractionJobToolTypeFollowingExplorer          ExtractionJobToolType = "following_explorer"
+	ExtractionJobToolTypeListFollowerExplorer       ExtractionJobToolType = "list_follower_explorer"
+	ExtractionJobToolTypeListMemberExtractor        ExtractionJobToolType = "list_member_extractor"
+	ExtractionJobToolTypeListPostExtractor          ExtractionJobToolType = "list_post_extractor"
+	ExtractionJobToolTypeMentionExtractor           ExtractionJobToolType = "mention_extractor"
+	ExtractionJobToolTypePeopleSearch               ExtractionJobToolType = "people_search"
+	ExtractionJobToolTypePostExtractor              ExtractionJobToolType = "post_extractor"
+	ExtractionJobToolTypeQuoteExtractor             ExtractionJobToolType = "quote_extractor"
+	ExtractionJobToolTypeReplyExtractor             ExtractionJobToolType = "reply_extractor"
+	ExtractionJobToolTypeRepostExtractor            ExtractionJobToolType = "repost_extractor"
+	ExtractionJobToolTypeSpaceExplorer              ExtractionJobToolType = "space_explorer"
+	ExtractionJobToolTypeThreadExtractor            ExtractionJobToolType = "thread_extractor"
+	ExtractionJobToolTypeTweetSearchExtractor       ExtractionJobToolType = "tweet_search_extractor"
+	ExtractionJobToolTypeVerifiedFollowerExplorer   ExtractionJobToolType = "verified_follower_explorer"
+)
+
 type ExtractionGetResponse struct {
-	HasMore    bool             `json:"hasMore" api:"required"`
+	HasMore bool `json:"hasMore" api:"required"`
+	// Extraction job metadata — shape varies by tool type (JSON)
 	Job        map[string]any   `json:"job" api:"required"`
 	Results    []map[string]any `json:"results" api:"required"`
 	NextCursor string           `json:"nextCursor"`
@@ -112,9 +185,9 @@ func (r *ExtractionGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ExtractionListResponse struct {
-	Extractions []ExtractionListResponseExtraction `json:"extractions" api:"required"`
-	HasMore     bool                               `json:"hasMore" api:"required"`
-	NextCursor  string                             `json:"nextCursor"`
+	Extractions []ExtractionJob `json:"extractions" api:"required"`
+	HasMore     bool            `json:"hasMore" api:"required"`
+	NextCursor  string          `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Extractions respjson.Field
@@ -128,40 +201,6 @@ type ExtractionListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExtractionListResponseExtraction struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "running", "completed", "failed".
-	Status string `json:"status" api:"required"`
-	// Any of "article_extractor", "community_extractor",
-	// "community_moderator_explorer", "community_post_extractor", "community_search",
-	// "follower_explorer", "following_explorer", "list_follower_explorer",
-	// "list_member_extractor", "list_post_extractor", "mention_extractor",
-	// "people_search", "post_extractor", "quote_extractor", "reply_extractor",
-	// "repost_extractor", "space_explorer", "thread_extractor",
-	// "tweet_search_extractor", "verified_follower_explorer".
-	ToolType     string    `json:"toolType" api:"required"`
-	TotalResults int64     `json:"totalResults" api:"required"`
-	CompletedAt  time.Time `json:"completedAt" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Status       respjson.Field
-		ToolType     respjson.Field
-		TotalResults respjson.Field
-		CompletedAt  respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExtractionListResponseExtraction) RawJSON() string { return r.JSON.raw }
-func (r *ExtractionListResponseExtraction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -190,9 +229,10 @@ func (r *ExtractionEstimateCostResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ExtractionRunResponse struct {
-	ID string `json:"id" api:"required"`
-	// Any of "running".
-	Status ExtractionRunResponseStatus `json:"status" api:"required"`
+	ID     string           `json:"id" api:"required"`
+	Status constant.Running `json:"status" default:"running"`
+	// Identifier for the extraction tool used to run a job.
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -217,12 +257,7 @@ func (r *ExtractionRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExtractionRunResponseStatus string
-
-const (
-	ExtractionRunResponseStatusRunning ExtractionRunResponseStatus = "running"
-)
-
+// Identifier for the extraction tool used to run a job.
 type ExtractionRunResponseToolType string
 
 const (
@@ -249,9 +284,10 @@ const (
 )
 
 type ExtractionGetParams struct {
-	// Cursor for pagination
+	// Cursor for keyset pagination
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	Limit param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Maximum number of results to return (1-1000, default 100)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
 
@@ -264,11 +300,16 @@ func (r ExtractionGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type ExtractionListParams struct {
-	// Cursor for pagination
+	// Cursor for keyset pagination
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	Limit param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Maximum number of items to return (1-100, default 50)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter by job status
+	//
 	// Any of "running", "completed", "failed".
 	Status ExtractionListParamsStatus `query:"status,omitzero" json:"-"`
+	// Filter by extraction tool type
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -288,6 +329,7 @@ func (r ExtractionListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter by job status
 type ExtractionListParamsStatus string
 
 const (
@@ -296,6 +338,7 @@ const (
 	ExtractionListParamsStatusFailed    ExtractionListParamsStatus = "failed"
 )
 
+// Filter by extraction tool type
 type ExtractionListParamsToolType string
 
 const (
@@ -322,6 +365,8 @@ const (
 )
 
 type ExtractionEstimateCostParams struct {
+	// Identifier for the extraction tool used to run a job.
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -330,11 +375,11 @@ type ExtractionEstimateCostParams struct {
 	// "repost_extractor", "space_explorer", "thread_extractor",
 	// "tweet_search_extractor", "verified_follower_explorer".
 	ToolType ExtractionEstimateCostParamsToolType `json:"toolType,omitzero" api:"required"`
-	// Raw advanced search query appended as-is (tweet_search_extractor)
+	// Raw advanced query string appended to the estimate (tweet_search_extractor)
 	AdvancedQuery param.Opt[string] `json:"advancedQuery,omitzero"`
-	// Exact phrase to match (tweet_search_extractor)
+	// Exact phrase filter for search estimation
 	ExactPhrase param.Opt[string] `json:"exactPhrase,omitzero"`
-	// Words to exclude from results (tweet_search_extractor)
+	// Words excluded from estimated search results
 	ExcludeWords      param.Opt[string] `json:"excludeWords,omitzero"`
 	SearchQuery       param.Opt[string] `json:"searchQuery,omitzero"`
 	TargetCommunityID param.Opt[string] `json:"targetCommunityId,omitzero"`
@@ -353,6 +398,7 @@ func (r *ExtractionEstimateCostParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Identifier for the extraction tool used to run a job.
 type ExtractionEstimateCostParamsToolType string
 
 const (
@@ -379,6 +425,8 @@ const (
 )
 
 type ExtractionExportResultsParams struct {
+	// Export file format
+	//
 	// Any of "csv", "json", "md", "md-document", "pdf", "txt", "xlsx".
 	Format ExtractionExportResultsParamsFormat `query:"format,omitzero" json:"-"`
 	paramObj
@@ -393,6 +441,7 @@ func (r ExtractionExportResultsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Export file format
 type ExtractionExportResultsParamsFormat string
 
 const (
@@ -406,6 +455,8 @@ const (
 )
 
 type ExtractionRunParams struct {
+	// Identifier for the extraction tool used to run a job.
+	//
 	// Any of "article_extractor", "community_extractor",
 	// "community_moderator_explorer", "community_post_extractor", "community_search",
 	// "follower_explorer", "following_explorer", "list_follower_explorer",
@@ -437,6 +488,7 @@ func (r *ExtractionRunParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Identifier for the extraction tool used to run a job.
 type ExtractionRunParamsToolType string
 
 const (

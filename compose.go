@@ -11,6 +11,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // Tweet composition, drafts, writing styles & radar
@@ -42,7 +43,32 @@ func (r *ComposeService) New(ctx context.Context, body ComposeNewParams, opts ..
 	return res, err
 }
 
-type ComposeNewResponse map[string]any
+type ComposeNewResponse struct {
+	// AI feedback on the draft
+	Feedback string `json:"feedback"`
+	// Engagement score (0-100)
+	Score float64 `json:"score"`
+	// Improvement suggestions
+	Suggestions []string `json:"suggestions"`
+	// Generated or refined tweet text
+	Text        string         `json:"text"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Feedback    respjson.Field
+		Score       respjson.Field
+		Suggestions respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ComposeNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *ComposeNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ComposeNewParams struct {
 	// Workflow step

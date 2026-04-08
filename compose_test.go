@@ -29,16 +29,16 @@ func TestComposeNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Compose.New(context.TODO(), xtwitterscraper.ComposeNewParams{
 		Step:              xtwitterscraper.ComposeNewParamsStepCompose,
-		AdditionalContext: xtwitterscraper.String("additionalContext"),
-		CallToAction:      xtwitterscraper.String("callToAction"),
-		Draft:             xtwitterscraper.String("draft"),
+		AdditionalContext: xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
+		CallToAction:      xtwitterscraper.String("Follow for more"),
+		Draft:             xtwitterscraper.String("AI is changing everything. Here's why."),
 		Goal:              xtwitterscraper.ComposeNewParamsGoalEngagement,
-		HasLink:           xtwitterscraper.Bool(true),
-		HasMedia:          xtwitterscraper.Bool(true),
-		MediaType:         xtwitterscraper.ComposeNewParamsMediaTypePhoto,
-		StyleUsername:     xtwitterscraper.String("styleUsername"),
-		Tone:              xtwitterscraper.String("tone"),
-		Topic:             xtwitterscraper.String("topic"),
+		HasLink:           xtwitterscraper.Bool(false),
+		HasMedia:          xtwitterscraper.Bool(false),
+		MediaType:         xtwitterscraper.ComposeNewParamsMediaTypeNone,
+		StyleUsername:     xtwitterscraper.String("elonmusk"),
+		Tone:              xtwitterscraper.String("professional"),
+		Topic:             xtwitterscraper.String("AI trends in 2025"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

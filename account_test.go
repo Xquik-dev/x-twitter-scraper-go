@@ -52,7 +52,7 @@ func TestAccountSetXUsername(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Account.SetXUsername(context.TODO(), xtwitterscraper.AccountSetXUsernameParams{
-		Username: "username",
+		Username: "elonmusk",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

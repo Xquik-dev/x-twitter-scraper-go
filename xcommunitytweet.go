@@ -4,6 +4,8 @@ package xtwitterscraper
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -12,6 +14,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // X data lookups (subscription required)
@@ -36,20 +39,31 @@ func NewXCommunityTweetService(opts ...option.RequestOption) (r XCommunityTweetS
 }
 
 // Search tweets across all communities
-func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (err error) {
+func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "x/communities/tweets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Get community tweets
+func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/communities/%s/tweets", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 type XCommunityTweetListParams struct {
-	// Search query
+	// Search query for cross-community tweets
 	Q string `query:"q" api:"required" json:"-"`
-	// Pagination cursor
+	// Pagination cursor for cross-community results
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Sort order (Latest or Top)
+	// Sort order for cross-community results (Latest or Top)
 	QueryType param.Opt[string] `query:"queryType,omitzero" json:"-"`
 	paramObj
 }
@@ -57,6 +71,21 @@ type XCommunityTweetListParams struct {
 // URLQuery serializes [XCommunityTweetListParams]'s query parameters as
 // `url.Values`.
 func (r XCommunityTweetListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XCommunityTweetListByCommunityParams struct {
+	// Pagination cursor for community tweets
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XCommunityTweetListByCommunityParams]'s query parameters as
+// `url.Values`.
+func (r XCommunityTweetListByCommunityParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

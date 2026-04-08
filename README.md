@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.2.0'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.3.0'
 ```
 
 <!-- x-release-please-end -->
@@ -56,14 +56,14 @@ func main() {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("X_TWITTER_SCRAPER_API_KEY")
 	)
-	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
 		Limit: xtwitterscraper.Int(10),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", response.HasNextPage)
+	fmt.Printf("%+v\n", paginatedTweets.HasNextPage)
 }
 
 ```
@@ -356,19 +356,19 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 // A file from the file system
 file, err := os.Open("/path/to/file")
 xtwitterscraper.XMediaUploadParams{
-	Account: "account",
+	Account: "@elonmusk",
 	File:    file,
 }
 
 // A file from a string
 xtwitterscraper.XMediaUploadParams{
-	Account: "account",
+	Account: "@elonmusk",
 	File:    strings.NewReader("my file contents"),
 }
 
 // With a custom filename and contentType
 xtwitterscraper.XMediaUploadParams{
-	Account: "account",
+	Account: "@elonmusk",
 	File:    xtwitterscraper.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 }
 ```
@@ -406,7 +406,7 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-response, err := client.X.Tweets.Search(
+paginatedTweets, err := client.X.Tweets.Search(
 	context.TODO(),
 	xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
@@ -417,7 +417,7 @@ response, err := client.X.Tweets.Search(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", response)
+fmt.Printf("%+v\n", paginatedTweets)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

@@ -14,6 +14,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // X data lookups (subscription required)
@@ -38,46 +39,43 @@ func NewXListService(opts ...option.RequestOption) (r XListService) {
 }
 
 // Get list followers
-func (r *XListService) GetFollowers(ctx context.Context, id string, query XListGetFollowersParams, opts ...option.RequestOption) (err error) {
+func (r *XListService) GetFollowers(ctx context.Context, id string, query XListGetFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return err
+		return nil, err
 	}
 	path := fmt.Sprintf("x/lists/%s/followers", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Get list members
-func (r *XListService) GetMembers(ctx context.Context, id string, query XListGetMembersParams, opts ...option.RequestOption) (err error) {
+func (r *XListService) GetMembers(ctx context.Context, id string, query XListGetMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return err
+		return nil, err
 	}
 	path := fmt.Sprintf("x/lists/%s/members", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Get list tweets
-func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetTweetsParams, opts ...option.RequestOption) (err error) {
+func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return err
+		return nil, err
 	}
 	path := fmt.Sprintf("x/lists/%s/tweets", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 type XListGetFollowersParams struct {
-	// Pagination cursor
+	// Pagination cursor for list followers
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	paramObj
 }
@@ -92,7 +90,7 @@ func (r XListGetFollowersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XListGetMembersParams struct {
-	// Pagination cursor
+	// Pagination cursor for list members
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	paramObj
 }
@@ -106,7 +104,7 @@ func (r XListGetMembersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XListGetTweetsParams struct {
-	// Pagination cursor
+	// Pagination cursor for list tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Include replies (default false)
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`

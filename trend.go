@@ -37,7 +37,7 @@ func NewTrendService(opts ...option.RequestOption) (r TrendService) {
 	return
 }
 
-// Get trending topics
+// Get regional trending topics
 func (r *TrendService) List(ctx context.Context, query TrendListParams, opts ...option.RequestOption) (res *TrendListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "trends"
@@ -88,6 +88,7 @@ func (r *TrendListResponseTrend) UnmarshalJSON(data []byte) error {
 }
 
 type TrendListParams struct {
+	// Number of trending topics to return (1-50, default 30)
 	Count param.Opt[int64] `query:"count,omitzero" json:"-"`
 	// Region WOEID (1=Worldwide, 23424977=US, 23424975=UK, 23424969=Turkey)
 	Woeid param.Opt[int64] `query:"woeid,omitzero" json:"-"`

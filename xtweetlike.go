@@ -39,25 +39,25 @@ func NewXTweetLikeService(opts ...option.RequestOption) (r XTweetLikeService) {
 }
 
 // Like tweet
-func (r *XTweetLikeService) New(ctx context.Context, tweetID string, body XTweetLikeNewParams, opts ...option.RequestOption) (res *XTweetLikeNewResponse, err error) {
+func (r *XTweetLikeService) New(ctx context.Context, id string, body XTweetLikeNewParams, opts ...option.RequestOption) (res *XTweetLikeNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	if tweetID == "" {
-		err = errors.New("missing required tweetId parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("x/tweets/%s/like", url.PathEscape(tweetID))
+	path := fmt.Sprintf("x/tweets/%s/like", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
 // Unlike tweet
-func (r *XTweetLikeService) Delete(ctx context.Context, tweetID string, body XTweetLikeDeleteParams, opts ...option.RequestOption) (res *XTweetLikeDeleteResponse, err error) {
+func (r *XTweetLikeService) Delete(ctx context.Context, id string, body XTweetLikeDeleteParams, opts ...option.RequestOption) (res *XTweetLikeDeleteResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	if tweetID == "" {
-		err = errors.New("missing required tweetId parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("x/tweets/%s/like", url.PathEscape(tweetID))
+	path := fmt.Sprintf("x/tweets/%s/like", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -95,7 +95,7 @@ func (r *XTweetLikeDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XTweetLikeNewParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }
@@ -109,7 +109,7 @@ func (r *XTweetLikeNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type XTweetLikeDeleteParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }

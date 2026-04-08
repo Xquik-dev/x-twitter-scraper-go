@@ -39,25 +39,25 @@ func NewXUserFollowService(opts ...option.RequestOption) (r XUserFollowService) 
 }
 
 // Follow user
-func (r *XUserFollowService) New(ctx context.Context, userID string, body XUserFollowNewParams, opts ...option.RequestOption) (res *XUserFollowNewResponse, err error) {
+func (r *XUserFollowService) New(ctx context.Context, id string, body XUserFollowNewParams, opts ...option.RequestOption) (res *XUserFollowNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	if userID == "" {
-		err = errors.New("missing required userId parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("x/users/%s/follow", url.PathEscape(userID))
+	path := fmt.Sprintf("x/users/%s/follow", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
 // Unfollow user
-func (r *XUserFollowService) DeleteAll(ctx context.Context, userID string, body XUserFollowDeleteAllParams, opts ...option.RequestOption) (res *XUserFollowDeleteAllResponse, err error) {
+func (r *XUserFollowService) DeleteAll(ctx context.Context, id string, body XUserFollowDeleteAllParams, opts ...option.RequestOption) (res *XUserFollowDeleteAllResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	if userID == "" {
-		err = errors.New("missing required userId parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("x/users/%s/follow", url.PathEscape(userID))
+	path := fmt.Sprintf("x/users/%s/follow", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -95,7 +95,7 @@ func (r *XUserFollowDeleteAllResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XUserFollowNewParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }
@@ -109,7 +109,7 @@ func (r *XUserFollowNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type XUserFollowDeleteAllParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }

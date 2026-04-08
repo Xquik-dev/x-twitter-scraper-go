@@ -29,9 +29,9 @@ func TestXTweetRetweetNew(t *testing.T) {
 	)
 	_, err := client.X.Tweets.Retweet.New(
 		context.TODO(),
-		"tweetId",
+		"id",
 		xtwitterscraper.XTweetRetweetNewParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {
@@ -59,9 +59,9 @@ func TestXTweetRetweetDelete(t *testing.T) {
 	)
 	_, err := client.X.Tweets.Retweet.Delete(
 		context.TODO(),
-		"tweetId",
+		"id",
 		xtwitterscraper.XTweetRetweetDeleteParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {

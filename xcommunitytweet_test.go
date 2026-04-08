@@ -27,11 +27,41 @@ func TestXCommunityTweetListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
+	_, err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
 		Q:         "q",
 		Cursor:    xtwitterscraper.String("cursor"),
 		QueryType: xtwitterscraper.String("queryType"),
 	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXCommunityTweetListByCommunityWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Communities.Tweets.ListByCommunity(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XCommunityTweetListByCommunityParams{
+			Cursor: xtwitterscraper.String("cursor"),
+		},
+	)
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

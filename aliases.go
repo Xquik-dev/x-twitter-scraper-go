@@ -16,6 +16,8 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// Type of monitor event fired when account activity occurs.
+//
 // This is an alias to an internal type.
 type EventType = shared.EventType
 
@@ -36,3 +38,13 @@ const EventTypeFollowerGained = shared.EventTypeFollowerGained
 
 // Equals "follower.lost"
 const EventTypeFollowerLost = shared.EventTypeFollowerLost
+
+// Paginated list of tweets with cursor-based navigation.
+//
+// This is an alias to an internal type.
+type PaginatedTweets = shared.PaginatedTweets
+
+// Paginated list of user profiles with cursor-based navigation.
+//
+// This is an alias to an internal type.
+type PaginatedUsers = shared.PaginatedUsers

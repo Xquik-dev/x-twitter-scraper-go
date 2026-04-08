@@ -27,7 +27,7 @@ func TestStyleGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Styles.Get(context.TODO(), "username")
+	_, err := client.Styles.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -53,11 +53,11 @@ func TestStyleUpdate(t *testing.T) {
 	)
 	_, err := client.Styles.Update(
 		context.TODO(),
-		"username",
+		"id",
 		xtwitterscraper.StyleUpdateParams{
-			Label: "label",
+			Label: "Professional Voice",
 			Tweets: []xtwitterscraper.StyleUpdateParamsTweet{{
-				Text: "text",
+				Text: "Excited to share our latest research findings.",
 			}},
 		},
 	)
@@ -108,7 +108,7 @@ func TestStyleDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.Styles.Delete(context.TODO(), "username")
+	err := client.Styles.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -133,7 +133,7 @@ func TestStyleAnalyze(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.Analyze(context.TODO(), xtwitterscraper.StyleAnalyzeParams{
-		Username: "username",
+		Username: "elonmusk",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -185,7 +185,7 @@ func TestStyleGetPerformance(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Styles.GetPerformance(context.TODO(), "username")
+	_, err := client.Styles.GetPerformance(context.TODO(), "id")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

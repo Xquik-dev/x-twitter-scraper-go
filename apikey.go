@@ -41,7 +41,7 @@ func NewAPIKeyService(opts ...option.RequestOption) (r APIKeyService) {
 
 // Create API key
 func (r *APIKeyService) New(ctx context.Context, body APIKeyNewParams, opts ...option.RequestOption) (res *APIKeyNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
+	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "api-keys"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -50,7 +50,7 @@ func (r *APIKeyService) New(ctx context.Context, body APIKeyNewParams, opts ...o
 
 // List API keys
 func (r *APIKeyService) List(ctx context.Context, opts ...option.RequestOption) (res *APIKeyListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
+	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "api-keys"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -59,7 +59,7 @@ func (r *APIKeyService) List(ctx context.Context, opts ...option.RequestOption) 
 
 // Revoke API key
 func (r *APIKeyService) Revoke(ctx context.Context, id string, opts ...option.RequestOption) (res *APIKeyRevokeResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
+	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -68,6 +68,33 @@ func (r *APIKeyService) Revoke(ctx context.Context, id string, opts ...option.Re
 	path := fmt.Sprintf("api-keys/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
+}
+
+// API key metadata returned when listing keys.
+type APIKey struct {
+	ID         string    `json:"id" api:"required"`
+	CreatedAt  time.Time `json:"createdAt" api:"required" format:"date-time"`
+	IsActive   bool      `json:"isActive" api:"required"`
+	Name       string    `json:"name" api:"required"`
+	Prefix     string    `json:"prefix" api:"required"`
+	LastUsedAt time.Time `json:"lastUsedAt" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		IsActive    respjson.Field
+		Name        respjson.Field
+		Prefix      respjson.Field
+		LastUsedAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APIKey) RawJSON() string { return r.JSON.raw }
+func (r *APIKey) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type APIKeyNewResponse struct {
@@ -95,7 +122,7 @@ func (r *APIKeyNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type APIKeyListResponse struct {
-	Keys []APIKeyListResponseKey `json:"keys" api:"required"`
+	Keys []APIKey `json:"keys" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Keys        respjson.Field
@@ -107,32 +134,6 @@ type APIKeyListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r APIKeyListResponse) RawJSON() string { return r.JSON.raw }
 func (r *APIKeyListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type APIKeyListResponseKey struct {
-	ID         string    `json:"id" api:"required"`
-	CreatedAt  time.Time `json:"createdAt" api:"required" format:"date-time"`
-	IsActive   bool      `json:"isActive" api:"required"`
-	Name       string    `json:"name" api:"required"`
-	Prefix     string    `json:"prefix" api:"required"`
-	LastUsedAt time.Time `json:"lastUsedAt" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		IsActive    respjson.Field
-		Name        respjson.Field
-		Prefix      respjson.Field
-		LastUsedAt  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APIKeyListResponseKey) RawJSON() string { return r.JSON.raw }
-func (r *APIKeyListResponseKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

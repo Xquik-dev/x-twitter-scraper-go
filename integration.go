@@ -17,6 +17,8 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // Push notification integrations (Telegram)
@@ -41,7 +43,7 @@ func NewIntegrationService(opts ...option.RequestOption) (r IntegrationService) 
 }
 
 // Create integration
-func (r *IntegrationService) New(ctx context.Context, body IntegrationNewParams, opts ...option.RequestOption) (res *IntegrationNewResponse, err error) {
+func (r *IntegrationService) New(ctx context.Context, body IntegrationNewParams, opts ...option.RequestOption) (res *Integration, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "integrations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -49,7 +51,7 @@ func (r *IntegrationService) New(ctx context.Context, body IntegrationNewParams,
 }
 
 // Get integration details
-func (r *IntegrationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *IntegrationGetResponse, err error) {
+func (r *IntegrationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Integration, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -61,7 +63,7 @@ func (r *IntegrationService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // Update integration
-func (r *IntegrationService) Update(ctx context.Context, id string, body IntegrationUpdateParams, opts ...option.RequestOption) (res *IntegrationUpdateResponse, err error) {
+func (r *IntegrationService) Update(ctx context.Context, id string, body IntegrationUpdateParams, opts ...option.RequestOption) (res *Integration, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -116,168 +118,18 @@ func (r *IntegrationService) SendTest(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-type IntegrationNewResponse struct {
-	ID        string         `json:"id" api:"required"`
+// Third-party integration (e.g. Telegram) subscribed to monitor events.
+type Integration struct {
+	ID string `json:"id" api:"required"`
+	// Integration config — shape varies by type (JSON)
 	Config    map[string]any `json:"config" api:"required"`
 	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	Name       string   `json:"name" api:"required"`
-	// Any of "telegram".
-	Type             IntegrationNewResponseType `json:"type" api:"required"`
-	Filters          map[string]any             `json:"filters"`
-	MessageTemplate  string                     `json:"messageTemplate"`
-	ScopeAllMonitors bool                       `json:"scopeAllMonitors"`
-	SilentPush       bool                       `json:"silentPush"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		Config           respjson.Field
-		CreatedAt        respjson.Field
-		EventTypes       respjson.Field
-		IsActive         respjson.Field
-		Name             respjson.Field
-		Type             respjson.Field
-		Filters          respjson.Field
-		MessageTemplate  respjson.Field
-		ScopeAllMonitors respjson.Field
-		SilentPush       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IntegrationNewResponseType string
-
-const (
-	IntegrationNewResponseTypeTelegram IntegrationNewResponseType = "telegram"
-)
-
-type IntegrationGetResponse struct {
-	ID        string         `json:"id" api:"required"`
-	Config    map[string]any `json:"config" api:"required"`
-	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	Name       string   `json:"name" api:"required"`
-	// Any of "telegram".
-	Type             IntegrationGetResponseType `json:"type" api:"required"`
-	Filters          map[string]any             `json:"filters"`
-	MessageTemplate  string                     `json:"messageTemplate"`
-	ScopeAllMonitors bool                       `json:"scopeAllMonitors"`
-	SilentPush       bool                       `json:"silentPush"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		Config           respjson.Field
-		CreatedAt        respjson.Field
-		EventTypes       respjson.Field
-		IsActive         respjson.Field
-		Name             respjson.Field
-		Type             respjson.Field
-		Filters          respjson.Field
-		MessageTemplate  respjson.Field
-		ScopeAllMonitors respjson.Field
-		SilentPush       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IntegrationGetResponseType string
-
-const (
-	IntegrationGetResponseTypeTelegram IntegrationGetResponseType = "telegram"
-)
-
-type IntegrationUpdateResponse struct {
-	ID        string         `json:"id" api:"required"`
-	Config    map[string]any `json:"config" api:"required"`
-	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	Name       string   `json:"name" api:"required"`
-	// Any of "telegram".
-	Type             IntegrationUpdateResponseType `json:"type" api:"required"`
-	Filters          map[string]any                `json:"filters"`
-	MessageTemplate  string                        `json:"messageTemplate"`
-	ScopeAllMonitors bool                          `json:"scopeAllMonitors"`
-	SilentPush       bool                          `json:"silentPush"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		Config           respjson.Field
-		CreatedAt        respjson.Field
-		EventTypes       respjson.Field
-		IsActive         respjson.Field
-		Name             respjson.Field
-		Type             respjson.Field
-		Filters          respjson.Field
-		MessageTemplate  respjson.Field
-		ScopeAllMonitors respjson.Field
-		SilentPush       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IntegrationUpdateResponseType string
-
-const (
-	IntegrationUpdateResponseTypeTelegram IntegrationUpdateResponseType = "telegram"
-)
-
-type IntegrationListResponse struct {
-	Integrations []IntegrationListResponseIntegration `json:"integrations" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Integrations respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IntegrationListResponseIntegration struct {
-	ID        string         `json:"id" api:"required"`
-	Config    map[string]any `json:"config" api:"required"`
-	CreatedAt time.Time      `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes" api:"required"`
-	IsActive   bool     `json:"isActive" api:"required"`
-	Name       string   `json:"name" api:"required"`
-	// Any of "telegram".
-	Type             string         `json:"type" api:"required"`
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
+	IsActive   bool               `json:"isActive" api:"required"`
+	Name       string             `json:"name" api:"required"`
+	Type       constant.Telegram  `json:"type" default:"telegram"`
+	// Event filter rules (JSON)
 	Filters          map[string]any `json:"filters"`
 	MessageTemplate  string         `json:"messageTemplate"`
 	ScopeAllMonitors bool           `json:"scopeAllMonitors"`
@@ -301,44 +153,13 @@ type IntegrationListResponseIntegration struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r IntegrationListResponseIntegration) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationListResponseIntegration) UnmarshalJSON(data []byte) error {
+func (r Integration) RawJSON() string { return r.JSON.raw }
+func (r *Integration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type IntegrationDeleteResponse struct {
-	Success bool `json:"success" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IntegrationListDeliveriesResponse struct {
-	Deliveries []IntegrationListDeliveriesResponseDelivery `json:"deliveries" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Deliveries  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationListDeliveriesResponse) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationListDeliveriesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IntegrationListDeliveriesResponseDelivery struct {
+// Integration delivery attempt record with status and retry count.
+type IntegrationDelivery struct {
 	ID             string    `json:"id" api:"required"`
 	Attempts       int64     `json:"attempts" api:"required"`
 	CreatedAt      time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -367,8 +188,56 @@ type IntegrationListDeliveriesResponseDelivery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r IntegrationListDeliveriesResponseDelivery) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationListDeliveriesResponseDelivery) UnmarshalJSON(data []byte) error {
+func (r IntegrationDelivery) RawJSON() string { return r.JSON.raw }
+func (r *IntegrationDelivery) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type IntegrationListResponse struct {
+	Integrations []Integration `json:"integrations" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Integrations respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IntegrationListResponse) RawJSON() string { return r.JSON.raw }
+func (r *IntegrationListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type IntegrationDeleteResponse struct {
+	Success bool `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IntegrationDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *IntegrationDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type IntegrationListDeliveriesResponse struct {
+	Deliveries []IntegrationDelivery `json:"deliveries" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Deliveries  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IntegrationListDeliveriesResponse) RawJSON() string { return r.JSON.raw }
+func (r *IntegrationListDeliveriesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -391,12 +260,11 @@ func (r *IntegrationSendTestResponse) UnmarshalJSON(data []byte) error {
 type IntegrationNewParams struct {
 	// Integration config (e.g. Telegram chatId)
 	Config IntegrationNewParamsConfig `json:"config,omitzero" api:"required"`
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes []string `json:"eventTypes,omitzero" api:"required"`
-	Name       string   `json:"name" api:"required"`
-	// Any of "telegram".
-	Type IntegrationNewParamsType `json:"type,omitzero" api:"required"`
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
+	Name       string             `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "telegram".
+	Type constant.Telegram `json:"type" default:"telegram"`
 	paramObj
 }
 
@@ -424,21 +292,16 @@ func (r *IntegrationNewParamsConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type IntegrationNewParamsType string
-
-const (
-	IntegrationNewParamsTypeTelegram IntegrationNewParamsType = "telegram"
-)
-
 type IntegrationUpdateParams struct {
 	IsActive         param.Opt[bool]   `json:"isActive,omitzero"`
 	Name             param.Opt[string] `json:"name,omitzero"`
 	ScopeAllMonitors param.Opt[bool]   `json:"scopeAllMonitors,omitzero"`
 	SilentPush       param.Opt[bool]   `json:"silentPush,omitzero"`
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
-	EventTypes      []string       `json:"eventTypes,omitzero"`
-	Filters         map[string]any `json:"filters,omitzero"`
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes,omitzero"`
+	// Event filter rules (JSON)
+	Filters map[string]any `json:"filters,omitzero"`
+	// Custom message template (JSON)
 	MessageTemplate map[string]any `json:"messageTemplate,omitzero"`
 	paramObj
 }
@@ -452,6 +315,7 @@ func (r *IntegrationUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type IntegrationListDeliveriesParams struct {
+	// Maximum number of items to return (1-100, default 50)
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }

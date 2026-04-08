@@ -39,25 +39,25 @@ func NewXTweetRetweetService(opts ...option.RequestOption) (r XTweetRetweetServi
 }
 
 // Retweet
-func (r *XTweetRetweetService) New(ctx context.Context, tweetID string, body XTweetRetweetNewParams, opts ...option.RequestOption) (res *XTweetRetweetNewResponse, err error) {
+func (r *XTweetRetweetService) New(ctx context.Context, id string, body XTweetRetweetNewParams, opts ...option.RequestOption) (res *XTweetRetweetNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	if tweetID == "" {
-		err = errors.New("missing required tweetId parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("x/tweets/%s/retweet", url.PathEscape(tweetID))
+	path := fmt.Sprintf("x/tweets/%s/retweet", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
 // Unretweet
-func (r *XTweetRetweetService) Delete(ctx context.Context, tweetID string, body XTweetRetweetDeleteParams, opts ...option.RequestOption) (res *XTweetRetweetDeleteResponse, err error) {
+func (r *XTweetRetweetService) Delete(ctx context.Context, id string, body XTweetRetweetDeleteParams, opts ...option.RequestOption) (res *XTweetRetweetDeleteResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	if tweetID == "" {
-		err = errors.New("missing required tweetId parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("x/tweets/%s/retweet", url.PathEscape(tweetID))
+	path := fmt.Sprintf("x/tweets/%s/retweet", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -95,7 +95,7 @@ func (r *XTweetRetweetDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XTweetRetweetNewParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }
@@ -109,7 +109,7 @@ func (r *XTweetRetweetNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type XTweetRetweetDeleteParams struct {
-	// X account (@username or account ID)
+	// X account identifier (@username or account ID)
 	Account string `json:"account" api:"required"`
 	paramObj
 }

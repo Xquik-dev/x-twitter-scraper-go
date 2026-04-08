@@ -28,9 +28,9 @@ func TestXCommunityNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Communities.New(context.TODO(), xtwitterscraper.XCommunityNewParams{
-		Account:     "account",
-		Name:        "name",
-		Description: xtwitterscraper.String("description"),
+		Account:     "@elonmusk",
+		Name:        "Example Name",
+		Description: xtwitterscraper.String("A community for Tesla enthusiasts"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -59,8 +59,8 @@ func TestXCommunityDelete(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityDeleteParams{
-			Account:       "account",
-			CommunityName: "community_name",
+			Account:       "@elonmusk",
+			CommunityName: "Tesla Fans",
 		},
 	)
 	if err != nil {
@@ -110,7 +110,7 @@ func TestXCommunityGetMembersWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Communities.GetMembers(
+	_, err := client.X.Communities.GetMembers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityGetMembersParams{
@@ -140,7 +140,7 @@ func TestXCommunityGetModeratorsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Communities.GetModerators(
+	_, err := client.X.Communities.GetModerators(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityGetModeratorsParams{
@@ -170,7 +170,7 @@ func TestXCommunityGetSearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Communities.GetSearch(context.TODO(), xtwitterscraper.XCommunityGetSearchParams{
+	_, err := client.X.Communities.GetSearch(context.TODO(), xtwitterscraper.XCommunityGetSearchParams{
 		Q:         "q",
 		Cursor:    xtwitterscraper.String("cursor"),
 		QueryType: xtwitterscraper.String("queryType"),

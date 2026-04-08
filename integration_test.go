@@ -11,6 +11,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 func TestIntegrationNew(t *testing.T) {
@@ -29,11 +30,11 @@ func TestIntegrationNew(t *testing.T) {
 	)
 	_, err := client.Integrations.New(context.TODO(), xtwitterscraper.IntegrationNewParams{
 		Config: xtwitterscraper.IntegrationNewParamsConfig{
-			ChatID: "chatId",
+			ChatID: "-1001234567890",
 		},
-		EventTypes: []string{"tweet.new"},
-		Name:       "name",
-		Type:       xtwitterscraper.IntegrationNewParamsTypeTelegram,
+		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeFollowerGained},
+		Name:       "My Telegram Bot",
+		Type:       "telegram",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -86,17 +87,13 @@ func TestIntegrationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.IntegrationUpdateParams{
-			EventTypes: []string{"tweet.new"},
-			Filters: map[string]any{
-				"foo": "bar",
-			},
-			IsActive: xtwitterscraper.Bool(true),
-			MessageTemplate: map[string]any{
-				"foo": "bar",
-			},
-			Name:             xtwitterscraper.String("name"),
+			EventTypes:       []shared.EventType{shared.EventTypeTweetNew},
+			Filters:          map[string]any{},
+			IsActive:         xtwitterscraper.Bool(true),
+			MessageTemplate:  map[string]any{},
+			Name:             xtwitterscraper.String("My Telegram Bot"),
 			ScopeAllMonitors: xtwitterscraper.Bool(true),
-			SilentPush:       xtwitterscraper.Bool(true),
+			SilentPush:       xtwitterscraper.Bool(false),
 		},
 	)
 	if err != nil {

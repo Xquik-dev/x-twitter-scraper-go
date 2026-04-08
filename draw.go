@@ -81,25 +81,8 @@ func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...optio
 	return res, err
 }
 
-type DrawGetResponse struct {
-	Draw    DrawGetResponseDraw     `json:"draw" api:"required"`
-	Winners []DrawGetResponseWinner `json:"winners" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Draw        respjson.Field
-		Winners     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DrawGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *DrawGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DrawGetResponseDraw struct {
+// Full giveaway draw with tweet metrics, entries, and timing.
+type DrawDetail struct {
 	ID                  string    `json:"id" api:"required"`
 	CreatedAt           time.Time `json:"createdAt" api:"required" format:"date-time"`
 	Status              string    `json:"status" api:"required"`
@@ -136,54 +119,13 @@ type DrawGetResponseDraw struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DrawGetResponseDraw) RawJSON() string { return r.JSON.raw }
-func (r *DrawGetResponseDraw) UnmarshalJSON(data []byte) error {
+func (r DrawDetail) RawJSON() string { return r.JSON.raw }
+func (r *DrawDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DrawGetResponseWinner struct {
-	AuthorUsername string `json:"authorUsername" api:"required"`
-	IsBackup       bool   `json:"isBackup" api:"required"`
-	Position       int64  `json:"position" api:"required"`
-	TweetID        string `json:"tweetId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AuthorUsername respjson.Field
-		IsBackup       respjson.Field
-		Position       respjson.Field
-		TweetID        respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DrawGetResponseWinner) RawJSON() string { return r.JSON.raw }
-func (r *DrawGetResponseWinner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DrawListResponse struct {
-	Draws      []DrawListResponseDraw `json:"draws" api:"required"`
-	HasMore    bool                   `json:"hasMore" api:"required"`
-	NextCursor string                 `json:"nextCursor"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Draws       respjson.Field
-		HasMore     respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DrawListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DrawListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DrawListResponseDraw struct {
+// Giveaway draw summary with entry counts and status.
+type DrawListItem struct {
 	ID           string    `json:"id" api:"required"`
 	CreatedAt    time.Time `json:"createdAt" api:"required" format:"date-time"`
 	Status       string    `json:"status" api:"required"`
@@ -206,17 +148,79 @@ type DrawListResponseDraw struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DrawListResponseDraw) RawJSON() string { return r.JSON.raw }
-func (r *DrawListResponseDraw) UnmarshalJSON(data []byte) error {
+func (r DrawListItem) RawJSON() string { return r.JSON.raw }
+func (r *DrawListItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Giveaway draw winner with position and backup flag.
+type Winner struct {
+	AuthorUsername string `json:"authorUsername" api:"required"`
+	IsBackup       bool   `json:"isBackup" api:"required"`
+	Position       int64  `json:"position" api:"required"`
+	TweetID        string `json:"tweetId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AuthorUsername respjson.Field
+		IsBackup       respjson.Field
+		Position       respjson.Field
+		TweetID        respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Winner) RawJSON() string { return r.JSON.raw }
+func (r *Winner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DrawGetResponse struct {
+	// Full giveaway draw with tweet metrics, entries, and timing.
+	Draw    DrawDetail `json:"draw" api:"required"`
+	Winners []Winner   `json:"winners" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Draw        respjson.Field
+		Winners     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DrawGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *DrawGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DrawListResponse struct {
+	Draws      []DrawListItem `json:"draws" api:"required"`
+	HasMore    bool           `json:"hasMore" api:"required"`
+	NextCursor string         `json:"nextCursor"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Draws       respjson.Field
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DrawListResponse) RawJSON() string { return r.JSON.raw }
+func (r *DrawListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type DrawRunResponse struct {
-	ID           string                  `json:"id" api:"required"`
-	TotalEntries int64                   `json:"totalEntries" api:"required"`
-	TweetID      string                  `json:"tweetId" api:"required"`
-	ValidEntries int64                   `json:"validEntries" api:"required"`
-	Winners      []DrawRunResponseWinner `json:"winners" api:"required"`
+	ID           string   `json:"id" api:"required"`
+	TotalEntries int64    `json:"totalEntries" api:"required"`
+	TweetID      string   `json:"tweetId" api:"required"`
+	ValidEntries int64    `json:"validEntries" api:"required"`
+	Winners      []Winner `json:"winners" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -235,32 +239,11 @@ func (r *DrawRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DrawRunResponseWinner struct {
-	AuthorUsername string `json:"authorUsername" api:"required"`
-	IsBackup       bool   `json:"isBackup" api:"required"`
-	Position       int64  `json:"position" api:"required"`
-	TweetID        string `json:"tweetId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AuthorUsername respjson.Field
-		IsBackup       respjson.Field
-		Position       respjson.Field
-		TweetID        respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DrawRunResponseWinner) RawJSON() string { return r.JSON.raw }
-func (r *DrawRunResponseWinner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type DrawListParams struct {
-	// Cursor for pagination
+	// Cursor for keyset pagination
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	Limit param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Maximum number of items to return (1-100, default 50)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
 
@@ -273,6 +256,8 @@ func (r DrawListParams) URLQuery() (v url.Values, err error) {
 }
 
 type DrawExportParams struct {
+	// Export output format
+	//
 	// Any of "csv", "json", "md", "md-document", "pdf", "txt", "xlsx".
 	Format DrawExportParamsFormat `query:"format,omitzero" json:"-"`
 	// Export winners or all entries
@@ -290,6 +275,7 @@ func (r DrawExportParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Export output format
 type DrawExportParamsFormat string
 
 const (

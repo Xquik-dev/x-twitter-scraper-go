@@ -29,9 +29,9 @@ func TestXTweetLikeNew(t *testing.T) {
 	)
 	_, err := client.X.Tweets.Like.New(
 		context.TODO(),
-		"tweetId",
+		"id",
 		xtwitterscraper.XTweetLikeNewParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {
@@ -59,9 +59,9 @@ func TestXTweetLikeDelete(t *testing.T) {
 	)
 	_, err := client.X.Tweets.Like.Delete(
 		context.TODO(),
-		"tweetId",
+		"id",
 		xtwitterscraper.XTweetLikeDeleteParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {

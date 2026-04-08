@@ -29,9 +29,9 @@ func TestXUserFollowNew(t *testing.T) {
 	)
 	_, err := client.X.Users.Follow.New(
 		context.TODO(),
-		"userId",
+		"id",
 		xtwitterscraper.XUserFollowNewParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {
@@ -59,9 +59,9 @@ func TestXUserFollowDeleteAll(t *testing.T) {
 	)
 	_, err := client.X.Users.Follow.DeleteAll(
 		context.TODO(),
-		"userId",
+		"id",
 		xtwitterscraper.XUserFollowDeleteAllParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {

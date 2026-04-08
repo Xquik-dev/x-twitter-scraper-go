@@ -66,7 +66,7 @@ func TestExtractionListWithOptionalParams(t *testing.T) {
 		After:    xtwitterscraper.String("after"),
 		Limit:    xtwitterscraper.Int(1),
 		Status:   xtwitterscraper.ExtractionListParamsStatusRunning,
-		ToolType: xtwitterscraper.ExtractionListParamsToolTypeArticleExtractor,
+		ToolType: xtwitterscraper.ExtractionListParamsToolTypeFollowerExplorer,
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -92,16 +92,16 @@ func TestExtractionEstimateCostWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Extractions.EstimateCost(context.TODO(), xtwitterscraper.ExtractionEstimateCostParams{
-		ToolType:          xtwitterscraper.ExtractionEstimateCostParamsToolTypeArticleExtractor,
-		AdvancedQuery:     xtwitterscraper.String("advancedQuery"),
-		ExactPhrase:       xtwitterscraper.String("exactPhrase"),
-		ExcludeWords:      xtwitterscraper.String("excludeWords"),
-		SearchQuery:       xtwitterscraper.String("searchQuery"),
-		TargetCommunityID: xtwitterscraper.String("targetCommunityId"),
-		TargetListID:      xtwitterscraper.String("targetListId"),
-		TargetSpaceID:     xtwitterscraper.String("targetSpaceId"),
-		TargetTweetID:     xtwitterscraper.String("targetTweetId"),
-		TargetUsername:    xtwitterscraper.String("targetUsername"),
+		ToolType:          xtwitterscraper.ExtractionEstimateCostParamsToolTypeFollowerExplorer,
+		AdvancedQuery:     xtwitterscraper.String("min_faves:100"),
+		ExactPhrase:       xtwitterscraper.String("artificial intelligence"),
+		ExcludeWords:      xtwitterscraper.String("spam"),
+		SearchQuery:       xtwitterscraper.String("AI trends 2025"),
+		TargetCommunityID: xtwitterscraper.String("1500000000000000000"),
+		TargetListID:      xtwitterscraper.String("1234567890"),
+		TargetSpaceID:     xtwitterscraper.String("1vOGwMdBqpwGB"),
+		TargetTweetID:     xtwitterscraper.String("1234567890"),
+		TargetUsername:    xtwitterscraper.String("elonmusk"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -168,16 +168,16 @@ func TestExtractionRunWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Extractions.Run(context.TODO(), xtwitterscraper.ExtractionRunParams{
-		ToolType:          xtwitterscraper.ExtractionRunParamsToolTypeArticleExtractor,
-		AdvancedQuery:     xtwitterscraper.String("advancedQuery"),
-		ExactPhrase:       xtwitterscraper.String("exactPhrase"),
-		ExcludeWords:      xtwitterscraper.String("excludeWords"),
-		SearchQuery:       xtwitterscraper.String("searchQuery"),
-		TargetCommunityID: xtwitterscraper.String("targetCommunityId"),
-		TargetListID:      xtwitterscraper.String("targetListId"),
-		TargetSpaceID:     xtwitterscraper.String("targetSpaceId"),
-		TargetTweetID:     xtwitterscraper.String("targetTweetId"),
-		TargetUsername:    xtwitterscraper.String("targetUsername"),
+		ToolType:          xtwitterscraper.ExtractionRunParamsToolTypeFollowerExplorer,
+		AdvancedQuery:     xtwitterscraper.String("min_faves:100"),
+		ExactPhrase:       xtwitterscraper.String("artificial intelligence"),
+		ExcludeWords:      xtwitterscraper.String("spam"),
+		SearchQuery:       xtwitterscraper.String("AI trends 2025"),
+		TargetCommunityID: xtwitterscraper.String("1500000000000000000"),
+		TargetListID:      xtwitterscraper.String("1234567890"),
+		TargetSpaceID:     xtwitterscraper.String("1vOGwMdBqpwGB"),
+		TargetTweetID:     xtwitterscraper.String("1234567890"),
+		TargetUsername:    xtwitterscraper.String("elonmusk"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

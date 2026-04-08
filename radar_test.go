@@ -32,7 +32,7 @@ func TestRadarGetTrendingTopicsWithOptionalParams(t *testing.T) {
 		Count:    xtwitterscraper.Int(0),
 		Hours:    xtwitterscraper.Int(0),
 		Region:   xtwitterscraper.String("region"),
-		Source:   xtwitterscraper.String("source"),
+		Source:   xtwitterscraper.RadarGetTrendingTopicsParamsSourceGitHub,
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

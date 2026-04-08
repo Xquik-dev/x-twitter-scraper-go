@@ -62,10 +62,10 @@ func TestXDmSendWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"userId",
 		xtwitterscraper.XDmSendParams{
-			Account:          "account",
-			Text:             "text",
-			MediaIDs:         []string{"string"},
-			ReplyToMessageID: xtwitterscraper.String("reply_to_message_id"),
+			Account:          "@elonmusk",
+			Text:             "Example text content",
+			MediaIDs:         []string{"1234567890123456789"},
+			ReplyToMessageID: xtwitterscraper.String("1234567890123456789"),
 		},
 	)
 	if err != nil {

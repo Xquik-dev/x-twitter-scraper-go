@@ -28,9 +28,9 @@ func TestDraftNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Drafts.New(context.TODO(), xtwitterscraper.DraftNewParams{
-		Text:  "text",
+		Text:  "AI is the future of productivity",
 		Goal:  xtwitterscraper.DraftNewParamsGoalEngagement,
-		Topic: xtwitterscraper.String("topic"),
+		Topic: xtwitterscraper.String("AI trends"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

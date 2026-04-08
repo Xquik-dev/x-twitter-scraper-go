@@ -124,7 +124,7 @@ func (r *XDmSendResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XDmGetHistoryParams struct {
-	// Pagination cursor from previous response
+	// Pagination cursor for DM history
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Legacy pagination cursor (backward compat)
 	MaxID param.Opt[string] `query:"maxId,omitzero" json:"-"`
@@ -140,7 +140,7 @@ func (r XDmGetHistoryParams) URLQuery() (v url.Values, err error) {
 }
 
 type XDmSendParams struct {
-	// X account (@username or account ID)
+	// X account (@username or ID) sending the DM
 	Account          string            `json:"account" api:"required"`
 	Text             string            `json:"text" api:"required"`
 	ReplyToMessageID param.Opt[string] `json:"reply_to_message_id,omitzero"`
