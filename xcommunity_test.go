@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 func TestXCommunityNewWithOptionalParams(t *testing.T) {

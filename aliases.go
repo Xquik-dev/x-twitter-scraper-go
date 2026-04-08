@@ -3,9 +3,9 @@
 package xtwitterscraper
 
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apierror"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apierror"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding

@@ -3,7 +3,7 @@
 package xtwitterscraper
 
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 // SupportService contains methods and other services that help with interacting
