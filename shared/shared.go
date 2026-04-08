@@ -12,6 +12,7 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
+// Type of monitor event fired when account activity occurs.
 type EventType string
 
 const (

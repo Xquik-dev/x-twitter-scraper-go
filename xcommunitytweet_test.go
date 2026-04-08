@@ -27,7 +27,7 @@ func TestXCommunityTweetListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
+	_, err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
 		Q:         "q",
 		Cursor:    xtwitterscraper.String("cursor"),
 		QueryType: xtwitterscraper.String("queryType"),

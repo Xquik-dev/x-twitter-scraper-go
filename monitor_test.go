@@ -28,8 +28,8 @@ func TestMonitorNew(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Monitors.New(context.TODO(), xtwitterscraper.MonitorNewParams{
-		EventTypes: []string{"tweet.new"},
-		Username:   "username",
+		EventTypes: []string{"tweet.new", "follower.gained"},
+		Username:   "elonmusk",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

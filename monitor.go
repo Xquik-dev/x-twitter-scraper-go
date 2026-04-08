@@ -94,6 +94,8 @@ func (r *MonitorService) Deactivate(ctx context.Context, id string, opts ...opti
 type MonitorNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -117,9 +119,12 @@ func (r *MonitorNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Account monitor that tracks activity for a given X user.
 type MonitorGetResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -145,9 +150,12 @@ func (r *MonitorGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Account monitor that tracks activity for a given X user.
 type MonitorUpdateResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -191,9 +199,12 @@ func (r *MonitorListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Account monitor that tracks activity for a given X user.
 type MonitorListResponseMonitor struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -236,6 +247,8 @@ func (r *MonitorDeactivateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MonitorNewParams struct {
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes,omitzero" api:"required"`
@@ -254,6 +267,8 @@ func (r *MonitorNewParams) UnmarshalJSON(data []byte) error {
 
 type MonitorUpdateParams struct {
 	IsActive param.Opt[bool] `json:"isActive,omitzero"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes,omitzero"`

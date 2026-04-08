@@ -27,7 +27,7 @@ func TestXUserGetBatch(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Users.GetBatch(context.TODO(), xtwitterscraper.XUserGetBatchParams{
+	_, err := client.X.Users.GetBatch(context.TODO(), xtwitterscraper.XUserGetBatchParams{
 		IDs: "ids",
 	})
 	if err != nil {
@@ -53,7 +53,7 @@ func TestXUserGetFollowersWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Users.GetFollowers(
+	_, err := client.X.Users.GetFollowers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetFollowersParams{
@@ -114,7 +114,7 @@ func TestXUserGetFollowingWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Users.GetFollowing(
+	_, err := client.X.Users.GetFollowing(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetFollowingParams{
@@ -205,7 +205,7 @@ func TestXUserGetMentionsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Users.GetMentions(
+	_, err := client.X.Users.GetMentions(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetMentionsParams{
@@ -237,7 +237,7 @@ func TestXUserGetSearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Users.GetSearch(context.TODO(), xtwitterscraper.XUserGetSearchParams{
+	_, err := client.X.Users.GetSearch(context.TODO(), xtwitterscraper.XUserGetSearchParams{
 		Q:      "q",
 		Cursor: xtwitterscraper.String("cursor"),
 	})
@@ -296,7 +296,7 @@ func TestXUserGetVerifiedFollowersWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Users.GetVerifiedFollowers(
+	_, err := client.X.Users.GetVerifiedFollowers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetVerifiedFollowersParams{

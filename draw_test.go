@@ -125,18 +125,18 @@ func TestDrawRunWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Draws.Run(context.TODO(), xtwitterscraper.DrawRunParams{
-		TweetURL:             "https://example.com",
-		BackupCount:          xtwitterscraper.Int(0),
-		FilterAccountAgeDays: xtwitterscraper.Int(0),
-		FilterLanguage:       xtwitterscraper.String("filterLanguage"),
-		FilterMinFollowers:   xtwitterscraper.Int(0),
-		MustFollowUsername:   xtwitterscraper.String("mustFollowUsername"),
+		TweetURL:             "https://x.com/elonmusk/status/1234567890",
+		BackupCount:          xtwitterscraper.Int(2),
+		FilterAccountAgeDays: xtwitterscraper.Int(30),
+		FilterLanguage:       xtwitterscraper.String("en"),
+		FilterMinFollowers:   xtwitterscraper.Int(50),
+		MustFollowUsername:   xtwitterscraper.String("elonmusk"),
 		MustRetweet:          xtwitterscraper.Bool(true),
-		RequiredHashtags:     []string{"string"},
-		RequiredKeywords:     []string{"string"},
-		RequiredMentions:     []string{"string"},
+		RequiredHashtags:     []string{"#giveaway"},
+		RequiredKeywords:     []string{"entered"},
+		RequiredMentions:     []string{"@elonmusk"},
 		UniqueAuthorsOnly:    xtwitterscraper.Bool(true),
-		WinnerCount:          xtwitterscraper.Int(0),
+		WinnerCount:          xtwitterscraper.Int(3),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

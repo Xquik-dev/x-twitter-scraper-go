@@ -81,6 +81,7 @@ func (r *DraftService) Delete(ctx context.Context, id string, opts ...option.Req
 	return err
 }
 
+// Full tweet draft including update timestamp.
 type DraftNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -107,6 +108,7 @@ func (r *DraftNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Full tweet draft including update timestamp.
 type DraftGetResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -153,6 +155,7 @@ func (r *DraftListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Saved tweet draft with optional topic and goal.
 type DraftListResponseDraft struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -205,7 +208,8 @@ const (
 type DraftListParams struct {
 	// Cursor for pagination
 	AfterCursor param.Opt[string] `query:"afterCursor,omitzero" json:"-"`
-	Limit       param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Maximum number of items to return (1-100, default 50)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
 

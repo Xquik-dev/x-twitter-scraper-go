@@ -52,7 +52,7 @@ func TestStyleAnalyze(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.Analyze(context.TODO(), xtwitterscraper.StyleAnalyzeParams{
-		Username: "username",
+		Username: "elonmusk",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

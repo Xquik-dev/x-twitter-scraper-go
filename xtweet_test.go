@@ -28,13 +28,13 @@ func TestXTweetNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.New(context.TODO(), xtwitterscraper.XTweetNewParams{
-		Account:        "account",
-		Text:           "text",
-		AttachmentURL:  xtwitterscraper.String("attachment_url"),
-		CommunityID:    xtwitterscraper.String("community_id"),
-		IsNoteTweet:    xtwitterscraper.Bool(true),
-		MediaIDs:       []string{"string"},
-		ReplyToTweetID: xtwitterscraper.String("reply_to_tweet_id"),
+		Account:        "@elonmusk",
+		Text:           "Just launched our new feature!",
+		AttachmentURL:  xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
+		CommunityID:    xtwitterscraper.String("1500000000000000000"),
+		IsNoteTweet:    xtwitterscraper.Bool(false),
+		MediaIDs:       []string{"1234567890123456789"},
+		ReplyToTweetID: xtwitterscraper.String("1234567890"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -59,7 +59,7 @@ func TestXTweetList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	err := client.X.Tweets.List(context.TODO(), xtwitterscraper.XTweetListParams{
+	_, err := client.X.Tweets.List(context.TODO(), xtwitterscraper.XTweetListParams{
 		IDs: "ids",
 	})
 	if err != nil {

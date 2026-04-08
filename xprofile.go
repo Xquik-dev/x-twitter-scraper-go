@@ -112,7 +112,7 @@ func (r *XProfileUpdateBannerResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XProfileUpdateParams struct {
-	// X account (@username or account ID)
+	// X account (@username or ID) to update profile
 	Account string `json:"account" api:"required"`
 	// Bio description
 	Description param.Opt[string] `json:"description,omitzero"`
@@ -133,7 +133,7 @@ func (r *XProfileUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type XProfileUpdateAvatarParams struct {
-	// X account (@username or account ID)
+	// X account (@username or ID) for avatar update
 	Account string `json:"account" api:"required"`
 	// Avatar image (max 716KB)
 	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`
@@ -159,7 +159,7 @@ func (r XProfileUpdateAvatarParams) MarshalMultipart() (data []byte, contentType
 }
 
 type XProfileUpdateBannerParams struct {
-	// X account (@username or account ID)
+	// X account (@username or ID) for banner update
 	Account string `json:"account" api:"required"`
 	// Banner image (max 2MB)
 	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`

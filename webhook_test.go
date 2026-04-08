@@ -28,8 +28,8 @@ func TestWebhookNew(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), xtwitterscraper.WebhookNewParams{
-		EventTypes: []string{"tweet.new"},
-		URL:        "https://example.com",
+		EventTypes: []string{"tweet.new", "follower.gained"},
+		URL:        "https://example.com/webhook",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -58,9 +58,9 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.WebhookUpdateParams{
-			EventTypes: []string{"tweet.new"},
+			EventTypes: []string{"tweet.new", "follower.gained"},
 			IsActive:   xtwitterscraper.Bool(true),
-			URL:        xtwitterscraper.String("https://example.com"),
+			URL:        xtwitterscraper.String("https://example.com/webhook"),
 		},
 	)
 	if err != nil {

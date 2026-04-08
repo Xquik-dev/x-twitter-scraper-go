@@ -16,6 +16,8 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// Type of monitor event fired when account activity occurs.
+//
 // This is an alias to an internal type.
 type EventType = shared.EventType
 

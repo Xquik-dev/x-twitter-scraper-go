@@ -78,6 +78,7 @@ func (r *StyleListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Style profile summary with tweet count and ownership flag.
 type StyleListResponseStyle struct {
 	FetchedAt    time.Time `json:"fetchedAt" api:"required" format:"date-time"`
 	IsOwnAccount bool      `json:"isOwnAccount" api:"required"`
@@ -100,6 +101,7 @@ func (r *StyleListResponseStyle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Full style profile with sampled tweets used for tone analysis.
 type StyleAnalyzeResponse struct {
 	FetchedAt    time.Time                   `json:"fetchedAt" api:"required" format:"date-time"`
 	IsOwnAccount bool                        `json:"isOwnAccount" api:"required"`
@@ -147,7 +149,9 @@ func (r *StyleAnalyzeResponseTweet) UnmarshalJSON(data []byte) error {
 }
 
 type StyleCompareResponse struct {
+	// Full style profile with sampled tweets used for tone analysis.
 	Style1 StyleCompareResponseStyle1 `json:"style1" api:"required"`
+	// Full style profile with sampled tweets used for tone analysis.
 	Style2 StyleCompareResponseStyle2 `json:"style2" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -164,6 +168,7 @@ func (r *StyleCompareResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Full style profile with sampled tweets used for tone analysis.
 type StyleCompareResponseStyle1 struct {
 	FetchedAt    time.Time                         `json:"fetchedAt" api:"required" format:"date-time"`
 	IsOwnAccount bool                              `json:"isOwnAccount" api:"required"`
@@ -210,6 +215,7 @@ func (r *StyleCompareResponseStyle1Tweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Full style profile with sampled tweets used for tone analysis.
 type StyleCompareResponseStyle2 struct {
 	FetchedAt    time.Time                         `json:"fetchedAt" api:"required" format:"date-time"`
 	IsOwnAccount bool                              `json:"isOwnAccount" api:"required"`

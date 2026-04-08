@@ -82,6 +82,7 @@ func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...optio
 }
 
 type DrawGetResponse struct {
+	// Full giveaway draw with tweet metrics, entries, and timing.
 	Draw    DrawGetResponseDraw     `json:"draw" api:"required"`
 	Winners []DrawGetResponseWinner `json:"winners" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -99,6 +100,7 @@ func (r *DrawGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Full giveaway draw with tweet metrics, entries, and timing.
 type DrawGetResponseDraw struct {
 	ID                  string    `json:"id" api:"required"`
 	CreatedAt           time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -141,6 +143,7 @@ func (r *DrawGetResponseDraw) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Giveaway draw winner with position and backup flag.
 type DrawGetResponseWinner struct {
 	AuthorUsername string `json:"authorUsername" api:"required"`
 	IsBackup       bool   `json:"isBackup" api:"required"`
@@ -183,6 +186,7 @@ func (r *DrawListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Giveaway draw summary with entry counts and status.
 type DrawListResponseDraw struct {
 	ID           string    `json:"id" api:"required"`
 	CreatedAt    time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -235,6 +239,7 @@ func (r *DrawRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Giveaway draw winner with position and backup flag.
 type DrawRunResponseWinner struct {
 	AuthorUsername string `json:"authorUsername" api:"required"`
 	IsBackup       bool   `json:"isBackup" api:"required"`
@@ -258,9 +263,10 @@ func (r *DrawRunResponseWinner) UnmarshalJSON(data []byte) error {
 }
 
 type DrawListParams struct {
-	// Cursor for pagination
+	// Cursor for keyset pagination
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	Limit param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	// Maximum number of items to return (1-100, default 50)
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
 
@@ -273,6 +279,8 @@ func (r DrawListParams) URLQuery() (v url.Values, err error) {
 }
 
 type DrawExportParams struct {
+	// Export output format
+	//
 	// Any of "csv", "json", "md", "md-document", "pdf", "txt", "xlsx".
 	Format DrawExportParamsFormat `query:"format,omitzero" json:"-"`
 	// Export winners or all entries
@@ -290,6 +298,7 @@ func (r DrawExportParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Export output format
 type DrawExportParamsFormat string
 
 const (

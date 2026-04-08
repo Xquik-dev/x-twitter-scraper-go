@@ -31,7 +31,7 @@ func TestXCommunityJoinNew(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityJoinNewParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {
@@ -61,7 +61,7 @@ func TestXCommunityJoinDeleteAll(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityJoinDeleteAllParams{
-			Account: "account",
+			Account: "@elonmusk",
 		},
 	)
 	if err != nil {

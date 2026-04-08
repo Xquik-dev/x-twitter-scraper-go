@@ -52,7 +52,7 @@ func TestCreditTopupBalance(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Credits.TopupBalance(context.TODO(), xtwitterscraper.CreditTopupBalanceParams{
-		Amount: 0,
+		Amount: 10000,
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

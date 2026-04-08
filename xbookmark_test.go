@@ -28,7 +28,7 @@ func TestXBookmarkListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Bookmarks.List(context.TODO(), xtwitterscraper.XBookmarkListParams{
-		Cursor:   xtwitterscraper.String("cursor"),
+		Cursor:   xtwitterscraper.String("folders_value"),
 		FolderID: xtwitterscraper.String("folderId"),
 	})
 	if err != nil {

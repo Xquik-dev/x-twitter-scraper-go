@@ -110,6 +110,7 @@ func (r *APIKeyListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// API key metadata returned when listing keys.
 type APIKeyListResponseKey struct {
 	ID         string    `json:"id" api:"required"`
 	CreatedAt  time.Time `json:"createdAt" api:"required" format:"date-time"`

@@ -28,7 +28,7 @@ func TestAPIKeyNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.APIKeys.New(context.TODO(), xtwitterscraper.APIKeyNewParams{
-		Name: xtwitterscraper.String("name"),
+		Name: xtwitterscraper.String("My API Key"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

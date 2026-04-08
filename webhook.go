@@ -106,6 +106,8 @@ func (r *WebhookService) Test(ctx context.Context, id string, opts ...option.Req
 type WebhookNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -129,9 +131,12 @@ func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Webhook endpoint registered to receive event deliveries.
 type WebhookUpdateResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -171,9 +176,12 @@ func (r *WebhookListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Webhook endpoint registered to receive event deliveries.
 type WebhookListResponseWebhook struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes" api:"required"`
@@ -229,6 +237,7 @@ func (r *WebhookListDeliveriesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Webhook delivery attempt record with status and retry count.
 type WebhookListDeliveriesResponseDelivery struct {
 	ID             string    `json:"id" api:"required"`
 	Attempts       int64     `json:"attempts" api:"required"`
@@ -280,6 +289,8 @@ func (r *WebhookTestResponse) UnmarshalJSON(data []byte) error {
 }
 
 type WebhookNewParams struct {
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes,omitzero" api:"required"`
@@ -299,6 +310,8 @@ func (r *WebhookNewParams) UnmarshalJSON(data []byte) error {
 type WebhookUpdateParams struct {
 	IsActive param.Opt[bool]   `json:"isActive,omitzero"`
 	URL      param.Opt[string] `json:"url,omitzero" format:"uri"`
+	// Array of event types to subscribe to.
+	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
 	// "follower.gained", "follower.lost".
 	EventTypes []string `json:"eventTypes,omitzero"`

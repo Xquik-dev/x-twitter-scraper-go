@@ -95,17 +95,17 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 }
 
 // Get trending topics
-func (r *XService) GetTrends(ctx context.Context, opts ...option.RequestOption) (err error) {
+func (r *XService) GetTrends(ctx context.Context, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "x/trends"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
 }
 
 type XGetArticleResponse struct {
 	Article XGetArticleResponseArticle `json:"article" api:"required"`
-	Author  XGetArticleResponseAuthor  `json:"author"`
+	// Author of a tweet with follower count and verification status.
+	Author XGetArticleResponseAuthor `json:"author"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Article     respjson.Field
@@ -180,6 +180,7 @@ func (r *XGetArticleResponseArticleContent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Author of a tweet with follower count and verification status.
 type XGetArticleResponseAuthor struct {
 	ID             string `json:"id" api:"required"`
 	Followers      int64  `json:"followers" api:"required"`
@@ -204,6 +205,7 @@ func (r *XGetArticleResponseAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of tweets with cursor-based navigation.
 type XGetHomeTimelineResponse struct {
 	HasNextPage bool                            `json:"has_next_page" api:"required"`
 	NextCursor  string                          `json:"next_cursor" api:"required"`
@@ -224,13 +226,14 @@ func (r *XGetHomeTimelineResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Tweet returned from search results with inline author info.
 type XGetHomeTimelineResponseTweet struct {
 	ID            string                              `json:"id" api:"required"`
 	Text          string                              `json:"text" api:"required"`
 	Author        XGetHomeTimelineResponseTweetAuthor `json:"author"`
 	BookmarkCount int64                               `json:"bookmarkCount"`
 	CreatedAt     string                              `json:"createdAt"`
-	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
+	// True for Note Tweets (long-form content, up to 25,000 characters)
 	IsNoteTweet  bool  `json:"isNoteTweet"`
 	LikeCount    int64 `json:"likeCount"`
 	QuoteCount   int64 `json:"quoteCount"`
@@ -325,8 +328,50 @@ func (r *XGetNotificationsResponseNotification) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type XGetTrendsResponse struct {
+	Count  int64                     `json:"count" api:"required"`
+	Trends []XGetTrendsResponseTrend `json:"trends" api:"required"`
+	Woeid  int64                     `json:"woeid" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Trends      respjson.Field
+		Woeid       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetTrendsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XGetTrendsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XGetTrendsResponseTrend struct {
+	Name        string `json:"name" api:"required"`
+	Description string `json:"description"`
+	Query       string `json:"query"`
+	Rank        int64  `json:"rank"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Description respjson.Field
+		Query       respjson.Field
+		Rank        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetTrendsResponseTrend) RawJSON() string { return r.JSON.raw }
+func (r *XGetTrendsResponseTrend) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type XGetHomeTimelineParams struct {
-	// Pagination cursor from previous response
+	// Pagination cursor for timeline
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Comma-separated tweet IDs to exclude from results
 	SeenTweetIDs param.Opt[string] `query:"seenTweetIds,omitzero" json:"-"`
@@ -342,7 +387,7 @@ func (r XGetHomeTimelineParams) URLQuery() (v url.Values, err error) {
 }
 
 type XGetNotificationsParams struct {
-	// Pagination cursor from previous response
+	// Pagination cursor for notifications
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Notification type filter
 	//
