@@ -2,7 +2,7 @@ package apiform
 
 import (
 	"bytes"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"io"
 	"mime/multipart"
 	"strings"

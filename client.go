@@ -8,8 +8,8 @@ import (
 	"os"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with
