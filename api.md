@@ -7,6 +7,8 @@
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#EventType">EventType</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#PaginatedTweets">PaginatedTweets</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#PaginatedUsers">PaginatedUsers</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#SearchTweet">SearchTweet</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#UserProfile">UserProfile</a>
 
 # Account
 
@@ -230,7 +232,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#SearchTweet">SearchTweet</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#TweetAuthor">TweetAuthor</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#TweetDetail">TweetDetail</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XTweetNewResponse">XTweetNewResponse</a>
@@ -276,13 +277,9 @@ Methods:
 
 ## Users
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#UserProfile">UserProfile</a>
-
 Methods:
 
-- <code title="get /x/users/{id}">client.X.Users.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#UserProfile">UserProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /x/users/{id}">client.X.Users.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#UserProfile">UserProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/users/batch">client.X.Users.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserService.GetBatch">GetBatch</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserGetBatchParams">XUserGetBatchParams</a>) (\*<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#PaginatedUsers">PaginatedUsers</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/users/{id}/followers">client.X.Users.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserService.GetFollowers">GetFollowers</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserGetFollowersParams">XUserGetFollowersParams</a>) (\*<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#PaginatedUsers">PaginatedUsers</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/users/{id}/followers-you-know">client.X.Users.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserService.GetFollowersYouKnow">GetFollowersYouKnow</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#XUserGetFollowersYouKnowParams">XUserGetFollowersYouKnowParams</a>) (\*<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/shared#PaginatedUsers">PaginatedUsers</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
