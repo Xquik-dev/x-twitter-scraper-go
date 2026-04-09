@@ -25,7 +25,6 @@ func TestXTweetLikeNew(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.Like.New(
 		context.TODO(),
@@ -55,7 +54,6 @@ func TestXTweetLikeDelete(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.Like.Delete(
 		context.TODO(),

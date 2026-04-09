@@ -26,7 +26,6 @@ func TestEventGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Events.Get(context.TODO(), "id")
 	if err != nil {
@@ -50,7 +49,6 @@ func TestEventListWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Events.List(context.TODO(), xtwitterscraper.EventListParams{
 		After:     xtwitterscraper.String("after"),
