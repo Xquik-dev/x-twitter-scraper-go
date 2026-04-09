@@ -26,7 +26,6 @@ func TestMonitorNew(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Monitors.New(context.TODO(), xtwitterscraper.MonitorNewParams{
 		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeFollowerGained},
@@ -53,7 +52,6 @@ func TestMonitorGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Monitors.Get(context.TODO(), "id")
 	if err != nil {
@@ -77,7 +75,6 @@ func TestMonitorUpdateWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Monitors.Update(
 		context.TODO(),
@@ -108,7 +105,6 @@ func TestMonitorList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Monitors.List(context.TODO())
 	if err != nil {
@@ -132,7 +128,6 @@ func TestMonitorDeactivate(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Monitors.Deactivate(context.TODO(), "id")
 	if err != nil {

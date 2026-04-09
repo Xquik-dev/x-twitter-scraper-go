@@ -25,7 +25,6 @@ func TestAccountGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Account.Get(context.TODO())
 	if err != nil {
@@ -49,7 +48,6 @@ func TestAccountSetXUsername(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Account.SetXUsername(context.TODO(), xtwitterscraper.AccountSetXUsernameParams{
 		Username: "elonmusk",
@@ -75,7 +73,6 @@ func TestAccountUpdateLocale(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Account.UpdateLocale(context.TODO(), xtwitterscraper.AccountUpdateLocaleParams{
 		Locale: xtwitterscraper.AccountUpdateLocaleParamsLocaleEn,

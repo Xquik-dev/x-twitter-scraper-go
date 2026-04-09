@@ -27,7 +27,6 @@ func TestXMediaDownloadWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Media.Download(context.TODO(), xtwitterscraper.XMediaDownloadParams{
 		TweetIDs:   []string{"1234567890", "1234567891"},
@@ -54,7 +53,6 @@ func TestXMediaUploadWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Media.Upload(context.TODO(), xtwitterscraper.XMediaUploadParams{
 		Account:     "@elonmusk",

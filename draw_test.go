@@ -29,7 +29,6 @@ func TestDrawGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Draws.Get(context.TODO(), "id")
 	if err != nil {
@@ -53,7 +52,6 @@ func TestDrawListWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Draws.List(context.TODO(), xtwitterscraper.DrawListParams{
 		After: xtwitterscraper.String("after"),
@@ -78,7 +76,6 @@ func TestDrawExportWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	resp, err := client.Draws.Export(
 		context.TODO(),
@@ -122,7 +119,6 @@ func TestDrawRunWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Draws.Run(context.TODO(), xtwitterscraper.DrawRunParams{
 		TweetURL:             "https://x.com/elonmusk/status/1234567890",

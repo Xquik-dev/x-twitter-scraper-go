@@ -55,8 +55,7 @@ func (r *EventService) Get(ctx context.Context, id string, opts ...option.Reques
 
 // List events
 func (r *EventService) List(ctx context.Context, query EventListParams, opts ...option.RequestOption) (res *EventListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err

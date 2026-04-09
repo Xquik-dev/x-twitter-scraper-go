@@ -26,7 +26,6 @@ func TestIntegrationNew(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Integrations.New(context.TODO(), xtwitterscraper.IntegrationNewParams{
 		Config: xtwitterscraper.IntegrationNewParamsConfig{
@@ -57,7 +56,6 @@ func TestIntegrationGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Integrations.Get(context.TODO(), "id")
 	if err != nil {
@@ -81,7 +79,6 @@ func TestIntegrationUpdateWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Integrations.Update(
 		context.TODO(),
@@ -117,7 +114,6 @@ func TestIntegrationList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Integrations.List(context.TODO())
 	if err != nil {
@@ -141,7 +137,6 @@ func TestIntegrationDelete(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Integrations.Delete(context.TODO(), "id")
 	if err != nil {
@@ -165,7 +160,6 @@ func TestIntegrationListDeliveriesWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Integrations.ListDeliveries(
 		context.TODO(),
@@ -195,7 +189,6 @@ func TestIntegrationSendTest(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Integrations.SendTest(context.TODO(), "id")
 	if err != nil {

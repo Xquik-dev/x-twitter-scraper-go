@@ -96,10 +96,10 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 }
 
 // Get trending topics
-func (r *XService) GetTrends(ctx context.Context, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
+func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/trends"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -308,3 +308,19 @@ const (
 	XGetNotificationsParamsTypeVerified XGetNotificationsParamsType = "Verified"
 	XGetNotificationsParamsTypeMentions XGetNotificationsParamsType = "Mentions"
 )
+
+type XGetTrendsParams struct {
+	// Number of trending topics to return (1-50, default 30)
+	Count param.Opt[int64] `query:"count,omitzero" json:"-"`
+	// Region WOEID (1=Worldwide, 23424977=US, 23424975=UK, 23424969=Turkey)
+	Woeid param.Opt[int64] `query:"woeid,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XGetTrendsParams]'s query parameters as `url.Values`.
+func (r XGetTrendsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

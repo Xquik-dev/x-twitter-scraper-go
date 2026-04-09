@@ -41,8 +41,7 @@ func NewXAccountService(opts ...option.RequestOption) (r XAccountService) {
 
 // Connect X account
 func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts ...option.RequestOption) (res *XAccountNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/accounts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -50,8 +49,7 @@ func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts 
 
 // Get X account details
 func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDetail, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -63,8 +61,7 @@ func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.Req
 
 // List connected X accounts
 func (r *XAccountService) List(ctx context.Context, opts ...option.RequestOption) (res *XAccountListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/accounts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -72,8 +69,7 @@ func (r *XAccountService) List(ctx context.Context, opts ...option.RequestOption
 
 // Disconnect X account
 func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDeleteResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -86,8 +82,7 @@ func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.
 // Clears loginFailedAt and loginFailureReason for all accounts with transient or
 // automated failure reasons, making them eligible for retry on next use.
 func (r *XAccountService) BulkRetry(ctx context.Context, opts ...option.RequestOption) (res *XAccountBulkRetryResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/accounts/bulk-retry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
@@ -95,8 +90,7 @@ func (r *XAccountService) BulkRetry(ctx context.Context, opts ...option.RequestO
 
 // Re-authenticate X account
 func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountReauthParams, opts ...option.RequestOption) (res *XAccountReauthResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
