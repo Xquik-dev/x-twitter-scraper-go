@@ -10,10 +10,12 @@ import (
 	"net/url"
 	"slices"
 
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
@@ -42,7 +44,7 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 }
 
 // Look up X user
-func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.UserProfile, err error) {
+func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *UserProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -163,6 +165,43 @@ func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, quer
 	path := fmt.Sprintf("x/users/%s/verified-followers", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
+}
+
+// X user profile with bio, follower counts, and verification status.
+type UserProfile struct {
+	ID             string `json:"id" api:"required"`
+	Name           string `json:"name" api:"required"`
+	Username       string `json:"username" api:"required"`
+	CreatedAt      string `json:"createdAt"`
+	Description    string `json:"description"`
+	Followers      int64  `json:"followers"`
+	Following      int64  `json:"following"`
+	Location       string `json:"location"`
+	ProfilePicture string `json:"profilePicture"`
+	StatusesCount  int64  `json:"statusesCount"`
+	Verified       bool   `json:"verified"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		Name           respjson.Field
+		Username       respjson.Field
+		CreatedAt      respjson.Field
+		Description    respjson.Field
+		Followers      respjson.Field
+		Following      respjson.Field
+		Location       respjson.Field
+		ProfilePicture respjson.Field
+		StatusesCount  respjson.Field
+		Verified       respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfile) RawJSON() string { return r.JSON.raw }
+func (r *UserProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XUserGetBatchParams struct {

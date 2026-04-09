@@ -152,6 +152,66 @@ func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, op
 	return res, err
 }
 
+// Tweet returned from search results with inline author info.
+type SearchTweet struct {
+	ID            string            `json:"id" api:"required"`
+	Text          string            `json:"text" api:"required"`
+	Author        SearchTweetAuthor `json:"author"`
+	BookmarkCount int64             `json:"bookmarkCount"`
+	CreatedAt     string            `json:"createdAt"`
+	// True for Note Tweets (long-form content, up to 25,000 characters)
+	IsNoteTweet  bool  `json:"isNoteTweet"`
+	LikeCount    int64 `json:"likeCount"`
+	QuoteCount   int64 `json:"quoteCount"`
+	ReplyCount   int64 `json:"replyCount"`
+	RetweetCount int64 `json:"retweetCount"`
+	ViewCount    int64 `json:"viewCount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Text          respjson.Field
+		Author        respjson.Field
+		BookmarkCount respjson.Field
+		CreatedAt     respjson.Field
+		IsNoteTweet   respjson.Field
+		LikeCount     respjson.Field
+		QuoteCount    respjson.Field
+		ReplyCount    respjson.Field
+		RetweetCount  respjson.Field
+		ViewCount     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweet) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetAuthor struct {
+	ID       string `json:"id" api:"required"`
+	Name     string `json:"name" api:"required"`
+	Username string `json:"username" api:"required"`
+	Verified bool   `json:"verified"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetAuthor) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetAuthor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Author of a tweet with follower count and verification status.
 type TweetAuthor struct {
 	ID             string `json:"id" api:"required"`
