@@ -17,19 +17,19 @@ import (
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
 	options []option.RequestOption
-	// Account info & settings
+	// Account info and settings
 	Account AccountService
 	// API key management (session auth only)
 	APIKeys APIKeyService
-	// Subscription & billing
+	// Subscription, billing, and credits
 	Subscribe SubscribeService
-	// Tweet composition, drafts, writing styles & radar
+	// AI tweet composition, drafts, writing styles, and radar
 	Compose ComposeService
-	// Tweet composition, drafts, writing styles & radar
+	// AI tweet composition, drafts, writing styles, and radar
 	Drafts DraftService
-	// Tweet composition, drafts, writing styles & radar
+	// AI tweet composition, drafts, writing styles, and radar
 	Styles StyleService
-	// Tweet composition, drafts, writing styles & radar
+	// AI tweet composition, drafts, writing styles, and radar
 	Radar RadarService
 	// Real-time X account monitoring
 	Monitors MonitorService
@@ -39,17 +39,16 @@ type Client struct {
 	Extractions ExtractionService
 	// Giveaway draws from tweet replies
 	Draws DrawService
-	// Webhook endpoint management & delivery
+	// Webhook endpoint management and delivery
 	Webhooks WebhookService
 	// Push notification integrations (Telegram)
 	Integrations IntegrationService
-	// X data lookups (subscription required)
-	X XService
-	// Trending topics by region
+	X            XService
+	// Trending topics and hashtags by region
 	Trends  TrendService
 	Bot     BotService
 	Support SupportService
-	// Subscription & billing
+	// Subscription, billing, and credits
 	Credits CreditService
 }
 

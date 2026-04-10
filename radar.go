@@ -17,7 +17,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
-// Tweet composition, drafts, writing styles & radar
+// AI tweet composition, drafts, writing styles, and radar
 //
 // RadarService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.

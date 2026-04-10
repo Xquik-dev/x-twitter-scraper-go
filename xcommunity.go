@@ -29,7 +29,7 @@ type XCommunityService struct {
 	options []option.RequestOption
 	// X write actions (tweets, likes, follows, DMs)
 	Join XCommunityJoinService
-	// X data lookups (subscription required)
+	// X Community info, members, and tweets
 	Tweets XCommunityTweetService
 }
 
@@ -64,7 +64,7 @@ func (r *XCommunityService) Delete(ctx context.Context, id string, body XCommuni
 	return res, err
 }
 
-// Get community details
+// Get community name, description & member count
 func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...option.RequestOption) (res *XCommunityGetInfoResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -76,7 +76,7 @@ func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Get community members
+// List members of a community
 func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCommunityGetMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -88,7 +88,7 @@ func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCo
 	return res, err
 }
 
-// Get community moderators
+// List moderators of a community
 func (r *XCommunityService) GetModerators(ctx context.Context, id string, query XCommunityGetModeratorsParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -100,7 +100,7 @@ func (r *XCommunityService) GetModerators(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Search tweets across communities
+// Search for communities by keyword
 func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/communities/search"

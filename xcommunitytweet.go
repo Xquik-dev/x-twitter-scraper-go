@@ -17,7 +17,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
-// X data lookups (subscription required)
+// X Community info, members, and tweets
 //
 // XCommunityTweetService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -38,7 +38,7 @@ func NewXCommunityTweetService(opts ...option.RequestOption) (r XCommunityTweetS
 	return
 }
 
-// Search tweets across all communities
+// List tweets across all communities
 func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/communities/tweets"
@@ -46,7 +46,7 @@ func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweet
 	return res, err
 }
 
-// Get community tweets
+// List tweets posted in a community
 func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
