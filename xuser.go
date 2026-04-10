@@ -17,7 +17,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
-// X data lookups (subscription required)
+// Look up, search, and explore user profiles and relationships
 //
 // XUserService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	return
 }
 
-// Look up X user
+// Get user profile with follower counts & verification
 func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.UserProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -53,7 +53,7 @@ func (r *XUserService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Get multiple users by IDs
+// Look up multiple users by IDs in one call
 func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/batch"
@@ -61,7 +61,7 @@ func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, 
 	return res, err
 }
 
-// Get user followers
+// List followers of a user
 func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserGetFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -73,7 +73,7 @@ func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// Get followers you know for a user
+// List mutual followers between you and a user
 func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query XUserGetFollowersYouKnowParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -85,7 +85,7 @@ func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query
 	return res, err
 }
 
-// Get users this user follows
+// List accounts a user follows
 func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserGetFollowingParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -97,7 +97,7 @@ func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// Get tweets liked by a user
+// List tweets liked by a user
 func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLikesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -109,7 +109,7 @@ func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLi
 	return res, err
 }
 
-// Get media tweets by a user
+// List media tweets posted by a user
 func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMediaParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -121,7 +121,7 @@ func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMe
 	return res, err
 }
 
-// Get tweets mentioning a user
+// List tweets mentioning a user
 func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGetMentionsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -141,7 +141,7 @@ func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams
 	return res, err
 }
 
-// Get recent tweets by a user
+// List recent tweets posted by a user
 func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -153,7 +153,7 @@ func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetT
 	return res, err
 }
 
-// Get verified followers
+// List verified followers of a user
 func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, query XUserGetVerifiedFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {

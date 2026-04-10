@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
-// Account info & settings
+// Account info and settings
 //
 // AccountService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.

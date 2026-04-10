@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
-// X data lookups (subscription required)
+// Look up, search, and explore user profiles and relationships
 //
 // XFollowerService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -36,7 +36,7 @@ func NewXFollowerService(opts ...option.RequestOption) (r XFollowerService) {
 	return
 }
 
-// Check follow relationship
+// Check if one user follows another
 func (r *XFollowerService) Check(ctx context.Context, query XFollowerCheckParams, opts ...option.RequestOption) (res *XFollowerCheckResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/followers/check"

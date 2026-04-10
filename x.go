@@ -19,8 +19,6 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
-// X data lookups (subscription required)
-//
 // XService contains methods and other services that help with interacting with the
 // x-twitter-scraper API.
 //
@@ -30,21 +28,21 @@ import (
 type XService struct {
 	options []option.RequestOption
 	Tweets  XTweetService
-	// X data lookups (subscription required)
+	// Look up, search, and explore user profiles and relationships
 	Users XUserService
-	// X data lookups (subscription required)
+	// Look up, search, and explore user profiles and relationships
 	Followers XFollowerService
 	Dm        XDmService
-	// Media upload & download
+	// Media upload and download
 	Media XMediaService
 	// X write actions (tweets, likes, follows, DMs)
 	Profile     XProfileService
 	Communities XCommunityService
 	// Connected X account management
 	Accounts XAccountService
-	// X data lookups (subscription required)
+	// Look up, search, and analyze individual tweets
 	Bookmarks XBookmarkService
-	// X data lookups (subscription required)
+	// X List followers, members, and tweets
 	Lists XListService
 }
 
@@ -95,7 +93,7 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 	return res, err
 }
 
-// Get trending topics
+// Get trending hashtags & topics from X by region
 func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/trends"

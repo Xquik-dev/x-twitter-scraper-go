@@ -18,7 +18,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
-// Media upload & download
+// Media upload and download
 //
 // XMediaService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -39,7 +39,7 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 	return
 }
 
-// Download tweet media
+// Download images & videos from tweets
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/media/download"

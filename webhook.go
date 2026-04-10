@@ -19,7 +19,7 @@ import (
 	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
-// Webhook endpoint management & delivery
+// Webhook endpoint management and delivery
 //
 // WebhookService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
