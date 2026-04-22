@@ -33,12 +33,6 @@ const EventTypeTweetRetweet = shared.EventTypeTweetRetweet
 // Equals "tweet.quote"
 const EventTypeTweetQuote = shared.EventTypeTweetQuote
 
-// Equals "follower.gained"
-const EventTypeFollowerGained = shared.EventTypeFollowerGained
-
-// Equals "follower.lost"
-const EventTypeFollowerLost = shared.EventTypeFollowerLost
-
 // Paginated list of tweets with cursor-based navigation.
 //
 // This is an alias to an internal type.

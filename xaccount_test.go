@@ -151,8 +151,10 @@ func TestXAccountReauthWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XAccountReauthParams{
-			Password:   "password_value",
-			TotpSecret: xtwitterscraper.String("totp_secret_value"),
+			Password:     "password_value",
+			Email:        xtwitterscraper.String("user@example.com"),
+			ProxyCountry: xtwitterscraper.String("US"),
+			TotpSecret:   xtwitterscraper.String("totp_secret_value"),
 		},
 	)
 	if err != nil {

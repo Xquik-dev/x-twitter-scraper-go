@@ -41,12 +41,9 @@ type Client struct {
 	Draws DrawService
 	// Webhook endpoint management and delivery
 	Webhooks WebhookService
-	// Push notification integrations (Telegram)
-	Integrations IntegrationService
-	X            XService
+	X        XService
 	// Trending topics and hashtags by region
 	Trends  TrendService
-	Bot     BotService
 	Support SupportService
 	// Subscription, billing, and credits
 	Credits CreditService
@@ -91,10 +88,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Extractions = NewExtractionService(opts...)
 	r.Draws = NewDrawService(opts...)
 	r.Webhooks = NewWebhookService(opts...)
-	r.Integrations = NewIntegrationService(opts...)
 	r.X = NewXService(opts...)
 	r.Trends = NewTrendService(opts...)
-	r.Bot = NewBotService(opts...)
 	r.Support = NewSupportService(opts...)
 	r.Credits = NewCreditService(opts...)
 

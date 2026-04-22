@@ -18,12 +18,10 @@ type paramObj = param.APIObject
 type EventType string
 
 const (
-	EventTypeTweetNew       EventType = "tweet.new"
-	EventTypeTweetReply     EventType = "tweet.reply"
-	EventTypeTweetRetweet   EventType = "tweet.retweet"
-	EventTypeTweetQuote     EventType = "tweet.quote"
-	EventTypeFollowerGained EventType = "follower.gained"
-	EventTypeFollowerLost   EventType = "follower.lost"
+	EventTypeTweetNew     EventType = "tweet.new"
+	EventTypeTweetReply   EventType = "tweet.reply"
+	EventTypeTweetRetweet EventType = "tweet.retweet"
+	EventTypeTweetQuote   EventType = "tweet.quote"
 )
 
 // Paginated list of tweets with cursor-based navigation.

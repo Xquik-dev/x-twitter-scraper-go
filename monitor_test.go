@@ -28,7 +28,7 @@ func TestMonitorNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Monitors.New(context.TODO(), xtwitterscraper.MonitorNewParams{
-		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeFollowerGained},
+		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeTweetReply},
 		Username:   "elonmusk",
 	})
 	if err != nil {
