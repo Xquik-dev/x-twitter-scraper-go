@@ -28,12 +28,13 @@ func TestXTweetNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.X.Tweets.New(context.TODO(), xtwitterscraper.XTweetNewParams{
 		Account:        "@elonmusk",
-		Text:           "Just launched our new feature!",
 		AttachmentURL:  xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
 		CommunityID:    xtwitterscraper.String("1500000000000000000"),
 		IsNoteTweet:    xtwitterscraper.Bool(false),
+		Media:          []string{"https://example.com/image.jpg"},
 		MediaIDs:       []string{"1234567890123456789"},
 		ReplyToTweetID: xtwitterscraper.String("1234567890"),
+		Text:           xtwitterscraper.String("Just launched our new feature!"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

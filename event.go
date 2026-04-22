@@ -69,8 +69,7 @@ type Event struct {
 	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`
 	// Type of monitor event fired when account activity occurs.
 	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
+	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote".
 	Type     shared.EventType `json:"type" api:"required"`
 	Username string           `json:"username" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -101,8 +100,7 @@ type EventDetail struct {
 	OccurredAt time.Time      `json:"occurredAt" api:"required" format:"date-time"`
 	// Type of monitor event fired when account activity occurs.
 	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
+	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote".
 	Type     shared.EventType `json:"type" api:"required"`
 	Username string           `json:"username" api:"required"`
 	XEventID string           `json:"xEventId"`
@@ -155,8 +153,7 @@ type EventListParams struct {
 	MonitorID param.Opt[string] `query:"monitorId,omitzero" json:"-"`
 	// Filter events by type
 	//
-	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
-	// "follower.gained", "follower.lost".
+	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote".
 	EventType shared.EventType `query:"eventType,omitzero" json:"-"`
 	paramObj
 }

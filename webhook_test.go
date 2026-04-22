@@ -28,7 +28,7 @@ func TestWebhookNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), xtwitterscraper.WebhookNewParams{
-		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeFollowerGained},
+		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeTweetReply},
 		URL:        "https://example.com/webhook",
 	})
 	if err != nil {

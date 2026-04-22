@@ -27,9 +27,10 @@ func TestRadarGetTrendingTopicsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.GetTrendingTopics(context.TODO(), xtwitterscraper.RadarGetTrendingTopicsParams{
-		Category: xtwitterscraper.String("category"),
-		Count:    xtwitterscraper.Int(0),
-		Hours:    xtwitterscraper.Int(0),
+		After:    xtwitterscraper.String("after"),
+		Category: xtwitterscraper.RadarGetTrendingTopicsParamsCategoryGeneral,
+		Hours:    xtwitterscraper.Int(1),
+		Limit:    xtwitterscraper.Int(1),
 		Region:   xtwitterscraper.String("region"),
 		Source:   xtwitterscraper.RadarGetTrendingTopicsParamsSourceGitHub,
 	})

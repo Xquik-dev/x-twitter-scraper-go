@@ -312,12 +312,16 @@ func (r *XTweetDeleteResponse) UnmarshalJSON(data []byte) error {
 type XTweetNewParams struct {
 	// X account (@username or account ID)
 	Account        string            `json:"account" api:"required"`
-	Text           string            `json:"text" api:"required"`
 	AttachmentURL  param.Opt[string] `json:"attachment_url,omitzero"`
 	CommunityID    param.Opt[string] `json:"community_id,omitzero"`
 	IsNoteTweet    param.Opt[bool]   `json:"is_note_tweet,omitzero"`
 	ReplyToTweetID param.Opt[string] `json:"reply_to_tweet_id,omitzero"`
-	MediaIDs       []string          `json:"media_ids,omitzero"`
+	// Tweet text (optional when media is provided)
+	Text param.Opt[string] `json:"text,omitzero"`
+	// Array of media URLs to attach (mutually exclusive with media_ids)
+	Media []string `json:"media,omitzero"`
+	// Array of media IDs to attach (mutually exclusive with media)
+	MediaIDs []string `json:"media_ids,omitzero"`
 	paramObj
 }
 

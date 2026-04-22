@@ -104,13 +104,23 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 type XAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	Status    string    `json:"status" api:"required"`
-	XUserID   string    `json:"xUserId" api:"required"`
-	XUsername string    `json:"xUsername" api:"required"`
+	// Derived login/cookie health. `healthy` = cookies valid. `needsReauth` = user
+	// must submit fresh credentials. `locked` = X locked the account; unlock on x.com
+	// first. `suspended` = X banned the account. `recovering` = past cooldown, will
+	// auto-retry on next use. `temporaryIssue` = transient backend problem; retry
+	// shortly.
+	//
+	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
+	// "temporaryIssue".
+	Health    XAccountHealth `json:"health" api:"required"`
+	Status    string         `json:"status" api:"required"`
+	XUserID   string         `json:"xUserId" api:"required"`
+	XUsername string         `json:"xUsername" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
+		Health      respjson.Field
 		Status      respjson.Field
 		XUserID     respjson.Field
 		XUsername   respjson.Field
@@ -125,20 +135,40 @@ func (r *XAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Derived login/cookie health. `healthy` = cookies valid. `needsReauth` = user
+// must submit fresh credentials. `locked` = X locked the account; unlock on x.com
+// first. `suspended` = X banned the account. `recovering` = past cooldown, will
+// auto-retry on next use. `temporaryIssue` = transient backend problem; retry
+// shortly.
+type XAccountHealth string
+
+const (
+	XAccountHealthHealthy        XAccountHealth = "healthy"
+	XAccountHealthLocked         XAccountHealth = "locked"
+	XAccountHealthNeedsReauth    XAccountHealth = "needsReauth"
+	XAccountHealthRecovering     XAccountHealth = "recovering"
+	XAccountHealthSuspended      XAccountHealth = "suspended"
+	XAccountHealthTemporaryIssue XAccountHealth = "temporaryIssue"
+)
+
 // Full X account details including proxy, cookies, and update timestamp.
 type XAccountDetail struct {
-	ID                string    `json:"id" api:"required"`
-	CreatedAt         time.Time `json:"createdAt" api:"required" format:"date-time"`
-	Status            string    `json:"status" api:"required"`
-	XUserID           string    `json:"xUserId" api:"required"`
-	XUsername         string    `json:"xUsername" api:"required"`
-	CookiesObtainedAt time.Time `json:"cookiesObtainedAt" format:"date-time"`
-	ProxyCountry      string    `json:"proxyCountry"`
-	UpdatedAt         time.Time `json:"updatedAt" format:"date-time"`
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
+	// "temporaryIssue".
+	Health            XAccountDetailHealth `json:"health" api:"required"`
+	Status            string               `json:"status" api:"required"`
+	XUserID           string               `json:"xUserId" api:"required"`
+	XUsername         string               `json:"xUsername" api:"required"`
+	CookiesObtainedAt time.Time            `json:"cookiesObtainedAt" format:"date-time"`
+	ProxyCountry      string               `json:"proxyCountry"`
+	UpdatedAt         time.Time            `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
 		CreatedAt         respjson.Field
+		Health            respjson.Field
 		Status            respjson.Field
 		XUserID           respjson.Field
 		XUsername         respjson.Field
@@ -156,19 +186,46 @@ func (r *XAccountDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type XAccountDetailHealth string
+
+const (
+	XAccountDetailHealthHealthy        XAccountDetailHealth = "healthy"
+	XAccountDetailHealthLocked         XAccountDetailHealth = "locked"
+	XAccountDetailHealthNeedsReauth    XAccountDetailHealth = "needsReauth"
+	XAccountDetailHealthRecovering     XAccountDetailHealth = "recovering"
+	XAccountDetailHealthSuspended      XAccountDetailHealth = "suspended"
+	XAccountDetailHealthTemporaryIssue XAccountDetailHealth = "temporaryIssue"
+)
+
+// Sanitized X account summary returned by connect and reauth. Includes an optional
+// `loginCountry` field surfaced only when the declared proxy region had no Driver
+// capacity and the login fell back to a single US consumer device for this
+// one-time action. Future activity continues to use the selected `proxy_country`;
+// the field is omitted on normal logins.
 type XAccountNewResponse struct {
-	ID        string `json:"id" api:"required"`
-	Status    string `json:"status" api:"required"`
-	XUserID   string `json:"xUserId" api:"required"`
-	XUsername string `json:"xUsername" api:"required"`
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
+	// "temporaryIssue".
+	Health    XAccountNewResponseHealth `json:"health" api:"required"`
+	Status    string                    `json:"status" api:"required"`
+	XUserID   string                    `json:"xUserId" api:"required"`
+	XUsername string                    `json:"xUsername" api:"required"`
+	// ISO-3166-1 alpha-2 country code of the Driver consumer device used for this
+	// login. Present only when the US fallback was triggered because Driver had no
+	// capacity in the declared region. Omitted otherwise.
+	LoginCountry string `json:"loginCountry"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Status      respjson.Field
-		XUserID     respjson.Field
-		XUsername   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		Health       respjson.Field
+		Status       respjson.Field
+		XUserID      respjson.Field
+		XUsername    respjson.Field
+		LoginCountry respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -177,6 +234,17 @@ func (r XAccountNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type XAccountNewResponseHealth string
+
+const (
+	XAccountNewResponseHealthHealthy        XAccountNewResponseHealth = "healthy"
+	XAccountNewResponseHealthLocked         XAccountNewResponseHealth = "locked"
+	XAccountNewResponseHealthNeedsReauth    XAccountNewResponseHealth = "needsReauth"
+	XAccountNewResponseHealthRecovering     XAccountNewResponseHealth = "recovering"
+	XAccountNewResponseHealthSuspended      XAccountNewResponseHealth = "suspended"
+	XAccountNewResponseHealthTemporaryIssue XAccountNewResponseHealth = "temporaryIssue"
+)
 
 type XAccountListResponse struct {
 	Accounts []XAccount `json:"accounts" api:"required"`
@@ -227,17 +295,35 @@ func (r *XAccountBulkRetryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Sanitized X account summary returned by connect and reauth. Includes an optional
+// `loginCountry` field surfaced only when the declared proxy region had no Driver
+// capacity and the login fell back to a single US consumer device for this
+// one-time action. Future activity continues to use the selected `proxy_country`;
+// the field is omitted on normal logins.
 type XAccountReauthResponse struct {
-	ID        string `json:"id" api:"required"`
-	Status    string `json:"status" api:"required"`
-	XUsername string `json:"xUsername" api:"required"`
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
+	// "temporaryIssue".
+	Health    XAccountReauthResponseHealth `json:"health" api:"required"`
+	Status    string                       `json:"status" api:"required"`
+	XUserID   string                       `json:"xUserId" api:"required"`
+	XUsername string                       `json:"xUsername" api:"required"`
+	// ISO-3166-1 alpha-2 country code of the Driver consumer device used for this
+	// login. Present only when the US fallback was triggered because Driver had no
+	// capacity in the declared region. Omitted otherwise.
+	LoginCountry string `json:"loginCountry"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Status      respjson.Field
-		XUsername   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		Health       respjson.Field
+		Status       respjson.Field
+		XUserID      respjson.Field
+		XUsername    respjson.Field
+		LoginCountry respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -246,6 +332,17 @@ func (r XAccountReauthResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountReauthResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type XAccountReauthResponseHealth string
+
+const (
+	XAccountReauthResponseHealthHealthy        XAccountReauthResponseHealth = "healthy"
+	XAccountReauthResponseHealthLocked         XAccountReauthResponseHealth = "locked"
+	XAccountReauthResponseHealthNeedsReauth    XAccountReauthResponseHealth = "needsReauth"
+	XAccountReauthResponseHealthRecovering     XAccountReauthResponseHealth = "recovering"
+	XAccountReauthResponseHealthSuspended      XAccountReauthResponseHealth = "suspended"
+	XAccountReauthResponseHealthTemporaryIssue XAccountReauthResponseHealth = "temporaryIssue"
+)
 
 type XAccountNewParams struct {
 	// Account email
@@ -272,6 +369,10 @@ func (r *XAccountNewParams) UnmarshalJSON(data []byte) error {
 type XAccountReauthParams struct {
 	// Updated account password
 	Password string `json:"password" api:"required"`
+	// Email for the X account (updates stored email)
+	Email param.Opt[string] `json:"email,omitzero"`
+	// Two-letter country code for login proxy region
+	ProxyCountry param.Opt[string] `json:"proxy_country,omitzero"`
 	// TOTP secret for 2FA re-authentication
 	TotpSecret param.Opt[string] `json:"totp_secret,omitzero"`
 	paramObj
