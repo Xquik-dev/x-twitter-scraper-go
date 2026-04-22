@@ -39,7 +39,7 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 	return
 }
 
-// Download images & videos from tweets
+// Download images and videos from tweets
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/media/download"
