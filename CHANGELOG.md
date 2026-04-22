@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.4.0 (2026-04-22)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **api:** api update ([984db84](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/984db84082cbeab503df44e06376dfb3badb2a49))
+* **api:** api update ([4274efa](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/4274efae4c2859961dafffe05944efbc3aad509f))
+* **api:** api update ([f907b7d](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/f907b7db089914b772f78fd4ca928cb4cc916815))
+* **api:** api update ([ff4b0bf](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/ff4b0bfccc8307b6300dbf9a3ecd26f8ae234067))
+* **api:** api update ([1c60929](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/1c60929a9d485a5a4adad98e34402632a13a22bc))
+
+
+### Bug Fixes
+
+* move SearchTweet & UserProfile to shared models to resolve Go import cycle ([4188d03](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/4188d03924c0b7c9072ec4095efe54bf9056d094))
+
+
+### Chores
+
+* sync OpenAPI spec ([2fba029](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/2fba029d3dfa17b72647265fecdb80f0f1c9623f))
+* wire production_repo for all targets ([bea11a5](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/bea11a51e898b5663d45845f9b2f54da1ab98a1a))
+
 ## 0.3.0 (2026-04-08)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.2.0...v0.3.0)
