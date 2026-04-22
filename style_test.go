@@ -25,7 +25,6 @@ func TestStyleGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.Get(context.TODO(), "id")
 	if err != nil {
@@ -49,7 +48,6 @@ func TestStyleUpdate(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.Update(
 		context.TODO(),
@@ -82,7 +80,6 @@ func TestStyleList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.List(context.TODO())
 	if err != nil {
@@ -106,7 +103,6 @@ func TestStyleDelete(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.Styles.Delete(context.TODO(), "id")
 	if err != nil {
@@ -130,7 +126,6 @@ func TestStyleAnalyze(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.Analyze(context.TODO(), xtwitterscraper.StyleAnalyzeParams{
 		Username: "elonmusk",
@@ -156,7 +151,6 @@ func TestStyleCompare(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.Compare(context.TODO(), xtwitterscraper.StyleCompareParams{
 		Username1: "username1",
@@ -183,7 +177,6 @@ func TestStyleGetPerformance(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Styles.GetPerformance(context.TODO(), "id")
 	if err != nil {

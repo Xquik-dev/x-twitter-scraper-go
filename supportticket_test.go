@@ -25,7 +25,6 @@ func TestSupportTicketNew(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.New(context.TODO(), xtwitterscraper.SupportTicketNewParams{
 		Body:    "I am unable to connect my X account. Please help.",
@@ -52,7 +51,6 @@ func TestSupportTicketGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.Get(context.TODO(), "messages_value")
 	if err != nil {
@@ -76,7 +74,6 @@ func TestSupportTicketUpdate(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.Update(
 		context.TODO(),
@@ -106,7 +103,6 @@ func TestSupportTicketList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.List(context.TODO())
 	if err != nil {
@@ -130,7 +126,6 @@ func TestSupportTicketReply(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.Reply(
 		context.TODO(),

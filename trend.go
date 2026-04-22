@@ -16,7 +16,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Trending topics by region
+// Trending topics and hashtags by region
 //
 // TrendService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -37,7 +37,7 @@ func NewTrendService(opts ...option.RequestOption) (r TrendService) {
 	return
 }
 
-// Get regional trending topics
+// Get trending hashtags & topics by region (alias)
 func (r *TrendService) List(ctx context.Context, query TrendListParams, opts ...option.RequestOption) (res *TrendListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "trends"

@@ -25,7 +25,6 @@ func TestXAccountNewWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Accounts.New(context.TODO(), xtwitterscraper.XAccountNewParams{
 		Email:        "user@example.com",
@@ -55,7 +54,6 @@ func TestXAccountGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Accounts.Get(context.TODO(), "id")
 	if err != nil {
@@ -79,7 +77,6 @@ func TestXAccountList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Accounts.List(context.TODO())
 	if err != nil {
@@ -103,7 +100,6 @@ func TestXAccountDelete(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Accounts.Delete(context.TODO(), "id")
 	if err != nil {
@@ -127,7 +123,6 @@ func TestXAccountBulkRetry(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Accounts.BulkRetry(context.TODO())
 	if err != nil {
@@ -151,14 +146,15 @@ func TestXAccountReauthWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Accounts.Reauth(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XAccountReauthParams{
-			Password:   "password_value",
-			TotpSecret: xtwitterscraper.String("totp_secret_value"),
+			Password:     "password_value",
+			Email:        xtwitterscraper.String("user@example.com"),
+			ProxyCountry: xtwitterscraper.String("US"),
+			TotpSecret:   xtwitterscraper.String("totp_secret_value"),
 		},
 	)
 	if err != nil {

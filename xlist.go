@@ -17,7 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// X data lookups (subscription required)
+// X List followers, members, and tweets
 //
 // XListService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -38,7 +38,7 @@ func NewXListService(opts ...option.RequestOption) (r XListService) {
 	return
 }
 
-// Get list followers
+// List followers of an X List
 func (r *XListService) GetFollowers(ctx context.Context, id string, query XListGetFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -50,7 +50,7 @@ func (r *XListService) GetFollowers(ctx context.Context, id string, query XListG
 	return res, err
 }
 
-// Get list members
+// List members of an X List
 func (r *XListService) GetMembers(ctx context.Context, id string, query XListGetMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -62,7 +62,7 @@ func (r *XListService) GetMembers(ctx context.Context, id string, query XListGet
 	return res, err
 }
 
-// Get list tweets
+// List tweets from an X List
 func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {

@@ -25,7 +25,6 @@ func TestXBookmarkListWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Bookmarks.List(context.TODO(), xtwitterscraper.XBookmarkListParams{
 		Cursor:   xtwitterscraper.String("folders_value"),
@@ -52,7 +51,6 @@ func TestXBookmarkGetFolders(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Bookmarks.GetFolders(context.TODO())
 	if err != nil {

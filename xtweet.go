@@ -52,7 +52,7 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 	return res, err
 }
 
-// Look up tweet
+// Get tweet with full text, author, metrics & media
 func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -84,7 +84,7 @@ func (r *XTweetService) Delete(ctx context.Context, id string, body XTweetDelete
 	return res, err
 }
 
-// Get users who liked a tweet
+// List users who liked a tweet
 func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTweetGetFavoritersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -96,7 +96,7 @@ func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTwe
 	return res, err
 }
 
-// Get quote tweets of a tweet
+// List quote tweets of a tweet
 func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGetQuotesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -108,7 +108,7 @@ func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// Get replies to a tweet
+// List replies to a tweet
 func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetGetRepliesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -120,7 +120,7 @@ func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetG
 	return res, err
 }
 
-// Get users who retweeted a tweet
+// List users who retweeted a tweet
 func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTweetGetRetweetersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -132,7 +132,7 @@ func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTwe
 	return res, err
 }
 
-// Get thread context for a tweet
+// Get full conversation thread for a tweet
 func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGetThreadParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -144,72 +144,12 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// Search tweets
+// Search tweets with X query operators & pagination
 func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
-}
-
-// Tweet returned from search results with inline author info.
-type SearchTweet struct {
-	ID            string            `json:"id" api:"required"`
-	Text          string            `json:"text" api:"required"`
-	Author        SearchTweetAuthor `json:"author"`
-	BookmarkCount int64             `json:"bookmarkCount"`
-	CreatedAt     string            `json:"createdAt"`
-	// True for Note Tweets (long-form content, up to 25,000 characters)
-	IsNoteTweet  bool  `json:"isNoteTweet"`
-	LikeCount    int64 `json:"likeCount"`
-	QuoteCount   int64 `json:"quoteCount"`
-	ReplyCount   int64 `json:"replyCount"`
-	RetweetCount int64 `json:"retweetCount"`
-	ViewCount    int64 `json:"viewCount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Text          respjson.Field
-		Author        respjson.Field
-		BookmarkCount respjson.Field
-		CreatedAt     respjson.Field
-		IsNoteTweet   respjson.Field
-		LikeCount     respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		RetweetCount  respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SearchTweet) RawJSON() string { return r.JSON.raw }
-func (r *SearchTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SearchTweetAuthor struct {
-	ID       string `json:"id" api:"required"`
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SearchTweetAuthor) RawJSON() string { return r.JSON.raw }
-func (r *SearchTweetAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // Author of a tweet with follower count and verification status.
@@ -372,12 +312,16 @@ func (r *XTweetDeleteResponse) UnmarshalJSON(data []byte) error {
 type XTweetNewParams struct {
 	// X account (@username or account ID)
 	Account        string            `json:"account" api:"required"`
-	Text           string            `json:"text" api:"required"`
 	AttachmentURL  param.Opt[string] `json:"attachment_url,omitzero"`
 	CommunityID    param.Opt[string] `json:"community_id,omitzero"`
 	IsNoteTweet    param.Opt[bool]   `json:"is_note_tweet,omitzero"`
 	ReplyToTweetID param.Opt[string] `json:"reply_to_tweet_id,omitzero"`
-	MediaIDs       []string          `json:"media_ids,omitzero"`
+	// Tweet text (optional when media is provided)
+	Text param.Opt[string] `json:"text,omitzero"`
+	// Array of media URLs to attach (mutually exclusive with media_ids)
+	Media []string `json:"media,omitzero"`
+	// Array of media IDs to attach (mutually exclusive with media)
+	MediaIDs []string `json:"media_ids,omitzero"`
 	paramObj
 }
 

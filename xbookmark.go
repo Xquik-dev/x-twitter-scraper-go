@@ -17,7 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// X data lookups (subscription required)
+// Look up, search, and analyze individual tweets
 //
 // XBookmarkService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.

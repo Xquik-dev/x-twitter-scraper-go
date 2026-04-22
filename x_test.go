@@ -25,7 +25,6 @@ func TestXGetArticle(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.GetArticle(context.TODO(), "tweetId")
 	if err != nil {
@@ -49,7 +48,6 @@ func TestXGetHomeTimelineWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.GetHomeTimeline(context.TODO(), xtwitterscraper.XGetHomeTimelineParams{
 		Cursor:       xtwitterscraper.String("cursor"),
@@ -76,7 +74,6 @@ func TestXGetNotificationsWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.GetNotifications(context.TODO(), xtwitterscraper.XGetNotificationsParams{
 		Cursor: xtwitterscraper.String("cursor"),
@@ -91,7 +88,7 @@ func TestXGetNotificationsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestXGetTrends(t *testing.T) {
+func TestXGetTrendsWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -103,9 +100,11 @@ func TestXGetTrends(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.GetTrends(context.TODO())
+	_, err := client.X.GetTrends(context.TODO(), xtwitterscraper.XGetTrendsParams{
+		Count: xtwitterscraper.Int(1),
+		Woeid: xtwitterscraper.Int(0),
+	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

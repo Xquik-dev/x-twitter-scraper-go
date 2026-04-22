@@ -14,7 +14,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Subscription & billing
+// Subscription, billing, and credits
 //
 // CreditService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.

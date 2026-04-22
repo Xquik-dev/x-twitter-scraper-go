@@ -25,16 +25,16 @@ func TestXTweetNewWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.New(context.TODO(), xtwitterscraper.XTweetNewParams{
 		Account:        "@elonmusk",
-		Text:           "Just launched our new feature!",
 		AttachmentURL:  xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
 		CommunityID:    xtwitterscraper.String("1500000000000000000"),
 		IsNoteTweet:    xtwitterscraper.Bool(false),
+		Media:          []string{"https://example.com/image.jpg"},
 		MediaIDs:       []string{"1234567890123456789"},
 		ReplyToTweetID: xtwitterscraper.String("1234567890"),
+		Text:           xtwitterscraper.String("Just launched our new feature!"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -57,7 +57,6 @@ func TestXTweetGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.Get(context.TODO(), "id")
 	if err != nil {
@@ -81,7 +80,6 @@ func TestXTweetList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.List(context.TODO(), xtwitterscraper.XTweetListParams{
 		IDs: "ids",
@@ -107,7 +105,6 @@ func TestXTweetDelete(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.Delete(
 		context.TODO(),
@@ -137,7 +134,6 @@ func TestXTweetGetFavoritersWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.GetFavoriters(
 		context.TODO(),
@@ -167,7 +163,6 @@ func TestXTweetGetQuotesWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.GetQuotes(
 		context.TODO(),
@@ -200,7 +195,6 @@ func TestXTweetGetRepliesWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.GetReplies(
 		context.TODO(),
@@ -232,7 +226,6 @@ func TestXTweetGetRetweetersWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.GetRetweeters(
 		context.TODO(),
@@ -262,7 +255,6 @@ func TestXTweetGetThreadWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.GetThread(
 		context.TODO(),
@@ -292,7 +284,6 @@ func TestXTweetSearchWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:         "q",

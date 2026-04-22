@@ -205,18 +205,20 @@ func (r *ExtractionListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ExtractionEstimateCostResponse struct {
-	Allowed          bool    `json:"allowed" api:"required"`
-	EstimatedResults int64   `json:"estimatedResults" api:"required"`
-	ProjectedPercent float64 `json:"projectedPercent" api:"required"`
-	Source           string  `json:"source" api:"required"`
-	UsagePercent     float64 `json:"usagePercent" api:"required"`
+	Allowed          bool   `json:"allowed" api:"required"`
+	CreditsAvailable string `json:"creditsAvailable" api:"required"`
+	CreditsRequired  string `json:"creditsRequired" api:"required"`
+	EstimatedResults int64  `json:"estimatedResults" api:"required"`
+	Source           string `json:"source" api:"required"`
+	ResolvedXUserID  string `json:"resolvedXUserId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allowed          respjson.Field
+		CreditsAvailable respjson.Field
+		CreditsRequired  respjson.Field
 		EstimatedResults respjson.Field
-		ProjectedPercent respjson.Field
 		Source           respjson.Field
-		UsagePercent     respjson.Field
+		ResolvedXUserID  respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`

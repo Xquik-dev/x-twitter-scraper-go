@@ -25,7 +25,6 @@ func TestCreditGetBalance(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Credits.GetBalance(context.TODO())
 	if err != nil {
@@ -49,7 +48,6 @@ func TestCreditTopupBalance(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Credits.TopupBalance(context.TODO(), xtwitterscraper.CreditTopupBalanceParams{
 		Amount: 10000,

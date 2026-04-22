@@ -6,7 +6,6 @@ import (
 	"context"
 	"net/http"
 	"slices"
-	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
@@ -15,7 +14,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Account info & settings
+// Account info and settings
 //
 // AccountService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -38,8 +37,7 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 
 // Get account info
 func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) (res *AccountGetResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -55,8 +53,7 @@ func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsern
 
 // Update account locale
 func (r *AccountService) UpdateLocale(ctx context.Context, body AccountUpdateLocaleParams, opts ...option.RequestOption) (res *AccountUpdateLocaleResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
@@ -66,14 +63,14 @@ type AccountGetResponse struct {
 	MonitorsAllowed int64 `json:"monitorsAllowed" api:"required"`
 	MonitorsUsed    int64 `json:"monitorsUsed" api:"required"`
 	// Any of "active", "inactive".
-	Plan          AccountGetResponsePlan          `json:"plan" api:"required"`
-	CurrentPeriod AccountGetResponseCurrentPeriod `json:"currentPeriod"`
+	Plan       AccountGetResponsePlan       `json:"plan" api:"required"`
+	CreditInfo AccountGetResponseCreditInfo `json:"creditInfo"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MonitorsAllowed respjson.Field
 		MonitorsUsed    respjson.Field
 		Plan            respjson.Field
-		CurrentPeriod   respjson.Field
+		CreditInfo      respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -92,23 +89,25 @@ const (
 	AccountGetResponsePlanInactive AccountGetResponsePlan = "inactive"
 )
 
-type AccountGetResponseCurrentPeriod struct {
-	End          time.Time `json:"end" api:"required" format:"date-time"`
-	Start        time.Time `json:"start" api:"required" format:"date-time"`
-	UsagePercent float64   `json:"usagePercent" api:"required"`
+type AccountGetResponseCreditInfo struct {
+	AutoTopupEnabled  bool  `json:"autoTopupEnabled" api:"required"`
+	Balance           int64 `json:"balance" api:"required"`
+	LifetimePurchased int64 `json:"lifetimePurchased" api:"required"`
+	LifetimeUsed      int64 `json:"lifetimeUsed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		End          respjson.Field
-		Start        respjson.Field
-		UsagePercent respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		AutoTopupEnabled  respjson.Field
+		Balance           respjson.Field
+		LifetimePurchased respjson.Field
+		LifetimeUsed      respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountGetResponseCurrentPeriod) RawJSON() string { return r.JSON.raw }
-func (r *AccountGetResponseCurrentPeriod) UnmarshalJSON(data []byte) error {
+func (r AccountGetResponseCreditInfo) RawJSON() string { return r.JSON.raw }
+func (r *AccountGetResponseCreditInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

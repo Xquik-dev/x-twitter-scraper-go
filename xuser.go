@@ -10,16 +10,14 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// X data lookups (subscription required)
+// Look up, search, and explore user profiles and relationships
 //
 // XUserService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -43,8 +41,8 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	return
 }
 
-// Look up X user
-func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *UserProfile, err error) {
+// Get user profile with follower counts & verification
+func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.UserProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -55,7 +53,7 @@ func (r *XUserService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Get multiple users by IDs
+// Look up multiple users by IDs in one call
 func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/batch"
@@ -63,7 +61,7 @@ func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, 
 	return res, err
 }
 
-// Get user followers
+// List followers of a user
 func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserGetFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -75,7 +73,7 @@ func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// Get followers you know for a user
+// List mutual followers between you and a user
 func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query XUserGetFollowersYouKnowParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -87,7 +85,7 @@ func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query
 	return res, err
 }
 
-// Get users this user follows
+// List accounts a user follows
 func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserGetFollowingParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -99,7 +97,7 @@ func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// Get tweets liked by a user
+// List tweets liked by a user
 func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLikesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -111,7 +109,7 @@ func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLi
 	return res, err
 }
 
-// Get media tweets by a user
+// List media tweets posted by a user
 func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMediaParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -123,7 +121,7 @@ func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMe
 	return res, err
 }
 
-// Get tweets mentioning a user
+// List tweets mentioning a user
 func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGetMentionsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -143,7 +141,7 @@ func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams
 	return res, err
 }
 
-// Get recent tweets by a user
+// List recent tweets posted by a user
 func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -155,7 +153,7 @@ func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetT
 	return res, err
 }
 
-// Get verified followers
+// List verified followers of a user
 func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, query XUserGetVerifiedFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -165,43 +163,6 @@ func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, quer
 	path := fmt.Sprintf("x/users/%s/verified-followers", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
-}
-
-// X user profile with bio, follower counts, and verification status.
-type UserProfile struct {
-	ID             string `json:"id" api:"required"`
-	Name           string `json:"name" api:"required"`
-	Username       string `json:"username" api:"required"`
-	CreatedAt      string `json:"createdAt"`
-	Description    string `json:"description"`
-	Followers      int64  `json:"followers"`
-	Following      int64  `json:"following"`
-	Location       string `json:"location"`
-	ProfilePicture string `json:"profilePicture"`
-	StatusesCount  int64  `json:"statusesCount"`
-	Verified       bool   `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		Username       respjson.Field
-		CreatedAt      respjson.Field
-		Description    respjson.Field
-		Followers      respjson.Field
-		Following      respjson.Field
-		Location       respjson.Field
-		ProfilePicture respjson.Field
-		StatusesCount  respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UserProfile) RawJSON() string { return r.JSON.raw }
-func (r *UserProfile) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type XUserGetBatchParams struct {

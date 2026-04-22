@@ -26,10 +26,9 @@ func TestWebhookNew(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), xtwitterscraper.WebhookNewParams{
-		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeFollowerGained},
+		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeTweetReply},
 		URL:        "https://example.com/webhook",
 	})
 	if err != nil {
@@ -53,7 +52,6 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.Update(
 		context.TODO(),
@@ -85,7 +83,6 @@ func TestWebhookList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.List(context.TODO())
 	if err != nil {
@@ -109,7 +106,6 @@ func TestWebhookDeactivate(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.Deactivate(context.TODO(), "id")
 	if err != nil {
@@ -133,7 +129,6 @@ func TestWebhookListDeliveries(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.ListDeliveries(context.TODO(), "id")
 	if err != nil {
@@ -157,7 +152,6 @@ func TestWebhookTest(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Webhooks.Test(context.TODO(), "id")
 	if err != nil {

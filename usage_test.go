@@ -24,7 +24,6 @@ func TestUsage(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
