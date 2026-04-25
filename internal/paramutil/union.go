@@ -2,7 +2,7 @@ package paramutil
 
 import (
 	"fmt"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"reflect"
 )
 

@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // Look up, search, and explore user profiles and relationships
@@ -41,7 +41,7 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	return
 }
 
-// Get user profile with follower counts and verification
+// Get user profile with follower counts & verification
 func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.UserProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {

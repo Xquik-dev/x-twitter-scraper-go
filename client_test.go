@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 type closureTransport struct {

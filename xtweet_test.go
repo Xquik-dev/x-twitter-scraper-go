@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 func TestXTweetNewWithOptionalParams(t *testing.T) {
@@ -32,7 +32,6 @@ func TestXTweetNewWithOptionalParams(t *testing.T) {
 		CommunityID:    xtwitterscraper.String("1500000000000000000"),
 		IsNoteTweet:    xtwitterscraper.Bool(false),
 		Media:          []string{"https://example.com/image.jpg"},
-		MediaIDs:       []string{"1234567890123456789"},
 		ReplyToTweetID: xtwitterscraper.String("1234567890"),
 		Text:           xtwitterscraper.String("Just launched our new feature!"),
 	})

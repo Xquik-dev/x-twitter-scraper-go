@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is

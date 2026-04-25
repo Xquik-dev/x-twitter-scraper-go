@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 func TestXListGetFollowersWithOptionalParams(t *testing.T) {
@@ -59,7 +59,8 @@ func TestXListGetMembersWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XListGetMembersParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			Cursor:   xtwitterscraper.String("cursor"),
+			PageSize: xtwitterscraper.Int(0),
 		},
 	)
 	if err != nil {

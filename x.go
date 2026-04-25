@@ -10,13 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // XService contains methods and other services that help with interacting with the
@@ -93,7 +93,7 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 	return res, err
 }
 
-// Get trending hashtags and topics from X by region
+// Get trending hashtags & topics from X by region
 func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/trends"

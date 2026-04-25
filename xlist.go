@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // X List followers, members, and tweets
@@ -92,6 +92,8 @@ func (r XListGetFollowersParams) URLQuery() (v url.Values, err error) {
 type XListGetMembersParams struct {
 	// Pagination cursor for list members
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Members per page (20-200, default 20)
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 

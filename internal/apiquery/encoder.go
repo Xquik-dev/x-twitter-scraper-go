@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 )
 
 var encoders sync.Map // map[reflect.Type]encoderFunc

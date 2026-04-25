@@ -14,7 +14,7 @@ import (
 	"encoding"
 	"encoding/base64"
 	"fmt"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/shims"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json/shims"
 	"reflect"
 	"strconv"
 	"strings"

@@ -3,7 +3,7 @@ package param
 import (
 	"encoding/json"
 	"fmt"
-	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
+	shimjson "github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json"
 	"time"
 )
 

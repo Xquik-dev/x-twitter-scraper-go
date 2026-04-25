@@ -11,13 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared/constant"
 )
 
 // Bulk data extraction (20 tool types)
@@ -163,7 +163,7 @@ const (
 
 type ExtractionGetResponse struct {
 	HasMore bool `json:"hasMore" api:"required"`
-	// Extraction job metadata — shape varies by tool type (JSON)
+	// Extraction job metadata - shape varies by tool type (JSON)
 	Job        map[string]any   `json:"job" api:"required"`
 	Results    []map[string]any `json:"results" api:"required"`
 	NextCursor string           `json:"nextCursor"`

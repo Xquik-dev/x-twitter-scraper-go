@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiform"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
 // Media upload and download
@@ -39,7 +39,7 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 	return
 }
 
-// Download images and videos from tweets
+// Download images & videos from tweets
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/media/download"

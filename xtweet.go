@@ -10,13 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
 )
 
 // XTweetService contains methods and other services that help with interacting
@@ -52,7 +52,7 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 	return res, err
 }
 
-// Get tweet with full text, author, metrics and media
+// Get tweet with full text, author, metrics & media
 func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -144,7 +144,7 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// Search tweets with X query operators and pagination
+// Search tweets with X query operators & pagination
 func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets/search"
@@ -318,10 +318,9 @@ type XTweetNewParams struct {
 	ReplyToTweetID param.Opt[string] `json:"reply_to_tweet_id,omitzero"`
 	// Tweet text (optional when media is provided)
 	Text param.Opt[string] `json:"text,omitzero"`
-	// Array of media URLs to attach (mutually exclusive with media_ids)
+	// Array of public image URLs to attach (max 4). Each URL must be publicly
+	// reachable - the browser composer fetches them directly.
 	Media []string `json:"media,omitzero"`
-	// Array of media IDs to attach (mutually exclusive with media)
-	MediaIDs []string `json:"media_ids,omitzero"`
 	paramObj
 }
 
@@ -450,11 +449,11 @@ type XTweetSearchParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Max tweets to return (server paginates internally). Omit for single page (~20).
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// ISO 8601 timestamp — only return tweets after this time
+	// ISO 8601 timestamp - only return tweets after this time
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
-	// ISO 8601 timestamp — only return tweets before this time
+	// ISO 8601 timestamp - only return tweets before this time
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
-	// Sort order — Latest (chronological) or Top (engagement-ranked)
+	// Sort order - Latest (chronological) or Top (engagement-ranked)
 	//
 	// Any of "Latest", "Top".
 	QueryType XTweetSearchParamsQueryType `query:"queryType,omitzero" json:"-"`
@@ -469,7 +468,7 @@ func (r XTweetSearchParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Sort order — Latest (chronological) or Top (engagement-ranked)
+// Sort order - Latest (chronological) or Top (engagement-ranked)
 type XTweetSearchParamsQueryType string
 
 const (
