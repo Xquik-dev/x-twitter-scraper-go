@@ -52,7 +52,7 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 	return res, err
 }
 
-// Get tweet with full text, author, metrics & media
+// Get tweet with full text, author, metrics and media
 func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -144,7 +144,7 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// Search tweets with X query operators & pagination
+// Search tweets with X query operators and pagination
 func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets/search"

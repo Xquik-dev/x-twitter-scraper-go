@@ -37,7 +37,7 @@ func NewTrendService(opts ...option.RequestOption) (r TrendService) {
 	return
 }
 
-// Get trending hashtags & topics by region (alias)
+// Get trending hashtags and topics by region (alias)
 func (r *TrendService) List(ctx context.Context, query TrendListParams, opts ...option.RequestOption) (res *TrendListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "trends"
