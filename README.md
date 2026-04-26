@@ -1,4 +1,4 @@
-# X Twitter Scraper Go API Library
+# Xquik API Library
 
 <!-- x-release-please-start-version -->
 
@@ -6,7 +6,7 @@
 
 <!-- x-release-please-end -->
 
-The X Twitter Scraper Go library provides convenient access to the [X Twitter Scraper REST API](https://xquik.com)
+The Xquik library provides convenient access to the [X Twitter Scraper REST API](https://xquik.com)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
