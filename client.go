@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strings"
 
 	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/stainless-sdks/x-twitter-scraper-go/option"
@@ -62,6 +63,14 @@ func DefaultClientOptions() []option.RequestOption {
 	}
 	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_BEARER_TOKEN"); ok {
 		defaults = append(defaults, option.WithBearerToken(o))
+	}
+	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_CUSTOM_HEADERS"); ok {
+		for _, line := range strings.Split(o, "\n") {
+			colon := strings.Index(line, ":")
+			if colon >= 0 {
+				defaults = append(defaults, option.WithHeader(strings.TrimSpace(line[:colon]), strings.TrimSpace(line[colon+1:])))
+			}
+		}
 	}
 	return defaults
 }
