@@ -93,7 +93,7 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 	return res, err
 }
 
-// Get trending hashtags & topics from X by region
+// Get trending hashtags and topics from X by region
 func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/trends"

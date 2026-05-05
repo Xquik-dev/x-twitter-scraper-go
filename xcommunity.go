@@ -64,7 +64,7 @@ func (r *XCommunityService) Delete(ctx context.Context, id string, body XCommuni
 	return res, err
 }
 
-// Get community name, description & member count
+// Get community name, description and member count
 func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...option.RequestOption) (res *XCommunityGetInfoResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {

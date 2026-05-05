@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.1 (2026-04-25)
+
+Full Changelog: [v0.4.0...v0.4.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.4.0...v0.4.1)
+
+### Bug Fixes
+
+* escape ampersand in OpenAPI summaries for C# XML docs ([66d1655](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/66d165598acb070e5fb94b2df46204618ebc7d85))
+
+
+### Chores
+
+* **internal:** more robust bootstrap script ([bc2d3bb](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/bc2d3bb3585703357f63126e9a3ead9496699f3c))
+
+
+### Documentation
+
+* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+
 ## 0.4.0 (2026-04-22)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.3.0...v0.4.0)

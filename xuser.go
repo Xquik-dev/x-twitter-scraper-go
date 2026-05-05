@@ -41,7 +41,7 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	return
 }
 
-// Get user profile with follower counts & verification
+// Get user profile with follower counts and verification
 func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.UserProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
