@@ -1,4 +1,4 @@
-# X Twitter Scraper Go API Library
+# Xquik Go SDK for X (Twitter) Scraper API
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
 
@@ -8,8 +8,11 @@
 
 <!-- x-release-please-end -->
 
-The X Twitter Scraper Go library provides convenient access to the [X Twitter Scraper REST API](https://xquik.com)
-from applications written in Go.
+Xquik Go SDK for the X (Twitter) Scraper API: typed REST access for tweet search, user lookup, follower export, media upload and download, account monitoring, HMAC webhooks, giveaway draws, and bulk extractions.
+
+Use it in Go services that need X data, social media API workflows, or automation jobs without building scraping infrastructure. Start with the generated [API map](api.md), the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go), or the [REST API docs](https://docs.xquik.com/api-reference/overview).
+
+[Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [MCP Server](https://xquik.com/mcp)
 
 It is generated with [Stainless](https://www.stainless.com/).
 
@@ -49,6 +52,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
@@ -56,7 +60,7 @@ import (
 
 func main() {
 	client := xtwitterscraper.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("X_TWITTER_SCRAPER_API_KEY")
+		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
 	)
 	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
