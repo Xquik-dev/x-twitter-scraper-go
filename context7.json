@@ -3,11 +3,19 @@
   "projectTitle": "Xquik Go SDK",
   "description": "Official Go SDK for Xquik's X/Twitter API with typed REST methods for tweet search, user lookup, monitors, webhooks, media workflows, and extractions.",
   "branch": "main",
+  "excludeFolders": [".github"],
+  "excludeFiles": [
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "SECURITY.md"
+  ],
   "rules": [
     "Install with go get github.com/Xquik-dev/x-twitter-scraper-go.",
     "Authenticate with option.WithAPIKey or the X_TWITTER_SCRAPER_API_KEY environment variable.",
     "Use client.X.Tweets.Search for tweet search and client.X.Users for user lookup and follower workflows.",
-    "Use README.md first for install, API key setup, first request, package links, webhooks, MCP, and common Go workflows.",
+    "Use README.md and docs/CONTEXT7.md first for install, API key setup, first request, package links, webhooks, MCP, and common Go workflows.",
     "Use api.md for generated method coverage and pkg.go.dev for Go type signatures.",
     "Never expose API keys, webhook signing values, or user credentials in examples, logs, or commits."
   ],

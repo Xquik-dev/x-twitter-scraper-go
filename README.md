@@ -12,7 +12,7 @@ Xquik Go SDK for the X (Twitter) Scraper API: typed REST access for tweet search
 
 Use it in Go services that need X data, social media API workflows, or automation jobs without building scraping infrastructure. Start with the generated [API map](api.md), the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go), or the [REST API docs](https://docs.xquik.com/api-reference/overview).
 
-[Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [MCP Server](https://xquik.com/mcp)
+[Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [MCP Server](https://xquik.com/mcp)
 
 It is generated with [Stainless](https://www.stainless.com/).
 
