@@ -1,4 +1,4 @@
-# Xquik Go SDK for X (Twitter) Scraper API
+# X (Twitter) Scraper Go SDK: Tweet Search, Profile Tweets, Followers & Posting
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
 <a href="https://nothumansearch.ai/site/xquik.com" target="_blank" rel="noopener"><img src="https://nothumansearch.ai/badge/xquik.com.svg" alt="NHS Agentic Readiness Score" height="28"></a>
@@ -9,9 +9,9 @@
 
 <!-- x-release-please-end -->
 
-Xquik Go SDK for the X (Twitter) Scraper API: typed REST access for tweet search, user lookup, follower export, media upload and download, account monitoring, HMAC webhooks, giveaway draws, and bulk extractions.
+Xquik Go SDK for the X (Twitter) Scraper API, a Twitter API SDK and X API alternative for typed tweet search, advanced Twitter search queries, profile tweets, user lookup, follower export, media download, media upload, account monitoring, webhooks, giveaway draws, bulk extractions, and posting automation.
 
-Use it in Go services that need X data, social media API workflows, or automation jobs without building scraping infrastructure. Start with the generated [API map](api.md), the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go), or the [REST API docs](https://docs.xquik.com/api-reference/overview).
+Use it in Go services that need to get tweets from profiles, search tweets by keyword or operator query, send tweets, post replies, like, repost, follow, DM, or run social media automation jobs without building scraping infrastructure. Start with the generated [API map](api.md), the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go), or the [REST API docs](https://docs.xquik.com/api-reference/overview).
 
 [Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [MCP Server](https://xquik.com/mcp)
 
