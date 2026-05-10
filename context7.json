@@ -3,21 +3,37 @@
   "projectTitle": "Xquik Go SDK",
   "description": "Official Go SDK for Xquik's X/Twitter API with typed REST methods for tweet search, user lookup, monitors, webhooks, media workflows, and extractions.",
   "branch": "main",
-  "excludeFolders": [".github"],
+  "excludeFolders": [
+    ".devcontainer",
+    ".github",
+    "bin",
+    "examples",
+    "scripts"
+  ],
   "excludeFiles": [
+    ".release-please-manifest.json",
+    ".stats.yml",
+    "Brewfile",
     "CHANGELOG.md",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
+    "go.sum",
     "LICENSE",
-    "SECURITY.md"
+    "release-please-config.json",
+    "SECURITY.md",
+    "*_test.go"
   ],
   "rules": [
     "Install with go get github.com/Xquik-dev/x-twitter-scraper-go.",
     "Authenticate with option.WithAPIKey or the X_TWITTER_SCRAPER_API_KEY environment variable.",
-    "Use client.X.Tweets.Search for tweet search and client.X.Users for user lookup and follower workflows.",
     "Use README.md and docs/CONTEXT7.md first for install, API key setup, first request, package links, webhooks, MCP, and common Go workflows.",
+    "Use go.mod for module path, Go version, and dependency metadata.",
+    "Use client.go and option/requestoption.go for client construction and request option patterns.",
+    "Use xtweet.go for tweet search, posting, replies, retweeters, quotes, threads, and tweet retrieval workflows.",
+    "Use xuser.go for user lookup, user search, profile tweets, followers, following, likes, media, and mentions workflows.",
+    "Use xmedia.go, monitor.go, webhook.go, extraction.go, and draw.go for media, monitoring, webhook, bulk extraction, and giveaway draw workflows.",
     "Use api.md for generated method coverage and pkg.go.dev for Go type signatures.",
-    "Never expose API keys, webhook signing values, or user credentials in examples, logs, or commits."
+    "Never expose API keys, bearer tokens, webhook signing values, user credentials, or local runtime secrets in examples, logs, or commits."
   ],
   "url": "https://context7.com/xquik-dev/x-twitter-scraper-go",
   "public_key": "pk_oCPeRRqZFJsY4cCUSotDD"
