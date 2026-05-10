@@ -41,7 +41,7 @@ go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.4.1'
 
 ## Requirements
 
-This library requires Go 1.22+.
+This library requires Go 1.23+.
 
 ## Usage
 
