@@ -8,12 +8,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
 // Trending topics and hashtags by region
@@ -88,9 +88,9 @@ func (r *TrendListResponseTrend) UnmarshalJSON(data []byte) error {
 }
 
 type TrendListParams struct {
-	// Number of trending topics to return (1-50, default 30)
+	// Number of trending topics returned (1-50, default 30)
 	Count param.Opt[int64] `query:"count,omitzero" json:"-"`
-	// Region WOEID (1=Worldwide, 23424977=US, 23424975=UK, 23424969=Turkey)
+	// Region Yahoo WOEID code (1=Worldwide, 23424977=US, 23424975=UK, 23424969=Turkey)
 	Woeid param.Opt[int64] `query:"woeid,omitzero" json:"-"`
 	paramObj
 }

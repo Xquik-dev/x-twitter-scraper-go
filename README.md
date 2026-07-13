@@ -1,50 +1,33 @@
-# X (Twitter) Scraper Go SDK: Tweet Search, Profile Tweets, Followers & Posting
-
-> **Xquik is an independent third-party service.** Not affiliated with X Corp.
-> "Twitter" and "X" are trademarks of X Corp.
-
-[![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
-[![Skills.sh x-twitter-scraper Skill](https://skills.sh/b/xquik-dev/x-twitter-scraper)](https://skills.sh/xquik-dev/x-twitter-scraper)
+# Xquik API Library
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/Xquik-dev/x-twitter-scraper-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/x-twitter-scraper-go.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
-Xquik Go SDK for the X (Twitter) Scraper API, a Twitter API SDK and X API alternative for typed tweet search, advanced Twitter search queries, profile tweets, user lookup, follower export, media download, media upload, account monitoring, webhooks, giveaway draws, bulk extractions, and posting automation.
-
-Use it in Go services that need to get tweets from profiles, search tweets by keyword or operator query, send tweets, post replies, like, repost, follow, DM, or run social media automation jobs without building scraping infrastructure. Start with the generated [API map](api.md), the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go), or the [REST API docs](https://docs.xquik.com/api-reference/overview).
-
-[Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [MCP Server](https://xquik.com/mcp)
+The Xquik library provides convenient access to the [X Twitter Scraper REST API](https://xquik.com)
+from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
-<!-- x-release-please-start-version -->
-
 ```go
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
+	"github.com/stainless-sdks/x-twitter-scraper-go" // imported as xtwitterscraper
 )
 ```
 
-<!-- x-release-please-end -->
-
 Or to pin the version:
 
-<!-- x-release-please-start-version -->
-
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.4.1'
+go get -u 'github.com/stainless-sdks/x-twitter-scraper-go@v0.4.0'
 ```
-
-<!-- x-release-please-end -->
 
 ## Requirements
 
-This library requires Go 1.23+.
+This library requires Go 1.22+.
 
 ## Usage
 
@@ -56,15 +39,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
 )
 
 func main() {
 	client := xtwitterscraper.NewClient(
-		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
+		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("X_TWITTER_SCRAPER_API_KEY")
 	)
 	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
@@ -279,7 +261,7 @@ client := xtwitterscraper.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.X.Tweets.Search(context.TODO(), ...,
+client.Account.Get(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -289,7 +271,7 @@ client.X.Tweets.Search(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/option).
 
 ### Pagination
 
@@ -310,17 +292,14 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
-	Q:     "from:elonmusk",
-	Limit: xtwitterscraper.Int(10),
-})
+_, err := client.Account.Get(context.TODO())
 if err != nil {
 	var apierr *xtwitterscraper.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/x/tweets/search": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/account": 400 Bad Request { ... }
 }
 ```
 
@@ -338,12 +317,8 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.X.Tweets.Search(
+client.Account.Get(
 	ctx,
-	xtwitterscraper.XTweetSearchParams{
-		Q:     "from:elonmusk",
-		Limit: xtwitterscraper.Int(10),
-	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -398,14 +373,7 @@ client := xtwitterscraper.NewClient(
 )
 
 // Override per-request:
-client.X.Tweets.Search(
-	context.TODO(),
-	xtwitterscraper.XTweetSearchParams{
-		Q:     "from:elonmusk",
-		Limit: xtwitterscraper.Int(10),
-	},
-	option.WithMaxRetries(5),
-)
+client.Account.Get(context.TODO(), option.WithMaxRetries(5))
 ```
 
 ### Accessing raw response data (e.g. response headers)
@@ -416,18 +384,11 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-paginatedTweets, err := client.X.Tweets.Search(
-	context.TODO(),
-	xtwitterscraper.XTweetSearchParams{
-		Q:     "from:elonmusk",
-		Limit: xtwitterscraper.Int(10),
-	},
-	option.WithResponseInto(&response),
-)
+account, err := client.Account.Get(context.TODO(), option.WithResponseInto(&response))
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", paginatedTweets)
+fmt.Printf("%+v\n", account)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
@@ -528,7 +489,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/Xquik-dev/x-twitter-scraper-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/x-twitter-scraper-go/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
+	shimjson "github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json"
 
 	"github.com/tidwall/sjson"
 )
@@ -66,7 +66,7 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 	} else if ovr, ok := f.Overrides(); ok {
 		return shimjson.Marshal(ovr)
 	} else {
-		return shimjson.Marshal(underlying)
+		return shimjson.Marshal(underlying, shimjson.WithSkipCompaction(true))
 	}
 }
 
@@ -96,7 +96,7 @@ func MarshalUnion[T ParamStruct](metadata T, variants ...any) ([]byte, error) {
 			Err:  fmt.Errorf("expected union to have only one present variant, got %d", nPresent),
 		}
 	}
-	return shimjson.Marshal(variants[presentIdx])
+	return shimjson.Marshal(variants[presentIdx], shimjson.WithSkipCompaction(true))
 }
 
 // typeFor is shimmed from Go 1.23 "reflect" package

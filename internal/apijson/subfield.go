@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 	"reflect"
 )
 

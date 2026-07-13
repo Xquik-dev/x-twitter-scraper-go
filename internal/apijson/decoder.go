@@ -7,7 +7,7 @@ package apijson
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
 	"reflect"
 	"strconv"
 	"sync"
@@ -80,7 +80,7 @@ type decoderField struct {
 }
 
 type decoderEntry struct {
-	reflect.Type
+	typ        reflect.Type
 	dateFormat string
 	root       bool
 }
@@ -108,7 +108,7 @@ func (d *decoderBuilder) unmarshalWithExactness(raw []byte, to any) (exactness, 
 
 func (d *decoderBuilder) typeDecoder(t reflect.Type) decoderFunc {
 	entry := decoderEntry{
-		Type:       t,
+		typ:        t,
 		dateFormat: d.dateFormat,
 		root:       d.root,
 	}

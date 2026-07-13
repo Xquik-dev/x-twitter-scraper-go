@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
+	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
 )
 
 // Account info and settings
@@ -65,12 +65,15 @@ type AccountGetResponse struct {
 	// Any of "active", "inactive".
 	Plan       AccountGetResponsePlan       `json:"plan" api:"required"`
 	CreditInfo AccountGetResponseCreditInfo `json:"creditInfo"`
+	// Linked X username, omitted when no X account is connected.
+	XUsername string `json:"xUsername"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MonitorsAllowed respjson.Field
 		MonitorsUsed    respjson.Field
 		Plan            respjson.Field
 		CreditInfo      respjson.Field
+		XUsername       respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
