@@ -38,11 +38,7 @@ func NewXFollowerService(opts ...option.RequestOption) (r XFollowerService) {
 
 // Check if one user follows another
 func (r *XFollowerService) Check(ctx context.Context, query XFollowerCheckParams, opts ...option.RequestOption) (res *XFollowerCheckResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/followers/check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err

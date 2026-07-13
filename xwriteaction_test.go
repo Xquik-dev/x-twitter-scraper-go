@@ -26,7 +26,6 @@ func TestXWriteActionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.WriteActions.Get(context.TODO(), "id")
 	if err != nil {

@@ -73,11 +73,7 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 // Retrieve the full content of an X Article (long-form post) by numeric tweet ID.
 // Returns article_not_found when the tweet is valid but is not an X Article.
 func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...option.RequestOption) (res *XGetArticleResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if tweetID == "" {
 		err = errors.New("missing required tweetId parameter")
 		return nil, err
@@ -89,11 +85,7 @@ func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...optio
 
 // Get home timeline
 func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelineParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/timeline"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -101,11 +93,7 @@ func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelinePa
 
 // Get notifications
 func (r *XService) GetNotifications(ctx context.Context, query XGetNotificationsParams, opts ...option.RequestOption) (res *XGetNotificationsResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -113,11 +101,7 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 
 // Get trending hashtags and topics from X by region
 func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/trends"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err

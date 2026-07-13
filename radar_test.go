@@ -26,7 +26,6 @@ func TestRadarGetTrendingTopicsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Radar.GetTrendingTopics(context.TODO(), xtwitterscraper.RadarGetTrendingTopicsParams{
 		After:    xtwitterscraper.String("after"),

@@ -40,11 +40,7 @@ func NewXWriteActionService(opts ...option.RequestOption) (r XWriteActionService
 
 // Get write action status
 func (r *XWriteActionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XWriteActionGetResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

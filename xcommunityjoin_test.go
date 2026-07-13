@@ -26,7 +26,6 @@ func TestXCommunityJoinNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Join.New(
 		context.TODO(),
@@ -57,7 +56,6 @@ func TestXCommunityJoinDeleteAll(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Join.DeleteAll(
 		context.TODO(),

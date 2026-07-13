@@ -40,11 +40,7 @@ func NewXCommunityJoinService(opts ...option.RequestOption) (r XCommunityJoinSer
 
 // Join community
 func (r *XCommunityJoinService) New(ctx context.Context, id string, body XCommunityJoinNewParams, opts ...option.RequestOption) (res *XCommunityJoinNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -56,11 +52,7 @@ func (r *XCommunityJoinService) New(ctx context.Context, id string, body XCommun
 
 // Leave community
 func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, body XCommunityJoinDeleteAllParams, opts ...option.RequestOption) (res *XCommunityJoinDeleteAllResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

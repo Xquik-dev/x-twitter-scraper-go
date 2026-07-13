@@ -45,11 +45,7 @@ func NewMonitorKeywordService(opts ...option.RequestOption) (r MonitorKeywordSer
 // deliveries are included. Creation requires available credits for the first
 // hourly charge.
 func (r *MonitorKeywordService) New(ctx context.Context, body MonitorKeywordNewParams, opts ...option.RequestOption) (res *MonitorKeywordNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "monitors/keywords"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -57,11 +53,7 @@ func (r *MonitorKeywordService) New(ctx context.Context, body MonitorKeywordNewP
 
 // Get keyword monitor
 func (r *MonitorKeywordService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorKeywordGetResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -73,11 +65,7 @@ func (r *MonitorKeywordService) Get(ctx context.Context, id string, opts ...opti
 
 // Update keyword monitor
 func (r *MonitorKeywordService) Update(ctx context.Context, id string, body MonitorKeywordUpdateParams, opts ...option.RequestOption) (res *MonitorKeywordUpdateResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -89,11 +77,7 @@ func (r *MonitorKeywordService) Update(ctx context.Context, id string, body Moni
 
 // List keyword monitors
 func (r *MonitorKeywordService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorKeywordListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "monitors/keywords"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -101,11 +85,7 @@ func (r *MonitorKeywordService) List(ctx context.Context, opts ...option.Request
 
 // Delete keyword monitor
 func (r *MonitorKeywordService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorKeywordDeactivateResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

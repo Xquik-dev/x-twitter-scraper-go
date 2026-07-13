@@ -37,11 +37,7 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 
 // Download images and videos from tweets
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/media/download"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -49,11 +45,7 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 
 // Upload media
 func (r *XMediaService) Upload(ctx context.Context, body XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/media"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err

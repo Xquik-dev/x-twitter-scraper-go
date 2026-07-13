@@ -37,11 +37,7 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 
 // Get account info
 func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) (res *AccountGetResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -49,11 +45,7 @@ func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) 
 
 // Set linked X username
 func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsernameParams, opts ...option.RequestOption) (res *AccountSetXUsernameResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "account/x-identity"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
@@ -61,11 +53,7 @@ func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsern
 
 // Update account locale
 func (r *AccountService) UpdateLocale(ctx context.Context, body AccountUpdateLocaleParams, opts ...option.RequestOption) (res *AccountUpdateLocaleResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
@@ -76,7 +64,8 @@ type AccountGetResponse struct {
 	// Deprecated. Monitor slots are unlimited, so this is always
 	// Number.MAX_SAFE_INTEGER.
 	//
-	// Deprecated: deprecated
+	// Deprecated: Monitor slots are unlimited. Use monitorBilling.unlimitedSlots
+	// instead.
 	MonitorsAllowed int64 `json:"monitorsAllowed" api:"required"`
 	MonitorsUsed    int64 `json:"monitorsUsed" api:"required"`
 	// Any of "active", "inactive".

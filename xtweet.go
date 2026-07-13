@@ -47,11 +47,7 @@ func NewXTweetService(opts ...option.RequestOption) (r XTweetService) {
 
 // Create tweet
 func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...option.RequestOption) (res *XTweetNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/tweets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -59,11 +55,7 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 
 // Get tweet with full text, author, metrics and media
 func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -75,11 +67,7 @@ func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.Reque
 
 // Get multiple tweets by IDs
 func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/tweets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -87,11 +75,7 @@ func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts .
 
 // Delete tweet
 func (r *XTweetService) Delete(ctx context.Context, id string, body XTweetDeleteParams, opts ...option.RequestOption) (res *XTweetDeleteResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -103,11 +87,7 @@ func (r *XTweetService) Delete(ctx context.Context, id string, body XTweetDelete
 
 // List users who liked a tweet
 func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTweetGetFavoritersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -119,11 +99,7 @@ func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTwe
 
 // List quote tweets of a tweet
 func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGetQuotesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -135,11 +111,7 @@ func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGe
 
 // List replies to a tweet
 func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetGetRepliesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -151,11 +123,7 @@ func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetG
 
 // List users who retweeted a tweet
 func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTweetGetRetweetersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -167,11 +135,7 @@ func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTwe
 
 // Get full conversation thread for a tweet
 func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGetThreadParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -183,11 +147,7 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 
 // Search tweets by query, Tweet ID, X status URL, or account date window
 func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/tweets/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -196,8 +156,12 @@ func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, op
 // Tweet author profile. The lookup route always includes follower count and
 // verification state. Other profile fields appear when available.
 type TweetAuthor struct {
+	Followers int64 `json:"followers" api:"required"`
+	Verified  bool  `json:"verified" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Followers   respjson.Field
+		Verified    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -226,7 +190,7 @@ type TweetDetail struct {
 	Author TweetAuthor `json:"author"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
 	// partnership content or AI-generated media.
-	ContentDisclosure TweetDetailContentDisclosure `json:"contentDisclosure"`
+	ContentDisclosure shared.ContentDisclosure `json:"contentDisclosure"`
 	// ID of the root tweet in the conversation thread
 	ConversationID string `json:"conversationId"`
 	CreatedAt      string `json:"createdAt"`
@@ -251,15 +215,15 @@ type TweetDetail struct {
 	// Tweet language code
 	Lang string `json:"lang"`
 	// Attached media items, omitted when the tweet has no media
-	Media []TweetDetailMedia `json:"media"`
+	Media []shared.TweetMedia `json:"media"`
 	// Quoted or retweeted tweet context. Every object includes id, text, and
 	// engagement metrics. A zero metric can mean X did not report the count. Author,
 	// media, and conversation fields appear when available.
-	QuotedTweet TweetDetailQuotedTweet `json:"quoted_tweet"`
+	QuotedTweet shared.EmbeddedTweet `json:"quoted_tweet"`
 	// Quoted or retweeted tweet context. Every object includes id, text, and
 	// engagement metrics. A zero metric can mean X did not report the count. Author,
 	// media, and conversation fields appear when available.
-	RetweetedTweet TweetDetailRetweetedTweet `json:"retweeted_tweet"`
+	RetweetedTweet shared.EmbeddedTweet `json:"retweeted_tweet"`
 	// Client application used to post this tweet
 	Source string `json:"source"`
 	// Tweet result type
@@ -304,471 +268,6 @@ type TweetDetail struct {
 // Returns the unmodified JSON received from the API
 func (r TweetDetail) RawJSON() string { return r.JSON.raw }
 func (r *TweetDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Content disclosure metadata shown by X when a tweet is labeled as paid
-// partnership content or AI-generated media.
-type TweetDetailContentDisclosure struct {
-	Advertising TweetDetailContentDisclosureAdvertising `json:"advertising"`
-	AIGenerated TweetDetailContentDisclosureAIGenerated `json:"aiGenerated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Advertising respjson.Field
-		AIGenerated respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailContentDisclosure) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailContentDisclosure) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailContentDisclosureAdvertising struct {
-	// True when X labels the tweet as paid promotion content.
-	IsPaidPromotion bool `json:"isPaidPromotion"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		IsPaidPromotion respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailContentDisclosureAdvertising) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailContentDisclosureAdvertising) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailContentDisclosureAIGenerated struct {
-	// Whether the disclosure can be edited on X.
-	CanEdit bool `json:"canEdit"`
-	// Source of the AI-generated media disclosure.
-	DetectionSource string `json:"detectionSource"`
-	// True when X labels the tweet as containing AI-generated media.
-	HasAIGeneratedMedia bool `json:"hasAiGeneratedMedia"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CanEdit             respjson.Field
-		DetectionSource     respjson.Field
-		HasAIGeneratedMedia respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailContentDisclosureAIGenerated) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailContentDisclosureAIGenerated) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Normalized media attached to a tweet.
-type TweetDetailMedia struct {
-	// Media preview URL
-	MediaURL string `json:"mediaUrl" api:"required"`
-	// Any of "photo", "video", "animated_gif".
-	Type string `json:"type" api:"required"`
-	// X media link from the tweet
-	URL string `json:"url" api:"required"`
-	// Available video encodings, ordered as returned
-	VideoVariants []TweetDetailMediaVideoVariant `json:"videoVariants"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MediaURL      respjson.Field
-		Type          respjson.Field
-		URL           respjson.Field
-		VideoVariants respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailMedia) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailMediaVideoVariant struct {
-	ContentType string `json:"contentType" api:"required"`
-	URL         string `json:"url" api:"required"`
-	Bitrate     int64  `json:"bitrate"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ContentType respjson.Field
-		URL         respjson.Field
-		Bitrate     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailMediaVideoVariant) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailMediaVideoVariant) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Quoted or retweeted tweet context. Every object includes id, text, and
-// engagement metrics. A zero metric can mean X did not report the count. Author,
-// media, and conversation fields appear when available.
-type TweetDetailQuotedTweet struct {
-	ID            string `json:"id" api:"required"`
-	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
-	LikeCount     int64  `json:"likeCount" api:"required"`
-	QuoteCount    int64  `json:"quoteCount" api:"required"`
-	ReplyCount    int64  `json:"replyCount" api:"required"`
-	RetweetCount  int64  `json:"retweetCount" api:"required"`
-	Text          string `json:"text" api:"required"`
-	ViewCount     int64  `json:"viewCount" api:"required"`
-	// X user profile with bio, follower counts, and verification status.
-	Author shared.UserProfile `json:"author"`
-	// Content disclosure metadata shown by X when a tweet is labeled as paid
-	// partnership content or AI-generated media.
-	ContentDisclosure TweetDetailQuotedTweetContentDisclosure `json:"contentDisclosure"`
-	ConversationID    string                                  `json:"conversationId"`
-	CreatedAt         string                                  `json:"createdAt"`
-	DisplayTextRange  []int64                                 `json:"displayTextRange"`
-	Entities          map[string]any                          `json:"entities"`
-	InReplyToID       string                                  `json:"inReplyToId"`
-	InReplyToUserID   string                                  `json:"inReplyToUserId"`
-	InReplyToUsername string                                  `json:"inReplyToUsername"`
-	IsLimitedReply    bool                                    `json:"isLimitedReply"`
-	IsNoteTweet       bool                                    `json:"isNoteTweet"`
-	IsQuoteStatus     bool                                    `json:"isQuoteStatus"`
-	IsReply           bool                                    `json:"isReply"`
-	Lang              string                                  `json:"lang"`
-	Media             []TweetDetailQuotedTweetMedia           `json:"media"`
-	Source            string                                  `json:"source"`
-	Type              string                                  `json:"type"`
-	URL               string                                  `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		BookmarkCount     respjson.Field
-		LikeCount         respjson.Field
-		QuoteCount        respjson.Field
-		ReplyCount        respjson.Field
-		RetweetCount      respjson.Field
-		Text              respjson.Field
-		ViewCount         respjson.Field
-		Author            respjson.Field
-		ContentDisclosure respjson.Field
-		ConversationID    respjson.Field
-		CreatedAt         respjson.Field
-		DisplayTextRange  respjson.Field
-		Entities          respjson.Field
-		InReplyToID       respjson.Field
-		InReplyToUserID   respjson.Field
-		InReplyToUsername respjson.Field
-		IsLimitedReply    respjson.Field
-		IsNoteTweet       respjson.Field
-		IsQuoteStatus     respjson.Field
-		IsReply           respjson.Field
-		Lang              respjson.Field
-		Media             respjson.Field
-		Source            respjson.Field
-		Type              respjson.Field
-		URL               respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailQuotedTweet) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailQuotedTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Content disclosure metadata shown by X when a tweet is labeled as paid
-// partnership content or AI-generated media.
-type TweetDetailQuotedTweetContentDisclosure struct {
-	Advertising TweetDetailQuotedTweetContentDisclosureAdvertising `json:"advertising"`
-	AIGenerated TweetDetailQuotedTweetContentDisclosureAIGenerated `json:"aiGenerated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Advertising respjson.Field
-		AIGenerated respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailQuotedTweetContentDisclosure) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailQuotedTweetContentDisclosure) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailQuotedTweetContentDisclosureAdvertising struct {
-	// True when X labels the tweet as paid promotion content.
-	IsPaidPromotion bool `json:"isPaidPromotion"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		IsPaidPromotion respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailQuotedTweetContentDisclosureAdvertising) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailQuotedTweetContentDisclosureAdvertising) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailQuotedTweetContentDisclosureAIGenerated struct {
-	// Whether the disclosure can be edited on X.
-	CanEdit bool `json:"canEdit"`
-	// Source of the AI-generated media disclosure.
-	DetectionSource string `json:"detectionSource"`
-	// True when X labels the tweet as containing AI-generated media.
-	HasAIGeneratedMedia bool `json:"hasAiGeneratedMedia"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CanEdit             respjson.Field
-		DetectionSource     respjson.Field
-		HasAIGeneratedMedia respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailQuotedTweetContentDisclosureAIGenerated) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailQuotedTweetContentDisclosureAIGenerated) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Normalized media attached to a tweet.
-type TweetDetailQuotedTweetMedia struct {
-	// Media preview URL
-	MediaURL string `json:"mediaUrl" api:"required"`
-	// Any of "photo", "video", "animated_gif".
-	Type string `json:"type" api:"required"`
-	// X media link from the tweet
-	URL string `json:"url" api:"required"`
-	// Available video encodings, ordered as returned
-	VideoVariants []TweetDetailQuotedTweetMediaVideoVariant `json:"videoVariants"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MediaURL      respjson.Field
-		Type          respjson.Field
-		URL           respjson.Field
-		VideoVariants respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailQuotedTweetMedia) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailQuotedTweetMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailQuotedTweetMediaVideoVariant struct {
-	ContentType string `json:"contentType" api:"required"`
-	URL         string `json:"url" api:"required"`
-	Bitrate     int64  `json:"bitrate"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ContentType respjson.Field
-		URL         respjson.Field
-		Bitrate     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailQuotedTweetMediaVideoVariant) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailQuotedTweetMediaVideoVariant) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Quoted or retweeted tweet context. Every object includes id, text, and
-// engagement metrics. A zero metric can mean X did not report the count. Author,
-// media, and conversation fields appear when available.
-type TweetDetailRetweetedTweet struct {
-	ID            string `json:"id" api:"required"`
-	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
-	LikeCount     int64  `json:"likeCount" api:"required"`
-	QuoteCount    int64  `json:"quoteCount" api:"required"`
-	ReplyCount    int64  `json:"replyCount" api:"required"`
-	RetweetCount  int64  `json:"retweetCount" api:"required"`
-	Text          string `json:"text" api:"required"`
-	ViewCount     int64  `json:"viewCount" api:"required"`
-	// X user profile with bio, follower counts, and verification status.
-	Author shared.UserProfile `json:"author"`
-	// Content disclosure metadata shown by X when a tweet is labeled as paid
-	// partnership content or AI-generated media.
-	ContentDisclosure TweetDetailRetweetedTweetContentDisclosure `json:"contentDisclosure"`
-	ConversationID    string                                     `json:"conversationId"`
-	CreatedAt         string                                     `json:"createdAt"`
-	DisplayTextRange  []int64                                    `json:"displayTextRange"`
-	Entities          map[string]any                             `json:"entities"`
-	InReplyToID       string                                     `json:"inReplyToId"`
-	InReplyToUserID   string                                     `json:"inReplyToUserId"`
-	InReplyToUsername string                                     `json:"inReplyToUsername"`
-	IsLimitedReply    bool                                       `json:"isLimitedReply"`
-	IsNoteTweet       bool                                       `json:"isNoteTweet"`
-	IsQuoteStatus     bool                                       `json:"isQuoteStatus"`
-	IsReply           bool                                       `json:"isReply"`
-	Lang              string                                     `json:"lang"`
-	Media             []TweetDetailRetweetedTweetMedia           `json:"media"`
-	Source            string                                     `json:"source"`
-	Type              string                                     `json:"type"`
-	URL               string                                     `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		BookmarkCount     respjson.Field
-		LikeCount         respjson.Field
-		QuoteCount        respjson.Field
-		ReplyCount        respjson.Field
-		RetweetCount      respjson.Field
-		Text              respjson.Field
-		ViewCount         respjson.Field
-		Author            respjson.Field
-		ContentDisclosure respjson.Field
-		ConversationID    respjson.Field
-		CreatedAt         respjson.Field
-		DisplayTextRange  respjson.Field
-		Entities          respjson.Field
-		InReplyToID       respjson.Field
-		InReplyToUserID   respjson.Field
-		InReplyToUsername respjson.Field
-		IsLimitedReply    respjson.Field
-		IsNoteTweet       respjson.Field
-		IsQuoteStatus     respjson.Field
-		IsReply           respjson.Field
-		Lang              respjson.Field
-		Media             respjson.Field
-		Source            respjson.Field
-		Type              respjson.Field
-		URL               respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailRetweetedTweet) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailRetweetedTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Content disclosure metadata shown by X when a tweet is labeled as paid
-// partnership content or AI-generated media.
-type TweetDetailRetweetedTweetContentDisclosure struct {
-	Advertising TweetDetailRetweetedTweetContentDisclosureAdvertising `json:"advertising"`
-	AIGenerated TweetDetailRetweetedTweetContentDisclosureAIGenerated `json:"aiGenerated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Advertising respjson.Field
-		AIGenerated respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailRetweetedTweetContentDisclosure) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailRetweetedTweetContentDisclosure) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailRetweetedTweetContentDisclosureAdvertising struct {
-	// True when X labels the tweet as paid promotion content.
-	IsPaidPromotion bool `json:"isPaidPromotion"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		IsPaidPromotion respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailRetweetedTweetContentDisclosureAdvertising) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailRetweetedTweetContentDisclosureAdvertising) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailRetweetedTweetContentDisclosureAIGenerated struct {
-	// Whether the disclosure can be edited on X.
-	CanEdit bool `json:"canEdit"`
-	// Source of the AI-generated media disclosure.
-	DetectionSource string `json:"detectionSource"`
-	// True when X labels the tweet as containing AI-generated media.
-	HasAIGeneratedMedia bool `json:"hasAiGeneratedMedia"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CanEdit             respjson.Field
-		DetectionSource     respjson.Field
-		HasAIGeneratedMedia respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailRetweetedTweetContentDisclosureAIGenerated) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailRetweetedTweetContentDisclosureAIGenerated) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Normalized media attached to a tweet.
-type TweetDetailRetweetedTweetMedia struct {
-	// Media preview URL
-	MediaURL string `json:"mediaUrl" api:"required"`
-	// Any of "photo", "video", "animated_gif".
-	Type string `json:"type" api:"required"`
-	// X media link from the tweet
-	URL string `json:"url" api:"required"`
-	// Available video encodings, ordered as returned
-	VideoVariants []TweetDetailRetweetedTweetMediaVideoVariant `json:"videoVariants"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MediaURL      respjson.Field
-		Type          respjson.Field
-		URL           respjson.Field
-		VideoVariants respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailRetweetedTweetMedia) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailRetweetedTweetMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TweetDetailRetweetedTweetMediaVideoVariant struct {
-	ContentType string `json:"contentType" api:"required"`
-	URL         string `json:"url" api:"required"`
-	Bitrate     int64  `json:"bitrate"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ContentType respjson.Field
-		URL         respjson.Field
-		Bitrate     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TweetDetailRetweetedTweetMediaVideoVariant) RawJSON() string { return r.JSON.raw }
-func (r *TweetDetailRetweetedTweetMediaVideoVariant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -42,11 +42,7 @@ func NewDrawService(opts ...option.RequestOption) (r DrawService) {
 
 // Get draw details
 func (r *DrawService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DrawGetResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -58,11 +54,7 @@ func (r *DrawService) Get(ctx context.Context, id string, opts ...option.Request
 
 // List draws
 func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...option.RequestOption) (res *DrawListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "draws"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -70,11 +62,7 @@ func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...op
 
 // Export draw data
 func (r *DrawService) Export(ctx context.Context, id string, query DrawExportParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -90,11 +78,7 @@ func (r *DrawService) Export(ctx context.Context, id string, query DrawExportPar
 // credits cap how many replies and retweeters can be inspected before filters and
 // winner selection run.
 func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...option.RequestOption) (res *DrawRunResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "draws"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err

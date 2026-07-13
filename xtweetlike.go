@@ -40,11 +40,7 @@ func NewXTweetLikeService(opts ...option.RequestOption) (r XTweetLikeService) {
 
 // Like tweet
 func (r *XTweetLikeService) New(ctx context.Context, id string, body XTweetLikeNewParams, opts ...option.RequestOption) (res *XTweetLikeNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -56,11 +52,7 @@ func (r *XTweetLikeService) New(ctx context.Context, id string, body XTweetLikeN
 
 // Unlike tweet
 func (r *XTweetLikeService) Delete(ctx context.Context, id string, body XTweetLikeDeleteParams, opts ...option.RequestOption) (res *XTweetLikeDeleteResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

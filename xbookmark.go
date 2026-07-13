@@ -40,11 +40,7 @@ func NewXBookmarkService(opts ...option.RequestOption) (r XBookmarkService) {
 
 // Get bookmarked tweets
 func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/bookmarks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -52,11 +48,7 @@ func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, 
 
 // Get bookmark folders
 func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.RequestOption) (res *XBookmarkGetFoldersResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/bookmarks/folders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err

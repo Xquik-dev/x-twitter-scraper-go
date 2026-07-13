@@ -26,7 +26,6 @@ func TestXListGetFollowersWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Lists.GetFollowers(
 		context.TODO(),
@@ -58,7 +57,6 @@ func TestXListGetMembersWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Lists.GetMembers(
 		context.TODO(),
@@ -90,7 +88,6 @@ func TestXListGetTweetsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Lists.GetTweets(
 		context.TODO(),

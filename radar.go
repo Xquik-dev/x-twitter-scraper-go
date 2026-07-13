@@ -40,11 +40,7 @@ func NewRadarService(opts ...option.RequestOption) (r RadarService) {
 
 // Get trending topics from curated sources
 func (r *RadarService) GetTrendingTopics(ctx context.Context, query RadarGetTrendingTopicsParams, opts ...option.RequestOption) (res *RadarGetTrendingTopicsResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "radar"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err

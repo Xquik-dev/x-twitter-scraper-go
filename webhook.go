@@ -42,11 +42,7 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 
 // Create webhook
 func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *WebhookNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -54,11 +50,7 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 
 // Update webhook
 func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpdateParams, opts ...option.RequestOption) (res *Webhook, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -70,11 +62,7 @@ func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpda
 
 // List webhooks
 func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption) (res *WebhookListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -82,11 +70,7 @@ func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Deactivate webhook
 func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookDeactivateResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -98,11 +82,7 @@ func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...opti
 
 // List webhook deliveries
 func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookListDeliveriesResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -114,11 +94,7 @@ func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...
 
 // Test and resume webhook endpoint
 func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookResumeResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -130,11 +106,7 @@ func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.R
 
 // Test webhook endpoint
 func (r *WebhookService) Test(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookTestResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

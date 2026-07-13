@@ -37,11 +37,7 @@ func NewComposeService(opts ...option.RequestOption) (r ComposeService) {
 
 // Compose, refine, or score a tweet
 func (r *ComposeService) New(ctx context.Context, body ComposeNewParams, opts ...option.RequestOption) (res *ComposeNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "compose"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err

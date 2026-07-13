@@ -26,7 +26,6 @@ func TestXCommunityNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.New(context.TODO(), xtwitterscraper.XCommunityNewParams{
 		Account:     "@elonmusk",
@@ -55,7 +54,6 @@ func TestXCommunityDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Delete(
 		context.TODO(),
@@ -87,7 +85,6 @@ func TestXCommunityGetInfo(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetInfo(context.TODO(), "id")
 	if err != nil {
@@ -112,7 +109,6 @@ func TestXCommunityGetMembersWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetMembers(
 		context.TODO(),
@@ -144,7 +140,6 @@ func TestXCommunityGetModeratorsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetModerators(
 		context.TODO(),
@@ -175,7 +170,6 @@ func TestXCommunityGetSearchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetSearch(context.TODO(), xtwitterscraper.XCommunityGetSearchParams{
 		CommunityID: "321669910225",

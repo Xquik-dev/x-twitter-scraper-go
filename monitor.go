@@ -48,11 +48,7 @@ func NewMonitorService(opts ...option.RequestOption) (r MonitorService) {
 // included. Creation requires available credits for the first hourly charge and
 // username lookup.
 func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ...option.RequestOption) (res *MonitorNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -60,11 +56,7 @@ func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ..
 
 // Get monitor
 func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Monitor, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -76,11 +68,7 @@ func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.Requ
 
 // Update monitor
 func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpdateParams, opts ...option.RequestOption) (res *Monitor, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -92,11 +80,7 @@ func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpda
 
 // List monitors
 func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -104,11 +88,7 @@ func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Delete monitor
 func (r *MonitorService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorDeactivateResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

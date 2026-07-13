@@ -41,11 +41,7 @@ func NewXAccountConnectionChallengeService(opts ...option.RequestOption) (r XAcc
 
 // Submit X account email verification code
 func (r *XAccountConnectionChallengeService) Submit(ctx context.Context, id string, body XAccountConnectionChallengeSubmitParams, opts ...option.RequestOption) (res *XAccountConnectionChallengeSubmitResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

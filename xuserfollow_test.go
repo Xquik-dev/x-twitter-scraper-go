@@ -26,7 +26,6 @@ func TestXUserFollowNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.Follow.New(
 		context.TODO(),
@@ -57,7 +56,6 @@ func TestXUserFollowDeleteAll(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.Follow.DeleteAll(
 		context.TODO(),

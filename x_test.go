@@ -26,7 +26,6 @@ func TestXGetArticle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetArticle(context.TODO(), "tweetId")
 	if err != nil {
@@ -51,7 +50,6 @@ func TestXGetHomeTimelineWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetHomeTimeline(context.TODO(), xtwitterscraper.XGetHomeTimelineParams{
 		Cursor:       xtwitterscraper.String("cursor"),
@@ -79,7 +77,6 @@ func TestXGetNotificationsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetNotifications(context.TODO(), xtwitterscraper.XGetNotificationsParams{
 		Cursor: xtwitterscraper.String("cursor"),
@@ -107,7 +104,6 @@ func TestXGetTrendsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetTrends(context.TODO(), xtwitterscraper.XGetTrendsParams{
 		Count: xtwitterscraper.Int(1),

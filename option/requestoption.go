@@ -281,11 +281,3 @@ func WithBearerToken(value string) RequestOption {
 		return nil
 	})
 }
-
-// WithCookieSession returns a RequestOption that sets the client setting "cookie_session".
-func WithCookieSession(value string) RequestOption {
-	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.CookieSession = value
-		return nil
-	})
-}

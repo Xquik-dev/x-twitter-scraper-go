@@ -27,7 +27,6 @@ func TestXUserGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.Get(context.TODO(), "id")
 	if err != nil {
@@ -52,7 +51,6 @@ func TestXUserRemoveFollower(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.RemoveFollower(
 		context.TODO(),
@@ -83,7 +81,6 @@ func TestXUserGetBatch(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetBatch(context.TODO(), xtwitterscraper.XUserGetBatchParams{
 		IDs: "ids",
@@ -110,7 +107,6 @@ func TestXUserGetFollowersWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetFollowers(
 		context.TODO(),
@@ -144,7 +140,6 @@ func TestXUserGetFollowersYouKnowWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetFollowersYouKnow(
 		context.TODO(),
@@ -176,7 +171,6 @@ func TestXUserGetFollowingWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetFollowing(
 		context.TODO(),
@@ -210,7 +204,6 @@ func TestXUserGetLikesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetLikes(
 		context.TODO(),
@@ -267,7 +260,6 @@ func TestXUserGetMediaWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetMedia(
 		context.TODO(),
@@ -324,7 +316,6 @@ func TestXUserGetMentionsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetMentions(
 		context.TODO(),
@@ -383,7 +374,6 @@ func TestXUserGetRepliesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetReplies(
 		context.TODO(),
@@ -441,7 +431,6 @@ func TestXUserGetSearchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetSearch(context.TODO(), xtwitterscraper.XUserGetSearchParams{
 		Q:      "q",
@@ -469,7 +458,6 @@ func TestXUserGetTweetsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetTweets(
 		context.TODO(),
@@ -528,7 +516,6 @@ func TestXUserGetVerifiedFollowersWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetVerifiedFollowers(
 		context.TODO(),

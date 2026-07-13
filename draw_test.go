@@ -30,7 +30,6 @@ func TestDrawGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Draws.Get(context.TODO(), "f4bd00a2-7b4e-4e59-8e1b-72e2c9f12345")
 	if err != nil {
@@ -55,7 +54,6 @@ func TestDrawListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Draws.List(context.TODO(), xtwitterscraper.DrawListParams{
 		Cursor: xtwitterscraper.String("cursor"),
@@ -81,7 +79,6 @@ func TestDrawExportWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	resp, err := client.Draws.Export(
 		context.TODO(),
@@ -126,7 +123,6 @@ func TestDrawRunWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Draws.Run(context.TODO(), xtwitterscraper.DrawRunParams{
 		TweetURL:             "https://x.com/elonmusk/status/1234567890",

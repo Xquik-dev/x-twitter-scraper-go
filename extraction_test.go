@@ -31,7 +31,6 @@ func TestExtractionGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Extractions.Get(
 		context.TODO(),
@@ -63,7 +62,6 @@ func TestExtractionListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Extractions.List(context.TODO(), xtwitterscraper.ExtractionListParams{
 		Cursor:   xtwitterscraper.String("cursor"),
@@ -93,7 +91,6 @@ func TestExtractionEstimateCostWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Extractions.EstimateCost(context.TODO(), xtwitterscraper.ExtractionEstimateCostParams{
 		ToolType:          xtwitterscraper.ExtractionEstimateCostParamsToolTypeFollowerExplorer,
@@ -156,7 +153,6 @@ func TestExtractionExportResults(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	resp, err := client.Extractions.ExportResults(
 		context.TODO(),
@@ -200,7 +196,6 @@ func TestExtractionRunWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Extractions.Run(context.TODO(), xtwitterscraper.ExtractionRunParams{
 		ToolType:          xtwitterscraper.ExtractionRunParamsToolTypeFollowerExplorer,

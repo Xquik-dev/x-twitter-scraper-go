@@ -26,7 +26,6 @@ func TestXCommunityTweetListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
 		CommunityID: "321669910225",
@@ -57,7 +56,6 @@ func TestXCommunityTweetListByCommunityWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Tweets.ListByCommunity(
 		context.TODO(),
