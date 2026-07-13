@@ -8,11 +8,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // Look up, search, and explore user profiles and relationships
@@ -38,7 +38,11 @@ func NewXFollowerService(opts ...option.RequestOption) (r XFollowerService) {
 
 // Check if one user follows another
 func (r *XFollowerService) Check(ctx context.Context, query XFollowerCheckParams, opts ...option.RequestOption) (res *XFollowerCheckResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/followers/check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -67,9 +71,9 @@ func (r *XFollowerCheckResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XFollowerCheckParams struct {
-	// Username to check (without @)
+	// Source username, @username, or X or Twitter profile URL
 	Source string `query:"source" api:"required" json:"-"`
-	// Target username (without @)
+	// Target username, @username, or X or Twitter profile URL
 	Target string `query:"target" api:"required" json:"-"`
 	paramObj
 }

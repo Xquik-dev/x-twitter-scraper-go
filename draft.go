@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // AI tweet composition, drafts, writing styles, and radar
@@ -42,7 +42,11 @@ func NewDraftService(opts ...option.RequestOption) (r DraftService) {
 
 // Save a tweet draft
 func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...option.RequestOption) (res *DraftDetail, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "drafts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -50,7 +54,11 @@ func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...opt
 
 // Get draft by ID
 func (r *DraftService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DraftDetail, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -62,7 +70,11 @@ func (r *DraftService) Get(ctx context.Context, id string, opts ...option.Reques
 
 // List saved drafts
 func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...option.RequestOption) (res *DraftListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "drafts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -70,7 +82,11 @@ func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...
 
 // Delete a draft
 func (r *DraftService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -181,7 +197,10 @@ const (
 type DraftListParams struct {
 	// Cursor for pagination
 	AfterCursor param.Opt[string] `query:"afterCursor,omitzero" json:"-"`
-	// Maximum number of items to return (1-100, default 50)
+	// Maximum number of items to return (1-100, default 50). For paid per-result
+	// endpoints, the returned count may be lower when remaining credits cannot cover
+	// the requested page. If zero paid results are affordable, the endpoint returns
+	// 402 insufficient_credits.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }

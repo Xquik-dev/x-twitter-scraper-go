@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXCommunityNewWithOptionalParams(t *testing.T) {
@@ -25,6 +25,8 @@ func TestXCommunityNewWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.New(context.TODO(), xtwitterscraper.XCommunityNewParams{
 		Account:     "@elonmusk",
@@ -52,6 +54,8 @@ func TestXCommunityDelete(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Delete(
 		context.TODO(),
@@ -82,6 +86,8 @@ func TestXCommunityGetInfo(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetInfo(context.TODO(), "id")
 	if err != nil {
@@ -105,13 +111,15 @@ func TestXCommunityGetMembersWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetMembers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityGetMembersParams{
 			Cursor:   xtwitterscraper.String("cursor"),
-			PageSize: xtwitterscraper.Int(0),
+			PageSize: xtwitterscraper.Int(20),
 		},
 	)
 	if err != nil {
@@ -135,6 +143,8 @@ func TestXCommunityGetModeratorsWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetModerators(
 		context.TODO(),
@@ -164,11 +174,15 @@ func TestXCommunityGetSearchWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.GetSearch(context.TODO(), xtwitterscraper.XCommunityGetSearchParams{
-		Q:         "q",
-		Cursor:    xtwitterscraper.String("cursor"),
-		QueryType: xtwitterscraper.String("queryType"),
+		CommunityID: "321669910225",
+		Q:           "q",
+		Cursor:      xtwitterscraper.String("cursor"),
+		PageSize:    xtwitterscraper.Int(1),
+		QueryType:   xtwitterscraper.XCommunityGetSearchParamsQueryTypeLatest,
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

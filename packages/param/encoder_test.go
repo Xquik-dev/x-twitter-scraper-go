@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	shimjson "github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
 type Struct struct {

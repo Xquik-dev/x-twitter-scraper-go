@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // Real-time X account monitoring
@@ -29,6 +29,8 @@ import (
 // the [NewMonitorService] method instead.
 type MonitorService struct {
 	options []option.RequestOption
+	// Real-time X account monitoring
+	Keywords MonitorKeywordService
 }
 
 // NewMonitorService generates a new service that applies the given options to each
@@ -37,12 +39,20 @@ type MonitorService struct {
 func NewMonitorService(opts ...option.RequestOption) (r MonitorService) {
 	r = MonitorService{}
 	r.options = opts
+	r.Keywords = NewMonitorKeywordService(opts...)
 	return
 }
 
-// Create monitor
+// Creates an instant monitor. Monitors are unlimited. Active monitors check every
+// 1 second and cost 21 credits per hour. Events and webhook deliveries are
+// included. Creation requires available credits for the first hourly charge and
+// username lookup.
 func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ...option.RequestOption) (res *MonitorNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -50,7 +60,11 @@ func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ..
 
 // Get monitor
 func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Monitor, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -62,7 +76,11 @@ func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.Requ
 
 // Update monitor
 func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpdateParams, opts ...option.RequestOption) (res *Monitor, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -74,15 +92,23 @@ func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpda
 
 // List monitors
 func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
-// Deactivate monitor
+// Delete monitor
 func (r *MonitorService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorDeactivateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -99,18 +125,21 @@ type Monitor struct {
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
 	IsActive   bool               `json:"isActive" api:"required"`
-	Username   string             `json:"username" api:"required"`
-	XUserID    string             `json:"xUserId" api:"required"`
+	// Next hourly credit charge time for this account monitor.
+	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
+	Username      string    `json:"username" api:"required"`
+	XUserID       string    `json:"xUserId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		IsActive    respjson.Field
-		Username    respjson.Field
-		XUserID     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		EventTypes    respjson.Field
+		IsActive      respjson.Field
+		NextBillingAt respjson.Field
+		Username      respjson.Field
+		XUserID       respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -125,17 +154,22 @@ type MonitorNewResponse struct {
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
-	Username   string             `json:"username" api:"required"`
-	XUserID    string             `json:"xUserId" api:"required"`
+	IsActive   bool               `json:"isActive" api:"required"`
+	// Next hourly credit charge time. New active monitors are due immediately.
+	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
+	Username      string    `json:"username" api:"required"`
+	XUserID       string    `json:"xUserId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		Username    respjson.Field
-		XUserID     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		EventTypes    respjson.Field
+		IsActive      respjson.Field
+		NextBillingAt respjson.Field
+		Username      respjson.Field
+		XUserID       respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 

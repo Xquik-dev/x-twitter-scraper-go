@@ -13,7 +13,7 @@ import (
 
 	"github.com/tidwall/sjson"
 
-	shimjson "github.com/stainless-sdks/x-twitter-scraper-go/internal/encoding/json"
+	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

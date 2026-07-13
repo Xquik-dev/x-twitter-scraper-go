@@ -7,10 +7,11 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXUserGet(t *testing.T) {
@@ -25,8 +26,41 @@ func TestXUserGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.Get(context.TODO(), "id")
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXUserRemoveFollower(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
+	)
+	_, err := client.X.Users.RemoveFollower(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XUserRemoveFollowerParams{
+			Account: "@elonmusk",
+		},
+	)
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -48,6 +82,8 @@ func TestXUserGetBatch(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetBatch(context.TODO(), xtwitterscraper.XUserGetBatchParams{
 		IDs: "ids",
@@ -73,13 +109,17 @@ func TestXUserGetFollowersWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetFollowers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetFollowersParams{
+			After:    xtwitterscraper.String("after"),
 			Cursor:   xtwitterscraper.String("cursor"),
-			PageSize: xtwitterscraper.Int(0),
+			Limit:    xtwitterscraper.Int(0),
+			PageSize: xtwitterscraper.Int(20),
 		},
 	)
 	if err != nil {
@@ -103,12 +143,15 @@ func TestXUserGetFollowersYouKnowWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetFollowersYouKnow(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetFollowersYouKnowParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			Cursor:   xtwitterscraper.String("cursor"),
+			PageSize: xtwitterscraper.Int(20),
 		},
 	)
 	if err != nil {
@@ -132,13 +175,17 @@ func TestXUserGetFollowingWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetFollowing(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetFollowingParams{
+			After:    xtwitterscraper.String("after"),
 			Cursor:   xtwitterscraper.String("cursor"),
-			PageSize: xtwitterscraper.Int(0),
+			Limit:    xtwitterscraper.Int(0),
+			PageSize: xtwitterscraper.Int(20),
 		},
 	)
 	if err != nil {
@@ -162,12 +209,40 @@ func TestXUserGetLikesWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetLikes(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetLikesParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			AnyWords:          xtwitterscraper.String("anyWords"),
+			Cashtags:          xtwitterscraper.String("cashtags"),
+			ConversationID:    xtwitterscraper.String("conversationId"),
+			Cursor:            xtwitterscraper.String("cursor"),
+			ExactPhrase:       xtwitterscraper.String("exactPhrase"),
+			ExcludeWords:      xtwitterscraper.String("excludeWords"),
+			FromUser:          xtwitterscraper.String("fromUser"),
+			Hashtags:          xtwitterscraper.String("hashtags"),
+			InReplyToTweetID:  xtwitterscraper.String("inReplyToTweetId"),
+			Language:          xtwitterscraper.String("language"),
+			MediaType:         xtwitterscraper.XUserGetLikesParamsMediaTypeImages,
+			Mentioning:        xtwitterscraper.String("mentioning"),
+			MinFaves:          xtwitterscraper.Int(0),
+			MinQuotes:         xtwitterscraper.Int(0),
+			MinReplies:        xtwitterscraper.Int(0),
+			MinRetweets:       xtwitterscraper.Int(0),
+			PageSize:          xtwitterscraper.Int(1),
+			Quotes:            xtwitterscraper.XUserGetLikesParamsQuotesInclude,
+			QuotesOfTweetID:   xtwitterscraper.String("quotesOfTweetId"),
+			Replies:           xtwitterscraper.XUserGetLikesParamsRepliesInclude,
+			Retweets:          xtwitterscraper.XUserGetLikesParamsRetweetsInclude,
+			RetweetsOfTweetID: xtwitterscraper.String("retweetsOfTweetId"),
+			SinceDate:         xtwitterscraper.Time(time.Now()),
+			ToUser:            xtwitterscraper.String("toUser"),
+			UntilDate:         xtwitterscraper.Time(time.Now()),
+			URL:               xtwitterscraper.String("url"),
+			VerifiedOnly:      xtwitterscraper.Bool(true),
 		},
 	)
 	if err != nil {
@@ -191,12 +266,40 @@ func TestXUserGetMediaWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetMedia(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetMediaParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			AnyWords:          xtwitterscraper.String("anyWords"),
+			Cashtags:          xtwitterscraper.String("cashtags"),
+			ConversationID:    xtwitterscraper.String("conversationId"),
+			Cursor:            xtwitterscraper.String("cursor"),
+			ExactPhrase:       xtwitterscraper.String("exactPhrase"),
+			ExcludeWords:      xtwitterscraper.String("excludeWords"),
+			FromUser:          xtwitterscraper.String("fromUser"),
+			Hashtags:          xtwitterscraper.String("hashtags"),
+			InReplyToTweetID:  xtwitterscraper.String("inReplyToTweetId"),
+			Language:          xtwitterscraper.String("language"),
+			MediaType:         xtwitterscraper.XUserGetMediaParamsMediaTypeImages,
+			Mentioning:        xtwitterscraper.String("mentioning"),
+			MinFaves:          xtwitterscraper.Int(0),
+			MinQuotes:         xtwitterscraper.Int(0),
+			MinReplies:        xtwitterscraper.Int(0),
+			MinRetweets:       xtwitterscraper.Int(0),
+			PageSize:          xtwitterscraper.Int(1),
+			Quotes:            xtwitterscraper.XUserGetMediaParamsQuotesInclude,
+			QuotesOfTweetID:   xtwitterscraper.String("quotesOfTweetId"),
+			Replies:           xtwitterscraper.XUserGetMediaParamsRepliesInclude,
+			Retweets:          xtwitterscraper.XUserGetMediaParamsRetweetsInclude,
+			RetweetsOfTweetID: xtwitterscraper.String("retweetsOfTweetId"),
+			SinceDate:         xtwitterscraper.Time(time.Now()),
+			ToUser:            xtwitterscraper.String("toUser"),
+			UntilDate:         xtwitterscraper.Time(time.Now()),
+			URL:               xtwitterscraper.String("url"),
+			VerifiedOnly:      xtwitterscraper.Bool(true),
 		},
 	)
 	if err != nil {
@@ -220,14 +323,100 @@ func TestXUserGetMentionsWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetMentions(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetMentionsParams{
-			Cursor:    xtwitterscraper.String("cursor"),
-			SinceTime: xtwitterscraper.String("sinceTime"),
-			UntilTime: xtwitterscraper.String("untilTime"),
+			AnyWords:          xtwitterscraper.String("anyWords"),
+			Cashtags:          xtwitterscraper.String("cashtags"),
+			ConversationID:    xtwitterscraper.String("conversationId"),
+			Cursor:            xtwitterscraper.String("cursor"),
+			ExactPhrase:       xtwitterscraper.String("exactPhrase"),
+			ExcludeWords:      xtwitterscraper.String("excludeWords"),
+			FromUser:          xtwitterscraper.String("fromUser"),
+			Hashtags:          xtwitterscraper.String("hashtags"),
+			InReplyToTweetID:  xtwitterscraper.String("inReplyToTweetId"),
+			Language:          xtwitterscraper.String("language"),
+			MediaType:         xtwitterscraper.XUserGetMentionsParamsMediaTypeImages,
+			Mentioning:        xtwitterscraper.String("mentioning"),
+			MinFaves:          xtwitterscraper.Int(0),
+			MinQuotes:         xtwitterscraper.Int(0),
+			MinReplies:        xtwitterscraper.Int(0),
+			MinRetweets:       xtwitterscraper.Int(0),
+			PageSize:          xtwitterscraper.Int(1),
+			Quotes:            xtwitterscraper.XUserGetMentionsParamsQuotesInclude,
+			QuotesOfTweetID:   xtwitterscraper.String("quotesOfTweetId"),
+			Replies:           xtwitterscraper.XUserGetMentionsParamsRepliesInclude,
+			Retweets:          xtwitterscraper.XUserGetMentionsParamsRetweetsInclude,
+			RetweetsOfTweetID: xtwitterscraper.String("retweetsOfTweetId"),
+			SinceDate:         xtwitterscraper.Time(time.Now()),
+			SinceTime:         xtwitterscraper.String("sinceTime"),
+			ToUser:            xtwitterscraper.String("toUser"),
+			UntilDate:         xtwitterscraper.Time(time.Now()),
+			UntilTime:         xtwitterscraper.String("untilTime"),
+			URL:               xtwitterscraper.String("url"),
+			VerifiedOnly:      xtwitterscraper.Bool(true),
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXUserGetRepliesWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
+	)
+	_, err := client.X.Users.GetReplies(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XUserGetRepliesParams{
+			AnyWords:           xtwitterscraper.String("anyWords"),
+			Cashtags:           xtwitterscraper.String("cashtags"),
+			ConversationID:     xtwitterscraper.String("conversationId"),
+			Cursor:             xtwitterscraper.String("cursor"),
+			ExactPhrase:        xtwitterscraper.String("exactPhrase"),
+			ExcludeWords:       xtwitterscraper.String("excludeWords"),
+			FromUser:           xtwitterscraper.String("fromUser"),
+			Hashtags:           xtwitterscraper.String("hashtags"),
+			IncludeParentTweet: xtwitterscraper.Bool(true),
+			InReplyToTweetID:   xtwitterscraper.String("inReplyToTweetId"),
+			Language:           xtwitterscraper.String("language"),
+			MediaType:          xtwitterscraper.XUserGetRepliesParamsMediaTypeImages,
+			Mentioning:         xtwitterscraper.String("mentioning"),
+			MinFaves:           xtwitterscraper.Int(0),
+			MinQuotes:          xtwitterscraper.Int(0),
+			MinReplies:         xtwitterscraper.Int(0),
+			MinRetweets:        xtwitterscraper.Int(0),
+			PageSize:           xtwitterscraper.Int(1),
+			Quotes:             xtwitterscraper.XUserGetRepliesParamsQuotesInclude,
+			QuotesOfTweetID:    xtwitterscraper.String("quotesOfTweetId"),
+			Replies:            xtwitterscraper.XUserGetRepliesParamsRepliesInclude,
+			Retweets:           xtwitterscraper.XUserGetRepliesParamsRetweetsInclude,
+			RetweetsOfTweetID:  xtwitterscraper.String("retweetsOfTweetId"),
+			SinceDate:          xtwitterscraper.Time(time.Now()),
+			ToUser:             xtwitterscraper.String("toUser"),
+			UntilDate:          xtwitterscraper.Time(time.Now()),
+			URL:                xtwitterscraper.String("url"),
+			VerifiedOnly:       xtwitterscraper.Bool(true),
 		},
 	)
 	if err != nil {
@@ -251,6 +440,8 @@ func TestXUserGetSearchWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetSearch(context.TODO(), xtwitterscraper.XUserGetSearchParams{
 		Q:      "q",
@@ -277,14 +468,42 @@ func TestXUserGetTweetsWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetTweets(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetTweetsParams{
+			AnyWords:           xtwitterscraper.String("anyWords"),
+			Cashtags:           xtwitterscraper.String("cashtags"),
+			ConversationID:     xtwitterscraper.String("conversationId"),
 			Cursor:             xtwitterscraper.String("cursor"),
+			ExactPhrase:        xtwitterscraper.String("exactPhrase"),
+			ExcludeWords:       xtwitterscraper.String("excludeWords"),
+			FromUser:           xtwitterscraper.String("fromUser"),
+			Hashtags:           xtwitterscraper.String("hashtags"),
 			IncludeParentTweet: xtwitterscraper.Bool(true),
 			IncludeReplies:     xtwitterscraper.Bool(true),
+			InReplyToTweetID:   xtwitterscraper.String("inReplyToTweetId"),
+			Language:           xtwitterscraper.String("language"),
+			MediaType:          xtwitterscraper.XUserGetTweetsParamsMediaTypeImages,
+			Mentioning:         xtwitterscraper.String("mentioning"),
+			MinFaves:           xtwitterscraper.Int(0),
+			MinQuotes:          xtwitterscraper.Int(0),
+			MinReplies:         xtwitterscraper.Int(0),
+			MinRetweets:        xtwitterscraper.Int(0),
+			PageSize:           xtwitterscraper.Int(1),
+			Quotes:             xtwitterscraper.XUserGetTweetsParamsQuotesInclude,
+			QuotesOfTweetID:    xtwitterscraper.String("quotesOfTweetId"),
+			Replies:            xtwitterscraper.XUserGetTweetsParamsRepliesInclude,
+			Retweets:           xtwitterscraper.XUserGetTweetsParamsRetweetsInclude,
+			RetweetsOfTweetID:  xtwitterscraper.String("retweetsOfTweetId"),
+			SinceDate:          xtwitterscraper.Time(time.Now()),
+			ToUser:             xtwitterscraper.String("toUser"),
+			UntilDate:          xtwitterscraper.Time(time.Now()),
+			URL:                xtwitterscraper.String("url"),
+			VerifiedOnly:       xtwitterscraper.Bool(true),
 		},
 	)
 	if err != nil {
@@ -308,12 +527,15 @@ func TestXUserGetVerifiedFollowersWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.GetVerifiedFollowers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserGetVerifiedFollowersParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			Cursor:   xtwitterscraper.String("cursor"),
+			PageSize: xtwitterscraper.Int(20),
 		},
 	)
 	if err != nil {

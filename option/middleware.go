@@ -10,7 +10,7 @@ import (
 
 // sensitiveLogHeaders are redacted before request and response content is
 // written to the debug logger.
-var sensitiveLogHeaders = []string{"authorization", "api-key", "x-api-key", "cookie", "set-cookie"}
+var sensitiveLogHeaders = []string{"authorization", "api-key", "x-api-key", "cookie", "set-cookie", "__host-xquik_session"}
 
 // WithDebugLog logs the HTTP request and response content.
 // If the logger parameter is nil, it uses the default logger.

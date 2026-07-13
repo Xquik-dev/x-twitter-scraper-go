@@ -12,9 +12,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestDrawGet(t *testing.T) {
@@ -29,8 +29,10 @@ func TestDrawGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
-	_, err := client.Draws.Get(context.TODO(), "id")
+	_, err := client.Draws.Get(context.TODO(), "f4bd00a2-7b4e-4e59-8e1b-72e2c9f12345")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -52,10 +54,12 @@ func TestDrawListWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Draws.List(context.TODO(), xtwitterscraper.DrawListParams{
-		After: xtwitterscraper.String("after"),
-		Limit: xtwitterscraper.Int(1),
+		Cursor: xtwitterscraper.String("cursor"),
+		Limit:  xtwitterscraper.Int(1),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -76,10 +80,12 @@ func TestDrawExportWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	resp, err := client.Draws.Export(
 		context.TODO(),
-		"id",
+		"f4bd00a2-7b4e-4e59-8e1b-72e2c9f12345",
 		xtwitterscraper.DrawExportParams{
 			Format: xtwitterscraper.DrawExportParamsFormatCsv,
 			Type:   xtwitterscraper.DrawExportParamsTypeWinners,
@@ -119,6 +125,8 @@ func TestDrawRunWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Draws.Run(context.TODO(), xtwitterscraper.DrawRunParams{
 		TweetURL:             "https://x.com/elonmusk/status/1234567890",

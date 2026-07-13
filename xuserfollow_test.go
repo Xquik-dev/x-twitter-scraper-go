@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXUserFollowNew(t *testing.T) {
@@ -25,6 +25,8 @@ func TestXUserFollowNew(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.Follow.New(
 		context.TODO(),
@@ -54,6 +56,8 @@ func TestXUserFollowDeleteAll(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Users.Follow.DeleteAll(
 		context.TODO(),

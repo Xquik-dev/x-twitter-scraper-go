@@ -9,12 +9,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // AI tweet composition, drafts, writing styles, and radar
@@ -40,7 +40,11 @@ func NewRadarService(opts ...option.RequestOption) (r RadarService) {
 
 // Get trending topics from curated sources
 func (r *RadarService) GetTrendingTopics(ctx context.Context, query RadarGetTrendingTopicsParams, opts ...option.RequestOption) (res *RadarGetTrendingTopicsResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "radar"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -49,7 +53,7 @@ func (r *RadarService) GetTrendingTopics(ctx context.Context, query RadarGetTren
 // Trending topic with score, category, source, region, language, and
 // source-specific metadata.
 type RadarItem struct {
-	// Internal numeric identifier (stringified bigint).
+	// Radar item identifier.
 	ID string `json:"id" api:"required"`
 	// Any of "general", "tech", "dev", "science", "culture", "politics", "business",
 	// "entertainment".
@@ -156,11 +160,11 @@ func (r *RadarGetTrendingTopicsResponse) UnmarshalJSON(data []byte) error {
 type RadarGetTrendingTopicsParams struct {
 	// Cursor for pagination (from prior response nextCursor).
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	// Lookback window in hours (1-168, default 24).
+	// Lookback window in hours (1-72, default 6).
 	Hours param.Opt[int64] `query:"hours,omitzero" json:"-"`
 	// Number of items to return (1-100, default 50).
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Region filter (us, global, etc.)
+	// Region filter. Use `global` or a region code such as `US`, `GB`, `TR`, or `ES`.
 	Region param.Opt[string] `query:"region,omitzero" json:"-"`
 	// Filter by category.
 	//

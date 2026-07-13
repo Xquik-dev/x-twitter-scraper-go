@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/x-twitter-scraper-go
+module github.com/Xquik-dev/x-twitter-scraper-go
 
 go 1.22
 

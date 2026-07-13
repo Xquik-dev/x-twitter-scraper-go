@@ -3,16 +3,14 @@
 package xtwitterscraper_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXProfileUpdateWithOptionalParams(t *testing.T) {
@@ -27,6 +25,8 @@ func TestXProfileUpdateWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Profile.Update(context.TODO(), xtwitterscraper.XProfileUpdateParams{
 		Account:     "@elonmusk",
@@ -56,10 +56,12 @@ func TestXProfileUpdateAvatar(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Profile.UpdateAvatar(context.TODO(), xtwitterscraper.XProfileUpdateAvatarParams{
 		Account: "@elonmusk",
-		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
+		URL:     "https://example.com/avatar.png",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -82,10 +84,12 @@ func TestXProfileUpdateBanner(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Profile.UpdateBanner(context.TODO(), xtwitterscraper.XProfileUpdateBannerParams{
 		Account: "@elonmusk",
-		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
+		URL:     "https://example.com/banner.png",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

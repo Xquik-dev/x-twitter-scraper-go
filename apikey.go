@@ -11,11 +11,11 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // API key management (session auth only)
@@ -41,7 +41,8 @@ func NewAPIKeyService(opts ...option.RequestOption) (r APIKeyService) {
 
 // Create API key
 func (r *APIKeyService) New(ctx context.Context, body APIKeyNewParams, opts ...option.RequestOption) (res *APIKeyNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithCookieSessionSecurity()}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "api-keys"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -49,7 +50,8 @@ func (r *APIKeyService) New(ctx context.Context, body APIKeyNewParams, opts ...o
 
 // List API keys
 func (r *APIKeyService) List(ctx context.Context, opts ...option.RequestOption) (res *APIKeyListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithCookieSessionSecurity()}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "api-keys"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -57,7 +59,8 @@ func (r *APIKeyService) List(ctx context.Context, opts ...option.RequestOption) 
 
 // Revoke API key
 func (r *APIKeyService) Revoke(ctx context.Context, id string, opts ...option.RequestOption) (res *APIKeyRevokeResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithCookieSessionSecurity()}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

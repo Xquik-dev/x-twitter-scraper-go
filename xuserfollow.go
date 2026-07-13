@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // X write actions (tweets, likes, follows, DMs)
@@ -40,7 +40,11 @@ func NewXUserFollowService(opts ...option.RequestOption) (r XUserFollowService) 
 
 // Follow user
 func (r *XUserFollowService) New(ctx context.Context, id string, body XUserFollowNewParams, opts ...option.RequestOption) (res *XUserFollowNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -52,7 +56,11 @@ func (r *XUserFollowService) New(ctx context.Context, id string, body XUserFollo
 
 // Unfollow user
 func (r *XUserFollowService) DeleteAll(ctx context.Context, id string, body XUserFollowDeleteAllParams, opts ...option.RequestOption) (res *XUserFollowDeleteAllResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

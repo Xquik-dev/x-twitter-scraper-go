@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXBookmarkListWithOptionalParams(t *testing.T) {
@@ -25,9 +25,11 @@ func TestXBookmarkListWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Bookmarks.List(context.TODO(), xtwitterscraper.XBookmarkListParams{
-		Cursor:   xtwitterscraper.String("folders_value"),
+		Cursor:   xtwitterscraper.String("DAACCgACGRElMJcAAA"),
 		FolderID: xtwitterscraper.String("folderId"),
 	})
 	if err != nil {
@@ -51,6 +53,8 @@ func TestXBookmarkGetFolders(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Bookmarks.GetFolders(context.TODO())
 	if err != nil {

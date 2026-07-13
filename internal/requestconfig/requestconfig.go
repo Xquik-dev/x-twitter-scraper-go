@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apierror"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiform"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apierror"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {
@@ -177,10 +177,18 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 		Body:       reader,
 	}
 	cfg.ResponseBodyInto = dst
+	cfg.Security = Security{
+		APIKey:        true,
+		OAuthBearer:   true,
+		CookieSession: true,
+	}
 	err = cfg.Apply(opts...)
 	if err != nil {
 		return nil, err
 	}
+
+	// This must run after `cfg.Apply(...)` above so we know which specific security scheme to add
+	ApplySecurity(cfg)
 
 	// This must run after `cfg.Apply(...)` above in case the request timeout gets modified. We also only
 	// apply our own logic for it if it's still "0" from above. If it's not, then it was deleted or modified
@@ -220,6 +228,9 @@ type RequestConfig struct {
 	Middlewares    []middleware
 	APIKey         string
 	BearerToken    string
+	CookieSession  string
+	// Configure which security scheme(s) should be enabled for this request
+	Security Security
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -595,6 +606,7 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		Middlewares:    cfg.Middlewares,
 		APIKey:         cfg.APIKey,
 		BearerToken:    cfg.BearerToken,
+		CookieSession:  cfg.CookieSession,
 	}
 
 	return new
@@ -641,4 +653,70 @@ func WithDefaultBaseURL(baseURL string) RequestOption {
 		r.DefaultBaseURL = u
 		return nil
 	})
+}
+
+type Security struct {
+	APIKey        bool
+	OAuthBearer   bool
+	CookieSession bool
+}
+
+func WithSecurity(security Security) RequestOption {
+	return RequestOptionFunc(func(r *RequestConfig) error {
+		r.Security = security
+		return nil
+	})
+}
+
+// WithAPIKeySecurity() should only be used within a method, not provided to at the
+// client-level.
+func WithAPIKeySecurity() RequestOption {
+	return RequestOptionFunc(func(r *RequestConfig) error {
+		r.Security = Security{
+			APIKey:        true,
+			OAuthBearer:   false,
+			CookieSession: false,
+		}
+		return nil
+	})
+}
+
+// WithOAuthBearerSecurity() should only be used within a method, not provided to
+// at the client-level.
+func WithOAuthBearerSecurity() RequestOption {
+	return RequestOptionFunc(func(r *RequestConfig) error {
+		r.Security = Security{
+			APIKey:        false,
+			OAuthBearer:   true,
+			CookieSession: false,
+		}
+		return nil
+	})
+}
+
+// WithCookieSessionSecurity() should only be used within a method, not provided to
+// at the client-level.
+func WithCookieSessionSecurity() RequestOption {
+	return RequestOptionFunc(func(r *RequestConfig) error {
+		r.Security = Security{
+			APIKey:        false,
+			OAuthBearer:   false,
+			CookieSession: true,
+		}
+		return nil
+	})
+}
+
+func ApplySecurity(r RequestConfig) {
+	if r.Security.APIKey && r.APIKey != "" && r.Request.Header.Get("x-api-key") == "" {
+		r.Request.Header.Set("x-api-key", r.APIKey)
+	}
+
+	if r.Security.OAuthBearer && r.BearerToken != "" && r.Request.Header.Get("Authorization") == "" {
+		r.Request.Header.Set("authorization", fmt.Sprintf("Bearer %s", r.BearerToken))
+	}
+
+	if r.Security.CookieSession && r.CookieSession != "" && r.Request.Header.Get("__Host-xquik_session") == "" {
+		r.Request.Header.Set("__Host-xquik_session", r.CookieSession)
+	}
 }

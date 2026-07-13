@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // Webhook endpoint management and delivery
@@ -42,7 +42,11 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 
 // Create webhook
 func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *WebhookNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -50,7 +54,11 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 
 // Update webhook
 func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpdateParams, opts ...option.RequestOption) (res *Webhook, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -62,7 +70,11 @@ func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpda
 
 // List webhooks
 func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption) (res *WebhookListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -70,7 +82,11 @@ func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Deactivate webhook
 func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookDeactivateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -82,7 +98,11 @@ func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...opti
 
 // List webhook deliveries
 func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookListDeliveriesResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -92,9 +112,29 @@ func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...
 	return res, err
 }
 
+// Test and resume webhook endpoint
+func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookResumeResponse, err error) {
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("webhooks/%s/resume", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // Test webhook endpoint
 func (r *WebhookService) Test(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookTestResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -137,21 +177,33 @@ func (r *Delivery) UnmarshalJSON(data []byte) error {
 
 // Webhook endpoint registered to receive event deliveries.
 type Webhook struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	ID string `json:"id" api:"required"`
+	// Consecutive failed delivery attempts since the last success.
+	ConsecutiveFailures int64     `json:"consecutiveFailures" api:"required"`
+	CreatedAt           time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Endpoint delivery state. needs_attention means delivery stopped after repeated
+	// failures.
+	//
+	// Any of "active", "paused", "needs_attention".
+	DeliveryStatus WebhookDeliveryStatus `json:"deliveryStatus" api:"required"`
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
-	IsActive   bool               `json:"isActive" api:"required"`
-	URL        string             `json:"url" api:"required" format:"uri"`
+	// Consecutive delivery failures that pause the endpoint.
+	FailureHardCap int64  `json:"failureHardCap" api:"required"`
+	IsActive       bool   `json:"isActive" api:"required"`
+	URL            string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		IsActive    respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                  respjson.Field
+		ConsecutiveFailures respjson.Field
+		CreatedAt           respjson.Field
+		DeliveryStatus      respjson.Field
+		EventTypes          respjson.Field
+		FailureHardCap      respjson.Field
+		IsActive            respjson.Field
+		URL                 respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -161,13 +213,24 @@ func (r *Webhook) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Endpoint delivery state. needs_attention means delivery stopped after repeated
+// failures.
+type WebhookDeliveryStatus string
+
+const (
+	WebhookDeliveryStatusActive         WebhookDeliveryStatus = "active"
+	WebhookDeliveryStatusPaused         WebhookDeliveryStatus = "paused"
+	WebhookDeliveryStatusNeedsAttention WebhookDeliveryStatus = "needs_attention"
+)
+
 type WebhookNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
-	Secret     string             `json:"secret" api:"required"`
-	URL        string             `json:"url" api:"required" format:"uri"`
+	// Plaintext HMAC signing secret returned only at creation.
+	Secret string `json:"secret" api:"required"`
+	URL    string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -231,6 +294,27 @@ type WebhookListDeliveriesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookListDeliveriesResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookListDeliveriesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookResumeResponse struct {
+	StatusCode int64 `json:"statusCode" api:"required"`
+	Success    bool  `json:"success" api:"required"`
+	// Webhook endpoint registered to receive event deliveries.
+	Webhook Webhook `json:"webhook" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		StatusCode  respjson.Field
+		Success     respjson.Field
+		Webhook     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookResumeResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookResumeResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

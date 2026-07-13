@@ -8,13 +8,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // Look up, search, and analyze individual tweets
@@ -40,7 +40,11 @@ func NewXBookmarkService(opts ...option.RequestOption) (r XBookmarkService) {
 
 // Get bookmarked tweets
 func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/bookmarks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -48,16 +52,22 @@ func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, 
 
 // Get bookmark folders
 func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.RequestOption) (res *XBookmarkGetFoldersResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/bookmarks/folders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
 type XBookmarkGetFoldersResponse struct {
-	Folders     []XBookmarkGetFoldersResponseFolder `json:"folders" api:"required"`
-	HasNextPage bool                                `json:"has_next_page" api:"required"`
-	NextCursor  string                              `json:"next_cursor" api:"required"`
+	Folders []XBookmarkGetFoldersResponseFolder `json:"folders" api:"required"`
+	// Always false for the current bookmark folder route
+	HasNextPage bool `json:"has_next_page" api:"required"`
+	// Always empty for the current bookmark folder route
+	NextCursor string `json:"next_cursor" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Folders     respjson.Field

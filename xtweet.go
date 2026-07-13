@@ -9,14 +9,15 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // XTweetService contains methods and other services that help with interacting
@@ -46,7 +47,11 @@ func NewXTweetService(opts ...option.RequestOption) (r XTweetService) {
 
 // Create tweet
 func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...option.RequestOption) (res *XTweetNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/tweets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -54,7 +59,11 @@ func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...o
 
 // Get tweet with full text, author, metrics and media
 func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -66,7 +75,11 @@ func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.Reque
 
 // Get multiple tweets by IDs
 func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/tweets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -74,7 +87,11 @@ func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts .
 
 // Delete tweet
 func (r *XTweetService) Delete(ctx context.Context, id string, body XTweetDeleteParams, opts ...option.RequestOption) (res *XTweetDeleteResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -86,7 +103,11 @@ func (r *XTweetService) Delete(ctx context.Context, id string, body XTweetDelete
 
 // List users who liked a tweet
 func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTweetGetFavoritersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -98,7 +119,11 @@ func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTwe
 
 // List quote tweets of a tweet
 func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGetQuotesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -110,7 +135,11 @@ func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGe
 
 // List replies to a tweet
 func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetGetRepliesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -122,7 +151,11 @@ func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetG
 
 // List users who retweeted a tweet
 func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTweetGetRetweetersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -134,7 +167,11 @@ func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTwe
 
 // Get full conversation thread for a tweet
 func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGetThreadParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -144,31 +181,27 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// Search tweets with X query operators and pagination
+// Search tweets by query, Tweet ID, X status URL, or account date window
 func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/tweets/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
-// Author of a tweet with follower count and verification status.
+// Tweet author profile. The lookup route always includes follower count and
+// verification state. Other profile fields appear when available.
 type TweetAuthor struct {
-	ID             string `json:"id" api:"required"`
-	Followers      int64  `json:"followers" api:"required"`
-	Username       string `json:"username" api:"required"`
-	Verified       bool   `json:"verified" api:"required"`
-	ProfilePicture string `json:"profilePicture"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		Followers      respjson.Field
-		Username       respjson.Field
-		Verified       respjson.Field
-		ProfilePicture respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
+	shared.UserProfile
 }
 
 // Returns the unmodified JSON received from the API
@@ -177,7 +210,8 @@ func (r *TweetAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Full tweet with text, engagement metrics, media, and metadata.
+// Full tweet with text, engagement metrics, media, and metadata. A zero metric can
+// mean X did not report the count.
 type TweetDetail struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -187,44 +221,83 @@ type TweetDetail struct {
 	RetweetCount  int64  `json:"retweetCount" api:"required"`
 	Text          string `json:"text" api:"required"`
 	ViewCount     int64  `json:"viewCount" api:"required"`
+	// Tweet author profile. The lookup route always includes follower count and
+	// verification state. Other profile fields appear when available.
+	Author TweetAuthor `json:"author"`
+	// Content disclosure metadata shown by X when a tweet is labeled as paid
+	// partnership content or AI-generated media.
+	ContentDisclosure TweetDetailContentDisclosure `json:"contentDisclosure"`
 	// ID of the root tweet in the conversation thread
 	ConversationID string `json:"conversationId"`
 	CreatedAt      string `json:"createdAt"`
+	// Start and end offsets for rendered tweet text
+	DisplayTextRange []int64 `json:"displayTextRange"`
 	// Parsed entities from the tweet text (URLs, mentions, hashtags, media)
 	Entities map[string]any `json:"entities"`
+	// Tweet ID being replied to
+	InReplyToID string `json:"inReplyToId"`
+	// User ID being replied to
+	InReplyToUserID string `json:"inReplyToUserId"`
+	// Username being replied to
+	InReplyToUsername string `json:"inReplyToUsername"`
+	// Whether replies are limited for this tweet
+	IsLimitedReply bool `json:"isLimitedReply"`
 	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
 	IsNoteTweet bool `json:"isNoteTweet"`
 	// Whether this tweet quotes another tweet
 	IsQuoteStatus bool `json:"isQuoteStatus"`
 	// Whether this tweet is a reply to another tweet
 	IsReply bool `json:"isReply"`
+	// Tweet language code
+	Lang string `json:"lang"`
 	// Attached media items, omitted when the tweet has no media
 	Media []TweetDetailMedia `json:"media"`
-	// The quoted tweet object, present when isQuoteStatus is true
-	QuotedTweet map[string]any `json:"quoted_tweet"`
+	// Quoted or retweeted tweet context. Every object includes id, text, and
+	// engagement metrics. A zero metric can mean X did not report the count. Author,
+	// media, and conversation fields appear when available.
+	QuotedTweet TweetDetailQuotedTweet `json:"quoted_tweet"`
+	// Quoted or retweeted tweet context. Every object includes id, text, and
+	// engagement metrics. A zero metric can mean X did not report the count. Author,
+	// media, and conversation fields appear when available.
+	RetweetedTweet TweetDetailRetweetedTweet `json:"retweeted_tweet"`
 	// Client application used to post this tweet
 	Source string `json:"source"`
+	// Tweet result type
+	Type string `json:"type"`
+	// Tweet permalink URL
+	URL string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		BookmarkCount  respjson.Field
-		LikeCount      respjson.Field
-		QuoteCount     respjson.Field
-		ReplyCount     respjson.Field
-		RetweetCount   respjson.Field
-		Text           respjson.Field
-		ViewCount      respjson.Field
-		ConversationID respjson.Field
-		CreatedAt      respjson.Field
-		Entities       respjson.Field
-		IsNoteTweet    respjson.Field
-		IsQuoteStatus  respjson.Field
-		IsReply        respjson.Field
-		Media          respjson.Field
-		QuotedTweet    respjson.Field
-		Source         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID                respjson.Field
+		BookmarkCount     respjson.Field
+		LikeCount         respjson.Field
+		QuoteCount        respjson.Field
+		ReplyCount        respjson.Field
+		RetweetCount      respjson.Field
+		Text              respjson.Field
+		ViewCount         respjson.Field
+		Author            respjson.Field
+		ContentDisclosure respjson.Field
+		ConversationID    respjson.Field
+		CreatedAt         respjson.Field
+		DisplayTextRange  respjson.Field
+		Entities          respjson.Field
+		InReplyToID       respjson.Field
+		InReplyToUserID   respjson.Field
+		InReplyToUsername respjson.Field
+		IsLimitedReply    respjson.Field
+		IsNoteTweet       respjson.Field
+		IsQuoteStatus     respjson.Field
+		IsReply           respjson.Field
+		Lang              respjson.Field
+		Media             respjson.Field
+		QuotedTweet       respjson.Field
+		RetweetedTweet    respjson.Field
+		Source            respjson.Field
+		Type              respjson.Field
+		URL               respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
@@ -234,18 +307,84 @@ func (r *TweetDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TweetDetailMedia struct {
-	MediaURL string `json:"mediaUrl"`
-	// Any of "photo", "video", "animated_gif".
-	Type string `json:"type"`
-	URL  string `json:"url"`
+// Content disclosure metadata shown by X when a tweet is labeled as paid
+// partnership content or AI-generated media.
+type TweetDetailContentDisclosure struct {
+	Advertising TweetDetailContentDisclosureAdvertising `json:"advertising"`
+	AIGenerated TweetDetailContentDisclosureAIGenerated `json:"aiGenerated"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		MediaURL    respjson.Field
-		Type        respjson.Field
-		URL         respjson.Field
+		Advertising respjson.Field
+		AIGenerated respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailContentDisclosure) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailContentDisclosure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailContentDisclosureAdvertising struct {
+	// True when X labels the tweet as paid promotion content.
+	IsPaidPromotion bool `json:"isPaidPromotion"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsPaidPromotion respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailContentDisclosureAdvertising) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailContentDisclosureAdvertising) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailContentDisclosureAIGenerated struct {
+	// Whether the disclosure can be edited on X.
+	CanEdit bool `json:"canEdit"`
+	// Source of the AI-generated media disclosure.
+	DetectionSource string `json:"detectionSource"`
+	// True when X labels the tweet as containing AI-generated media.
+	HasAIGeneratedMedia bool `json:"hasAiGeneratedMedia"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanEdit             respjson.Field
+		DetectionSource     respjson.Field
+		HasAIGeneratedMedia respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailContentDisclosureAIGenerated) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailContentDisclosureAIGenerated) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Normalized media attached to a tweet.
+type TweetDetailMedia struct {
+	// Media preview URL
+	MediaURL string `json:"mediaUrl" api:"required"`
+	// Any of "photo", "video", "animated_gif".
+	Type string `json:"type" api:"required"`
+	// X media link from the tweet
+	URL string `json:"url" api:"required"`
+	// Available video encodings, ordered as returned
+	VideoVariants []TweetDetailMediaVideoVariant `json:"videoVariants"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MediaURL      respjson.Field
+		Type          respjson.Field
+		URL           respjson.Field
+		VideoVariants respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -255,15 +394,401 @@ func (r *TweetDetailMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type XTweetNewResponse struct {
-	Success bool   `json:"success" api:"required"`
-	TweetID string `json:"tweetId" api:"required"`
+type TweetDetailMediaVideoVariant struct {
+	ContentType string `json:"contentType" api:"required"`
+	URL         string `json:"url" api:"required"`
+	Bitrate     int64  `json:"bitrate"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Success     respjson.Field
-		TweetID     respjson.Field
+		ContentType respjson.Field
+		URL         respjson.Field
+		Bitrate     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailMediaVideoVariant) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailMediaVideoVariant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quoted or retweeted tweet context. Every object includes id, text, and
+// engagement metrics. A zero metric can mean X did not report the count. Author,
+// media, and conversation fields appear when available.
+type TweetDetailQuotedTweet struct {
+	ID            string `json:"id" api:"required"`
+	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
+	LikeCount     int64  `json:"likeCount" api:"required"`
+	QuoteCount    int64  `json:"quoteCount" api:"required"`
+	ReplyCount    int64  `json:"replyCount" api:"required"`
+	RetweetCount  int64  `json:"retweetCount" api:"required"`
+	Text          string `json:"text" api:"required"`
+	ViewCount     int64  `json:"viewCount" api:"required"`
+	// X user profile with bio, follower counts, and verification status.
+	Author shared.UserProfile `json:"author"`
+	// Content disclosure metadata shown by X when a tweet is labeled as paid
+	// partnership content or AI-generated media.
+	ContentDisclosure TweetDetailQuotedTweetContentDisclosure `json:"contentDisclosure"`
+	ConversationID    string                                  `json:"conversationId"`
+	CreatedAt         string                                  `json:"createdAt"`
+	DisplayTextRange  []int64                                 `json:"displayTextRange"`
+	Entities          map[string]any                          `json:"entities"`
+	InReplyToID       string                                  `json:"inReplyToId"`
+	InReplyToUserID   string                                  `json:"inReplyToUserId"`
+	InReplyToUsername string                                  `json:"inReplyToUsername"`
+	IsLimitedReply    bool                                    `json:"isLimitedReply"`
+	IsNoteTweet       bool                                    `json:"isNoteTweet"`
+	IsQuoteStatus     bool                                    `json:"isQuoteStatus"`
+	IsReply           bool                                    `json:"isReply"`
+	Lang              string                                  `json:"lang"`
+	Media             []TweetDetailQuotedTweetMedia           `json:"media"`
+	Source            string                                  `json:"source"`
+	Type              string                                  `json:"type"`
+	URL               string                                  `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		BookmarkCount     respjson.Field
+		LikeCount         respjson.Field
+		QuoteCount        respjson.Field
+		ReplyCount        respjson.Field
+		RetweetCount      respjson.Field
+		Text              respjson.Field
+		ViewCount         respjson.Field
+		Author            respjson.Field
+		ContentDisclosure respjson.Field
+		ConversationID    respjson.Field
+		CreatedAt         respjson.Field
+		DisplayTextRange  respjson.Field
+		Entities          respjson.Field
+		InReplyToID       respjson.Field
+		InReplyToUserID   respjson.Field
+		InReplyToUsername respjson.Field
+		IsLimitedReply    respjson.Field
+		IsNoteTweet       respjson.Field
+		IsQuoteStatus     respjson.Field
+		IsReply           respjson.Field
+		Lang              respjson.Field
+		Media             respjson.Field
+		Source            respjson.Field
+		Type              respjson.Field
+		URL               respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailQuotedTweet) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailQuotedTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Content disclosure metadata shown by X when a tweet is labeled as paid
+// partnership content or AI-generated media.
+type TweetDetailQuotedTweetContentDisclosure struct {
+	Advertising TweetDetailQuotedTweetContentDisclosureAdvertising `json:"advertising"`
+	AIGenerated TweetDetailQuotedTweetContentDisclosureAIGenerated `json:"aiGenerated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Advertising respjson.Field
+		AIGenerated respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailQuotedTweetContentDisclosure) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailQuotedTweetContentDisclosure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailQuotedTweetContentDisclosureAdvertising struct {
+	// True when X labels the tweet as paid promotion content.
+	IsPaidPromotion bool `json:"isPaidPromotion"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsPaidPromotion respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailQuotedTweetContentDisclosureAdvertising) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailQuotedTweetContentDisclosureAdvertising) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailQuotedTweetContentDisclosureAIGenerated struct {
+	// Whether the disclosure can be edited on X.
+	CanEdit bool `json:"canEdit"`
+	// Source of the AI-generated media disclosure.
+	DetectionSource string `json:"detectionSource"`
+	// True when X labels the tweet as containing AI-generated media.
+	HasAIGeneratedMedia bool `json:"hasAiGeneratedMedia"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanEdit             respjson.Field
+		DetectionSource     respjson.Field
+		HasAIGeneratedMedia respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailQuotedTweetContentDisclosureAIGenerated) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailQuotedTweetContentDisclosureAIGenerated) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Normalized media attached to a tweet.
+type TweetDetailQuotedTweetMedia struct {
+	// Media preview URL
+	MediaURL string `json:"mediaUrl" api:"required"`
+	// Any of "photo", "video", "animated_gif".
+	Type string `json:"type" api:"required"`
+	// X media link from the tweet
+	URL string `json:"url" api:"required"`
+	// Available video encodings, ordered as returned
+	VideoVariants []TweetDetailQuotedTweetMediaVideoVariant `json:"videoVariants"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MediaURL      respjson.Field
+		Type          respjson.Field
+		URL           respjson.Field
+		VideoVariants respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailQuotedTweetMedia) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailQuotedTweetMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailQuotedTweetMediaVideoVariant struct {
+	ContentType string `json:"contentType" api:"required"`
+	URL         string `json:"url" api:"required"`
+	Bitrate     int64  `json:"bitrate"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType respjson.Field
+		URL         respjson.Field
+		Bitrate     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailQuotedTweetMediaVideoVariant) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailQuotedTweetMediaVideoVariant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quoted or retweeted tweet context. Every object includes id, text, and
+// engagement metrics. A zero metric can mean X did not report the count. Author,
+// media, and conversation fields appear when available.
+type TweetDetailRetweetedTweet struct {
+	ID            string `json:"id" api:"required"`
+	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
+	LikeCount     int64  `json:"likeCount" api:"required"`
+	QuoteCount    int64  `json:"quoteCount" api:"required"`
+	ReplyCount    int64  `json:"replyCount" api:"required"`
+	RetweetCount  int64  `json:"retweetCount" api:"required"`
+	Text          string `json:"text" api:"required"`
+	ViewCount     int64  `json:"viewCount" api:"required"`
+	// X user profile with bio, follower counts, and verification status.
+	Author shared.UserProfile `json:"author"`
+	// Content disclosure metadata shown by X when a tweet is labeled as paid
+	// partnership content or AI-generated media.
+	ContentDisclosure TweetDetailRetweetedTweetContentDisclosure `json:"contentDisclosure"`
+	ConversationID    string                                     `json:"conversationId"`
+	CreatedAt         string                                     `json:"createdAt"`
+	DisplayTextRange  []int64                                    `json:"displayTextRange"`
+	Entities          map[string]any                             `json:"entities"`
+	InReplyToID       string                                     `json:"inReplyToId"`
+	InReplyToUserID   string                                     `json:"inReplyToUserId"`
+	InReplyToUsername string                                     `json:"inReplyToUsername"`
+	IsLimitedReply    bool                                       `json:"isLimitedReply"`
+	IsNoteTweet       bool                                       `json:"isNoteTweet"`
+	IsQuoteStatus     bool                                       `json:"isQuoteStatus"`
+	IsReply           bool                                       `json:"isReply"`
+	Lang              string                                     `json:"lang"`
+	Media             []TweetDetailRetweetedTweetMedia           `json:"media"`
+	Source            string                                     `json:"source"`
+	Type              string                                     `json:"type"`
+	URL               string                                     `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		BookmarkCount     respjson.Field
+		LikeCount         respjson.Field
+		QuoteCount        respjson.Field
+		ReplyCount        respjson.Field
+		RetweetCount      respjson.Field
+		Text              respjson.Field
+		ViewCount         respjson.Field
+		Author            respjson.Field
+		ContentDisclosure respjson.Field
+		ConversationID    respjson.Field
+		CreatedAt         respjson.Field
+		DisplayTextRange  respjson.Field
+		Entities          respjson.Field
+		InReplyToID       respjson.Field
+		InReplyToUserID   respjson.Field
+		InReplyToUsername respjson.Field
+		IsLimitedReply    respjson.Field
+		IsNoteTweet       respjson.Field
+		IsQuoteStatus     respjson.Field
+		IsReply           respjson.Field
+		Lang              respjson.Field
+		Media             respjson.Field
+		Source            respjson.Field
+		Type              respjson.Field
+		URL               respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailRetweetedTweet) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailRetweetedTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Content disclosure metadata shown by X when a tweet is labeled as paid
+// partnership content or AI-generated media.
+type TweetDetailRetweetedTweetContentDisclosure struct {
+	Advertising TweetDetailRetweetedTweetContentDisclosureAdvertising `json:"advertising"`
+	AIGenerated TweetDetailRetweetedTweetContentDisclosureAIGenerated `json:"aiGenerated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Advertising respjson.Field
+		AIGenerated respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailRetweetedTweetContentDisclosure) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailRetweetedTweetContentDisclosure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailRetweetedTweetContentDisclosureAdvertising struct {
+	// True when X labels the tweet as paid promotion content.
+	IsPaidPromotion bool `json:"isPaidPromotion"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsPaidPromotion respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailRetweetedTweetContentDisclosureAdvertising) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailRetweetedTweetContentDisclosureAdvertising) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailRetweetedTweetContentDisclosureAIGenerated struct {
+	// Whether the disclosure can be edited on X.
+	CanEdit bool `json:"canEdit"`
+	// Source of the AI-generated media disclosure.
+	DetectionSource string `json:"detectionSource"`
+	// True when X labels the tweet as containing AI-generated media.
+	HasAIGeneratedMedia bool `json:"hasAiGeneratedMedia"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanEdit             respjson.Field
+		DetectionSource     respjson.Field
+		HasAIGeneratedMedia respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailRetweetedTweetContentDisclosureAIGenerated) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailRetweetedTweetContentDisclosureAIGenerated) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Normalized media attached to a tweet.
+type TweetDetailRetweetedTweetMedia struct {
+	// Media preview URL
+	MediaURL string `json:"mediaUrl" api:"required"`
+	// Any of "photo", "video", "animated_gif".
+	Type string `json:"type" api:"required"`
+	// X media link from the tweet
+	URL string `json:"url" api:"required"`
+	// Available video encodings, ordered as returned
+	VideoVariants []TweetDetailRetweetedTweetMediaVideoVariant `json:"videoVariants"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MediaURL      respjson.Field
+		Type          respjson.Field
+		URL           respjson.Field
+		VideoVariants respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailRetweetedTweetMedia) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailRetweetedTweetMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailRetweetedTweetMediaVideoVariant struct {
+	ContentType string `json:"contentType" api:"required"`
+	URL         string `json:"url" api:"required"`
+	Bitrate     int64  `json:"bitrate"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType respjson.Field
+		URL         respjson.Field
+		Bitrate     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailRetweetedTweetMediaVideoVariant) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailRetweetedTweetMediaVideoVariant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XTweetNewResponse struct {
+	Charged bool `json:"charged" api:"required"`
+	// Credits charged for this tweet. Text-only tweets and replies cost 30 credits;
+	// attached media adds 2 credits per started MB.
+	ChargedCredits string `json:"chargedCredits" api:"required"`
+	Success        bool   `json:"success" api:"required"`
+	TweetID        string `json:"tweetId" api:"required"`
+	WriteActionID  string `json:"writeActionId"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Charged        respjson.Field
+		ChargedCredits respjson.Field
+		Success        respjson.Field
+		TweetID        respjson.Field
+		WriteActionID  respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -274,9 +799,11 @@ func (r *XTweetNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XTweetGetResponse struct {
-	// Full tweet with text, engagement metrics, media, and metadata.
+	// Full tweet with text, engagement metrics, media, and metadata. A zero metric can
+	// mean X did not report the count.
 	Tweet TweetDetail `json:"tweet" api:"required"`
-	// Author of a tweet with follower count and verification status.
+	// Tweet author profile. The lookup route always includes follower count and
+	// verification state. Other profile fields appear when available.
 	Author TweetAuthor `json:"author"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -318,8 +845,9 @@ type XTweetNewParams struct {
 	ReplyToTweetID param.Opt[string] `json:"reply_to_tweet_id,omitzero"`
 	// Tweet text (optional when media is provided)
 	Text param.Opt[string] `json:"text,omitzero"`
-	// Array of public image URLs to attach (max 4). Each URL must be publicly
-	// reachable - the browser composer fetches them directly.
+	// Array of public media URLs to attach. Supports up to 4 images or exactly 1 MP4
+	// video up to 100 MB. Each URL must be publicly reachable. Attached media adds 2
+	// credits per started MB across all files.
 	Media []string `json:"media,omitzero"`
 	paramObj
 }
@@ -363,6 +891,11 @@ func (r *XTweetDeleteParams) UnmarshalJSON(data []byte) error {
 type XTweetGetFavoritersParams struct {
 	// Pagination cursor for favoriters
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum user profiles requested from this page (20-200, default 200). The
+	// response can contain fewer profiles because the source returned fewer or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true. The deprecated limit and count aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
@@ -376,14 +909,79 @@ func (r XTweetGetFavoritersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetQuotesParams struct {
+	// Words or quoted phrases where any one can match. Separate with spaces, commas,
+	// or lines.
+	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
+	// Cashtags separated by spaces, commas, or lines.
+	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for quote tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Exact phrase to match.
+	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
+	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Filter by author username.
+	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// Hashtags separated by spaces, commas, or lines.
+	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Include reply quotes (default false)
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Language code filter, e.g. en or tr.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Filter tweets mentioning a username.
+	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
+	// Minimum likes threshold.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum quote count threshold.
+	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Unix timestamp - return quotes posted after this time
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
+	// Filter replies sent to a username.
+	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
+	// End date in YYYY-MM-DD format.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
 	// Unix timestamp - return quotes posted before this time
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Filter by media type.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XTweetGetQuotesParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XTweetGetQuotesParamsQuotes `query:"quotes,omitzero" json:"-"`
+	// Reply mode.
+	//
+	// Any of "include", "exclude", "only".
+	Replies XTweetGetQuotesParamsReplies `query:"replies,omitzero" json:"-"`
+	// Retweet mode.
+	//
+	// Any of "include", "exclude", "only".
+	Retweets XTweetGetQuotesParamsRetweets `query:"retweets,omitzero" json:"-"`
 	paramObj
 }
 
@@ -395,13 +993,117 @@ func (r XTweetGetQuotesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter by media type.
+type XTweetGetQuotesParamsMediaType string
+
+const (
+	XTweetGetQuotesParamsMediaTypeImages XTweetGetQuotesParamsMediaType = "images"
+	XTweetGetQuotesParamsMediaTypeVideos XTweetGetQuotesParamsMediaType = "videos"
+	XTweetGetQuotesParamsMediaTypeGifs   XTweetGetQuotesParamsMediaType = "gifs"
+	XTweetGetQuotesParamsMediaTypeMedia  XTweetGetQuotesParamsMediaType = "media"
+	XTweetGetQuotesParamsMediaTypeLinks  XTweetGetQuotesParamsMediaType = "links"
+	XTweetGetQuotesParamsMediaTypeNone   XTweetGetQuotesParamsMediaType = "none"
+)
+
+// Quote mode.
+type XTweetGetQuotesParamsQuotes string
+
+const (
+	XTweetGetQuotesParamsQuotesInclude XTweetGetQuotesParamsQuotes = "include"
+	XTweetGetQuotesParamsQuotesExclude XTweetGetQuotesParamsQuotes = "exclude"
+	XTweetGetQuotesParamsQuotesOnly    XTweetGetQuotesParamsQuotes = "only"
+)
+
+// Reply mode.
+type XTweetGetQuotesParamsReplies string
+
+const (
+	XTweetGetQuotesParamsRepliesInclude XTweetGetQuotesParamsReplies = "include"
+	XTweetGetQuotesParamsRepliesExclude XTweetGetQuotesParamsReplies = "exclude"
+	XTweetGetQuotesParamsRepliesOnly    XTweetGetQuotesParamsReplies = "only"
+)
+
+// Retweet mode.
+type XTweetGetQuotesParamsRetweets string
+
+const (
+	XTweetGetQuotesParamsRetweetsInclude XTweetGetQuotesParamsRetweets = "include"
+	XTweetGetQuotesParamsRetweetsExclude XTweetGetQuotesParamsRetweets = "exclude"
+	XTweetGetQuotesParamsRetweetsOnly    XTweetGetQuotesParamsRetweets = "only"
+)
+
 type XTweetGetRepliesParams struct {
+	// Words or quoted phrases where any one can match. Separate with spaces, commas,
+	// or lines.
+	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
+	// Cashtags separated by spaces, commas, or lines.
+	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for tweet replies
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Exact phrase to match.
+	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
+	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Filter by author username.
+	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// Hashtags separated by spaces, commas, or lines.
+	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Language code filter, e.g. en or tr.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Filter tweets mentioning a username.
+	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
+	// Minimum likes threshold.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum quote count threshold.
+	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Unix timestamp - return replies posted after this time
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
+	// Filter replies sent to a username.
+	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
+	// End date in YYYY-MM-DD format.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
 	// Unix timestamp - return replies posted before this time
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Filter by media type.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XTweetGetRepliesParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XTweetGetRepliesParamsQuotes `query:"quotes,omitzero" json:"-"`
+	// Reply mode.
+	//
+	// Any of "include", "exclude", "only".
+	Replies XTweetGetRepliesParamsReplies `query:"replies,omitzero" json:"-"`
+	// Retweet mode.
+	//
+	// Any of "include", "exclude", "only".
+	Retweets XTweetGetRepliesParamsRetweets `query:"retweets,omitzero" json:"-"`
 	paramObj
 }
 
@@ -413,9 +1115,53 @@ func (r XTweetGetRepliesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter by media type.
+type XTweetGetRepliesParamsMediaType string
+
+const (
+	XTweetGetRepliesParamsMediaTypeImages XTweetGetRepliesParamsMediaType = "images"
+	XTweetGetRepliesParamsMediaTypeVideos XTweetGetRepliesParamsMediaType = "videos"
+	XTweetGetRepliesParamsMediaTypeGifs   XTweetGetRepliesParamsMediaType = "gifs"
+	XTweetGetRepliesParamsMediaTypeMedia  XTweetGetRepliesParamsMediaType = "media"
+	XTweetGetRepliesParamsMediaTypeLinks  XTweetGetRepliesParamsMediaType = "links"
+	XTweetGetRepliesParamsMediaTypeNone   XTweetGetRepliesParamsMediaType = "none"
+)
+
+// Quote mode.
+type XTweetGetRepliesParamsQuotes string
+
+const (
+	XTweetGetRepliesParamsQuotesInclude XTweetGetRepliesParamsQuotes = "include"
+	XTweetGetRepliesParamsQuotesExclude XTweetGetRepliesParamsQuotes = "exclude"
+	XTweetGetRepliesParamsQuotesOnly    XTweetGetRepliesParamsQuotes = "only"
+)
+
+// Reply mode.
+type XTweetGetRepliesParamsReplies string
+
+const (
+	XTweetGetRepliesParamsRepliesInclude XTweetGetRepliesParamsReplies = "include"
+	XTweetGetRepliesParamsRepliesExclude XTweetGetRepliesParamsReplies = "exclude"
+	XTweetGetRepliesParamsRepliesOnly    XTweetGetRepliesParamsReplies = "only"
+)
+
+// Retweet mode.
+type XTweetGetRepliesParamsRetweets string
+
+const (
+	XTweetGetRepliesParamsRetweetsInclude XTweetGetRepliesParamsRetweets = "include"
+	XTweetGetRepliesParamsRetweetsExclude XTweetGetRepliesParamsRetweets = "exclude"
+	XTweetGetRepliesParamsRetweetsOnly    XTweetGetRepliesParamsRetweets = "only"
+)
+
 type XTweetGetRetweetersParams struct {
 	// Pagination cursor for retweeters
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum user profiles requested from this page (20-200, default 200). The
+	// response can contain fewer profiles because the source returned fewer or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true. The deprecated limit and count aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
@@ -431,6 +1177,12 @@ func (r XTweetGetRetweetersParams) URLQuery() (v url.Values, err error) {
 type XTweetGetThreadParams struct {
 	// Pagination cursor for thread tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
@@ -445,18 +1197,92 @@ func (r XTweetGetThreadParams) URLQuery() (v url.Values, err error) {
 type XTweetSearchParams struct {
 	// Search query (keywords,
 	Q string `query:"q" api:"required" json:"-"`
+	// Raw advanced search query appended as-is.
+	AdvancedQuery param.Opt[string] `query:"advancedQuery,omitzero" json:"-"`
+	// Words or quoted phrases where any one can match. Separate with spaces, commas,
+	// or lines.
+	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
+	// Geo bounding box, e.g. -74.1 40.6 -73.9 40.8.
+	BoundingBox param.Opt[string] `query:"boundingBox,omitzero" json:"-"`
+	// Cashtags separated by spaces, commas, or lines.
+	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor from previous response
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Exact phrase to match.
+	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
+	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Filter by author username.
+	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// Hashtags separated by spaces, commas, or lines.
+	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Language code filter, e.g. en or tr.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Max tweets to return (server paginates internally). Omit for single page (~20).
+	// This is an upper bound for paid authenticated calls: remaining credits can
+	// reduce the returned page size, and zero affordable results returns 402
+	// insufficient_credits.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Search within a list ID.
+	ListID param.Opt[string] `query:"listId,omitzero" json:"-"`
+	// Filter tweets mentioning a username.
+	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
+	// Minimum likes threshold.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum quote count threshold.
+	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Search within a place ID.
+	Place param.Opt[string] `query:"place,omitzero" json:"-"`
+	// Search within a country code.
+	PlaceCountry param.Opt[string] `query:"placeCountry,omitzero" json:"-"`
+	// Geo point radius, e.g. -73.99 40.73 25mi.
+	PointRadius param.Opt[string] `query:"pointRadius,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// ISO 8601 timestamp - only return tweets after this time
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
+	// Filter replies sent to a username.
+	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
+	// End date in YYYY-MM-DD format.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
 	// ISO 8601 timestamp - only return tweets before this time
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Filter by media type.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XTweetSearchParamsMediaType `query:"mediaType,omitzero" json:"-"`
 	// Sort order - Latest (chronological) or Top (engagement-ranked)
 	//
 	// Any of "Latest", "Top".
 	QueryType XTweetSearchParamsQueryType `query:"queryType,omitzero" json:"-"`
+	// Quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XTweetSearchParamsQuotes `query:"quotes,omitzero" json:"-"`
+	// Reply mode.
+	//
+	// Any of "include", "exclude", "only".
+	Replies XTweetSearchParamsReplies `query:"replies,omitzero" json:"-"`
+	// Retweet mode.
+	//
+	// Any of "include", "exclude", "only".
+	Retweets XTweetSearchParamsRetweets `query:"retweets,omitzero" json:"-"`
 	paramObj
 }
 
@@ -468,10 +1294,49 @@ func (r XTweetSearchParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter by media type.
+type XTweetSearchParamsMediaType string
+
+const (
+	XTweetSearchParamsMediaTypeImages XTweetSearchParamsMediaType = "images"
+	XTweetSearchParamsMediaTypeVideos XTweetSearchParamsMediaType = "videos"
+	XTweetSearchParamsMediaTypeGifs   XTweetSearchParamsMediaType = "gifs"
+	XTweetSearchParamsMediaTypeMedia  XTweetSearchParamsMediaType = "media"
+	XTweetSearchParamsMediaTypeLinks  XTweetSearchParamsMediaType = "links"
+	XTweetSearchParamsMediaTypeNone   XTweetSearchParamsMediaType = "none"
+)
+
 // Sort order - Latest (chronological) or Top (engagement-ranked)
 type XTweetSearchParamsQueryType string
 
 const (
 	XTweetSearchParamsQueryTypeLatest XTweetSearchParamsQueryType = "Latest"
 	XTweetSearchParamsQueryTypeTop    XTweetSearchParamsQueryType = "Top"
+)
+
+// Quote mode.
+type XTweetSearchParamsQuotes string
+
+const (
+	XTweetSearchParamsQuotesInclude XTweetSearchParamsQuotes = "include"
+	XTweetSearchParamsQuotesExclude XTweetSearchParamsQuotes = "exclude"
+	XTweetSearchParamsQuotesOnly    XTweetSearchParamsQuotes = "only"
+)
+
+// Reply mode.
+type XTweetSearchParamsReplies string
+
+const (
+	XTweetSearchParamsRepliesInclude XTweetSearchParamsReplies = "include"
+	XTweetSearchParamsRepliesExclude XTweetSearchParamsReplies = "exclude"
+	XTweetSearchParamsRepliesOnly    XTweetSearchParamsReplies = "only"
+)
+
+// Retweet mode.
+type XTweetSearchParamsRetweets string
+
+const (
+	XTweetSearchParamsRetweetsInclude XTweetSearchParamsRetweets = "include"
+	XTweetSearchParamsRetweetsExclude XTweetSearchParamsRetweets = "exclude"
+	XTweetSearchParamsRetweetsOnly    XTweetSearchParamsRetweets = "only"
 )
