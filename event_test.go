@@ -8,10 +8,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 func TestEventGet(t *testing.T) {
@@ -26,6 +26,8 @@ func TestEventGet(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Events.Get(context.TODO(), "id")
 	if err != nil {
@@ -49,9 +51,11 @@ func TestEventListWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Events.List(context.TODO(), xtwitterscraper.EventListParams{
-		After:     xtwitterscraper.String("after"),
+		Cursor:    xtwitterscraper.String("cursor"),
 		EventType: shared.EventTypeTweetNew,
 		Limit:     xtwitterscraper.Int(1),
 		MonitorID: xtwitterscraper.String("monitorId"),

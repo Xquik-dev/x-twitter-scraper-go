@@ -10,10 +10,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // X write actions (tweets, likes, follows, DMs)
@@ -38,8 +39,12 @@ func NewXCommunityJoinService(opts ...option.RequestOption) (r XCommunityJoinSer
 }
 
 // Join community
-func (r *XCommunityJoinService) New(ctx context.Context, id string, body XCommunityJoinNewParams, opts ...option.RequestOption) (res *CommunityActionResult, err error) {
-	opts = slices.Concat(r.options, opts)
+func (r *XCommunityJoinService) New(ctx context.Context, id string, body XCommunityJoinNewParams, opts ...option.RequestOption) (res *XCommunityJoinNewResponse, err error) {
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -50,8 +55,12 @@ func (r *XCommunityJoinService) New(ctx context.Context, id string, body XCommun
 }
 
 // Leave community
-func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, body XCommunityJoinDeleteAllParams, opts ...option.RequestOption) (res *CommunityActionResult, err error) {
-	opts = slices.Concat(r.options, opts)
+func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, body XCommunityJoinDeleteAllParams, opts ...option.RequestOption) (res *XCommunityJoinDeleteAllResponse, err error) {
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -59,6 +68,38 @@ func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, body X
 	path := fmt.Sprintf("x/communities/%s/join", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
+}
+
+type XCommunityJoinNewResponse struct {
+	Success bool `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityJoinNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityJoinNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XCommunityJoinDeleteAllResponse struct {
+	Success bool `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityJoinDeleteAllResponse) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityJoinDeleteAllResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XCommunityJoinNewParams struct {

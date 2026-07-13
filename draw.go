@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // Giveaway draws from tweet replies
@@ -42,7 +42,11 @@ func NewDrawService(opts ...option.RequestOption) (r DrawService) {
 
 // Get draw details
 func (r *DrawService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DrawGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -54,7 +58,11 @@ func (r *DrawService) Get(ctx context.Context, id string, opts ...option.Request
 
 // List draws
 func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...option.RequestOption) (res *DrawListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "draws"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -62,7 +70,11 @@ func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...op
 
 // Export draw data
 func (r *DrawService) Export(ctx context.Context, id string, query DrawExportParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -73,9 +85,16 @@ func (r *DrawService) Export(ctx context.Context, id string, query DrawExportPar
 	return res, err
 }
 
-// Run giveaway draw
+// Runs a giveaway draw from a source tweet. The draw first checks the minimum
+// credits needed to inspect the source tweet and at least one candidate. Remaining
+// credits cap how many replies and retweeters can be inspected before filters and
+// winner selection run.
 func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...option.RequestOption) (res *DrawRunResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "draws"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -83,6 +102,7 @@ func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...optio
 
 // Full giveaway draw with tweet metrics, entries, and timing.
 type DrawDetail struct {
+	// Draw public ID.
 	ID                  string    `json:"id" api:"required"`
 	CreatedAt           time.Time `json:"createdAt" api:"required" format:"date-time"`
 	Status              string    `json:"status" api:"required"`
@@ -126,6 +146,7 @@ func (r *DrawDetail) UnmarshalJSON(data []byte) error {
 
 // Giveaway draw summary with entry counts and status.
 type DrawListItem struct {
+	// Draw public ID for detail responses.
 	ID           string    `json:"id" api:"required"`
 	CreatedAt    time.Time `json:"createdAt" api:"required" format:"date-time"`
 	Status       string    `json:"status" api:"required"`
@@ -216,9 +237,13 @@ func (r *DrawListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DrawRunResponse struct {
-	ID           string   `json:"id" api:"required"`
-	TotalEntries int64    `json:"totalEntries" api:"required"`
-	TweetID      string   `json:"tweetId" api:"required"`
+	ID string `json:"id" api:"required"`
+	// Candidate entries inspected for this draw after the credit-derived cap. This may
+	// be lower than the source tweet's full reply count.
+	TotalEntries int64  `json:"totalEntries" api:"required"`
+	TweetID      string `json:"tweetId" api:"required"`
+	// Entries from the inspected candidate set that passed all filters. This is not
+	// necessarily every valid reply on the source tweet when credits cap inspection.
 	ValidEntries int64    `json:"validEntries" api:"required"`
 	Winners      []Winner `json:"winners" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -240,9 +265,12 @@ func (r *DrawRunResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DrawListParams struct {
-	// Cursor for keyset pagination
-	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	// Maximum number of items to return (1-100, default 50)
+	// Cursor for keyset pagination from prior response next_cursor
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum number of items to return (1-100, default 50). For paid per-result
+	// endpoints, the returned count may be lower when remaining credits cannot cover
+	// the requested page. If zero paid results are affordable, the endpoint returns
+	// 402 insufficient_credits.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
@@ -259,7 +287,7 @@ type DrawExportParams struct {
 	// Export output format
 	//
 	// Any of "csv", "json", "md", "md-document", "pdf", "txt", "xlsx".
-	Format DrawExportParamsFormat `query:"format,omitzero" json:"-"`
+	Format DrawExportParamsFormat `query:"format,omitzero" api:"required" json:"-"`
 	// Export winners or all entries
 	//
 	// Any of "winners", "entries".

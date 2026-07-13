@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/x-twitter-scraper-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/Xquik-dev/x-twitter-scraper-go.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -13,17 +13,25 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
+<!-- x-release-please-start-version -->
+
 ```go
 import (
-	"github.com/stainless-sdks/x-twitter-scraper-go" // imported as xtwitterscraper
+	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
 )
 ```
 
+<!-- x-release-please-end -->
+
 Or to pin the version:
 
+<!-- x-release-please-start-version -->
+
 ```sh
-go get -u 'github.com/stainless-sdks/x-twitter-scraper-go@v0.4.0'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.4.0'
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -40,8 +48,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func main() {
@@ -271,7 +279,7 @@ client.Account.Get(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/option).
 
 ### Pagination
 
@@ -336,27 +344,6 @@ file returned by `os.Open` will be sent with the file name on disk.
 
 We also provide a helper `xtwitterscraper.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
-
-```go
-// A file from the file system
-file, err := os.Open("/path/to/file")
-xtwitterscraper.XMediaUploadParams{
-	Account: "@elonmusk",
-	File:    file,
-}
-
-// A file from a string
-xtwitterscraper.XMediaUploadParams{
-	Account: "@elonmusk",
-	File:    strings.NewReader("my file contents"),
-}
-
-// With a custom filename and contentType
-xtwitterscraper.XMediaUploadParams{
-	Account: "@elonmusk",
-	File:    xtwitterscraper.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
-}
-```
 
 ### Retries
 
@@ -489,7 +476,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/x-twitter-scraper-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/Xquik-dev/x-twitter-scraper-go/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

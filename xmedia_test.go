@@ -3,16 +3,14 @@
 package xtwitterscraper_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXMediaDownloadWithOptionalParams(t *testing.T) {
@@ -27,10 +25,14 @@ func TestXMediaDownloadWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Media.Download(context.TODO(), xtwitterscraper.XMediaDownloadParams{
+		TweetID:    xtwitterscraper.String("1234567890"),
 		TweetIDs:   []string{"1234567890", "1234567891"},
 		TweetInput: xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
+		TweetURL:   xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -41,7 +43,7 @@ func TestXMediaDownloadWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestXMediaUploadWithOptionalParams(t *testing.T) {
+func TestXMediaUpload(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -53,11 +55,12 @@ func TestXMediaUploadWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Media.Upload(context.TODO(), xtwitterscraper.XMediaUploadParams{
-		Account:     "@elonmusk",
-		File:        io.Reader(bytes.NewBuffer([]byte("Example data"))),
-		IsLongVideo: xtwitterscraper.Bool(true),
+		Account: "@elonmusk",
+		URL:     "https://example.com/image.png",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXCommunityTweetListWithOptionalParams(t *testing.T) {
@@ -25,11 +25,15 @@ func TestXCommunityTweetListWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
-		Q:         "q",
-		Cursor:    xtwitterscraper.String("cursor"),
-		QueryType: xtwitterscraper.String("queryType"),
+		CommunityID: "321669910225",
+		Q:           "q",
+		Cursor:      xtwitterscraper.String("cursor"),
+		PageSize:    xtwitterscraper.Int(1),
+		QueryType:   xtwitterscraper.XCommunityTweetListParamsQueryTypeLatest,
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -52,12 +56,15 @@ func TestXCommunityTweetListByCommunityWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.Communities.Tweets.ListByCommunity(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityTweetListByCommunityParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			Cursor:   xtwitterscraper.String("cursor"),
+			PageSize: xtwitterscraper.Int(1),
 		},
 	)
 	if err != nil {

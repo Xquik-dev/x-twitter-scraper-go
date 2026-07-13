@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/testutil"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
 func TestXGetArticle(t *testing.T) {
@@ -25,6 +25,8 @@ func TestXGetArticle(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetArticle(context.TODO(), "tweetId")
 	if err != nil {
@@ -48,6 +50,8 @@ func TestXGetHomeTimelineWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetHomeTimeline(context.TODO(), xtwitterscraper.XGetHomeTimelineParams{
 		Cursor:       xtwitterscraper.String("cursor"),
@@ -74,6 +78,8 @@ func TestXGetNotificationsWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetNotifications(context.TODO(), xtwitterscraper.XGetNotificationsParams{
 		Cursor: xtwitterscraper.String("cursor"),
@@ -100,6 +106,8 @@ func TestXGetTrendsWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.X.GetTrends(context.TODO(), xtwitterscraper.XGetTrendsParams{
 		Count: xtwitterscraper.Int(1),

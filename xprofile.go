@@ -3,19 +3,15 @@
 package xtwitterscraper
 
 import (
-	"bytes"
 	"context"
-	"io"
-	"mime/multipart"
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiform"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // X write actions (tweets, likes, follows, DMs)
@@ -41,7 +37,11 @@ func NewXProfileService(opts ...option.RequestOption) (r XProfileService) {
 
 // Update X profile
 func (r *XProfileService) Update(ctx context.Context, body XProfileUpdateParams, opts ...option.RequestOption) (res *XProfileUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/profile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
@@ -49,7 +49,11 @@ func (r *XProfileService) Update(ctx context.Context, body XProfileUpdateParams,
 
 // Update profile avatar
 func (r *XProfileService) UpdateAvatar(ctx context.Context, body XProfileUpdateAvatarParams, opts ...option.RequestOption) (res *XProfileUpdateAvatarResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/profile/avatar"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
@@ -57,7 +61,11 @@ func (r *XProfileService) UpdateAvatar(ctx context.Context, body XProfileUpdateA
 
 // Update profile banner
 func (r *XProfileService) UpdateBanner(ctx context.Context, body XProfileUpdateBannerParams, opts ...option.RequestOption) (res *XProfileUpdateBannerResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/profile/banner"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
@@ -133,53 +141,33 @@ func (r *XProfileUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type XProfileUpdateAvatarParams struct {
-	// X account (@username or ID) for avatar update
+	// X account (@username or ID) receiving avatar from URL
 	Account string `json:"account" api:"required"`
-	// Avatar image (max 716KB)
-	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`
+	// HTTPS URL to the avatar image to download
+	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
 }
 
-func (r XProfileUpdateAvatarParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+func (r XProfileUpdateAvatarParams) MarshalJSON() (data []byte, err error) {
+	type shadow XProfileUpdateAvatarParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XProfileUpdateAvatarParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XProfileUpdateBannerParams struct {
-	// X account (@username or ID) for banner update
+	// X account (@username or ID) receiving banner from URL
 	Account string `json:"account" api:"required"`
-	// Banner image (max 2MB)
-	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`
+	// HTTPS URL to the banner image to download
+	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
 }
 
-func (r XProfileUpdateBannerParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+func (r XProfileUpdateBannerParams) MarshalJSON() (data []byte, err error) {
+	type shadow XProfileUpdateBannerParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XProfileUpdateBannerParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

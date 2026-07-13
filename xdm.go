@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // XDmService contains methods and other services that help with interacting with
@@ -39,7 +39,11 @@ func NewXDmService(opts ...option.RequestOption) (r XDmService) {
 
 // Get DM conversation history
 func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGetHistoryParams, opts ...option.RequestOption) (res *XDmGetHistoryResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if userID == "" {
 		err = errors.New("missing required userId parameter")
 		return nil, err
@@ -51,7 +55,11 @@ func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGet
 
 // Send direct message
 func (r *XDmService) Send(ctx context.Context, userID string, body XDmSendParams, opts ...option.RequestOption) (res *XDmSendResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if userID == "" {
 		err = errors.New("missing required userId parameter")
 		return nil, err
@@ -83,16 +91,20 @@ func (r *XDmGetHistoryResponse) UnmarshalJSON(data []byte) error {
 
 type XDmGetHistoryResponseMessage struct {
 	ID         string `json:"id" api:"required"`
+	ReceiverID string `json:"receiverId" api:"required"`
+	SenderID   string `json:"senderId" api:"required"`
 	CreatedAt  string `json:"createdAt"`
-	ReceiverID string `json:"receiverId"`
-	SenderID   string `json:"senderId"`
-	Text       string `json:"text"`
+	// URL of attached media (image, GIF, or video). Omitted when the message has no
+	// media attachment.
+	MediaURL string `json:"mediaUrl"`
+	Text     string `json:"text"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		CreatedAt   respjson.Field
 		ReceiverID  respjson.Field
 		SenderID    respjson.Field
+		CreatedAt   respjson.Field
+		MediaURL    respjson.Field
 		Text        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -124,6 +136,9 @@ func (r *XDmSendResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XDmGetHistoryParams struct {
+	// X handle (without the `@` prefix) of the connected X account used to read the
+	// conversation. The account must be a participant in the conversation.
+	Account string `query:"account" api:"required" json:"-"`
 	// Pagination cursor for DM history
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Legacy pagination cursor (backward compat)
@@ -141,10 +156,10 @@ func (r XDmGetHistoryParams) URLQuery() (v url.Values, err error) {
 
 type XDmSendParams struct {
 	// X account (@username or ID) sending the DM
-	Account          string            `json:"account" api:"required"`
-	Text             string            `json:"text" api:"required"`
-	ReplyToMessageID param.Opt[string] `json:"reply_to_message_id,omitzero"`
-	MediaIDs         []string          `json:"media_ids,omitzero"`
+	Account string `json:"account" api:"required"`
+	Text    string `json:"text" api:"required"`
+	// Optional array containing exactly 1 uploaded media ID.
+	MediaIDs []string `json:"media_ids,omitzero"`
 	paramObj
 }
 

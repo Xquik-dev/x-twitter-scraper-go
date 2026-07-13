@@ -10,13 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // XService contains methods and other services that help with interacting with the
@@ -27,9 +27,10 @@ import (
 // the [NewXService] method instead.
 type XService struct {
 	options []option.RequestOption
-	Tweets  XTweetService
-	// Look up, search, and explore user profiles and relationships
-	Users XUserService
+	// X write actions (tweets, likes, follows, DMs)
+	WriteActions XWriteActionService
+	Tweets       XTweetService
+	Users        XUserService
 	// Look up, search, and explore user profiles and relationships
 	Followers XFollowerService
 	Dm        XDmService
@@ -40,6 +41,8 @@ type XService struct {
 	Communities XCommunityService
 	// Connected X account management
 	Accounts XAccountService
+	// Connected X account management
+	AccountConnectionChallenges XAccountConnectionChallengeService
 	// Look up, search, and analyze individual tweets
 	Bookmarks XBookmarkService
 	// X List followers, members, and tweets
@@ -52,6 +55,7 @@ type XService struct {
 func NewXService(opts ...option.RequestOption) (r XService) {
 	r = XService{}
 	r.options = opts
+	r.WriteActions = NewXWriteActionService(opts...)
 	r.Tweets = NewXTweetService(opts...)
 	r.Users = NewXUserService(opts...)
 	r.Followers = NewXFollowerService(opts...)
@@ -60,14 +64,20 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 	r.Profile = NewXProfileService(opts...)
 	r.Communities = NewXCommunityService(opts...)
 	r.Accounts = NewXAccountService(opts...)
+	r.AccountConnectionChallenges = NewXAccountConnectionChallengeService(opts...)
 	r.Bookmarks = NewXBookmarkService(opts...)
 	r.Lists = NewXListService(opts...)
 	return
 }
 
-// Retrieve the full content of an X Article (long-form post) by tweet ID.
+// Retrieve the full content of an X Article (long-form post) by numeric tweet ID.
+// Returns article_not_found when the tweet is valid but is not an X Article.
 func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...option.RequestOption) (res *XGetArticleResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if tweetID == "" {
 		err = errors.New("missing required tweetId parameter")
 		return nil, err
@@ -79,7 +89,11 @@ func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...optio
 
 // Get home timeline
 func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelineParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/timeline"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -87,7 +101,11 @@ func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelinePa
 
 // Get notifications
 func (r *XService) GetNotifications(ctx context.Context, query XGetNotificationsParams, opts ...option.RequestOption) (res *XGetNotificationsResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -95,7 +113,11 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 
 // Get trending hashtags and topics from X by region
 func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/trends"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -103,8 +125,8 @@ func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts .
 
 type XGetArticleResponse struct {
 	Article XGetArticleResponseArticle `json:"article" api:"required"`
-	// Author of a tweet with follower count and verification status.
-	Author TweetAuthor `json:"author"`
+	// X Article author profile fields returned when available.
+	Author XGetArticleResponseAuthor `json:"author"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Article     respjson.Field
@@ -121,6 +143,8 @@ func (r *XGetArticleResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XGetArticleResponseArticle struct {
+	// Plain text joined from all article blocks
+	BodyText      string                              `json:"bodyText"`
 	Contents      []XGetArticleResponseArticleContent `json:"contents"`
 	CoverImageURL string                              `json:"coverImageUrl"`
 	CreatedAt     string                              `json:"createdAt"`
@@ -132,6 +156,7 @@ type XGetArticleResponseArticle struct {
 	ViewCount     int64                               `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		BodyText      respjson.Field
 		Contents      respjson.Field
 		CoverImageURL respjson.Field
 		CreatedAt     respjson.Field
@@ -153,29 +178,109 @@ func (r *XGetArticleResponseArticle) UnmarshalJSON(data []byte) error {
 }
 
 type XGetArticleResponseArticleContent struct {
-	Height int64  `json:"height"`
-	Text   string `json:"text"`
-	// Block type: unstyled, header-one, header-two, header-three, unordered-list-item,
-	// ordered-list-item, image, gif, divider
+	Height int64 `json:"height"`
+	// Inline text formatting ranges
+	InlineStyleRanges []XGetArticleResponseArticleContentInlineStyleRange `json:"inlineStyleRanges"`
+	// Preview image URL for media blocks
+	PreviewURL string `json:"previewUrl"`
+	Text       string `json:"text"`
+	// Block type: paragraph, header-one, header-two, header-three, header-four,
+	// header-five, header-six, unordered-list-item, ordered-list-item, blockquote,
+	// code-block, media, divider
 	Type string `json:"type"`
-	// Media URL for image/gif blocks
+	// Media URL for media blocks
 	URL   string `json:"url"`
 	Width int64  `json:"width"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Height      respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		URL         respjson.Field
-		Width       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Height            respjson.Field
+		InlineStyleRanges respjson.Field
+		PreviewURL        respjson.Field
+		Text              respjson.Field
+		Type              respjson.Field
+		URL               respjson.Field
+		Width             respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponseArticleContent) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XGetArticleResponseArticleContentInlineStyleRange struct {
+	Length int64  `json:"length"`
+	Offset int64  `json:"offset"`
+	Style  string `json:"style"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Length      respjson.Field
+		Offset      respjson.Field
+		Style       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetArticleResponseArticleContentInlineStyleRange) RawJSON() string { return r.JSON.raw }
+func (r *XGetArticleResponseArticleContentInlineStyleRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X Article author profile fields returned when available.
+type XGetArticleResponseAuthor struct {
+	ID               string `json:"id" api:"required"`
+	Name             string `json:"name" api:"required"`
+	Username         string `json:"username" api:"required"`
+	CanDm            bool   `json:"canDm"`
+	CreatedAt        string `json:"createdAt"`
+	Description      string `json:"description"`
+	FavouritesCount  int64  `json:"favouritesCount"`
+	FollowersCount   int64  `json:"followersCount"`
+	FollowingCount   int64  `json:"followingCount"`
+	IsBlueVerified   bool   `json:"isBlueVerified"`
+	IsTranslator     bool   `json:"isTranslator"`
+	IsVerified       bool   `json:"isVerified"`
+	Location         string `json:"location"`
+	MediaCount       int64  `json:"mediaCount"`
+	ProfileBannerURL string `json:"profileBannerUrl"`
+	ProfilePicture   string `json:"profilePicture"`
+	Protected        bool   `json:"protected"`
+	StatusesCount    int64  `json:"statusesCount"`
+	URL              string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		Name             respjson.Field
+		Username         respjson.Field
+		CanDm            respjson.Field
+		CreatedAt        respjson.Field
+		Description      respjson.Field
+		FavouritesCount  respjson.Field
+		FollowersCount   respjson.Field
+		FollowingCount   respjson.Field
+		IsBlueVerified   respjson.Field
+		IsTranslator     respjson.Field
+		IsVerified       respjson.Field
+		Location         respjson.Field
+		MediaCount       respjson.Field
+		ProfileBannerURL respjson.Field
+		ProfilePicture   respjson.Field
+		Protected        respjson.Field
+		StatusesCount    respjson.Field
+		URL              respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetArticleResponseAuthor) RawJSON() string { return r.JSON.raw }
+func (r *XGetArticleResponseAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -266,7 +371,7 @@ func (r *XGetTrendsResponseTrend) UnmarshalJSON(data []byte) error {
 type XGetHomeTimelineParams struct {
 	// Pagination cursor for timeline
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Comma-separated tweet IDs to exclude from results
+	// Comma-separated tweet IDs to exclude from results. Empty entries are ignored.
 	SeenTweetIDs param.Opt[string] `query:"seenTweetIds,omitzero" json:"-"`
 	paramObj
 }
@@ -282,7 +387,7 @@ func (r XGetHomeTimelineParams) URLQuery() (v url.Values, err error) {
 type XGetNotificationsParams struct {
 	// Pagination cursor for notifications
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Notification type filter
+	// Notification type filter. Unrecognized values fall back to All.
 	//
 	// Any of "All", "Verified", "Mentions".
 	Type XGetNotificationsParamsType `query:"type,omitzero" json:"-"`
@@ -298,7 +403,7 @@ func (r XGetNotificationsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Notification type filter
+// Notification type filter. Unrecognized values fall back to All.
 type XGetNotificationsParamsType string
 
 const (

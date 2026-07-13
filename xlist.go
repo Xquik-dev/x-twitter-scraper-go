@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // X List followers, members, and tweets
@@ -40,7 +40,11 @@ func NewXListService(opts ...option.RequestOption) (r XListService) {
 
 // List followers of an X List
 func (r *XListService) GetFollowers(ctx context.Context, id string, query XListGetFollowersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -52,7 +56,11 @@ func (r *XListService) GetFollowers(ctx context.Context, id string, query XListG
 
 // List members of an X List
 func (r *XListService) GetMembers(ctx context.Context, id string, query XListGetMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -64,7 +72,11 @@ func (r *XListService) GetMembers(ctx context.Context, id string, query XListGet
 
 // List tweets from an X List
 func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -77,6 +89,11 @@ func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetT
 type XListGetFollowersParams struct {
 	// Pagination cursor for list followers
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum user profiles requested from this page (20-200, default 200). The
+	// response can contain fewer profiles because the source returned fewer or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true. The deprecated limit and count aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
@@ -110,6 +127,12 @@ type XListGetTweetsParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Include replies (default false)
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Unix timestamp - filter after
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Unix timestamp - filter before

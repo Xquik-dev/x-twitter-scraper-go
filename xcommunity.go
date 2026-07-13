@@ -10,13 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // XCommunityService contains methods and other services that help with interacting
@@ -46,7 +46,11 @@ func NewXCommunityService(opts ...option.RequestOption) (r XCommunityService) {
 
 // Create community
 func (r *XCommunityService) New(ctx context.Context, body XCommunityNewParams, opts ...option.RequestOption) (res *XCommunityNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/communities"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -54,7 +58,11 @@ func (r *XCommunityService) New(ctx context.Context, body XCommunityNewParams, o
 
 // Delete community
 func (r *XCommunityService) Delete(ctx context.Context, id string, body XCommunityDeleteParams, opts ...option.RequestOption) (res *XCommunityDeleteResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -66,7 +74,11 @@ func (r *XCommunityService) Delete(ctx context.Context, id string, body XCommuni
 
 // Get community name, description and member count
 func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...option.RequestOption) (res *XCommunityGetInfoResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -78,7 +90,11 @@ func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...opti
 
 // List members of a community
 func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCommunityGetMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -90,7 +106,11 @@ func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCo
 
 // List moderators of a community
 func (r *XCommunityService) GetModerators(ctx context.Context, id string, query XCommunityGetModeratorsParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -100,33 +120,16 @@ func (r *XCommunityService) GetModerators(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Search for communities by keyword
+// Returns tweets, not community records. Requires a Community ID.
 func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/communities/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
-}
-
-// Result of a community join or leave action.
-type CommunityActionResult struct {
-	CommunityID   string `json:"communityId" api:"required"`
-	CommunityName string `json:"communityName" api:"required"`
-	Success       bool   `json:"success" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CommunityID   respjson.Field
-		CommunityName respjson.Field
-		Success       respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CommunityActionResult) RawJSON() string { return r.JSON.raw }
-func (r *CommunityActionResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type XCommunityNewResponse struct {
@@ -189,9 +192,16 @@ type XCommunityGetInfoResponseCommunity struct {
 	// Community banner image URL
 	BannerURL string `json:"banner_url"`
 	// Community creation timestamp
-	CreatedAt string `json:"created_at"`
+	CreatedAt string                                    `json:"created_at"`
+	Creator   XCommunityGetInfoResponseCommunityCreator `json:"creator"`
 	// About text for the community
 	Description string `json:"description"`
+	// Invitation policy
+	InvitesPolicy string `json:"invites_policy"`
+	// Whether the authenticated viewer is a member
+	IsMember bool `json:"is_member"`
+	// Whether the community is marked sensitive
+	IsNsfw bool `json:"is_nsfw"`
 	// Join policy (open or restricted)
 	JoinPolicy string `json:"join_policy"`
 	// Total member count
@@ -202,6 +212,8 @@ type XCommunityGetInfoResponseCommunity struct {
 	Name string `json:"name"`
 	// Primary topic
 	PrimaryTopic XCommunityGetInfoResponseCommunityPrimaryTopic `json:"primary_topic"`
+	// Authenticated viewer's community role
+	Role string `json:"role"`
 	// Community rules
 	Rules []XCommunityGetInfoResponseCommunityRule `json:"rules"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -209,12 +221,17 @@ type XCommunityGetInfoResponseCommunity struct {
 		ID             respjson.Field
 		BannerURL      respjson.Field
 		CreatedAt      respjson.Field
+		Creator        respjson.Field
 		Description    respjson.Field
+		InvitesPolicy  respjson.Field
+		IsMember       respjson.Field
+		IsNsfw         respjson.Field
 		JoinPolicy     respjson.Field
 		MemberCount    respjson.Field
 		ModeratorCount respjson.Field
 		Name           respjson.Field
 		PrimaryTopic   respjson.Field
+		Role           respjson.Field
 		Rules          respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
@@ -224,6 +241,28 @@ type XCommunityGetInfoResponseCommunity struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityGetInfoResponseCommunity) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityGetInfoResponseCommunity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XCommunityGetInfoResponseCommunityCreator struct {
+	ID       string `json:"id" api:"required"`
+	Username string `json:"username" api:"required"`
+	Verified bool   `json:"verified" api:"required"`
+	Name     string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityGetInfoResponseCommunityCreator) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityGetInfoResponseCommunityCreator) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -303,7 +342,9 @@ func (r *XCommunityDeleteParams) UnmarshalJSON(data []byte) error {
 type XCommunityGetMembersParams struct {
 	// Pagination cursor
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Items per page (20-200, default 20)
+	// Items per page (20-200, default 20). This is an upper bound for paid
+	// authenticated calls: remaining credits can reduce the returned page size, and
+	// zero affordable results returns 402 insufficient_credits.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
@@ -333,12 +374,22 @@ func (r XCommunityGetModeratorsParams) URLQuery() (v url.Values, err error) {
 }
 
 type XCommunityGetSearchParams struct {
+	// Numeric ID of the community whose posts to search
+	CommunityID string `query:"communityId" api:"required" json:"-"`
 	// Search query
 	Q string `query:"q" api:"required" json:"-"`
 	// Pagination cursor for community search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Sort order (Latest or Top)
-	QueryType param.Opt[string] `query:"queryType,omitzero" json:"-"`
+	//
+	// Any of "Latest", "Top".
+	QueryType XCommunityGetSearchParamsQueryType `query:"queryType,omitzero" json:"-"`
 	paramObj
 }
 
@@ -350,3 +401,11 @@ func (r XCommunityGetSearchParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Sort order (Latest or Top)
+type XCommunityGetSearchParamsQueryType string
+
+const (
+	XCommunityGetSearchParamsQueryTypeLatest XCommunityGetSearchParamsQueryType = "Latest"
+	XCommunityGetSearchParamsQueryTypeTop    XCommunityGetSearchParamsQueryType = "Top"
+)

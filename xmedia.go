@@ -3,19 +3,15 @@
 package xtwitterscraper
 
 import (
-	"bytes"
 	"context"
-	"io"
-	"mime/multipart"
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiform"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // Media upload and download
@@ -41,7 +37,11 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 
 // Download images and videos from tweets
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/media/download"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -49,7 +49,11 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 
 // Upload media
 func (r *XMediaService) Upload(ctx context.Context, body XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/media"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -81,10 +85,13 @@ func (r *XMediaDownloadResponse) UnmarshalJSON(data []byte) error {
 
 type XMediaUploadResponse struct {
 	MediaID string `json:"mediaId" api:"required"`
-	Success bool   `json:"success" api:"required"`
+	// Public media URL for tweet `media` arrays.
+	MediaURL string `json:"mediaUrl" api:"required" format:"uri"`
+	Success  bool   `json:"success" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MediaID     respjson.Field
+		MediaURL    respjson.Field
 		Success     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -98,9 +105,13 @@ func (r *XMediaUploadResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XMediaDownloadParams struct {
+	// Numeric tweet ID alias for tweetInput
+	TweetID param.Opt[string] `json:"tweetId,omitzero"`
 	// Tweet URL or ID (single tweet)
 	TweetInput param.Opt[string] `json:"tweetInput,omitzero"`
-	// Array of tweet URLs or IDs (bulk, max 50)
+	// Tweet URL alias for tweetInput
+	TweetURL param.Opt[string] `json:"tweetUrl,omitzero"`
+	// Array of tweet URLs or IDs (bulk, max 50 string items)
 	TweetIDs []string `json:"tweetIds,omitzero"`
 	paramObj
 }
@@ -114,28 +125,17 @@ func (r *XMediaDownloadParams) UnmarshalJSON(data []byte) error {
 }
 
 type XMediaUploadParams struct {
-	// X account (@username or ID) uploading media
+	// X account (@username or ID) uploading media from URL
 	Account string `json:"account" api:"required"`
-	// Media file to upload
-	File        io.Reader       `json:"file,omitzero" api:"required" format:"binary"`
-	IsLongVideo param.Opt[bool] `json:"is_long_video,omitzero"`
+	// HTTPS URL to download and upload as media
+	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
 }
 
-func (r XMediaUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+func (r XMediaUploadParams) MarshalJSON() (data []byte, err error) {
+	type shadow XMediaUploadParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XMediaUploadParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

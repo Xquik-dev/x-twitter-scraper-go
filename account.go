@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apijson"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
 // Account info and settings
@@ -37,7 +37,11 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 
 // Get account info
 func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) (res *AccountGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -45,7 +49,11 @@ func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) 
 
 // Set linked X username
 func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsernameParams, opts ...option.RequestOption) (res *AccountSetXUsernameResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "account/x-identity"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
@@ -53,13 +61,22 @@ func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsern
 
 // Update account locale
 func (r *AccountService) UpdateLocale(ctx context.Context, body AccountUpdateLocaleParams, opts ...option.RequestOption) (res *AccountUpdateLocaleResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
 
 type AccountGetResponse struct {
+	MonitorBilling AccountGetResponseMonitorBilling `json:"monitorBilling" api:"required"`
+	// Deprecated. Monitor slots are unlimited, so this is always
+	// Number.MAX_SAFE_INTEGER.
+	//
+	// Deprecated: deprecated
 	MonitorsAllowed int64 `json:"monitorsAllowed" api:"required"`
 	MonitorsUsed    int64 `json:"monitorsUsed" api:"required"`
 	// Any of "active", "inactive".
@@ -69,6 +86,7 @@ type AccountGetResponse struct {
 	XUsername string `json:"xUsername"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		MonitorBilling  respjson.Field
 		MonitorsAllowed respjson.Field
 		MonitorsUsed    respjson.Field
 		Plan            respjson.Field
@@ -85,6 +103,41 @@ func (r *AccountGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AccountGetResponseMonitorBilling struct {
+	// Estimated daily credits for currently active monitors.
+	ActiveDailyEstimate string `json:"activeDailyEstimate" api:"required"`
+	// Credits charged each hour for currently active monitors.
+	ActiveHourlyBurn string `json:"activeHourlyBurn" api:"required"`
+	// Estimated daily credits for 1 active instant monitor.
+	CreditsPerActiveMonitorDay string `json:"creditsPerActiveMonitorDay" api:"required"`
+	// Hourly credits charged for 1 active instant monitor.
+	CreditsPerActiveMonitorHour string `json:"creditsPerActiveMonitorHour" api:"required"`
+	// Webhook and event deliveries are included in monitor billing.
+	EventsIncluded bool `json:"eventsIncluded" api:"required"`
+	// Active monitors check every 1 second.
+	InstantCheckIntervalSeconds int64 `json:"instantCheckIntervalSeconds" api:"required"`
+	// Monitor slot count is unlimited.
+	UnlimitedSlots bool `json:"unlimitedSlots" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActiveDailyEstimate         respjson.Field
+		ActiveHourlyBurn            respjson.Field
+		CreditsPerActiveMonitorDay  respjson.Field
+		CreditsPerActiveMonitorHour respjson.Field
+		EventsIncluded              respjson.Field
+		InstantCheckIntervalSeconds respjson.Field
+		UnlimitedSlots              respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AccountGetResponseMonitorBilling) RawJSON() string { return r.JSON.raw }
+func (r *AccountGetResponseMonitorBilling) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AccountGetResponsePlan string
 
 const (
@@ -93,18 +146,27 @@ const (
 )
 
 type AccountGetResponseCreditInfo struct {
-	AutoTopupEnabled  bool  `json:"autoTopupEnabled" api:"required"`
-	Balance           int64 `json:"balance" api:"required"`
-	LifetimePurchased int64 `json:"lifetimePurchased" api:"required"`
-	LifetimeUsed      int64 `json:"lifetimeUsed" api:"required"`
+	// Dollar amount charged when automatic top-up runs.
+	AutoTopupAmountDollars float64 `json:"autoTopupAmountDollars" api:"required"`
+	AutoTopupEnabled       bool    `json:"autoTopupEnabled" api:"required"`
+	// Bigint string threshold that triggers automatic top-up when enabled.
+	AutoTopupThreshold string `json:"autoTopupThreshold" api:"required"`
+	// Bigint string to preserve precision above Number.MAX_SAFE_INTEGER.
+	Balance string `json:"balance" api:"required"`
+	// Total purchased credits as a bigint string.
+	LifetimePurchased string `json:"lifetimePurchased" api:"required"`
+	// Total consumed credits as a bigint string.
+	LifetimeUsed string `json:"lifetimeUsed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AutoTopupEnabled  respjson.Field
-		Balance           respjson.Field
-		LifetimePurchased respjson.Field
-		LifetimeUsed      respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		AutoTopupAmountDollars respjson.Field
+		AutoTopupEnabled       respjson.Field
+		AutoTopupThreshold     respjson.Field
+		Balance                respjson.Field
+		LifetimePurchased      respjson.Field
+		LifetimeUsed           respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 

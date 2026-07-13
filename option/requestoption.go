@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 
@@ -19,7 +19,7 @@ import (
 // which can be supplied to clients, services, and methods. You can read more about this functional
 // options pattern in our [README].
 //
-// [README]: https://pkg.go.dev/github.com/stainless-sdks/x-twitter-scraper-go#readme-requestoptions
+// [README]: https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#readme-requestoptions
 type RequestOption = requestconfig.RequestOption
 
 // WithBaseURL returns a RequestOption that sets the BaseURL for the client.
@@ -270,7 +270,7 @@ func WithEnvironmentProduction() RequestOption {
 func WithAPIKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.APIKey = value
-		return r.Apply(WithHeader("X-Api-Key", r.APIKey))
+		return nil
 	})
 }
 
@@ -278,6 +278,14 @@ func WithAPIKey(value string) RequestOption {
 func WithBearerToken(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.BearerToken = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.BearerToken)))
+		return nil
+	})
+}
+
+// WithCookieSession returns a RequestOption that sets the client setting "cookie_session".
+func WithCookieSession(value string) RequestOption {
+	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.CookieSession = value
+		return nil
 	})
 }

@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/apiquery"
-	"github.com/stainless-sdks/x-twitter-scraper-go/internal/requestconfig"
-	"github.com/stainless-sdks/x-twitter-scraper-go/option"
-	"github.com/stainless-sdks/x-twitter-scraper-go/packages/param"
-	"github.com/stainless-sdks/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 // X Community info, members, and tweets
@@ -38,9 +38,13 @@ func NewXCommunityTweetService(opts ...option.RequestOption) (r XCommunityTweetS
 	return
 }
 
-// List tweets across all communities
+// Requires a Community ID and keyword query.
 func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := "x/communities/tweets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -48,7 +52,11 @@ func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweet
 
 // List tweets posted in a community
 func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
-	opts = slices.Concat(r.options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
+		APIKey:      true,
+		OAuthBearer: true,
+	})}
+	opts = slices.Concat(preClientOpts, r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -59,12 +67,22 @@ func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string,
 }
 
 type XCommunityTweetListParams struct {
-	// Search query for cross-community tweets
+	// Numeric ID of the community to search
+	CommunityID string `query:"communityId" api:"required" json:"-"`
+	// Keyword query within the selected community
 	Q string `query:"q" api:"required" json:"-"`
-	// Pagination cursor for cross-community results
+	// Pagination cursor for community results
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Sort order for cross-community results (Latest or Top)
-	QueryType param.Opt[string] `query:"queryType,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Sort order for community results (Latest or Top)
+	//
+	// Any of "Latest", "Top".
+	QueryType XCommunityTweetListParamsQueryType `query:"queryType,omitzero" json:"-"`
 	paramObj
 }
 
@@ -77,9 +95,23 @@ func (r XCommunityTweetListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Sort order for community results (Latest or Top)
+type XCommunityTweetListParamsQueryType string
+
+const (
+	XCommunityTweetListParamsQueryTypeLatest XCommunityTweetListParamsQueryType = "Latest"
+	XCommunityTweetListParamsQueryTypeTop    XCommunityTweetListParamsQueryType = "Top"
+)
+
 type XCommunityTweetListByCommunityParams struct {
 	// Pagination cursor for community tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
