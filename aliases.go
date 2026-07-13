@@ -16,6 +16,25 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// Content disclosure metadata shown by X when a tweet is labeled as paid
+// partnership content or AI-generated media.
+//
+// This is an alias to an internal type.
+type ContentDisclosure = shared.ContentDisclosure
+
+// This is an alias to an internal type.
+type ContentDisclosureAdvertising = shared.ContentDisclosureAdvertising
+
+// This is an alias to an internal type.
+type ContentDisclosureAIGenerated = shared.ContentDisclosureAIGenerated
+
+// Quoted or retweeted tweet context. Every object includes id, text, and
+// engagement metrics. A zero metric can mean X did not report the count. Author,
+// media, and conversation fields appear when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweet = shared.EmbeddedTweet
+
 // Type of monitor event fired when account activity occurs.
 //
 // This is an alias to an internal type.
@@ -108,79 +127,25 @@ type PaginatedUsers = shared.PaginatedUsers
 // This is an alias to an internal type.
 type SearchTweet = shared.SearchTweet
 
-// Content disclosure metadata shown by X when a tweet is labeled as paid
-// partnership content or AI-generated media.
-//
-// This is an alias to an internal type.
-type SearchTweetContentDisclosure = shared.SearchTweetContentDisclosure
-
-// This is an alias to an internal type.
-type SearchTweetContentDisclosureAdvertising = shared.SearchTweetContentDisclosureAdvertising
-
-// This is an alias to an internal type.
-type SearchTweetContentDisclosureAIGenerated = shared.SearchTweetContentDisclosureAIGenerated
-
 // Normalized media attached to a tweet.
 //
 // This is an alias to an internal type.
-type SearchTweetMedia = shared.SearchTweetMedia
+type TweetMedia = shared.TweetMedia
 
 // This is an alias to an internal type.
-type SearchTweetMediaVideoVariant = shared.SearchTweetMediaVideoVariant
+type TweetMediaType = shared.TweetMediaType
 
-// Quoted or retweeted tweet context. Every object includes id, text, and
-// engagement metrics. A zero metric can mean X did not report the count. Author,
-// media, and conversation fields appear when available.
-//
-// This is an alias to an internal type.
-type SearchTweetQuotedTweet = shared.SearchTweetQuotedTweet
+// Equals "photo"
+const TweetMediaTypePhoto = shared.TweetMediaTypePhoto
 
-// Content disclosure metadata shown by X when a tweet is labeled as paid
-// partnership content or AI-generated media.
-//
-// This is an alias to an internal type.
-type SearchTweetQuotedTweetContentDisclosure = shared.SearchTweetQuotedTweetContentDisclosure
+// Equals "video"
+const TweetMediaTypeVideo = shared.TweetMediaTypeVideo
+
+// Equals "animated_gif"
+const TweetMediaTypeAnimatedGif = shared.TweetMediaTypeAnimatedGif
 
 // This is an alias to an internal type.
-type SearchTweetQuotedTweetContentDisclosureAdvertising = shared.SearchTweetQuotedTweetContentDisclosureAdvertising
-
-// This is an alias to an internal type.
-type SearchTweetQuotedTweetContentDisclosureAIGenerated = shared.SearchTweetQuotedTweetContentDisclosureAIGenerated
-
-// Normalized media attached to a tweet.
-//
-// This is an alias to an internal type.
-type SearchTweetQuotedTweetMedia = shared.SearchTweetQuotedTweetMedia
-
-// This is an alias to an internal type.
-type SearchTweetQuotedTweetMediaVideoVariant = shared.SearchTweetQuotedTweetMediaVideoVariant
-
-// Quoted or retweeted tweet context. Every object includes id, text, and
-// engagement metrics. A zero metric can mean X did not report the count. Author,
-// media, and conversation fields appear when available.
-//
-// This is an alias to an internal type.
-type SearchTweetRetweetedTweet = shared.SearchTweetRetweetedTweet
-
-// Content disclosure metadata shown by X when a tweet is labeled as paid
-// partnership content or AI-generated media.
-//
-// This is an alias to an internal type.
-type SearchTweetRetweetedTweetContentDisclosure = shared.SearchTweetRetweetedTweetContentDisclosure
-
-// This is an alias to an internal type.
-type SearchTweetRetweetedTweetContentDisclosureAdvertising = shared.SearchTweetRetweetedTweetContentDisclosureAdvertising
-
-// This is an alias to an internal type.
-type SearchTweetRetweetedTweetContentDisclosureAIGenerated = shared.SearchTweetRetweetedTweetContentDisclosureAIGenerated
-
-// Normalized media attached to a tweet.
-//
-// This is an alias to an internal type.
-type SearchTweetRetweetedTweetMedia = shared.SearchTweetRetweetedTweetMedia
-
-// This is an alias to an internal type.
-type SearchTweetRetweetedTweetMediaVideoVariant = shared.SearchTweetRetweetedTweetMediaVideoVariant
+type TweetMediaVideoVariant = shared.TweetMediaVideoVariant
 
 // X user profile with bio, follower counts, and verification status.
 //

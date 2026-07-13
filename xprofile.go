@@ -37,11 +37,7 @@ func NewXProfileService(opts ...option.RequestOption) (r XProfileService) {
 
 // Update X profile
 func (r *XProfileService) Update(ctx context.Context, body XProfileUpdateParams, opts ...option.RequestOption) (res *XProfileUpdateResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/profile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
@@ -49,11 +45,7 @@ func (r *XProfileService) Update(ctx context.Context, body XProfileUpdateParams,
 
 // Update profile avatar
 func (r *XProfileService) UpdateAvatar(ctx context.Context, body XProfileUpdateAvatarParams, opts ...option.RequestOption) (res *XProfileUpdateAvatarResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/profile/avatar"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
@@ -61,11 +53,7 @@ func (r *XProfileService) UpdateAvatar(ctx context.Context, body XProfileUpdateA
 
 // Update profile banner
 func (r *XProfileService) UpdateBanner(ctx context.Context, body XProfileUpdateBannerParams, opts ...option.RequestOption) (res *XProfileUpdateBannerResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "x/profile/banner"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err

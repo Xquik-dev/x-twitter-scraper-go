@@ -27,7 +27,6 @@ func TestWebhookNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), xtwitterscraper.WebhookNewParams{
 		EventTypes: []shared.EventType{shared.EventTypeTweetNew, shared.EventTypeTweetReply},
@@ -55,7 +54,6 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Webhooks.Update(
 		context.TODO(),
@@ -88,7 +86,6 @@ func TestWebhookList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Webhooks.List(context.TODO())
 	if err != nil {
@@ -113,7 +110,6 @@ func TestWebhookDeactivate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Webhooks.Deactivate(context.TODO(), "id")
 	if err != nil {
@@ -138,7 +134,6 @@ func TestWebhookListDeliveries(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Webhooks.ListDeliveries(context.TODO(), "id")
 	if err != nil {
@@ -163,7 +158,6 @@ func TestWebhookResume(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Webhooks.Resume(context.TODO(), "id")
 	if err != nil {
@@ -188,7 +182,6 @@ func TestWebhookTest(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Webhooks.Test(context.TODO(), "id")
 	if err != nil {

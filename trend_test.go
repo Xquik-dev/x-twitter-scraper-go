@@ -26,7 +26,6 @@ func TestTrendListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Trends.List(context.TODO(), xtwitterscraper.TrendListParams{
 		Count: xtwitterscraper.Int(1),

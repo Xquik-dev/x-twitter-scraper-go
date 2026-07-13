@@ -81,11 +81,31 @@ func (r *GuestWalletService) Topup(ctx context.Context, params GuestWalletTopupP
 	return res, err
 }
 
+// Confirmed USD amount for a guest wallet purchase.
+type GuestWalletAmount struct {
+	// USD amount in cents. Accepted range is $10-$250.
+	AmountMinor int64        `json:"amount_minor" api:"required"`
+	Currency    constant.Usd `json:"currency" default:"usd"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AmountMinor respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GuestWalletAmount) RawJSON() string { return r.JSON.raw }
+func (r *GuestWalletAmount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Initial guest wallet response containing the one-time key.
 type GuestWalletNewResponse struct {
 	AccountRequired bool `json:"account_required" api:"required"`
 	// Confirmed USD amount for a guest wallet purchase.
-	Amount GuestWalletNewResponseAmount `json:"amount" api:"required"`
+	Amount GuestWalletAmount `json:"amount" api:"required"`
 	// Paid-read bearer credential returned only by initial creation. Store it as a
 	// secret. Never place it in a URL or log.
 	APIKey        string                              `json:"api_key" api:"required" format:"password"`
@@ -132,26 +152,6 @@ type GuestWalletNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Confirmed USD amount for a guest wallet purchase.
-type GuestWalletNewResponseAmount struct {
-	// USD amount in cents. Accepted range is $10-$250.
-	AmountMinor int64        `json:"amount_minor" api:"required"`
-	Currency    constant.Usd `json:"currency" default:"usd"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AmountMinor respjson.Field
-		Currency    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GuestWalletNewResponseAmount) RawJSON() string { return r.JSON.raw }
-func (r *GuestWalletNewResponseAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -229,7 +229,7 @@ func (r *GuestWalletGetStatusResponse) UnmarshalJSON(data []byte) error {
 // Latest guest wallet purchase fulfillment state.
 type GuestWalletGetStatusResponseLatestPurchase struct {
 	// Confirmed USD amount for a guest wallet purchase.
-	Amount GuestWalletGetStatusResponseLatestPurchaseAmount `json:"amount" api:"required"`
+	Amount GuestWalletAmount `json:"amount" api:"required"`
 	// Present only while the purchase is pending.
 	CheckoutURL string    `json:"checkout_url" api:"required" format:"uri"`
 	Credits     string    `json:"credits" api:"required"`
@@ -254,26 +254,6 @@ type GuestWalletGetStatusResponseLatestPurchase struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletGetStatusResponseLatestPurchase) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletGetStatusResponseLatestPurchase) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Confirmed USD amount for a guest wallet purchase.
-type GuestWalletGetStatusResponseLatestPurchaseAmount struct {
-	// USD amount in cents. Accepted range is $10-$250.
-	AmountMinor int64        `json:"amount_minor" api:"required"`
-	Currency    constant.Usd `json:"currency" default:"usd"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AmountMinor respjson.Field
-		Currency    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GuestWalletGetStatusResponseLatestPurchaseAmount) RawJSON() string { return r.JSON.raw }
-func (r *GuestWalletGetStatusResponseLatestPurchaseAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -313,7 +293,7 @@ func (r *GuestWalletGetStatusResponseTopUp) UnmarshalJSON(data []byte) error {
 type GuestWalletTopupResponse struct {
 	AccountRequired bool `json:"account_required" api:"required"`
 	// Confirmed USD amount for a guest wallet purchase.
-	Amount GuestWalletTopupResponseAmount `json:"amount" api:"required"`
+	Amount GuestWalletAmount `json:"amount" api:"required"`
 	// Raw Stripe-hosted checkout URL for user interaction.
 	CheckoutURL string `json:"checkout_url" api:"required" format:"uri"`
 	// Credits granted after verified payment.
@@ -362,26 +342,6 @@ type GuestWalletTopupResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletTopupResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletTopupResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Confirmed USD amount for a guest wallet purchase.
-type GuestWalletTopupResponseAmount struct {
-	// USD amount in cents. Accepted range is $10-$250.
-	AmountMinor int64        `json:"amount_minor" api:"required"`
-	Currency    constant.Usd `json:"currency" default:"usd"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AmountMinor respjson.Field
-		Currency    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GuestWalletTopupResponseAmount) RawJSON() string { return r.JSON.raw }
-func (r *GuestWalletTopupResponseAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

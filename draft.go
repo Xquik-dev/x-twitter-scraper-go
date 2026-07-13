@@ -42,11 +42,7 @@ func NewDraftService(opts ...option.RequestOption) (r DraftService) {
 
 // Save a tweet draft
 func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...option.RequestOption) (res *DraftDetail, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "drafts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -54,11 +50,7 @@ func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...opt
 
 // Get draft by ID
 func (r *DraftService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DraftDetail, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -70,11 +62,7 @@ func (r *DraftService) Get(ctx context.Context, id string, opts ...option.Reques
 
 // List saved drafts
 func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...option.RequestOption) (res *DraftListResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "drafts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -82,11 +70,7 @@ func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...
 
 // Delete a draft
 func (r *DraftService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

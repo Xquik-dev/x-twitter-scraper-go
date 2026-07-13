@@ -39,11 +39,7 @@ func NewXDmService(opts ...option.RequestOption) (r XDmService) {
 
 // Get DM conversation history
 func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGetHistoryParams, opts ...option.RequestOption) (res *XDmGetHistoryResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if userID == "" {
 		err = errors.New("missing required userId parameter")
 		return nil, err
@@ -55,11 +51,7 @@ func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGet
 
 // Send direct message
 func (r *XDmService) Send(ctx context.Context, userID string, body XDmSendParams, opts ...option.RequestOption) (res *XDmSendResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if userID == "" {
 		err = errors.New("missing required userId parameter")
 		return nil, err

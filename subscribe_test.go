@@ -26,7 +26,6 @@ func TestSubscribeNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.Subscribe.New(context.TODO(), xtwitterscraper.SubscribeNewParams{
 		Tier: xtwitterscraper.SubscribeNewParamsTierPro,

@@ -20,8 +20,6 @@ type Client struct {
 	options []option.RequestOption
 	// Account info and settings
 	Account AccountService
-	// API key management (session auth only)
-	APIKeys APIKeyService
 	// Subscription, billing, and credits
 	Subscribe SubscribeService
 	// AI tweet composition, drafts, writing styles, and radar
@@ -53,8 +51,8 @@ type Client struct {
 }
 
 // DefaultClientOptions read from the environment (X_TWITTER_SCRAPER_API_KEY,
-// X_TWITTER_SCRAPER_BEARER_TOKEN, X_TWITTER_SCRAPER_SESSION,
-// X_TWITTER_SCRAPER_BASE_URL). This should be used to initialize new clients.
+// X_TWITTER_SCRAPER_BEARER_TOKEN, X_TWITTER_SCRAPER_BASE_URL). This should be used
+// to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithHTTPClient(defaultHTTPClient()), option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_BASE_URL"); ok {
@@ -65,9 +63,6 @@ func DefaultClientOptions() []option.RequestOption {
 	}
 	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_BEARER_TOKEN"); ok {
 		defaults = append(defaults, option.WithBearerToken(o))
-	}
-	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_SESSION"); ok {
-		defaults = append(defaults, option.WithCookieSession(o))
 	}
 	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_CUSTOM_HEADERS"); ok {
 		for _, line := range strings.Split(o, "\n") {
@@ -82,16 +77,15 @@ func DefaultClientOptions() []option.RequestOption {
 
 // NewClient generates a new client with the default option read from the
 // environment (X_TWITTER_SCRAPER_API_KEY, X_TWITTER_SCRAPER_BEARER_TOKEN,
-// X_TWITTER_SCRAPER_SESSION, X_TWITTER_SCRAPER_BASE_URL). The option passed in as
-// arguments are applied after these default arguments, and all option will be
-// passed down to the services and requests that this client makes.
+// X_TWITTER_SCRAPER_BASE_URL). The option passed in as arguments are applied after
+// these default arguments, and all option will be passed down to the services and
+// requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
 	r = Client{options: opts}
 
 	r.Account = NewAccountService(opts...)
-	r.APIKeys = NewAPIKeyService(opts...)
 	r.Subscribe = NewSubscribeService(opts...)
 	r.Compose = NewComposeService(opts...)
 	r.Drafts = NewDraftService(opts...)

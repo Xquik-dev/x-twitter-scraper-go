@@ -26,7 +26,6 @@ func TestGuestWalletNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.GuestWallets.New(context.TODO(), xtwitterscraper.GuestWalletNewParams{
 		AmountMinor:    1000,
@@ -55,7 +54,6 @@ func TestGuestWalletGetStatus(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.GuestWallets.GetStatus(context.TODO())
 	if err != nil {
@@ -80,7 +78,6 @@ func TestGuestWalletTopup(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 	)
 	_, err := client.GuestWallets.Topup(context.TODO(), xtwitterscraper.GuestWalletTopupParams{
 		AmountMinor:    1000,

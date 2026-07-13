@@ -4,7 +4,6 @@ package xtwitterscraper
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -15,7 +14,6 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // Subscription, billing, and credits
@@ -39,15 +37,6 @@ func NewCreditService(opts ...option.RequestOption) (r CreditService) {
 	return
 }
 
-// Instantly charge saved card for credits
-func (r *CreditService) QuickTopupBalance(ctx context.Context, body CreditQuickTopupBalanceParams, opts ...option.RequestOption) (res *CreditQuickTopupBalanceResponseUnion, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithCookieSessionSecurity()}
-	opts = slices.Concat(preClientOpts, r.options, opts)
-	path := "credits/quick-topup"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
-}
-
 // Redirect to an active top-up payment page
 func (r *CreditService) RedirectTopupCheckout(ctx context.Context, query CreditRedirectTopupCheckoutParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
@@ -60,11 +49,7 @@ func (r *CreditService) RedirectTopupCheckout(ctx context.Context, query CreditR
 
 // Get credits balance
 func (r *CreditService) GetBalance(ctx context.Context, opts ...option.RequestOption) (res *CreditGetBalanceResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "credits"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -72,11 +57,7 @@ func (r *CreditService) GetBalance(ctx context.Context, opts ...option.RequestOp
 
 // Get top-up billing status
 func (r *CreditService) GetTopupStatus(ctx context.Context, query CreditGetTopupStatusParams, opts ...option.RequestOption) (res *CreditGetTopupStatusResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "credits/topup/status"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -85,116 +66,10 @@ func (r *CreditService) GetTopupStatus(ctx context.Context, query CreditGetTopup
 // Create a Stripe Checkout session only after the user confirms. The request never
 // completes payment or adds credits by itself.
 func (r *CreditService) TopupBalance(ctx context.Context, body CreditTopupBalanceParams, opts ...option.RequestOption) (res *CreditTopupBalanceResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "credits/topup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
-}
-
-// CreditQuickTopupBalanceResponseUnion contains all possible properties and values
-// from [CreditQuickTopupBalanceResponseObject],
-// [CreditQuickTopupBalanceResponseObject2],
-// [CreditQuickTopupBalanceResponseOutcome].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type CreditQuickTopupBalanceResponseUnion struct {
-	// This field is from variant [CreditQuickTopupBalanceResponseObject].
-	Balance string `json:"balance"`
-	// This field is from variant [CreditQuickTopupBalanceResponseObject].
-	Credits string `json:"credits"`
-	Outcome string `json:"outcome"`
-	// This field is from variant [CreditQuickTopupBalanceResponseObject2].
-	ClientSecret string `json:"clientSecret"`
-	JSON         struct {
-		Balance      respjson.Field
-		Credits      respjson.Field
-		Outcome      respjson.Field
-		ClientSecret respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-func (u CreditQuickTopupBalanceResponseUnion) AsCreditQuickTopupBalanceResponseObject() (v CreditQuickTopupBalanceResponseObject) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CreditQuickTopupBalanceResponseUnion) AsCreditQuickTopupBalanceResponseObject2() (v CreditQuickTopupBalanceResponseObject2) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CreditQuickTopupBalanceResponseUnion) AsCreditQuickTopupBalanceResponseOutcome() (v CreditQuickTopupBalanceResponseOutcome) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CreditQuickTopupBalanceResponseUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CreditQuickTopupBalanceResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CreditQuickTopupBalanceResponseObject struct {
-	// Updated credit balance as a bigint string.
-	Balance string `json:"balance" api:"required"`
-	// Credits added by this top-up as a bigint string.
-	Credits string           `json:"credits" api:"required"`
-	Outcome constant.Charged `json:"outcome" default:"charged"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Balance     respjson.Field
-		Credits     respjson.Field
-		Outcome     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CreditQuickTopupBalanceResponseObject) RawJSON() string { return r.JSON.raw }
-func (r *CreditQuickTopupBalanceResponseObject) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CreditQuickTopupBalanceResponseObject2 struct {
-	// Payment client secret for completing authentication.
-	ClientSecret string                  `json:"clientSecret" api:"required"`
-	Outcome      constant.RequiresAction `json:"outcome" default:"requires_action"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientSecret respjson.Field
-		Outcome      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CreditQuickTopupBalanceResponseObject2) RawJSON() string { return r.JSON.raw }
-func (r *CreditQuickTopupBalanceResponseObject2) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CreditQuickTopupBalanceResponseOutcome struct {
-	Outcome constant.NoPaymentMethod `json:"outcome" default:"no_payment_method"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Outcome     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CreditQuickTopupBalanceResponseOutcome) RawJSON() string { return r.JSON.raw }
-func (r *CreditQuickTopupBalanceResponseOutcome) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type CreditGetBalanceResponse struct {
@@ -280,20 +155,6 @@ type CreditTopupBalanceResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CreditTopupBalanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *CreditTopupBalanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CreditQuickTopupBalanceParams struct {
-	// Dollar amount for the top-up
-	Dollars float64 `json:"dollars" api:"required"`
-	paramObj
-}
-
-func (r CreditQuickTopupBalanceParams) MarshalJSON() (data []byte, err error) {
-	type shadow CreditQuickTopupBalanceParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CreditQuickTopupBalanceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

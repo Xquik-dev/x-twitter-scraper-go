@@ -28,7 +28,6 @@ func TestUserAgentHeader(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -51,7 +50,6 @@ func TestRetryAfter(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -87,7 +85,6 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -119,7 +116,6 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -151,7 +147,6 @@ func TestRetryAfterMs(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -179,7 +174,6 @@ func TestContextCancel(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -201,7 +195,6 @@ func TestContextCancelDelay(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
-		option.WithCookieSession("My Cookie Session"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -231,7 +224,6 @@ func TestContextDeadline(t *testing.T) {
 		client := xtwitterscraper.NewClient(
 			option.WithAPIKey("My API Key"),
 			option.WithBearerToken("My Bearer Token"),
-			option.WithCookieSession("My Cookie Session"),
 			option.WithHTTPClient(&http.Client{
 				Transport: &closureTransport{
 					fn: func(req *http.Request) (*http.Response, error) {

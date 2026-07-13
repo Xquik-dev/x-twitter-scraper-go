@@ -38,11 +38,7 @@ func NewSubscribeService(opts ...option.RequestOption) (r SubscribeService) {
 // Create a subscription checkout or billing-management URL only after the user
 // confirms. The request never completes payment by itself.
 func (r *SubscribeService) New(ctx context.Context, body SubscribeNewParams, opts ...option.RequestOption) (res *SubscribeNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "subscribe"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err

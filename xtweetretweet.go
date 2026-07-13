@@ -40,11 +40,7 @@ func NewXTweetRetweetService(opts ...option.RequestOption) (r XTweetRetweetServi
 
 // Retweet
 func (r *XTweetRetweetService) New(ctx context.Context, id string, body XTweetRetweetNewParams, opts ...option.RequestOption) (res *XTweetRetweetNewResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -56,11 +52,7 @@ func (r *XTweetRetweetService) New(ctx context.Context, id string, body XTweetRe
 
 // Unretweet
 func (r *XTweetRetweetService) Delete(ctx context.Context, id string, body XTweetRetweetDeleteParams, opts ...option.RequestOption) (res *XTweetRetweetDeleteResponse, err error) {
-	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{
-		APIKey:      true,
-		OAuthBearer: true,
-	})}
-	opts = slices.Concat(preClientOpts, r.options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

@@ -178,9 +178,8 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 	}
 	cfg.ResponseBodyInto = dst
 	cfg.Security = Security{
-		APIKey:        true,
-		OAuthBearer:   true,
-		CookieSession: true,
+		APIKey:      true,
+		OAuthBearer: true,
 	}
 	err = cfg.Apply(opts...)
 	if err != nil {
@@ -228,7 +227,6 @@ type RequestConfig struct {
 	Middlewares    []middleware
 	APIKey         string
 	BearerToken    string
-	CookieSession  string
 	// Configure which security scheme(s) should be enabled for this request
 	Security Security
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
@@ -606,7 +604,6 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		Middlewares:    cfg.Middlewares,
 		APIKey:         cfg.APIKey,
 		BearerToken:    cfg.BearerToken,
-		CookieSession:  cfg.CookieSession,
 	}
 
 	return new
@@ -656,9 +653,8 @@ func WithDefaultBaseURL(baseURL string) RequestOption {
 }
 
 type Security struct {
-	APIKey        bool
-	OAuthBearer   bool
-	CookieSession bool
+	APIKey      bool
+	OAuthBearer bool
 }
 
 func WithSecurity(security Security) RequestOption {
@@ -673,9 +669,8 @@ func WithSecurity(security Security) RequestOption {
 func WithAPIKeySecurity() RequestOption {
 	return RequestOptionFunc(func(r *RequestConfig) error {
 		r.Security = Security{
-			APIKey:        true,
-			OAuthBearer:   false,
-			CookieSession: false,
+			APIKey:      true,
+			OAuthBearer: false,
 		}
 		return nil
 	})
@@ -686,22 +681,8 @@ func WithAPIKeySecurity() RequestOption {
 func WithOAuthBearerSecurity() RequestOption {
 	return RequestOptionFunc(func(r *RequestConfig) error {
 		r.Security = Security{
-			APIKey:        false,
-			OAuthBearer:   true,
-			CookieSession: false,
-		}
-		return nil
-	})
-}
-
-// WithCookieSessionSecurity() should only be used within a method, not provided to
-// at the client-level.
-func WithCookieSessionSecurity() RequestOption {
-	return RequestOptionFunc(func(r *RequestConfig) error {
-		r.Security = Security{
-			APIKey:        false,
-			OAuthBearer:   false,
-			CookieSession: true,
+			APIKey:      false,
+			OAuthBearer: true,
 		}
 		return nil
 	})
@@ -714,9 +695,5 @@ func ApplySecurity(r RequestConfig) {
 
 	if r.Security.OAuthBearer && r.BearerToken != "" && r.Request.Header.Get("Authorization") == "" {
 		r.Request.Header.Set("authorization", fmt.Sprintf("Bearer %s", r.BearerToken))
-	}
-
-	if r.Security.CookieSession && r.CookieSession != "" && r.Request.Header.Get("__Host-xquik_session") == "" {
-		r.Request.Header.Set("__Host-xquik_session", r.CookieSession)
 	}
 }
