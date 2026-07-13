@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.2 (2026-07-13)
+
+Full Changelog: [v0.4.1...v0.4.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.4.1...v0.4.2)
+
+### Documentation
+
+* add the Xquik non-affiliation notice
+* improve SDK discovery and Context7 guidance
+
+### Chores
+
+* refresh Go SDK dependencies
+
 ## 0.4.1 (2026-04-25)
 
 Full Changelog: [v0.4.0...v0.4.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.4.0...v0.4.1)

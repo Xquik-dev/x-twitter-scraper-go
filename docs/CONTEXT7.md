@@ -7,7 +7,7 @@ workflows.
 ## Install
 
 ```sh
-go get github.com/Xquik-dev/x-twitter-scraper-go@v0.4.1
+go get github.com/Xquik-dev/x-twitter-scraper-go@v0.4.2
 ```
 
 This SDK requires Go 1.23+.
