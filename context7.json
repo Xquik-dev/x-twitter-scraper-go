@@ -26,7 +26,8 @@
   "rules": [
     "Install with go get github.com/Xquik-dev/x-twitter-scraper-go.",
     "Authenticate with option.WithAPIKey or the X_TWITTER_SCRAPER_API_KEY environment variable.",
-    "Use README.md and docs/CONTEXT7.md first for install, API key setup, first request, package links, webhooks, MCP, and common Go workflows.",
+    "Use README.md and docs/CONTEXT7.md first for install, API key setup, first request, package links, webhooks, and common Go workflows.",
+    "For remote agent access, link to https://docs.xquik.com/mcp/overview. The MCP server is separate from this REST SDK and prefers OAuth 2.1.",
     "Use go.mod for module path, Go version, and dependency metadata.",
     "Use client.go and option/requestoption.go for client construction and request option patterns.",
     "Use xtweet.go for tweet search, posting, replies, retweeters, quotes, threads, and tweet retrieval workflows.",
