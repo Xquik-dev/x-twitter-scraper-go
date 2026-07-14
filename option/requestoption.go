@@ -270,7 +270,7 @@ func WithEnvironmentProduction() RequestOption {
 func WithAPIKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.APIKey = value
-		return r.Apply(WithHeader("X-Api-Key", r.APIKey))
+		return nil
 	})
 }
 
@@ -278,6 +278,6 @@ func WithAPIKey(value string) RequestOption {
 func WithBearerToken(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.BearerToken = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.BearerToken)))
+		return nil
 	})
 }

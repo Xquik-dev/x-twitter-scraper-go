@@ -3,10 +3,8 @@
 package xtwitterscraper_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
 	"os"
 	"testing"
 
@@ -27,6 +25,7 @@ func TestXProfileUpdateWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.Update(context.TODO(), xtwitterscraper.XProfileUpdateParams{
 		Account:     "@elonmusk",
@@ -56,10 +55,11 @@ func TestXProfileUpdateAvatar(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.UpdateAvatar(context.TODO(), xtwitterscraper.XProfileUpdateAvatarParams{
 		Account: "@elonmusk",
-		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
+		URL:     "https://example.com/avatar.png",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -82,10 +82,11 @@ func TestXProfileUpdateBanner(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.UpdateBanner(context.TODO(), xtwitterscraper.XProfileUpdateBannerParams{
 		Account: "@elonmusk",
-		File:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
+		URL:     "https://example.com/banner.png",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

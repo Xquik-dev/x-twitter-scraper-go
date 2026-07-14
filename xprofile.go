@@ -3,14 +3,10 @@
 package xtwitterscraper
 
 import (
-	"bytes"
 	"context"
-	"io"
-	"mime/multipart"
 	"net/http"
 	"slices"
 
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
@@ -133,53 +129,33 @@ func (r *XProfileUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type XProfileUpdateAvatarParams struct {
-	// X account (@username or ID) for avatar update
+	// X account (@username or ID) receiving avatar from URL
 	Account string `json:"account" api:"required"`
-	// Avatar image (max 716KB)
-	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`
+	// HTTPS URL to the avatar image to download
+	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
 }
 
-func (r XProfileUpdateAvatarParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+func (r XProfileUpdateAvatarParams) MarshalJSON() (data []byte, err error) {
+	type shadow XProfileUpdateAvatarParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XProfileUpdateAvatarParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XProfileUpdateBannerParams struct {
-	// X account (@username or ID) for banner update
+	// X account (@username or ID) receiving banner from URL
 	Account string `json:"account" api:"required"`
-	// Banner image (max 2MB)
-	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`
+	// HTTPS URL to the banner image to download
+	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
 }
 
-func (r XProfileUpdateBannerParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+func (r XProfileUpdateBannerParams) MarshalJSON() (data []byte, err error) {
+	type shadow XProfileUpdateBannerParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XProfileUpdateBannerParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

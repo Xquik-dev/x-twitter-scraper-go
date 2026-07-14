@@ -100,7 +100,7 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 	return res, err
 }
 
-// Linked X account summary with username and connection status.
+// Linked X account summary with connection status, health, and timestamp metadata.
 type XAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -112,20 +112,24 @@ type XAccount struct {
 	//
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
-	Health    XAccountHealth `json:"health" api:"required"`
-	Status    string         `json:"status" api:"required"`
-	XUserID   string         `json:"xUserId" api:"required"`
-	XUsername string         `json:"xUsername" api:"required"`
+	Health            XAccountHealth `json:"health" api:"required"`
+	Status            string         `json:"status" api:"required"`
+	UpdatedAt         time.Time      `json:"updatedAt" api:"required" format:"date-time"`
+	XUserID           string         `json:"xUserId" api:"required"`
+	XUsername         string         `json:"xUsername" api:"required"`
+	CookiesObtainedAt time.Time      `json:"cookiesObtainedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Health      respjson.Field
-		Status      respjson.Field
-		XUserID     respjson.Field
-		XUsername   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		Health            respjson.Field
+		Status            respjson.Field
+		UpdatedAt         respjson.Field
+		XUserID           respjson.Field
+		XUsername         respjson.Field
+		CookiesObtainedAt respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
@@ -151,7 +155,7 @@ const (
 	XAccountHealthTemporaryIssue XAccountHealth = "temporaryIssue"
 )
 
-// Full X account details including proxy, cookies, and update timestamp.
+// Full X account details with status, cookies, and update timestamp.
 type XAccountDetail struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -162,7 +166,6 @@ type XAccountDetail struct {
 	XUserID           string               `json:"xUserId" api:"required"`
 	XUsername         string               `json:"xUsername" api:"required"`
 	CookiesObtainedAt time.Time            `json:"cookiesObtainedAt" format:"date-time"`
-	ProxyCountry      string               `json:"proxyCountry"`
 	UpdatedAt         time.Time            `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -173,7 +176,6 @@ type XAccountDetail struct {
 		XUserID           respjson.Field
 		XUsername         respjson.Field
 		CookiesObtainedAt respjson.Field
-		ProxyCountry      respjson.Field
 		UpdatedAt         respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
@@ -197,11 +199,7 @@ const (
 	XAccountDetailHealthTemporaryIssue XAccountDetailHealth = "temporaryIssue"
 )
 
-// Sanitized X account summary returned by connect and reauth. Includes an optional
-// `loginCountry` field surfaced only when the declared proxy region had no Driver
-// capacity and the login fell back to a single US consumer device for this
-// one-time action. Future activity continues to use the selected `proxy_country`;
-// the field is omitted on normal logins.
+// Sanitized X account summary returned by connect and reauth.
 type XAccountNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -211,21 +209,16 @@ type XAccountNewResponse struct {
 	Status    string                    `json:"status" api:"required"`
 	XUserID   string                    `json:"xUserId" api:"required"`
 	XUsername string                    `json:"xUsername" api:"required"`
-	// ISO-3166-1 alpha-2 country code of the Driver consumer device used for this
-	// login. Present only when the US fallback was triggered because Driver had no
-	// capacity in the declared region. Omitted otherwise.
-	LoginCountry string `json:"loginCountry"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Health       respjson.Field
-		Status       respjson.Field
-		XUserID      respjson.Field
-		XUsername    respjson.Field
-		LoginCountry respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Health      respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -295,11 +288,7 @@ func (r *XAccountBulkRetryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Sanitized X account summary returned by connect and reauth. Includes an optional
-// `loginCountry` field surfaced only when the declared proxy region had no Driver
-// capacity and the login fell back to a single US consumer device for this
-// one-time action. Future activity continues to use the selected `proxy_country`;
-// the field is omitted on normal logins.
+// Sanitized X account summary returned by connect and reauth.
 type XAccountReauthResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -309,21 +298,16 @@ type XAccountReauthResponse struct {
 	Status    string                       `json:"status" api:"required"`
 	XUserID   string                       `json:"xUserId" api:"required"`
 	XUsername string                       `json:"xUsername" api:"required"`
-	// ISO-3166-1 alpha-2 country code of the Driver consumer device used for this
-	// login. Present only when the US fallback was triggered because Driver had no
-	// capacity in the declared region. Omitted otherwise.
-	LoginCountry string `json:"loginCountry"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Health       respjson.Field
-		Status       respjson.Field
-		XUserID      respjson.Field
-		XUsername    respjson.Field
-		LoginCountry respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Health      respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -351,8 +335,6 @@ type XAccountNewParams struct {
 	Password string `json:"password" api:"required"`
 	// X username
 	Username string `json:"username" api:"required"`
-	// Proxy country code
-	ProxyCountry param.Opt[string] `json:"proxy_country,omitzero"`
 	// TOTP secret for 2FA
 	TotpSecret param.Opt[string] `json:"totp_secret,omitzero"`
 	paramObj
@@ -371,8 +353,6 @@ type XAccountReauthParams struct {
 	Password string `json:"password" api:"required"`
 	// Email for the X account (updates stored email)
 	Email param.Opt[string] `json:"email,omitzero"`
-	// Two-letter country code for login proxy region
-	ProxyCountry param.Opt[string] `json:"proxy_country,omitzero"`
 	// TOTP secret for 2FA re-authentication
 	TotpSecret param.Opt[string] `json:"totp_secret,omitzero"`
 	paramObj

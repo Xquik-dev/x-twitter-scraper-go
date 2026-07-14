@@ -77,6 +77,11 @@ func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetT
 type XListGetFollowersParams struct {
 	// Pagination cursor for list followers
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum user profiles requested from this page (20-200, default 200). The
+	// response can contain fewer profiles because the source returned fewer or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true. The deprecated limit and count aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
@@ -92,6 +97,8 @@ func (r XListGetFollowersParams) URLQuery() (v url.Values, err error) {
 type XListGetMembersParams struct {
 	// Pagination cursor for list members
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Members per page (20-200, default 20)
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
@@ -108,6 +115,12 @@ type XListGetTweetsParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Include replies (default false)
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
+	// Maximum items requested from this page (1-100, default 20). The response can
+	// contain fewer items because the source returned fewer, filters removed items, or
+	// remaining credits cover fewer results. Keep requesting next_cursor while
+	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Unix timestamp - filter after
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Unix timestamp - filter before

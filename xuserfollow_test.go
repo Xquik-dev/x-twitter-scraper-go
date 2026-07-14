@@ -25,6 +25,7 @@ func TestXUserFollowNew(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Users.Follow.New(
 		context.TODO(),
@@ -54,6 +55,7 @@ func TestXUserFollowDeleteAll(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Users.Follow.DeleteAll(
 		context.TODO(),

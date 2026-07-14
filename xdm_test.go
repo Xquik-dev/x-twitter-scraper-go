@@ -25,13 +25,15 @@ func TestXDmGetHistoryWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Dm.GetHistory(
 		context.TODO(),
 		"userId",
 		xtwitterscraper.XDmGetHistoryParams{
-			Cursor: xtwitterscraper.String("cursor"),
-			MaxID:  xtwitterscraper.String("maxId"),
+			Account: "account",
+			Cursor:  xtwitterscraper.String("cursor"),
+			MaxID:   xtwitterscraper.String("maxId"),
 		},
 	)
 	if err != nil {
@@ -55,15 +57,15 @@ func TestXDmSendWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Dm.Send(
 		context.TODO(),
 		"userId",
 		xtwitterscraper.XDmSendParams{
-			Account:          "@elonmusk",
-			Text:             "Example text content",
-			MediaIDs:         []string{"1234567890123456789"},
-			ReplyToMessageID: xtwitterscraper.String("1234567890123456789"),
+			Account:  "@elonmusk",
+			Text:     "Example text content",
+			MediaIDs: []string{"1234567890123456789"},
 		},
 	)
 	if err != nil {

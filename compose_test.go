@@ -25,6 +25,7 @@ func TestComposeNewWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Compose.New(context.TODO(), xtwitterscraper.ComposeNewParams{
 		Step:              xtwitterscraper.ComposeNewParamsStepCompose,

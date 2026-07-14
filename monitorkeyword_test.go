@@ -11,9 +11,10 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-func TestSupportTicketNew(t *testing.T) {
+func TestMonitorKeywordNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,9 +28,9 @@ func TestSupportTicketNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Support.Tickets.New(context.TODO(), xtwitterscraper.SupportTicketNewParams{
-		Body:    "I am unable to connect my X account. Please help.",
-		Subject: "Cannot connect X account",
+	_, err := client.Monitors.Keywords.New(context.TODO(), xtwitterscraper.MonitorKeywordNewParams{
+		EventTypes: []shared.EventType{shared.EventTypeTweetNew},
+		Query:      `xquik OR "x api"`,
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -40,7 +41,7 @@ func TestSupportTicketNew(t *testing.T) {
 	}
 }
 
-func TestSupportTicketGet(t *testing.T) {
+func TestMonitorKeywordGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -54,7 +55,7 @@ func TestSupportTicketGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Support.Tickets.Get(context.TODO(), "tkt_a1b2c3d4e5f6a1b2c3d4e5f6")
+	_, err := client.Monitors.Keywords.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -64,7 +65,7 @@ func TestSupportTicketGet(t *testing.T) {
 	}
 }
 
-func TestSupportTicketUpdate(t *testing.T) {
+func TestMonitorKeywordUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,11 +79,12 @@ func TestSupportTicketUpdate(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Support.Tickets.Update(
+	_, err := client.Monitors.Keywords.Update(
 		context.TODO(),
-		"tkt_a1b2c3d4e5f6a1b2c3d4e5f6",
-		xtwitterscraper.SupportTicketUpdateParams{
-			Status: xtwitterscraper.SupportTicketUpdateParamsStatusResolved,
+		"id",
+		xtwitterscraper.MonitorKeywordUpdateParams{
+			EventTypes: []shared.EventType{shared.EventTypeTweetNew},
+			IsActive:   xtwitterscraper.Bool(true),
 		},
 	)
 	if err != nil {
@@ -94,7 +96,7 @@ func TestSupportTicketUpdate(t *testing.T) {
 	}
 }
 
-func TestSupportTicketList(t *testing.T) {
+func TestMonitorKeywordList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -108,7 +110,7 @@ func TestSupportTicketList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Support.Tickets.List(context.TODO())
+	_, err := client.Monitors.Keywords.List(context.TODO())
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -118,7 +120,7 @@ func TestSupportTicketList(t *testing.T) {
 	}
 }
 
-func TestSupportTicketReply(t *testing.T) {
+func TestMonitorKeywordDeactivate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -132,13 +134,7 @@ func TestSupportTicketReply(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Support.Tickets.Reply(
-		context.TODO(),
-		"tkt_a1b2c3d4e5f6a1b2c3d4e5f6",
-		xtwitterscraper.SupportTicketReplyParams{
-			Body: "Thank you for the update.",
-		},
-	)
+	_, err := client.Monitors.Keywords.Deactivate(context.TODO(), "id")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

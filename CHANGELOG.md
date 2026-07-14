@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.0 (2026-07-14)
+
+Full Changelog: [v0.4.2...v0.5.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.4.2...v0.5.0)
+
+### Features
+
+* add accountless guest wallet checkout, status, and top-up operations
+* add credit top-up redirect and status operations
+* add keyword monitor and account connection challenge resources
+* expand typed read, write, extraction, event, and webhook contracts
+
+### Chores
+
+* refresh generated request encoding and transport helpers
+* pin GitHub Actions used by CI
+
 ## 0.4.2 (2026-07-13)
 
 Full Changelog: [v0.4.1...v0.4.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.4.1...v0.4.2)

@@ -13,6 +13,32 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
+func TestCreditRedirectTopupCheckout(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	err := client.Credits.RedirectTopupCheckout(context.TODO(), xtwitterscraper.CreditRedirectTopupCheckoutParams{
+		SessionID: "session_id",
+	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestCreditGetBalance(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -25,6 +51,7 @@ func TestCreditGetBalance(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Credits.GetBalance(context.TODO())
 	if err != nil {
@@ -36,7 +63,7 @@ func TestCreditGetBalance(t *testing.T) {
 	}
 }
 
-func TestCreditTopupBalance(t *testing.T) {
+func TestCreditGetTopupStatus(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -48,9 +75,37 @@ func TestCreditTopupBalance(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.Credits.GetTopupStatus(context.TODO(), xtwitterscraper.CreditGetTopupStatusParams{
+		SessionID: "session_id",
+	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestCreditTopupBalanceWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Credits.TopupBalance(context.TODO(), xtwitterscraper.CreditTopupBalanceParams{
-		Amount: 10000,
+		Dollars: 10,
+		Locale:  xtwitterscraper.String("en"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

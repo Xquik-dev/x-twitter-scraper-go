@@ -55,9 +55,11 @@ func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.Reques
 }
 
 type XBookmarkGetFoldersResponse struct {
-	Folders     []XBookmarkGetFoldersResponseFolder `json:"folders" api:"required"`
-	HasNextPage bool                                `json:"has_next_page" api:"required"`
-	NextCursor  string                              `json:"next_cursor" api:"required"`
+	Folders []XBookmarkGetFoldersResponseFolder `json:"folders" api:"required"`
+	// Always false for the current bookmark folder route
+	HasNextPage bool `json:"has_next_page" api:"required"`
+	// Always empty for the current bookmark folder route
+	NextCursor string `json:"next_cursor" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Folders     respjson.Field

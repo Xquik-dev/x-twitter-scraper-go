@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strings"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
@@ -19,8 +20,6 @@ type Client struct {
 	options []option.RequestOption
 	// Account info and settings
 	Account AccountService
-	// API key management (session auth only)
-	APIKeys APIKeyService
 	// Subscription, billing, and credits
 	Subscribe SubscribeService
 	// AI tweet composition, drafts, writing styles, and radar
@@ -35,7 +34,7 @@ type Client struct {
 	Monitors MonitorService
 	// Activity events from monitored accounts
 	Events EventService
-	// Bulk data extraction (20 tool types)
+	// Bulk data extraction (23 tool types)
 	Extractions ExtractionService
 	// Giveaway draws from tweet replies
 	Draws DrawService
@@ -47,13 +46,15 @@ type Client struct {
 	Support SupportService
 	// Subscription, billing, and credits
 	Credits CreditService
+	// Accountless prepaid access for paid read endpoints
+	GuestWallets GuestWalletService
 }
 
 // DefaultClientOptions read from the environment (X_TWITTER_SCRAPER_API_KEY,
 // X_TWITTER_SCRAPER_BEARER_TOKEN, X_TWITTER_SCRAPER_BASE_URL). This should be used
 // to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
-	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	defaults := []option.RequestOption{option.WithHTTPClient(defaultHTTPClient()), option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
@@ -62,6 +63,14 @@ func DefaultClientOptions() []option.RequestOption {
 	}
 	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_BEARER_TOKEN"); ok {
 		defaults = append(defaults, option.WithBearerToken(o))
+	}
+	if o, ok := os.LookupEnv("X_TWITTER_SCRAPER_CUSTOM_HEADERS"); ok {
+		for _, line := range strings.Split(o, "\n") {
+			colon := strings.Index(line, ":")
+			if colon >= 0 {
+				defaults = append(defaults, option.WithHeader(strings.TrimSpace(line[:colon]), strings.TrimSpace(line[colon+1:])))
+			}
+		}
 	}
 	return defaults
 }
@@ -77,7 +86,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r = Client{options: opts}
 
 	r.Account = NewAccountService(opts...)
-	r.APIKeys = NewAPIKeyService(opts...)
 	r.Subscribe = NewSubscribeService(opts...)
 	r.Compose = NewComposeService(opts...)
 	r.Drafts = NewDraftService(opts...)
@@ -92,6 +100,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Trends = NewTrendService(opts...)
 	r.Support = NewSupportService(opts...)
 	r.Credits = NewCreditService(opts...)
+	r.GuestWallets = NewGuestWalletService(opts...)
 
 	return
 }

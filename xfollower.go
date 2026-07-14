@@ -67,9 +67,9 @@ func (r *XFollowerCheckResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XFollowerCheckParams struct {
-	// Username to check (without @)
+	// Source username, @username, or X or Twitter profile URL
 	Source string `query:"source" api:"required" json:"-"`
-	// Target username (without @)
+	// Target username, @username, or X or Twitter profile URL
 	Target string `query:"target" api:"required" json:"-"`
 	paramObj
 }

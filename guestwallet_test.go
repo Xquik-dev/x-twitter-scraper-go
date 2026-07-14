@@ -13,7 +13,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
-func TestAPIKeyNewWithOptionalParams(t *testing.T) {
+func TestGuestWalletNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -25,9 +25,12 @@ func TestAPIKeyNewWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.APIKeys.New(context.TODO(), xtwitterscraper.APIKeyNewParams{
-		Name: xtwitterscraper.String("My API Key"),
+	_, err := client.GuestWallets.New(context.TODO(), xtwitterscraper.GuestWalletNewParams{
+		AmountMinor:    1000,
+		Currency:       "usd",
+		IdempotencyKey: "e1cb97D8-dDF3-4AaA-ad0a-49E4A0d1CfAa",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -38,7 +41,7 @@ func TestAPIKeyNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAPIKeyList(t *testing.T) {
+func TestGuestWalletGetStatus(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -50,8 +53,9 @@ func TestAPIKeyList(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.APIKeys.List(context.TODO())
+	_, err := client.GuestWallets.GetStatus(context.TODO())
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
@@ -61,7 +65,7 @@ func TestAPIKeyList(t *testing.T) {
 	}
 }
 
-func TestAPIKeyRevoke(t *testing.T) {
+func TestGuestWalletTopup(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -73,8 +77,13 @@ func TestAPIKeyRevoke(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.APIKeys.Revoke(context.TODO(), "id")
+	_, err := client.GuestWallets.Topup(context.TODO(), xtwitterscraper.GuestWalletTopupParams{
+		AmountMinor:    1000,
+		Currency:       "usd",
+		IdempotencyKey: "e1cb97D8-dDF3-4AaA-ad0a-49E4A0d1CfAa",
+	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

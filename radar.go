@@ -49,7 +49,7 @@ func (r *RadarService) GetTrendingTopics(ctx context.Context, query RadarGetTren
 // Trending topic with score, category, source, region, language, and
 // source-specific metadata.
 type RadarItem struct {
-	// Internal numeric identifier (stringified bigint).
+	// Radar item identifier.
 	ID string `json:"id" api:"required"`
 	// Any of "general", "tech", "dev", "science", "culture", "politics", "business",
 	// "entertainment".
@@ -156,11 +156,11 @@ func (r *RadarGetTrendingTopicsResponse) UnmarshalJSON(data []byte) error {
 type RadarGetTrendingTopicsParams struct {
 	// Cursor for pagination (from prior response nextCursor).
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	// Lookback window in hours (1-168, default 24).
+	// Lookback window in hours (1-72, default 6).
 	Hours param.Opt[int64] `query:"hours,omitzero" json:"-"`
 	// Number of items to return (1-100, default 50).
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Region filter (us, global, etc.)
+	// Region filter. Use `global` or a region code such as `US`, `GB`, `TR`, or `ES`.
 	Region param.Opt[string] `query:"region,omitzero" json:"-"`
 	// Filter by category.
 	//

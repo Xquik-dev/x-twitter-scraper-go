@@ -25,12 +25,14 @@ func TestXListGetFollowersWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Lists.GetFollowers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XListGetFollowersParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			Cursor:   xtwitterscraper.String("cursor"),
+			PageSize: xtwitterscraper.Int(20),
 		},
 	)
 	if err != nil {
@@ -54,12 +56,14 @@ func TestXListGetMembersWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Lists.GetMembers(
 		context.TODO(),
 		"id",
 		xtwitterscraper.XListGetMembersParams{
-			Cursor: xtwitterscraper.String("cursor"),
+			Cursor:   xtwitterscraper.String("cursor"),
+			PageSize: xtwitterscraper.Int(20),
 		},
 	)
 	if err != nil {
@@ -83,6 +87,7 @@ func TestXListGetTweetsWithOptionalParams(t *testing.T) {
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Lists.GetTweets(
 		context.TODO(),
@@ -90,6 +95,7 @@ func TestXListGetTweetsWithOptionalParams(t *testing.T) {
 		xtwitterscraper.XListGetTweetsParams{
 			Cursor:         xtwitterscraper.String("cursor"),
 			IncludeReplies: xtwitterscraper.Bool(true),
+			PageSize:       xtwitterscraper.Int(1),
 			SinceTime:      xtwitterscraper.String("sinceTime"),
 			UntilTime:      xtwitterscraper.String("untilTime"),
 		},

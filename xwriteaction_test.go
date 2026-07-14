@@ -13,7 +13,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
-func TestXFollowerCheck(t *testing.T) {
+func TestXWriteActionGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,10 +27,7 @@ func TestXFollowerCheck(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.Followers.Check(context.TODO(), xtwitterscraper.XFollowerCheckParams{
-		Source: "source",
-		Target: "target",
-	})
+	_, err := client.X.WriteActions.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

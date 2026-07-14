@@ -60,17 +60,27 @@ func (r *AccountService) UpdateLocale(ctx context.Context, body AccountUpdateLoc
 }
 
 type AccountGetResponse struct {
+	MonitorBilling AccountGetResponseMonitorBilling `json:"monitorBilling" api:"required"`
+	// Deprecated. Monitor slots are unlimited, so this is always
+	// Number.MAX_SAFE_INTEGER.
+	//
+	// Deprecated: Monitor slots are unlimited. Use monitorBilling.unlimitedSlots
+	// instead.
 	MonitorsAllowed int64 `json:"monitorsAllowed" api:"required"`
 	MonitorsUsed    int64 `json:"monitorsUsed" api:"required"`
 	// Any of "active", "inactive".
 	Plan       AccountGetResponsePlan       `json:"plan" api:"required"`
 	CreditInfo AccountGetResponseCreditInfo `json:"creditInfo"`
+	// Linked X username, omitted when no X account is connected.
+	XUsername string `json:"xUsername"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		MonitorBilling  respjson.Field
 		MonitorsAllowed respjson.Field
 		MonitorsUsed    respjson.Field
 		Plan            respjson.Field
 		CreditInfo      respjson.Field
+		XUsername       respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -82,6 +92,41 @@ func (r *AccountGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AccountGetResponseMonitorBilling struct {
+	// Estimated daily credits for currently active monitors.
+	ActiveDailyEstimate string `json:"activeDailyEstimate" api:"required"`
+	// Credits charged each hour for currently active monitors.
+	ActiveHourlyBurn string `json:"activeHourlyBurn" api:"required"`
+	// Estimated daily credits for 1 active instant monitor.
+	CreditsPerActiveMonitorDay string `json:"creditsPerActiveMonitorDay" api:"required"`
+	// Hourly credits charged for 1 active instant monitor.
+	CreditsPerActiveMonitorHour string `json:"creditsPerActiveMonitorHour" api:"required"`
+	// Webhook and event deliveries are included in monitor billing.
+	EventsIncluded bool `json:"eventsIncluded" api:"required"`
+	// Active monitors check every 1 second.
+	InstantCheckIntervalSeconds int64 `json:"instantCheckIntervalSeconds" api:"required"`
+	// Monitor slot count is unlimited.
+	UnlimitedSlots bool `json:"unlimitedSlots" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActiveDailyEstimate         respjson.Field
+		ActiveHourlyBurn            respjson.Field
+		CreditsPerActiveMonitorDay  respjson.Field
+		CreditsPerActiveMonitorHour respjson.Field
+		EventsIncluded              respjson.Field
+		InstantCheckIntervalSeconds respjson.Field
+		UnlimitedSlots              respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AccountGetResponseMonitorBilling) RawJSON() string { return r.JSON.raw }
+func (r *AccountGetResponseMonitorBilling) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AccountGetResponsePlan string
 
 const (
@@ -90,18 +135,27 @@ const (
 )
 
 type AccountGetResponseCreditInfo struct {
-	AutoTopupEnabled  bool  `json:"autoTopupEnabled" api:"required"`
-	Balance           int64 `json:"balance" api:"required"`
-	LifetimePurchased int64 `json:"lifetimePurchased" api:"required"`
-	LifetimeUsed      int64 `json:"lifetimeUsed" api:"required"`
+	// Dollar amount charged when automatic top-up runs.
+	AutoTopupAmountDollars float64 `json:"autoTopupAmountDollars" api:"required"`
+	AutoTopupEnabled       bool    `json:"autoTopupEnabled" api:"required"`
+	// Bigint string threshold that triggers automatic top-up when enabled.
+	AutoTopupThreshold string `json:"autoTopupThreshold" api:"required"`
+	// Bigint string to preserve precision above Number.MAX_SAFE_INTEGER.
+	Balance string `json:"balance" api:"required"`
+	// Total purchased credits as a bigint string.
+	LifetimePurchased string `json:"lifetimePurchased" api:"required"`
+	// Total consumed credits as a bigint string.
+	LifetimeUsed string `json:"lifetimeUsed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AutoTopupEnabled  respjson.Field
-		Balance           respjson.Field
-		LifetimePurchased respjson.Field
-		LifetimeUsed      respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		AutoTopupAmountDollars respjson.Field
+		AutoTopupEnabled       respjson.Field
+		AutoTopupThreshold     respjson.Field
+		Balance                respjson.Field
+		LifetimePurchased      respjson.Field
+		LifetimeUsed           respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
