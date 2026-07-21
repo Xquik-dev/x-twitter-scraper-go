@@ -56,7 +56,8 @@ func TestXUserRemoveFollower(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserRemoveFollowerParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {

@@ -18,6 +18,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // XTweetService contains methods and other services that help with interacting
@@ -46,10 +47,13 @@ func NewXTweetService(opts ...option.RequestOption) (r XTweetService) {
 }
 
 // Create tweet
-func (r *XTweetService) New(ctx context.Context, body XTweetNewParams, opts ...option.RequestOption) (res *XTweetNewResponse, err error) {
+func (r *XTweetService) New(ctx context.Context, params XTweetNewParams, opts ...option.RequestOption) (res *XTweetNewResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
+	}
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -74,18 +78,23 @@ func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts .
 }
 
 // Delete tweet
-func (r *XTweetService) Delete(ctx context.Context, id string, body XTweetDeleteParams, opts ...option.RequestOption) (res *XTweetDeleteResponse, err error) {
+func (r *XTweetService) Delete(ctx context.Context, id string, params XTweetDeleteParams, opts ...option.RequestOption) (res *XTweetDeleteResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
+	}
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("x/tweets/%s", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return res, err
 }
 
-// List users who liked a tweet
+// Returns liker profiles that X makes visible for the post. X can withhold liker
+// identities even when the post reports likes. In that case this endpoint returns
+// 424 `favoriters_unavailable` instead of a misleading empty success.
 func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTweetGetFavoritersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -109,7 +118,11 @@ func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// List replies to a tweet
+// Returns visible replies. For an unfiltered first page, Xquik compares a terminal
+// page with the post's reported reply count. If the page is visibly incomplete,
+// the endpoint returns 424 `replies_incomplete` instead of presenting partial
+// coverage as complete. Use tweet search with a `conversation_id:{id}` query as
+// the broader fallback.
 func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetGetRepliesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -267,29 +280,298 @@ func (r *TweetDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
+// the original Idempotency-Key returns this same record. Submit a new write only
+// when safeToRetry is true, using a new key.
 type XTweetNewResponse struct {
-	Charged bool `json:"charged" api:"required"`
-	// Credits charged for this tweet. Text-only tweets and replies cost 30 credits;
-	// attached media adds 2 credits per started MB.
-	ChargedCredits string `json:"chargedCredits" api:"required"`
-	Success        bool   `json:"success" api:"required"`
-	TweetID        string `json:"tweetId" api:"required"`
-	WriteActionID  string `json:"writeActionId"`
+	ID string `json:"id" api:"required"`
+	// Connected account selected for the write.
+	Account XTweetNewResponseAccount `json:"account" api:"required"`
+	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
+	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "update_profile", "update_avatar", "update_banner", "create_community",
+	// "delete_community", "join_community", "leave_community".
+	Action XTweetNewResponseAction `json:"action" api:"required"`
+	// plannedCredits is the approved maximum. chargedCredits comes from the settled
+	// credit ledger. Pending or failed writes are not charged.
+	Billing        XTweetNewResponseBilling `json:"billing" api:"required"`
+	Charged        bool                     `json:"charged" api:"required"`
+	ChargedCredits string                   `json:"chargedCredits" api:"required"`
+	// Exact follow-up an API client or agent should perform.
+	NextAction  XTweetNewResponseNextAction `json:"nextAction" api:"required"`
+	Object      constant.XWriteAction       `json:"object" default:"x_write_action"`
+	PollAfterMs int64                       `json:"pollAfterMs" api:"required"`
+	// Stable fingerprint and sanitized payload for replay checks.
+	Request XTweetNewResponseRequest `json:"request" api:"required"`
+	// Confirmed result produced by the write, when available.
+	Result XTweetNewResponseResult `json:"result" api:"required"`
+	// True only when a new attempt can reasonably succeed.
+	Retryable bool `json:"retryable" api:"required"`
+	// True only when no write was dispatched and a new idempotency key may be used.
+	SafeToRetry    bool `json:"safeToRetry" api:"required"`
+	SendDispatched bool `json:"sendDispatched" api:"required"`
+	// Any of "accepted", "dispatching", "pending_confirmation", "success", "failed",
+	// "expired".
+	Status    XTweetNewResponseStatus `json:"status" api:"required"`
+	StatusURL string                  `json:"statusUrl" api:"required"`
+	Success   bool                    `json:"success" api:"required"`
+	// Existing X resource targeted by the write, when applicable.
+	Target        XTweetNewResponseTarget `json:"target" api:"required"`
+	TargetID      string                  `json:"targetId" api:"required"`
+	Terminal      bool                    `json:"terminal" api:"required"`
+	WriteActionID string                  `json:"writeActionId" api:"required"`
+	// Compatibility field for a confirmed community ID.
+	CommunityID string `json:"communityId"`
+	// Confirmed community name when available.
+	CommunityName         string    `json:"communityName"`
+	CompletedAt           time.Time `json:"completedAt" format:"date-time"`
+	ConfirmationAttempts  int64     `json:"confirmationAttempts"`
+	ConfirmationCheckedAt time.Time `json:"confirmationCheckedAt" format:"date-time"`
+	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
+	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
+	// Structured recovery context for a failed write.
+	Details map[string]any `json:"details"`
+	Error   string         `json:"error"`
+	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
+	// retention deadline.
+	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
+	Idempotent bool      `json:"idempotent"`
+	// Media count, kind, size, and billing details when used.
+	Media map[string]any `json:"media"`
+	// Compatibility field for a confirmed media upload ID.
+	MediaID string `json:"mediaId"`
+	// Public media URL when the upload creates one.
+	MediaURL string `json:"mediaUrl" format:"uri"`
+	Message  string `json:"message"`
+	// Compatibility field for a confirmed direct message ID.
+	MessageID   string `json:"messageId"`
+	RequestHash string `json:"requestHash"`
+	RequestID   string `json:"requestId"`
+	// Compatibility result ID for other write actions.
+	ResultID string `json:"resultId"`
+	// Dispatch timestamp when the write reached execution.
+	SendDispatchedAt time.Time `json:"sendDispatchedAt" format:"date-time"`
+	// Compatibility field for a confirmed tweet result ID.
+	TweetID   string    `json:"tweetId"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Charged        respjson.Field
-		ChargedCredits respjson.Field
-		Success        respjson.Field
-		TweetID        respjson.Field
-		WriteActionID  respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID                    respjson.Field
+		Account               respjson.Field
+		Action                respjson.Field
+		Billing               respjson.Field
+		Charged               respjson.Field
+		ChargedCredits        respjson.Field
+		NextAction            respjson.Field
+		Object                respjson.Field
+		PollAfterMs           respjson.Field
+		Request               respjson.Field
+		Result                respjson.Field
+		Retryable             respjson.Field
+		SafeToRetry           respjson.Field
+		SendDispatched        respjson.Field
+		Status                respjson.Field
+		StatusURL             respjson.Field
+		Success               respjson.Field
+		Target                respjson.Field
+		TargetID              respjson.Field
+		Terminal              respjson.Field
+		WriteActionID         respjson.Field
+		CommunityID           respjson.Field
+		CommunityName         respjson.Field
+		CompletedAt           respjson.Field
+		ConfirmationAttempts  respjson.Field
+		ConfirmationCheckedAt respjson.Field
+		ConfirmedAt           respjson.Field
+		CreatedAt             respjson.Field
+		Details               respjson.Field
+		Error                 respjson.Field
+		ExpiresAt             respjson.Field
+		Idempotent            respjson.Field
+		Media                 respjson.Field
+		MediaID               respjson.Field
+		MediaURL              respjson.Field
+		Message               respjson.Field
+		MessageID             respjson.Field
+		RequestHash           respjson.Field
+		RequestID             respjson.Field
+		ResultID              respjson.Field
+		SendDispatchedAt      respjson.Field
+		TweetID               respjson.Field
+		UpdatedAt             respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r XTweetNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XTweetNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Connected account selected for the write.
+type XTweetNewResponseAccount struct {
+	ID       string `json:"id" api:"required"`
+	Username string `json:"username" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetNewResponseAccount) RawJSON() string { return r.JSON.raw }
+func (r *XTweetNewResponseAccount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XTweetNewResponseAction string
+
+const (
+	XTweetNewResponseActionCreateTweet     XTweetNewResponseAction = "create_tweet"
+	XTweetNewResponseActionDeleteTweet     XTweetNewResponseAction = "delete_tweet"
+	XTweetNewResponseActionLike            XTweetNewResponseAction = "like"
+	XTweetNewResponseActionUnlike          XTweetNewResponseAction = "unlike"
+	XTweetNewResponseActionRetweet         XTweetNewResponseAction = "retweet"
+	XTweetNewResponseActionUnretweet       XTweetNewResponseAction = "unretweet"
+	XTweetNewResponseActionFollow          XTweetNewResponseAction = "follow"
+	XTweetNewResponseActionUnfollow        XTweetNewResponseAction = "unfollow"
+	XTweetNewResponseActionRemoveFollower  XTweetNewResponseAction = "remove_follower"
+	XTweetNewResponseActionSendDm          XTweetNewResponseAction = "send_dm"
+	XTweetNewResponseActionUploadMedia     XTweetNewResponseAction = "upload_media"
+	XTweetNewResponseActionUpdateProfile   XTweetNewResponseAction = "update_profile"
+	XTweetNewResponseActionUpdateAvatar    XTweetNewResponseAction = "update_avatar"
+	XTweetNewResponseActionUpdateBanner    XTweetNewResponseAction = "update_banner"
+	XTweetNewResponseActionCreateCommunity XTweetNewResponseAction = "create_community"
+	XTweetNewResponseActionDeleteCommunity XTweetNewResponseAction = "delete_community"
+	XTweetNewResponseActionJoinCommunity   XTweetNewResponseAction = "join_community"
+	XTweetNewResponseActionLeaveCommunity  XTweetNewResponseAction = "leave_community"
+)
+
+// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// credit ledger. Pending or failed writes are not charged.
+type XTweetNewResponseBilling struct {
+	Charged        bool   `json:"charged" api:"required"`
+	ChargedCredits string `json:"chargedCredits" api:"required"`
+	PlannedCredits string `json:"plannedCredits" api:"required"`
+	// Any of "not_charged", "pending", "charged", "charge_failed", "refunded".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Charged        respjson.Field
+		ChargedCredits respjson.Field
+		PlannedCredits respjson.Field
+		Status         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetNewResponseBilling) RawJSON() string { return r.JSON.raw }
+func (r *XTweetNewResponseBilling) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Exact follow-up an API client or agent should perform.
+type XTweetNewResponseNextAction struct {
+	// Any of "poll", "retry", "verify_result", "fix_request".
+	Type                      string `json:"type" api:"required"`
+	AfterMs                   int64  `json:"afterMs"`
+	RequiresNewIdempotencyKey bool   `json:"requiresNewIdempotencyKey"`
+	URL                       string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                      respjson.Field
+		AfterMs                   respjson.Field
+		RequiresNewIdempotencyKey respjson.Field
+		URL                       respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetNewResponseNextAction) RawJSON() string { return r.JSON.raw }
+func (r *XTweetNewResponseNextAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Stable fingerprint and sanitized payload for replay checks.
+type XTweetNewResponseRequest struct {
+	// Stable hash of account, action, target, and payload.
+	Hash string `json:"hash" api:"required"`
+	// Exact sanitized payload dispatched for this action.
+	Payload map[string]any `json:"payload" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hash        respjson.Field
+		Payload     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetNewResponseRequest) RawJSON() string { return r.JSON.raw }
+func (r *XTweetNewResponseRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Confirmed result produced by the write, when available.
+type XTweetNewResponseResult struct {
+	ID    string `json:"id"`
+	State string `json:"state"`
+	// Any of "tweet", "direct_message", "media", "community", "state_change".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		State       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetNewResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *XTweetNewResponseResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XTweetNewResponseStatus string
+
+const (
+	XTweetNewResponseStatusAccepted            XTweetNewResponseStatus = "accepted"
+	XTweetNewResponseStatusDispatching         XTweetNewResponseStatus = "dispatching"
+	XTweetNewResponseStatusPendingConfirmation XTweetNewResponseStatus = "pending_confirmation"
+	XTweetNewResponseStatusSuccess             XTweetNewResponseStatus = "success"
+	XTweetNewResponseStatusFailed              XTweetNewResponseStatus = "failed"
+	XTweetNewResponseStatusExpired             XTweetNewResponseStatus = "expired"
+)
+
+// Existing X resource targeted by the write, when applicable.
+type XTweetNewResponseTarget struct {
+	ID string `json:"id" api:"required"`
+	// Any of "tweet", "user", "community".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetNewResponseTarget) RawJSON() string { return r.JSON.raw }
+func (r *XTweetNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -315,13 +597,127 @@ func (r *XTweetGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
+// the original Idempotency-Key returns this same record. Submit a new write only
+// when safeToRetry is true, using a new key.
 type XTweetDeleteResponse struct {
-	Success bool `json:"success" api:"required"`
+	ID string `json:"id" api:"required"`
+	// Connected account selected for the write.
+	Account XTweetDeleteResponseAccount `json:"account" api:"required"`
+	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
+	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "update_profile", "update_avatar", "update_banner", "create_community",
+	// "delete_community", "join_community", "leave_community".
+	Action XTweetDeleteResponseAction `json:"action" api:"required"`
+	// plannedCredits is the approved maximum. chargedCredits comes from the settled
+	// credit ledger. Pending or failed writes are not charged.
+	Billing        XTweetDeleteResponseBilling `json:"billing" api:"required"`
+	Charged        bool                        `json:"charged" api:"required"`
+	ChargedCredits string                      `json:"chargedCredits" api:"required"`
+	// Exact follow-up an API client or agent should perform.
+	NextAction  XTweetDeleteResponseNextAction `json:"nextAction" api:"required"`
+	Object      constant.XWriteAction          `json:"object" default:"x_write_action"`
+	PollAfterMs int64                          `json:"pollAfterMs" api:"required"`
+	// Stable fingerprint and sanitized payload for replay checks.
+	Request XTweetDeleteResponseRequest `json:"request" api:"required"`
+	// Confirmed result produced by the write, when available.
+	Result XTweetDeleteResponseResult `json:"result" api:"required"`
+	// True only when a new attempt can reasonably succeed.
+	Retryable bool `json:"retryable" api:"required"`
+	// True only when no write was dispatched and a new idempotency key may be used.
+	SafeToRetry    bool `json:"safeToRetry" api:"required"`
+	SendDispatched bool `json:"sendDispatched" api:"required"`
+	// Any of "accepted", "dispatching", "pending_confirmation", "success", "failed",
+	// "expired".
+	Status    XTweetDeleteResponseStatus `json:"status" api:"required"`
+	StatusURL string                     `json:"statusUrl" api:"required"`
+	Success   bool                       `json:"success" api:"required"`
+	// Existing X resource targeted by the write, when applicable.
+	Target        XTweetDeleteResponseTarget `json:"target" api:"required"`
+	TargetID      string                     `json:"targetId" api:"required"`
+	Terminal      bool                       `json:"terminal" api:"required"`
+	WriteActionID string                     `json:"writeActionId" api:"required"`
+	// Compatibility field for a confirmed community ID.
+	CommunityID string `json:"communityId"`
+	// Confirmed community name when available.
+	CommunityName         string    `json:"communityName"`
+	CompletedAt           time.Time `json:"completedAt" format:"date-time"`
+	ConfirmationAttempts  int64     `json:"confirmationAttempts"`
+	ConfirmationCheckedAt time.Time `json:"confirmationCheckedAt" format:"date-time"`
+	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
+	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
+	// Structured recovery context for a failed write.
+	Details map[string]any `json:"details"`
+	Error   string         `json:"error"`
+	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
+	// retention deadline.
+	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
+	Idempotent bool      `json:"idempotent"`
+	// Media count, kind, size, and billing details when used.
+	Media map[string]any `json:"media"`
+	// Compatibility field for a confirmed media upload ID.
+	MediaID string `json:"mediaId"`
+	// Public media URL when the upload creates one.
+	MediaURL string `json:"mediaUrl" format:"uri"`
+	Message  string `json:"message"`
+	// Compatibility field for a confirmed direct message ID.
+	MessageID   string `json:"messageId"`
+	RequestHash string `json:"requestHash"`
+	RequestID   string `json:"requestId"`
+	// Compatibility result ID for other write actions.
+	ResultID string `json:"resultId"`
+	// Dispatch timestamp when the write reached execution.
+	SendDispatchedAt time.Time `json:"sendDispatchedAt" format:"date-time"`
+	// Compatibility field for a confirmed tweet result ID.
+	TweetID   string    `json:"tweetId"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                    respjson.Field
+		Account               respjson.Field
+		Action                respjson.Field
+		Billing               respjson.Field
+		Charged               respjson.Field
+		ChargedCredits        respjson.Field
+		NextAction            respjson.Field
+		Object                respjson.Field
+		PollAfterMs           respjson.Field
+		Request               respjson.Field
+		Result                respjson.Field
+		Retryable             respjson.Field
+		SafeToRetry           respjson.Field
+		SendDispatched        respjson.Field
+		Status                respjson.Field
+		StatusURL             respjson.Field
+		Success               respjson.Field
+		Target                respjson.Field
+		TargetID              respjson.Field
+		Terminal              respjson.Field
+		WriteActionID         respjson.Field
+		CommunityID           respjson.Field
+		CommunityName         respjson.Field
+		CompletedAt           respjson.Field
+		ConfirmationAttempts  respjson.Field
+		ConfirmationCheckedAt respjson.Field
+		ConfirmedAt           respjson.Field
+		CreatedAt             respjson.Field
+		Details               respjson.Field
+		Error                 respjson.Field
+		ExpiresAt             respjson.Field
+		Idempotent            respjson.Field
+		Media                 respjson.Field
+		MediaID               respjson.Field
+		MediaURL              respjson.Field
+		Message               respjson.Field
+		MessageID             respjson.Field
+		RequestHash           respjson.Field
+		RequestID             respjson.Field
+		ResultID              respjson.Field
+		SendDispatchedAt      respjson.Field
+		TweetID               respjson.Field
+		UpdatedAt             respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -331,10 +727,175 @@ func (r *XTweetDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Connected account selected for the write.
+type XTweetDeleteResponseAccount struct {
+	ID       string `json:"id" api:"required"`
+	Username string `json:"username" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetDeleteResponseAccount) RawJSON() string { return r.JSON.raw }
+func (r *XTweetDeleteResponseAccount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XTweetDeleteResponseAction string
+
+const (
+	XTweetDeleteResponseActionCreateTweet     XTweetDeleteResponseAction = "create_tweet"
+	XTweetDeleteResponseActionDeleteTweet     XTweetDeleteResponseAction = "delete_tweet"
+	XTweetDeleteResponseActionLike            XTweetDeleteResponseAction = "like"
+	XTweetDeleteResponseActionUnlike          XTweetDeleteResponseAction = "unlike"
+	XTweetDeleteResponseActionRetweet         XTweetDeleteResponseAction = "retweet"
+	XTweetDeleteResponseActionUnretweet       XTweetDeleteResponseAction = "unretweet"
+	XTweetDeleteResponseActionFollow          XTweetDeleteResponseAction = "follow"
+	XTweetDeleteResponseActionUnfollow        XTweetDeleteResponseAction = "unfollow"
+	XTweetDeleteResponseActionRemoveFollower  XTweetDeleteResponseAction = "remove_follower"
+	XTweetDeleteResponseActionSendDm          XTweetDeleteResponseAction = "send_dm"
+	XTweetDeleteResponseActionUploadMedia     XTweetDeleteResponseAction = "upload_media"
+	XTweetDeleteResponseActionUpdateProfile   XTweetDeleteResponseAction = "update_profile"
+	XTweetDeleteResponseActionUpdateAvatar    XTweetDeleteResponseAction = "update_avatar"
+	XTweetDeleteResponseActionUpdateBanner    XTweetDeleteResponseAction = "update_banner"
+	XTweetDeleteResponseActionCreateCommunity XTweetDeleteResponseAction = "create_community"
+	XTweetDeleteResponseActionDeleteCommunity XTweetDeleteResponseAction = "delete_community"
+	XTweetDeleteResponseActionJoinCommunity   XTweetDeleteResponseAction = "join_community"
+	XTweetDeleteResponseActionLeaveCommunity  XTweetDeleteResponseAction = "leave_community"
+)
+
+// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// credit ledger. Pending or failed writes are not charged.
+type XTweetDeleteResponseBilling struct {
+	Charged        bool   `json:"charged" api:"required"`
+	ChargedCredits string `json:"chargedCredits" api:"required"`
+	PlannedCredits string `json:"plannedCredits" api:"required"`
+	// Any of "not_charged", "pending", "charged", "charge_failed", "refunded".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Charged        respjson.Field
+		ChargedCredits respjson.Field
+		PlannedCredits respjson.Field
+		Status         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetDeleteResponseBilling) RawJSON() string { return r.JSON.raw }
+func (r *XTweetDeleteResponseBilling) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Exact follow-up an API client or agent should perform.
+type XTweetDeleteResponseNextAction struct {
+	// Any of "poll", "retry", "verify_result", "fix_request".
+	Type                      string `json:"type" api:"required"`
+	AfterMs                   int64  `json:"afterMs"`
+	RequiresNewIdempotencyKey bool   `json:"requiresNewIdempotencyKey"`
+	URL                       string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                      respjson.Field
+		AfterMs                   respjson.Field
+		RequiresNewIdempotencyKey respjson.Field
+		URL                       respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetDeleteResponseNextAction) RawJSON() string { return r.JSON.raw }
+func (r *XTweetDeleteResponseNextAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Stable fingerprint and sanitized payload for replay checks.
+type XTweetDeleteResponseRequest struct {
+	// Stable hash of account, action, target, and payload.
+	Hash string `json:"hash" api:"required"`
+	// Exact sanitized payload dispatched for this action.
+	Payload map[string]any `json:"payload" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hash        respjson.Field
+		Payload     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetDeleteResponseRequest) RawJSON() string { return r.JSON.raw }
+func (r *XTweetDeleteResponseRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Confirmed result produced by the write, when available.
+type XTweetDeleteResponseResult struct {
+	ID    string `json:"id"`
+	State string `json:"state"`
+	// Any of "tweet", "direct_message", "media", "community", "state_change".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		State       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetDeleteResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *XTweetDeleteResponseResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XTweetDeleteResponseStatus string
+
+const (
+	XTweetDeleteResponseStatusAccepted            XTweetDeleteResponseStatus = "accepted"
+	XTweetDeleteResponseStatusDispatching         XTweetDeleteResponseStatus = "dispatching"
+	XTweetDeleteResponseStatusPendingConfirmation XTweetDeleteResponseStatus = "pending_confirmation"
+	XTweetDeleteResponseStatusSuccess             XTweetDeleteResponseStatus = "success"
+	XTweetDeleteResponseStatusFailed              XTweetDeleteResponseStatus = "failed"
+	XTweetDeleteResponseStatusExpired             XTweetDeleteResponseStatus = "expired"
+)
+
+// Existing X resource targeted by the write, when applicable.
+type XTweetDeleteResponseTarget struct {
+	ID string `json:"id" api:"required"`
+	// Any of "tweet", "user", "community".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XTweetDeleteResponseTarget) RawJSON() string { return r.JSON.raw }
+func (r *XTweetDeleteResponseTarget) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type XTweetNewParams struct {
 	// X account (@username or account ID)
 	Account        string            `json:"account" api:"required"`
-	AttachmentURL  param.Opt[string] `json:"attachment_url,omitzero"`
+	IdempotencyKey string            `header:"Idempotency-Key" api:"required" json:"-"`
 	CommunityID    param.Opt[string] `json:"community_id,omitzero"`
 	IsNoteTweet    param.Opt[bool]   `json:"is_note_tweet,omitzero"`
 	ReplyToTweetID param.Opt[string] `json:"reply_to_tweet_id,omitzero"`
@@ -371,7 +932,8 @@ func (r XTweetListParams) URLQuery() (v url.Values, err error) {
 
 type XTweetDeleteParams struct {
 	// X account identifier (@username or account ID)
-	Account string `json:"account" api:"required"`
+	Account        string `json:"account" api:"required"`
+	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
 	paramObj
 }
 

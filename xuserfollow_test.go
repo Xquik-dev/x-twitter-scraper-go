@@ -31,7 +31,8 @@ func TestXUserFollowNew(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserFollowNewParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {
@@ -61,7 +62,8 @@ func TestXUserFollowDeleteAll(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XUserFollowDeleteAllParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {
