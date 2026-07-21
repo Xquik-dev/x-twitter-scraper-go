@@ -30,7 +30,7 @@ func TestXTweetNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.X.Tweets.New(context.TODO(), xtwitterscraper.XTweetNewParams{
 		Account:        "@elonmusk",
-		AttachmentURL:  xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
+		IdempotencyKey: "Idempotency-Key",
 		CommunityID:    xtwitterscraper.String("1500000000000000000"),
 		IsNoteTweet:    xtwitterscraper.Bool(false),
 		Media:          []string{"https://example.com/video.mp4"},
@@ -114,7 +114,8 @@ func TestXTweetDelete(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XTweetDeleteParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {

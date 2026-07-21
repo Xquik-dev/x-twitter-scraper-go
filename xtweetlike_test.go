@@ -31,7 +31,8 @@ func TestXTweetLikeNew(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XTweetLikeNewParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {
@@ -61,7 +62,8 @@ func TestXTweetLikeDelete(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XTweetLikeDeleteParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {

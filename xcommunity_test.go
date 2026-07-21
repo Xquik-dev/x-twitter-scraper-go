@@ -28,9 +28,10 @@ func TestXCommunityNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Communities.New(context.TODO(), xtwitterscraper.XCommunityNewParams{
-		Account:     "@elonmusk",
-		Name:        "Example Name",
-		Description: xtwitterscraper.String("A community for Tesla enthusiasts"),
+		Account:        "@elonmusk",
+		Name:           "Example Name",
+		IdempotencyKey: "Idempotency-Key",
+		Description:    xtwitterscraper.String("A community for Tesla enthusiasts"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -59,8 +60,9 @@ func TestXCommunityDelete(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityDeleteParams{
-			Account:       "@elonmusk",
-			CommunityName: "Tesla Fans",
+			Account:        "@elonmusk",
+			CommunityName:  "Tesla Fans",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {

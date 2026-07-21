@@ -13,7 +13,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
-func TestSupportTicketNew(t *testing.T) {
+func TestSupportTicketNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,8 +28,9 @@ func TestSupportTicketNew(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.New(context.TODO(), xtwitterscraper.SupportTicketNewParams{
-		Body:    "I am unable to connect my X account. Please help.",
-		Subject: "Cannot connect X account",
+		Body:           "I am unable to connect my X account. Please help.",
+		Subject:        "Cannot connect X account",
+		IdempotencyKey: xtwitterscraper.String("Idempotency-Key"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -118,7 +119,7 @@ func TestSupportTicketList(t *testing.T) {
 	}
 }
 
-func TestSupportTicketReply(t *testing.T) {
+func TestSupportTicketReplyWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -136,7 +137,8 @@ func TestSupportTicketReply(t *testing.T) {
 		context.TODO(),
 		"tkt_a1b2c3d4e5f6a1b2c3d4e5f6",
 		xtwitterscraper.SupportTicketReplyParams{
-			Body: "Thank you for the update.",
+			Body:           "Thank you for the update.",
+			IdempotencyKey: xtwitterscraper.String("Idempotency-Key"),
 		},
 	)
 	if err != nil {

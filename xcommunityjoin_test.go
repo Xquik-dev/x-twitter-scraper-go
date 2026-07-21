@@ -31,7 +31,8 @@ func TestXCommunityJoinNew(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityJoinNewParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {
@@ -61,7 +62,8 @@ func TestXCommunityJoinDeleteAll(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityJoinDeleteAllParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {
