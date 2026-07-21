@@ -31,7 +31,7 @@ func TestXAccountConnectionChallengeSubmit(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XAccountConnectionChallengeSubmitParams{
-			EmailCode: "123456",
+			EmailCode: "<EMAIL_VERIFICATION_CODE>",
 		},
 	)
 	if err != nil {

@@ -156,8 +156,10 @@ func (r *GuestWalletNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GuestWalletNewResponseAuthorization struct {
-	Header constant.Authorization `json:"header" default:"Authorization"`
-	Scheme constant.Bearer        `json:"scheme" default:"Bearer"`
+	// Any of "Authorization".
+	Header string `json:"header" api:"required"`
+	// Any of "Bearer".
+	Scheme string `json:"scheme" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Header      respjson.Field
@@ -358,8 +360,10 @@ const (
 )
 
 type GuestWalletTopupResponseAuthorization struct {
-	Header constant.Authorization `json:"header" default:"Authorization"`
-	Scheme constant.Bearer        `json:"scheme" default:"Bearer"`
+	// Any of "Authorization".
+	Header string `json:"header" api:"required"`
+	// Any of "Bearer".
+	Scheme string `json:"scheme" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Header      respjson.Field

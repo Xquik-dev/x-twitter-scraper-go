@@ -19,8 +19,6 @@ func ValueOf[T Constant[T]]() T {
 }
 
 type APIV1GuestWalletsTopups string                                                                                                                                                  // Always "/api/v1/guest-wallets/topups"
-type Authorization string                                                                                                                                                            // Always "Authorization"
-type Bearer string                                                                                                                                                                   // Always "Bearer"
 type GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending string // Always "Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."
 type HTTPSXquikComAPIV1GuestWalletsStatus string                                                                                                                                     // Always "https://xquik.com/api/v1/guest-wallets/status"
 type PaidReads string                                                                                                                                                                // Always "paid_reads"
@@ -32,8 +30,6 @@ type Usd string                                                                 
 func (c APIV1GuestWalletsTopups) Default() APIV1GuestWalletsTopups {
 	return "/api/v1/guest-wallets/topups"
 }
-func (c Authorization) Default() Authorization { return "Authorization" }
-func (c Bearer) Default() Bearer               { return "Bearer" }
 func (c GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending) Default() GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending {
 	return "Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."
 }
@@ -49,8 +45,6 @@ func (c StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRe
 func (c Usd) Default() Usd { return "usd" }
 
 func (c APIV1GuestWalletsTopups) MarshalJSON() ([]byte, error) { return marshalString(c) }
-func (c Authorization) MarshalJSON() ([]byte, error)           { return marshalString(c) }
-func (c Bearer) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending) MarshalJSON() ([]byte, error) {
 	return marshalString(c)
 }
