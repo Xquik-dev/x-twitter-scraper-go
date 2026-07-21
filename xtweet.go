@@ -156,12 +156,8 @@ func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, op
 // Tweet author profile. The lookup route always includes follower count and
 // verification state. Other profile fields appear when available.
 type TweetAuthor struct {
-	Followers int64 `json:"followers" api:"required"`
-	Verified  bool  `json:"verified" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Followers   respjson.Field
-		Verified    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
