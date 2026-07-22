@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0 (2026-07-22)
+
+Full Changelog: [v0.5.2...v0.6.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.5.2...v0.6.0)
+
+### Features
+
+* **api:** propagate durable write actions ([64520c8](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/64520c82ca6684096f078bcaff6c39c1e8b28797))
+* **api:** propagate production write-action contract ([56e4783](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/56e47832ac93e1d7057b7d4fe8b8452798acd66f))
+
 ## 0.5.1 (2026-07-14)
 
 Full Changelog: [v0.5.0...v0.5.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.5.0...v0.5.1)
