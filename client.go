@@ -30,7 +30,7 @@ type Client struct {
 	Styles StyleService
 	// AI tweet composition, drafts, writing styles, and radar
 	Radar RadarService
-	// Real-time X account monitoring
+	// X account monitoring with 1-second checks
 	Monitors MonitorService
 	// Activity events from monitored accounts
 	Events EventService

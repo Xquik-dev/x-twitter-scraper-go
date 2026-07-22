@@ -19,7 +19,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// Real-time X account monitoring
+// X account monitoring with 1-second checks
 //
 // MonitorKeywordService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -40,10 +40,9 @@ func NewMonitorKeywordService(opts ...option.RequestOption) (r MonitorKeywordSer
 	return
 }
 
-// Creates an instant keyword monitor. Keyword monitors are unlimited. Active
-// monitors check every 1 second and cost 21 credits per hour. Events and webhook
-// deliveries are included. Creation requires available credits for the first
-// hourly charge.
+// Creates a keyword monitor. Keyword monitors are unlimited. Active monitors check
+// every 1 second and cost 21 credits per hour. Events and webhook deliveries are
+// included. Creation requires available credits for the first hourly charge.
 func (r *MonitorKeywordService) New(ctx context.Context, body MonitorKeywordNewParams, opts ...option.RequestOption) (res *MonitorKeywordNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "monitors/keywords"

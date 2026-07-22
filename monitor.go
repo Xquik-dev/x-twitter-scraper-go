@@ -19,7 +19,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// Real-time X account monitoring
+// X account monitoring with 1-second checks
 //
 // MonitorService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -29,7 +29,7 @@ import (
 // the [NewMonitorService] method instead.
 type MonitorService struct {
 	options []option.RequestOption
-	// Real-time X account monitoring
+	// X account monitoring with 1-second checks
 	Keywords MonitorKeywordService
 }
 
@@ -43,7 +43,7 @@ func NewMonitorService(opts ...option.RequestOption) (r MonitorService) {
 	return
 }
 
-// Creates an instant monitor. Monitors are unlimited. Active monitors check every
+// Creates an account monitor. Monitors are unlimited. Active monitors check every
 // 1 second and cost 21 credits per hour. Events and webhook deliveries are
 // included. Creation requires available credits for the first hourly charge and
 // username lookup.

@@ -28,17 +28,11 @@ func TestComposeNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Compose.New(context.TODO(), xtwitterscraper.ComposeNewParams{
-		Step:              xtwitterscraper.ComposeNewParamsStepCompose,
-		AdditionalContext: xtwitterscraper.String("https://x.com/elonmusk/status/1234567890"),
-		CallToAction:      xtwitterscraper.String("Follow for more"),
-		Draft:             xtwitterscraper.String("AI is changing everything. Here's why."),
-		Goal:              xtwitterscraper.ComposeNewParamsGoalEngagement,
-		HasLink:           xtwitterscraper.Bool(false),
-		HasMedia:          xtwitterscraper.Bool(false),
-		MediaType:         xtwitterscraper.ComposeNewParamsMediaTypeNone,
-		StyleUsername:     xtwitterscraper.String("elonmusk"),
-		Tone:              xtwitterscraper.String("professional"),
-		Topic:             xtwitterscraper.String("AI trends in 2025"),
+		OfComposePrepareRequest: &xtwitterscraper.ComposeNewParamsBodyComposePrepareRequest{
+			Topic:         "PostgreSQL query planning",
+			Goal:          "engagement",
+			StyleUsername: xtwitterscraper.String("x"),
+		},
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
