@@ -174,7 +174,7 @@ func (r CreditRedirectTopupCheckoutParams) URLQuery() (v url.Values, err error) 
 }
 
 type CreditGetTopupStatusParams struct {
-	// Billing session ID returned by the top-up billing flow.
+	// Top-up session ID to inspect.
 	SessionID string `query:"session_id" api:"required" json:"-"`
 	paramObj
 }

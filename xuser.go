@@ -606,7 +606,7 @@ func (r XUserGetFollowersYouKnowParams) URLQuery() (v url.Values, err error) {
 }
 
 type XUserGetFollowingParams struct {
-	// Legacy cursor alias. Prefer cursor.
+	// Deprecated following cursor alias. Prefer cursor.
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Pagination cursor for following list
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
@@ -1005,7 +1005,7 @@ type XUserGetRepliesParams struct {
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
-	// Include parent tweet for replies
+	// Include each reply's parent tweet.
 	IncludeParentTweet param.Opt[bool] `query:"includeParentTweet,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`

@@ -386,7 +386,7 @@ const (
 )
 
 type GuestWalletNewParams struct {
-	// Confirmed USD amount in cents.
+	// USD cents accepted for this checkout.
 	AmountMinor    int64  `json:"amount_minor" api:"required"`
 	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
 	// This field can be elided, and will marshal its zero value as "usd".
@@ -403,7 +403,7 @@ func (r *GuestWalletNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type GuestWalletTopupParams struct {
-	// Confirmed USD amount in cents.
+	// USD cents accepted for this checkout.
 	AmountMinor    int64  `json:"amount_minor" api:"required"`
 	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
 	// This field can be elided, and will marshal its zero value as "usd".
