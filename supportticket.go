@@ -98,8 +98,8 @@ func (r *SupportTicketService) Reply(ctx context.Context, id string, params Supp
 }
 
 type SupportTicketNewResponse struct {
-	Attachments []SupportTicketNewResponseAttachment `json:"attachments"`
-	PublicID    string                               `json:"publicId"`
+	Attachments []SupportTicketNewResponseAttachment `json:"attachments" api:"required"`
+	PublicID    string                               `json:"publicId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Attachments respjson.Field
@@ -115,6 +115,7 @@ func (r *SupportTicketNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Attachment identifier and initial processing state.
 type SupportTicketNewResponseAttachment struct {
 	PublicID string `json:"publicId" api:"required"`
 	// Any of "pending", "ready", "failed".
@@ -182,15 +183,22 @@ func (r *SupportTicketGetResponseMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Downloadable image or video attached to a support message.
 type SupportTicketGetResponseMessageAttachment struct {
+	// Validated media type.
+	//
 	// Any of "image/jpeg", "image/png", "image/gif", "image/webp", "video/mp4",
 	// "video/quicktime", "video/webm".
 	ContentType string `json:"contentType" api:"required"`
 	Filename    string `json:"filename" api:"required"`
+	// Attachment media class.
+	//
 	// Any of "image", "video".
 	Kind      string `json:"kind" api:"required"`
 	PublicID  string `json:"publicId" api:"required"`
 	SizeBytes int64  `json:"sizeBytes" api:"required"`
+	// Storage processing state.
+	//
 	// Any of "pending", "ready", "failed".
 	Status string `json:"status" api:"required"`
 	URL    string `json:"url" api:"required"`
@@ -275,8 +283,8 @@ func (r *SupportTicketListResponseTicket) UnmarshalJSON(data []byte) error {
 }
 
 type SupportTicketReplyResponse struct {
-	Attachments []SupportTicketReplyResponseAttachment `json:"attachments"`
-	PublicID    string                                 `json:"publicId"`
+	Attachments []SupportTicketReplyResponseAttachment `json:"attachments" api:"required"`
+	PublicID    string                                 `json:"publicId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Attachments respjson.Field
@@ -292,6 +300,7 @@ func (r *SupportTicketReplyResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Attachment identifier and initial processing state.
 type SupportTicketReplyResponseAttachment struct {
 	PublicID string `json:"publicId" api:"required"`
 	// Any of "pending", "ready", "failed".
