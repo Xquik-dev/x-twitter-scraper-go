@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.1 (2026-07-22)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.6.0...v0.6.1)
+
+### Chores
+
+* sync generated SDK contracts ([bd021dd](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/bd021dd68f93c08f042cd97dd345cc3abf7ae53b))
+* verify final public contract ([20613fa](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/20613fa74d190dc880a717893507dcce0a6c63b5))
+
 ## 0.6.0 (2026-07-22)
 
 Full Changelog: [v0.5.2...v0.6.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.5.2...v0.6.0)

@@ -97,9 +97,9 @@ type AccountGetResponseMonitorBilling struct {
 	ActiveDailyEstimate string `json:"activeDailyEstimate" api:"required"`
 	// Credits charged each hour for currently active monitors.
 	ActiveHourlyBurn string `json:"activeHourlyBurn" api:"required"`
-	// Estimated daily credits for 1 active instant monitor.
+	// Rounded daily estimate for 1 active monitor.
 	CreditsPerActiveMonitorDay string `json:"creditsPerActiveMonitorDay" api:"required"`
-	// Hourly credits charged for 1 active instant monitor.
+	// Hourly credits charged for 1 active monitor.
 	CreditsPerActiveMonitorHour string `json:"creditsPerActiveMonitorHour" api:"required"`
 	// Webhook and event deliveries are included in monitor billing.
 	EventsIncluded bool `json:"eventsIncluded" api:"required"`
