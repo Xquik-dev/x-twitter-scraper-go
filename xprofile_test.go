@@ -28,11 +28,12 @@ func TestXProfileUpdateWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.Update(context.TODO(), xtwitterscraper.XProfileUpdateParams{
-		Account:     "@elonmusk",
-		Description: xtwitterscraper.String("description_value"),
-		Location:    xtwitterscraper.String("location_value"),
-		Name:        xtwitterscraper.String("Example Name"),
-		URL:         xtwitterscraper.String("https://xquik.com/example"),
+		Account:        "@elonmusk",
+		IdempotencyKey: "Idempotency-Key",
+		Description:    xtwitterscraper.String("description_value"),
+		Location:       xtwitterscraper.String("location_value"),
+		Name:           xtwitterscraper.String("Example Name"),
+		URL:            xtwitterscraper.String("https://xquik.com/example"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -58,8 +59,9 @@ func TestXProfileUpdateAvatar(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.UpdateAvatar(context.TODO(), xtwitterscraper.XProfileUpdateAvatarParams{
-		Account: "@elonmusk",
-		URL:     "https://example.com/avatar.png",
+		Account:        "@elonmusk",
+		URL:            "https://example.com/avatar.png",
+		IdempotencyKey: "Idempotency-Key",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -85,8 +87,9 @@ func TestXProfileUpdateBanner(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Profile.UpdateBanner(context.TODO(), xtwitterscraper.XProfileUpdateBannerParams{
-		Account: "@elonmusk",
-		URL:     "https://example.com/banner.png",
+		Account:        "@elonmusk",
+		URL:            "https://example.com/banner.png",
+		IdempotencyKey: "Idempotency-Key",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

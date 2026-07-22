@@ -104,10 +104,10 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 type XAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Derived login/cookie health. `healthy` = cookies valid. `needsReauth` = user
-	// must submit fresh credentials. `locked` = X locked the account; unlock on x.com
+	// Derived connection health. `healthy` = session active. `needsReauth` = user must
+	// submit fresh credentials. `locked` = X locked the account; unlock on x.com
 	// first. `suspended` = X banned the account. `recovering` = past cooldown, will
-	// auto-retry on next use. `temporaryIssue` = transient backend problem; retry
+	// auto-retry on next use. `temporaryIssue` = temporary connection problem; retry
 	// shortly.
 	//
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
@@ -139,10 +139,10 @@ func (r *XAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Derived login/cookie health. `healthy` = cookies valid. `needsReauth` = user
-// must submit fresh credentials. `locked` = X locked the account; unlock on x.com
+// Derived connection health. `healthy` = session active. `needsReauth` = user must
+// submit fresh credentials. `locked` = X locked the account; unlock on x.com
 // first. `suspended` = X banned the account. `recovering` = past cooldown, will
-// auto-retry on next use. `temporaryIssue` = transient backend problem; retry
+// auto-retry on next use. `temporaryIssue` = temporary connection problem; retry
 // shortly.
 type XAccountHealth string
 
@@ -155,7 +155,7 @@ const (
 	XAccountHealthTemporaryIssue XAccountHealth = "temporaryIssue"
 )
 
-// Full X account details with status, cookies, and update timestamp.
+// Connected X account details with health and timestamp metadata.
 type XAccountDetail struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`

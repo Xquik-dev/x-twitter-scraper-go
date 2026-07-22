@@ -31,7 +31,8 @@ func TestXTweetRetweetNew(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XTweetRetweetNewParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {
@@ -61,7 +62,8 @@ func TestXTweetRetweetDelete(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XTweetRetweetDeleteParams{
-			Account: "@elonmusk",
+			Account:        "@elonmusk",
+			IdempotencyKey: "Idempotency-Key",
 		},
 	)
 	if err != nil {

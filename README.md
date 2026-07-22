@@ -38,7 +38,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.5.2'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.6.0'
 ```
 
 <!-- x-release-please-end -->

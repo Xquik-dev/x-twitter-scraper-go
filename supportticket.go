@@ -40,10 +40,13 @@ func NewSupportTicketService(opts ...option.RequestOption) (r SupportTicketServi
 }
 
 // Create a support ticket
-func (r *SupportTicketService) New(ctx context.Context, body SupportTicketNewParams, opts ...option.RequestOption) (res *SupportTicketNewResponse, err error) {
+func (r *SupportTicketService) New(ctx context.Context, params SupportTicketNewParams, opts ...option.RequestOption) (res *SupportTicketNewResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.options, opts)
 	path := "support/tickets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -80,21 +83,26 @@ func (r *SupportTicketService) List(ctx context.Context, opts ...option.RequestO
 }
 
 // Reply to a support ticket
-func (r *SupportTicketService) Reply(ctx context.Context, id string, body SupportTicketReplyParams, opts ...option.RequestOption) (res *SupportTicketReplyResponse, err error) {
+func (r *SupportTicketService) Reply(ctx context.Context, id string, params SupportTicketReplyParams, opts ...option.RequestOption) (res *SupportTicketReplyResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("support/tickets/%s/messages", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 type SupportTicketNewResponse struct {
-	PublicID string `json:"publicId"`
+	Attachments []SupportTicketNewResponseAttachment `json:"attachments" api:"required"`
+	PublicID    string                               `json:"publicId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Attachments respjson.Field
 		PublicID    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -104,6 +112,26 @@ type SupportTicketNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Attachment identifier and initial processing state.
+type SupportTicketNewResponseAttachment struct {
+	PublicID string `json:"publicId" api:"required"`
+	// Any of "pending", "ready", "failed".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PublicID    respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SupportTicketNewResponseAttachment) RawJSON() string { return r.JSON.raw }
+func (r *SupportTicketNewResponseAttachment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -134,11 +162,13 @@ func (r *SupportTicketGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SupportTicketGetResponseMessage struct {
-	Body      string    `json:"body"`
-	CreatedAt time.Time `json:"createdAt" format:"date-time"`
-	Sender    string    `json:"sender"`
+	Attachments []SupportTicketGetResponseMessageAttachment `json:"attachments"`
+	Body        string                                      `json:"body"`
+	CreatedAt   time.Time                                   `json:"createdAt" format:"date-time"`
+	Sender      string                                      `json:"sender"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Attachments respjson.Field
 		Body        respjson.Field
 		CreatedAt   respjson.Field
 		Sender      respjson.Field
@@ -150,6 +180,45 @@ type SupportTicketGetResponseMessage struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketGetResponseMessage) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketGetResponseMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Downloadable image or video attached to a support message.
+type SupportTicketGetResponseMessageAttachment struct {
+	// Validated media type.
+	//
+	// Any of "image/jpeg", "image/png", "image/gif", "image/webp", "video/mp4",
+	// "video/quicktime", "video/webm".
+	ContentType string `json:"contentType" api:"required"`
+	Filename    string `json:"filename" api:"required"`
+	// Attachment media class.
+	//
+	// Any of "image", "video".
+	Kind      string `json:"kind" api:"required"`
+	PublicID  string `json:"publicId" api:"required"`
+	SizeBytes int64  `json:"sizeBytes" api:"required"`
+	// Storage processing state.
+	//
+	// Any of "pending", "ready", "failed".
+	Status string `json:"status" api:"required"`
+	URL    string `json:"url" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType respjson.Field
+		Filename    respjson.Field
+		Kind        respjson.Field
+		PublicID    respjson.Field
+		SizeBytes   respjson.Field
+		Status      respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SupportTicketGetResponseMessageAttachment) RawJSON() string { return r.JSON.raw }
+func (r *SupportTicketGetResponseMessageAttachment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -214,9 +283,11 @@ func (r *SupportTicketListResponseTicket) UnmarshalJSON(data []byte) error {
 }
 
 type SupportTicketReplyResponse struct {
-	PublicID string `json:"publicId"`
+	Attachments []SupportTicketReplyResponseAttachment `json:"attachments" api:"required"`
+	PublicID    string                                 `json:"publicId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Attachments respjson.Field
 		PublicID    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -229,9 +300,30 @@ func (r *SupportTicketReplyResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Attachment identifier and initial processing state.
+type SupportTicketReplyResponseAttachment struct {
+	PublicID string `json:"publicId" api:"required"`
+	// Any of "pending", "ready", "failed".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PublicID    respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SupportTicketReplyResponseAttachment) RawJSON() string { return r.JSON.raw }
+func (r *SupportTicketReplyResponseAttachment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SupportTicketNewParams struct {
-	Body    string `json:"body" api:"required"`
-	Subject string `json:"subject" api:"required"`
+	Body           string            `json:"body" api:"required"`
+	Subject        string            `json:"subject" api:"required"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 
@@ -266,7 +358,8 @@ const (
 )
 
 type SupportTicketReplyParams struct {
-	Body string `json:"body" api:"required"`
+	Body           string            `json:"body" api:"required"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

@@ -28,10 +28,10 @@ func TestXAccountNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Accounts.New(context.TODO(), xtwitterscraper.XAccountNewParams{
-		Email:      "user@example.com",
-		Password:   "s3cur3Pa$$w0rd",
-		Username:   "elonmusk",
-		TotpSecret: xtwitterscraper.String("JBSWY3DPEHPK3PXP"),
+		Email:      "account@example.invalid",
+		Password:   "<ACCOUNT_PASSWORD>",
+		Username:   "your_x_username",
+		TotpSecret: xtwitterscraper.String("<TOTP_SECRET>"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -156,9 +156,9 @@ func TestXAccountReauthWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XAccountReauthParams{
-			Password:   "password_value",
-			Email:      xtwitterscraper.String("user@example.com"),
-			TotpSecret: xtwitterscraper.String("totp_secret_value"),
+			Password:   "<ACCOUNT_PASSWORD>",
+			Email:      xtwitterscraper.String("account@example.invalid"),
+			TotpSecret: xtwitterscraper.String("<TOTP_SECRET>"),
 		},
 	)
 	if err != nil {

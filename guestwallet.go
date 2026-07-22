@@ -156,8 +156,10 @@ func (r *GuestWalletNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GuestWalletNewResponseAuthorization struct {
-	Header constant.Authorization `json:"header" default:"Authorization"`
-	Scheme constant.Bearer        `json:"scheme" default:"Bearer"`
+	// Any of "Authorization".
+	Header string `json:"header" api:"required"`
+	// Any of "Bearer".
+	Scheme string `json:"scheme" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Header      respjson.Field
@@ -358,8 +360,10 @@ const (
 )
 
 type GuestWalletTopupResponseAuthorization struct {
-	Header constant.Authorization `json:"header" default:"Authorization"`
-	Scheme constant.Bearer        `json:"scheme" default:"Bearer"`
+	// Any of "Authorization".
+	Header string `json:"header" api:"required"`
+	// Any of "Bearer".
+	Scheme string `json:"scheme" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Header      respjson.Field
@@ -382,7 +386,7 @@ const (
 )
 
 type GuestWalletNewParams struct {
-	// Confirmed USD amount in cents.
+	// USD cents accepted for this checkout.
 	AmountMinor    int64  `json:"amount_minor" api:"required"`
 	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
 	// This field can be elided, and will marshal its zero value as "usd".
@@ -399,7 +403,7 @@ func (r *GuestWalletNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type GuestWalletTopupParams struct {
-	// Confirmed USD amount in cents.
+	// USD cents accepted for this checkout.
 	AmountMinor    int64  `json:"amount_minor" api:"required"`
 	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
 	// This field can be elided, and will marshal its zero value as "usd".

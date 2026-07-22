@@ -57,8 +57,9 @@ func TestXMediaUpload(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Media.Upload(context.TODO(), xtwitterscraper.XMediaUploadParams{
-		Account: "@elonmusk",
-		URL:     "https://example.com/image.png",
+		Account:        "@elonmusk",
+		URL:            "https://example.com/image.png",
+		IdempotencyKey: "Idempotency-Key",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

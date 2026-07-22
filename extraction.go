@@ -460,16 +460,16 @@ type ExtractionEstimateCostParams struct {
 	ResultsLimit param.Opt[int64] `json:"resultsLimit,omitzero"`
 	// Estimate only retweets of this tweet ID (tweet_search_extractor)
 	RetweetsOfTweetID param.Opt[string] `json:"retweetsOfTweetId,omitzero"`
-	// Required for tweet_search_extractor & community_search.
+	// Query used to price tweet_search_extractor or community_search.
 	SearchQuery param.Opt[string] `json:"searchQuery,omitzero"`
 	// Estimate start date in YYYY-MM-DD format (tweet_search_extractor)
 	SinceDate param.Opt[time.Time] `json:"sinceDate,omitzero" format:"date"`
-	// Required for community_post_extractor & community_search.
+	// Community ID used to price community_post_extractor or community_search.
 	TargetCommunityID param.Opt[string] `json:"targetCommunityId,omitzero"`
-	// Required for list_follower_explorer, list_member_extractor &
+	// List ID used to price list_follower_explorer, list_member_extractor, or
 	// list_post_extractor.
 	TargetListID param.Opt[string] `json:"targetListId,omitzero"`
-	// Required for space_explorer.
+	// Space ID used to price space_explorer.
 	TargetSpaceID  param.Opt[string] `json:"targetSpaceId,omitzero"`
 	TargetTweetID  param.Opt[string] `json:"targetTweetId,omitzero"`
 	TargetUsername param.Opt[string] `json:"targetUsername,omitzero"`

@@ -242,16 +242,16 @@ type SearchTweet struct {
 	// Root tweet ID for the search result conversation
 	ConversationID string `json:"conversationId"`
 	CreatedAt      string `json:"createdAt"`
-	// Start and end offsets for rendered tweet text
+	// Rendered text's start and end offsets.
 	DisplayTextRange []int64 `json:"displayTextRange"`
 	// Parsed search-result entities including URLs, mentions, hashtags, and media
 	// markers
 	Entities map[string]any `json:"entities"`
-	// Tweet ID being replied to
+	// ID of the tweet this result replies to.
 	InReplyToID string `json:"inReplyToId"`
-	// User ID being replied to
+	// ID of the user this result replies to.
 	InReplyToUserID string `json:"inReplyToUserId"`
-	// Username being replied to
+	// Username this result replies to.
 	InReplyToUsername string `json:"inReplyToUsername"`
 	// Whether the tweet has limited reply permissions
 	IsLimitedReply bool `json:"isLimitedReply"`
@@ -261,7 +261,7 @@ type SearchTweet struct {
 	IsQuoteStatus bool `json:"isQuoteStatus"`
 	// True when this search result is a reply
 	IsReply bool `json:"isReply"`
-	// Tweet language code
+	// Search result language code.
 	Lang string `json:"lang"`
 	// Search-result media attachments, omitted when no media is present
 	Media []TweetMedia `json:"media"`
@@ -276,7 +276,7 @@ type SearchTweet struct {
 	// Client application used to post the tweet
 	Source string `json:"source"`
 	Type   string `json:"type"`
-	// Tweet permalink URL
+	// Search result permalink.
 	URL string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

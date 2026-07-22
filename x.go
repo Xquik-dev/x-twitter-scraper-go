@@ -34,8 +34,7 @@ type XService struct {
 	// Look up, search, and explore user profiles and relationships
 	Followers XFollowerService
 	Dm        XDmService
-	// Media upload and download
-	Media XMediaService
+	Media     XMediaService
 	// X write actions (tweets, likes, follows, DMs)
 	Profile     XProfileService
 	Communities XCommunityService
