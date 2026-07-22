@@ -457,7 +457,7 @@ type ComposeNewParamsBodyComposeScoreRequest struct {
 	HasLink param.Opt[bool] `json:"hasLink,omitzero"`
 	// Accepted for backward compatibility. Text checks ignore this field.
 	//
-	// Deprecated: deprecated
+	// Deprecated: Ignored. Remove this field. Use hasLink for a separate link card.
 	HasMedia param.Opt[bool] `json:"hasMedia,omitzero"`
 	// This field can be elided, and will marshal its zero value as "score".
 	Step        constant.Score `json:"step" default:"score"`
