@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+
+version = 1
+
+[[annotations]]
+path = ["**"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Xquik contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [
+  "internal/encoding/json/decode.go",
+  "internal/encoding/json/decode_upstream_test.go",
+  "internal/encoding/json/encode.go",
+  "internal/encoding/json/encode_upstream_test.go",
+  "internal/encoding/json/fold.go",
+  "internal/encoding/json/fold_upstream_test.go",
+  "internal/encoding/json/fuzz_upstream_test.go",
+  "internal/encoding/json/indent.go",
+  "internal/encoding/json/number_upstream_test.go",
+  "internal/encoding/json/rawmessage_compat_test.go",
+  "internal/encoding/json/scanner.go",
+  "internal/encoding/json/scanner_upstream_test.go",
+  "internal/encoding/json/stream.go",
+  "internal/encoding/json/stream_upstream_test.go",
+  "internal/encoding/json/tables.go",
+  "internal/encoding/json/tagkey_upstream_test.go",
+  "internal/encoding/json/tags.go",
+  "internal/encoding/json/tags_upstream_test.go",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2009 The Go Authors"
+SPDX-License-Identifier = "BSD-3-Clause"

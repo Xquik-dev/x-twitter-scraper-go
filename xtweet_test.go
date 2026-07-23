@@ -15,7 +15,6 @@ import (
 )
 
 func TestXTweetNewWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -47,7 +46,6 @@ func TestXTweetNewWithOptionalParams(t *testing.T) {
 }
 
 func TestXTweetGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -71,7 +69,6 @@ func TestXTweetGet(t *testing.T) {
 }
 
 func TestXTweetList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,7 +94,6 @@ func TestXTweetList(t *testing.T) {
 }
 
 func TestXTweetDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -128,7 +124,6 @@ func TestXTweetDelete(t *testing.T) {
 }
 
 func TestXTweetGetFavoritersWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,7 +154,6 @@ func TestXTweetGetFavoritersWithOptionalParams(t *testing.T) {
 }
 
 func TestXTweetGetQuotesWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -218,7 +212,6 @@ func TestXTweetGetQuotesWithOptionalParams(t *testing.T) {
 }
 
 func TestXTweetGetRepliesWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -276,7 +269,6 @@ func TestXTweetGetRepliesWithOptionalParams(t *testing.T) {
 }
 
 func TestXTweetGetRetweetersWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -307,7 +299,6 @@ func TestXTweetGetRetweetersWithOptionalParams(t *testing.T) {
 }
 
 func TestXTweetGetThreadWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -338,7 +329,6 @@ func TestXTweetGetThreadWithOptionalParams(t *testing.T) {
 }
 
 func TestXTweetSearchWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

@@ -13,9 +13,20 @@
 
 <!-- x-release-please-end -->
 
-Xquik Go SDK for the X (Twitter) Scraper API, a Twitter API SDK and X API alternative for typed tweet search, advanced Twitter search queries, profile tweets, user lookup, follower export, media download, media upload, account monitoring, webhooks, giveaway draws, bulk extractions, and posting automation.
+Xquik is a typed Go SDK for the X (Twitter) Scraper API.
+It supports tweet search, profile timelines, user lookup, follower exports, and media workflows.
+It also covers monitoring, webhooks, bulk extractions, and posting automation.
 
-Use it in Go services that need to get tweets from profiles, search tweets by keyword or operator query, send tweets, post replies, like, repost, follow, DM, or run social media automation jobs without building scraping infrastructure. Start with the generated [API map](api.md), the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go), or the [REST API docs](https://docs.xquik.com/api-reference/overview).
+Use it when the official X API does not fit your workflow.
+It is a Twitter API alternative for documented automation tasks.
+Search tweets with keyword or advanced operator queries.
+Read profile tweets, followers, and following lists.
+Post tweets, replies, likes, reposts, follows, and direct messages.
+Xquik runs the scraping infrastructure behind the documented API.
+
+Start with the generated [API map](api.md).
+Use the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) for typed methods.
+Read the [REST API docs](https://docs.xquik.com/api-reference/overview) for endpoint details.
 
 [Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [OAuth-First MCP Guide](https://docs.xquik.com/mcp/overview)
 
@@ -59,7 +70,7 @@ go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.6.2'
 
 ## Requirements
 
-This library requires Go 1.23+.
+This library requires Go 1.26.5 or newer.
 
 ## Usage
 
@@ -202,7 +213,7 @@ type Animal struct {
 ```
 
 To handle optional data, use the `.Valid()` method on the JSON field.
-`.Valid()` returns true if a field is not `null`, not present, or couldn't be marshaled.
+`.Valid()` returns true when a field is present, non-null, and decoded successfully.
 
 If `.Valid()` is false, the corresponding field will simply be its zero value.
 
@@ -548,5 +559,12 @@ We are keen for your feedback; please open an [issue](https://www.github.com/Xqu
 ## Contributing
 
 See [the contributing documentation](./CONTRIBUTING.md).
+
+## Security & Project Health
+
+- [Security policy](SECURITY.md)
+- [Governance](GOVERNANCE.md)
+- [OpenSSF evidence](OPENSSF.md)
+- [Changelog](CHANGELOG.md)
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.

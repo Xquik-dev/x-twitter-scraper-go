@@ -7,10 +7,10 @@ workflows.
 ## Install
 
 ```sh
-go get github.com/Xquik-dev/x-twitter-scraper-go@v0.5.0
+go get github.com/Xquik-dev/x-twitter-scraper-go@latest
 ```
 
-This SDK requires Go 1.23+.
+This SDK requires Go 1.26.5 or newer.
 
 Import the SDK as `xtwitterscraper`:
 
@@ -90,3 +90,5 @@ signatures.
 - OpenAPI spec: <https://xquik.com/openapi.json>
 - Context7: <https://context7.com/xquik-dev/x-twitter-scraper-go>
 - DeepWiki: <https://deepwiki.com/Xquik-dev/x-twitter-scraper-go>
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.

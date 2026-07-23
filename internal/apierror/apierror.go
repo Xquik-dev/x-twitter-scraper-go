@@ -8,6 +8,7 @@ import (
 	"net/http/httputil"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/httpdebug"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
@@ -37,6 +38,9 @@ func (r *Error) Error() string {
 }
 
 func (r *Error) DumpRequest(body bool) []byte {
+	originalHeaders := r.Request.Header
+	r.Request.Header = httpdebug.RedactHeaders(originalHeaders)
+	defer func() { r.Request.Header = originalHeaders }()
 	if r.Request.GetBody != nil {
 		r.Request.Body, _ = r.Request.GetBody()
 	}
@@ -45,6 +49,9 @@ func (r *Error) DumpRequest(body bool) []byte {
 }
 
 func (r *Error) DumpResponse(body bool) []byte {
+	originalHeaders := r.Response.Header
+	r.Response.Header = httpdebug.RedactHeaders(originalHeaders)
+	defer func() { r.Response.Header = originalHeaders }()
 	out, _ := httputil.DumpResponse(r.Response, body)
 	return out
 }

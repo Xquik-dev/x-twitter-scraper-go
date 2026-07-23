@@ -1,8 +1,31 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 cd "$(dirname "$0")/.."
+
+echo "==> Checking gofmt"
+unformatted="$(gofmt -l .)"
+if [ -n "$unformatted" ]; then
+  echo "$unformatted"
+  exit 1
+fi
+
+echo "==> Running go vet"
+packages=()
+while IFS= read -r package; do
+  if [ "$package" != "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json" ]; then
+    packages+=("$package")
+  fi
+done < <(go list ./...)
+go vet "${packages[@]}"
+
+# Upstream encoding/json tests intentionally exercise malformed struct tags.
+json_sources=()
+while IFS= read -r source; do
+  json_sources+=("$source")
+done < <(find internal/encoding/json -maxdepth 1 -type f -name '*.go' ! -name '*_test.go' | sort)
+go vet "${json_sources[@]}"
 
 echo "==> Running Go build"
 go build ./...
