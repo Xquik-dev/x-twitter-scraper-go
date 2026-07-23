@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.2 (2026-07-23)
+
+Full Changelog: [v0.6.1...v0.6.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.6.1...v0.6.2)
+
+### Documentation
+
+* map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
+
 ## 0.6.1 (2026-07-22)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.6.0...v0.6.1)
