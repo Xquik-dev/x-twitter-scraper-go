@@ -21,6 +21,20 @@ Use it in Go services that need to get tweets from profiles, search tweets by ke
 
 It is generated with [Stainless](https://www.stainless.com/).
 
+## Common X Data Tasks
+
+Use the linked Go reference for typed method names.
+
+| Customer Question | REST Route | Workflow Note |
+| --- | --- | --- |
+| How do I search tweets? | `GET /x/tweets/search` | Use keyword or advanced operator queries. |
+| How do I read a profile timeline? | `GET /x/users/{id}/tweets` | Paginate bounded results. |
+| How do I scrape followers? | `GET /x/users/{id}/followers` | Use an extraction for complete datasets. |
+| How do I scrape following accounts? | `GET /x/users/{id}/following` | Use an extraction for complete datasets. |
+| How do I read my home timeline? | `GET /x/timeline` | Approve this private read. |
+| How do I monitor an account? | `POST /monitors` | Deliver events through HMAC webhooks. |
+| How do I post or reply? | `POST /x/tweets` | Confirm the account and payload. |
+
 ## Installation
 
 <!-- x-release-please-start-version -->
@@ -534,3 +548,5 @@ We are keen for your feedback; please open an [issue](https://www.github.com/Xqu
 ## Contributing
 
 See [the contributing documentation](./CONTRIBUTING.md).
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
