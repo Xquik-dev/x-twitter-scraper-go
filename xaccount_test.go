@@ -14,7 +14,6 @@ import (
 )
 
 func TestXAccountNewWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -43,7 +42,6 @@ func TestXAccountNewWithOptionalParams(t *testing.T) {
 }
 
 func TestXAccountGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,7 +65,6 @@ func TestXAccountGet(t *testing.T) {
 }
 
 func TestXAccountList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,7 +88,6 @@ func TestXAccountList(t *testing.T) {
 }
 
 func TestXAccountDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -115,7 +111,6 @@ func TestXAccountDelete(t *testing.T) {
 }
 
 func TestXAccountBulkRetry(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -139,7 +134,6 @@ func TestXAccountBulkRetry(t *testing.T) {
 }
 
 func TestXAccountReauthWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

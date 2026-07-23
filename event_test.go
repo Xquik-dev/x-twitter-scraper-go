@@ -15,7 +15,6 @@ import (
 )
 
 func TestEventGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -39,7 +38,6 @@ func TestEventGet(t *testing.T) {
 }
 
 func TestEventListWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

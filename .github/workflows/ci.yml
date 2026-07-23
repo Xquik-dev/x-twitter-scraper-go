@@ -18,40 +18,100 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
-    timeout-minutes: 10
-    name: lint
+    timeout-minutes: 15
+    name: Lint & Licensing
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Setup go
+      - name: Set up Go
         uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
         with:
           go-version-file: ./go.mod
 
-      - name: Run lints
+      - name: Verify module integrity
+        run: go mod verify
+
+      - name: Run lint gates
         run: ./scripts/lint
+
+      - name: Check licensing
+        uses: fsfe/reuse-action@676e2d560c9a403aa252096d99fcab3e1132b0f5 # v6.0.0
+
   test:
-    timeout-minutes: 10
-    name: test
+    timeout-minutes: 20
+    name: Tests & Coverage
     runs-on: ubuntu-24.04
+
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Setup go
+      - name: Set up Go
         uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
         with:
           go-version-file: ./go.mod
 
-      - name: Bootstrap
-        run: ./scripts/bootstrap
+      - name: Verify module integrity
+        run: go mod verify
 
       - name: Run tests
         run: ./scripts/test
+
+      - name: Enforce statement coverage
+        run: ./scripts/coverage
+
+      - name: Enforce branch coverage
+        run: ./scripts/branch-coverage
+
+      - name: Run race detector
+        run: go test -race ./...
+
+  security:
+    timeout-minutes: 15
+    name: Dependency Security
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: ./go.mod
+
+      - name: Verify module integrity
+        run: go mod verify
+
+      - name: Scan reachable vulnerabilities
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
+
+  reproducible:
+    timeout-minutes: 10
+    name: Reproducible Module Archive
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: ./go.mod
+
+      - name: Verify reproducible archive
+        run: ./scripts/reproducible-build

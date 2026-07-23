@@ -1,59 +1,90 @@
-## Setting up the environment
+# Contributing
 
-To set up the repository, run:
+Thank you for improving the Xquik Go SDK.
 
-```sh
-$ ./scripts/bootstrap
-$ ./scripts/lint
-```
+Read [GOVERNANCE.md](GOVERNANCE.md) before proposing major changes.
 
-This will install all the required dependencies and build the SDK.
+## Set Up
 
-You can also [install go 1.22+ manually](https://go.dev/doc/install).
-
-## Modifying/Adding code
-
-Most of the SDK is generated code. Modifications to code will be persisted between generations, but may
-result in merge conflicts between manual patches and changes from the generator. The generator will never
-modify the contents of the `lib/` and `examples/` directories.
-
-## Adding and running examples
-
-All files in the `examples/` directory are not modified by the generator and can be freely edited or added to.
-
-```go
-# add an example to examples/<your-example>/main.go
-
-package main
-
-func main() {
-  // ...
-}
-```
+Install Go 1.26.5 or newer.
 
 ```sh
-$ go run ./examples/<your-example>
+./scripts/bootstrap
+./scripts/lint
+./scripts/test
 ```
 
-## Using the repository from source
-
-To use a local version of this library from source in another project, edit the `go.mod` with a replace
-directive. This can be done through the CLI with the following:
+Use a local module replacement when testing another project.
 
 ```sh
-$ go mod edit -replace github.com/Xquik-dev/x-twitter-scraper-go=/path/to/x-twitter-scraper-go
+go mod edit \
+  -replace github.com/Xquik-dev/x-twitter-scraper-go=/path/to/x-twitter-scraper-go
 ```
 
-## Running tests
+Never commit credentials or runtime environment files.
+
+## Generated Code
+
+Most SDK files come from the public OpenAPI contract.
+
+Preserve generated method names and response contracts.
+
+Avoid manual generated-file changes when a generator fix exists.
+
+Place stable examples outside generated directories.
+
+## Verify Changes
+
+Run focused tests while editing.
+
+Run every gate before requesting review.
 
 ```sh
-$ ./scripts/test
+go mod verify
+./scripts/lint
+./scripts/test
+./scripts/coverage
+./scripts/branch-coverage
+go test -race ./...
+go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
+uvx --from reuse reuse lint
+./scripts/reproducible-build
 ```
 
-## Formatting
+Statement coverage must remain at least 90%.
 
-This library uses the standard gofmt code formatter:
+Branch coverage must remain at least 80%.
+
+Add regression tests for every fixed defect.
+
+## Submit Changes
+
+Keep pull requests focused and explain user-visible behavior.
+
+Link relevant issues and public API contracts.
+
+Use clear Conventional Commit subjects when practical.
+
+Sign every commit with the Developer Certificate of Origin.
 
 ```sh
-$ ./scripts/format
+git commit --signoff
 ```
+
+The sign-off confirms the [Developer Certificate of Origin](https://developercertificate.org/).
+
+Another human must review maintainer-authored, nontrivial changes.
+
+Reviewers follow the shared [review policy][review-policy].
+
+Address every review comment before merging.
+
+## Report Security Issues
+
+Never disclose suspected vulnerabilities in public issues.
+
+Follow [SECURITY.md](SECURITY.md) for private reporting.
+
+[review-policy]: https://github.com/Xquik-dev/.github/blob/main/REVIEWING.md
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.

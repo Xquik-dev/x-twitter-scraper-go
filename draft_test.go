@@ -14,7 +14,6 @@ import (
 )
 
 func TestDraftNewWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +41,6 @@ func TestDraftNewWithOptionalParams(t *testing.T) {
 }
 
 func TestDraftGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,7 +64,6 @@ func TestDraftGet(t *testing.T) {
 }
 
 func TestDraftListWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -93,7 +90,6 @@ func TestDraftListWithOptionalParams(t *testing.T) {
 }
 
 func TestDraftDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

@@ -15,7 +15,6 @@ import (
 )
 
 func TestWebhookNew(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +41,6 @@ func TestWebhookNew(t *testing.T) {
 }
 
 func TestWebhookUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,7 +72,6 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestWebhookList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -98,7 +95,6 @@ func TestWebhookList(t *testing.T) {
 }
 
 func TestWebhookDeactivate(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -122,7 +118,6 @@ func TestWebhookDeactivate(t *testing.T) {
 }
 
 func TestWebhookListDeliveries(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -146,7 +141,6 @@ func TestWebhookListDeliveries(t *testing.T) {
 }
 
 func TestWebhookResume(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -170,7 +164,6 @@ func TestWebhookResume(t *testing.T) {
 }
 
 func TestWebhookTest(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

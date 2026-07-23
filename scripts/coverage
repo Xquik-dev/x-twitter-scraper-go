@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+coverage_profile="$(mktemp "${TMPDIR:-/tmp}/xquik-go-coverage.XXXXXX")"
+trap 'rm -f -- "$coverage_profile"' EXIT
+
+echo "==> Enforcing 90% statement coverage"
+go test ./... -coverpkg=./... -coverprofile="$coverage_profile"
+
+awk '
+  NR > 1 {
+    key = $1 " " $2
+    statements[key] = $2
+    if ($3 > 0) {
+      covered[key] = 1
+    }
+  }
+  END {
+    for (key in statements) {
+      total += statements[key]
+      if (covered[key]) {
+        hit += statements[key]
+      }
+    }
+    if (total == 0) {
+      print "coverage profile has no statements" > "/dev/stderr"
+      exit 1
+    }
+    percent = 100 * hit / total
+    printf "statement coverage: %d/%d (%.2f%%); minimum 90.00%%\n", hit, total, percent
+    if (percent + 0.0000001 < 90) {
+      exit 1
+    }
+  }
+' "$coverage_profile"

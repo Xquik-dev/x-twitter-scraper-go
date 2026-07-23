@@ -15,7 +15,6 @@ import (
 )
 
 func TestXUserGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -39,7 +38,6 @@ func TestXUserGet(t *testing.T) {
 }
 
 func TestXUserRemoveFollower(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -70,7 +68,6 @@ func TestXUserRemoveFollower(t *testing.T) {
 }
 
 func TestXUserGetBatch(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -96,7 +93,6 @@ func TestXUserGetBatch(t *testing.T) {
 }
 
 func TestXUserGetFollowersWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -129,7 +125,6 @@ func TestXUserGetFollowersWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetFollowersYouKnowWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -160,7 +155,6 @@ func TestXUserGetFollowersYouKnowWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetFollowingWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -193,7 +187,6 @@ func TestXUserGetFollowingWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetLikesWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -249,7 +242,6 @@ func TestXUserGetLikesWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetMediaWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -305,7 +297,6 @@ func TestXUserGetMediaWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetMentionsWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -363,7 +354,6 @@ func TestXUserGetMentionsWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetRepliesWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -420,7 +410,6 @@ func TestXUserGetRepliesWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetSearchWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -447,7 +436,6 @@ func TestXUserGetSearchWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetTweetsWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -505,7 +493,6 @@ func TestXUserGetTweetsWithOptionalParams(t *testing.T) {
 }
 
 func TestXUserGetVerifiedFollowersWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

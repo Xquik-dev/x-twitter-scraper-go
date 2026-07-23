@@ -14,7 +14,6 @@ import (
 )
 
 func TestStyleGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -38,7 +37,6 @@ func TestStyleGet(t *testing.T) {
 }
 
 func TestStyleUpdate(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -71,7 +69,6 @@ func TestStyleUpdate(t *testing.T) {
 }
 
 func TestStyleList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,7 +92,6 @@ func TestStyleList(t *testing.T) {
 }
 
 func TestStyleDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,7 +115,6 @@ func TestStyleDelete(t *testing.T) {
 }
 
 func TestStyleAnalyze(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -145,7 +140,6 @@ func TestStyleAnalyze(t *testing.T) {
 }
 
 func TestStyleCompare(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -172,7 +166,6 @@ func TestStyleCompare(t *testing.T) {
 }
 
 func TestStyleGetPerformance(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

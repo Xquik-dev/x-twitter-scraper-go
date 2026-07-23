@@ -23,8 +23,11 @@ func ToOpt[T comparable](v T, meta respjson.Field) param.Opt[T] {
 
 // Checks if the value is not omitted and not null
 func Valid(v param.ParamStruct) bool {
+	if param.IsNull(v) || param.IsOmitted(v) {
+		return false
+	}
 	if ovr, ok := v.Overrides(); ok {
 		return ovr != nil
 	}
-	return !param.IsNull(v) && !param.IsOmitted(v)
+	return true
 }

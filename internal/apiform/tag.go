@@ -29,9 +29,6 @@ func parseFormStructTag(field reflect.StructField) (tag parsedStructTag, ok bool
 		return tag, ok
 	}
 	parts := strings.Split(raw, ",")
-	if len(parts) == 0 {
-		return tag, false
-	}
 	tag.name = parts[0]
 	for _, part := range parts[1:] {
 		switch part {

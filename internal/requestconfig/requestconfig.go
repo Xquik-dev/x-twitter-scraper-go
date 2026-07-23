@@ -31,7 +31,11 @@ func getDefaultHeaders() map[string]string {
 }
 
 func getNormalizedOS() string {
-	switch runtime.GOOS {
+	return normalizeOS(runtime.GOOS)
+}
+
+func normalizeOS(goos string) string {
+	switch goos {
 	case "ios":
 		return "iOS"
 	case "android":
@@ -47,12 +51,16 @@ func getNormalizedOS() string {
 	case "linux":
 		return "Linux"
 	default:
-		return fmt.Sprintf("Other:%s", runtime.GOOS)
+		return fmt.Sprintf("Other:%s", goos)
 	}
 }
 
 func getNormalizedArchitecture() string {
-	switch runtime.GOARCH {
+	return normalizeArchitecture(runtime.GOARCH)
+}
+
+func normalizeArchitecture(goarch string) string {
+	switch goarch {
 	case "386":
 		return "x32"
 	case "amd64":
@@ -62,7 +70,7 @@ func getNormalizedArchitecture() string {
 	case "arm64":
 		return "arm64"
 	default:
-		return fmt.Sprintf("other:%s", runtime.GOARCH)
+		return fmt.Sprintf("other:%s", goarch)
 	}
 }
 

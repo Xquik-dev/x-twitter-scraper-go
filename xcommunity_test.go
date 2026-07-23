@@ -14,7 +14,6 @@ import (
 )
 
 func TestXCommunityNewWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -43,7 +42,6 @@ func TestXCommunityNewWithOptionalParams(t *testing.T) {
 }
 
 func TestXCommunityDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -75,7 +73,6 @@ func TestXCommunityDelete(t *testing.T) {
 }
 
 func TestXCommunityGetInfo(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,7 +96,6 @@ func TestXCommunityGetInfo(t *testing.T) {
 }
 
 func TestXCommunityGetMembersWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -130,7 +126,6 @@ func TestXCommunityGetMembersWithOptionalParams(t *testing.T) {
 }
 
 func TestXCommunityGetModeratorsWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -160,7 +155,6 @@ func TestXCommunityGetModeratorsWithOptionalParams(t *testing.T) {
 }
 
 func TestXCommunityGetSearchWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

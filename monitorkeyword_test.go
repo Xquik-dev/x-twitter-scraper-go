@@ -15,7 +15,6 @@ import (
 )
 
 func TestMonitorKeywordNew(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +41,6 @@ func TestMonitorKeywordNew(t *testing.T) {
 }
 
 func TestMonitorKeywordGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,7 +64,6 @@ func TestMonitorKeywordGet(t *testing.T) {
 }
 
 func TestMonitorKeywordUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,7 +94,6 @@ func TestMonitorKeywordUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestMonitorKeywordList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -121,7 +117,6 @@ func TestMonitorKeywordList(t *testing.T) {
 }
 
 func TestMonitorKeywordDeactivate(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
