@@ -32,6 +32,12 @@ Read the [REST API docs](https://docs.xquik.com/api-reference/overview) for endp
 
 It is generated with [Stainless](https://www.stainless.com/).
 
+## Choose the Go SDK
+
+Choose this client for context-aware Go services and command-line tools.
+Use typed structs, pagination helpers, retries, and custom middleware.
+Use REST when module installation is unavailable.
+
 ## Common X Data Tasks
 
 Use the linked Go reference for typed method names.
