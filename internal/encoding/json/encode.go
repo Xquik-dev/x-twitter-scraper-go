@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Vendored from Go 1.24.0-pre-release
 // To find alterations, check package shims, and comments beginning in SHIM().
 //

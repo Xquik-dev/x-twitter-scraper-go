@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
+// SPDX-License-Identifier: Apache-2.0
+
 // EDIT(begin): add custom options for JSON encoding
 package json
 
