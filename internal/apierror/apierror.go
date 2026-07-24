@@ -8,8 +8,10 @@ package apierror
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httputil"
+	"strings"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/httpdebug"
@@ -42,20 +44,30 @@ func (r *Error) Error() string {
 }
 
 func (r *Error) DumpRequest(body bool) []byte {
-	originalHeaders := r.Request.Header
-	r.Request.Header = httpdebug.RedactHeaders(originalHeaders)
-	defer func() { r.Request.Header = originalHeaders }()
-	if r.Request.GetBody != nil {
-		r.Request.Body, _ = r.Request.GetBody()
+	requestCopy := *r.Request
+	requestCopy.Header = httpdebug.RedactHeaders(r.Request.Header).Clone()
+	if body && r.Request.GetBody != nil {
+		if bodyCopy, err := r.Request.GetBody(); err == nil {
+			requestCopy.Body = bodyCopy
+		} else {
+			body = false
+		}
+	} else if body {
+		body = false
 	}
-	out, _ := httputil.DumpRequestOut(r.Request, body)
+	out, _ := httputil.DumpRequestOut(&requestCopy, body)
 	return out
 }
 
 func (r *Error) DumpResponse(body bool) []byte {
-	originalHeaders := r.Response.Header
-	r.Response.Header = httpdebug.RedactHeaders(originalHeaders)
-	defer func() { r.Response.Header = originalHeaders }()
-	out, _ := httputil.DumpResponse(r.Response, body)
+	responseCopy := *r.Response
+	responseCopy.Header = httpdebug.RedactHeaders(r.Response.Header).Clone()
+	if body && r.JSON.raw != "" {
+		responseCopy.Body = io.NopCloser(strings.NewReader(r.JSON.raw))
+		responseCopy.ContentLength = int64(len(r.JSON.raw))
+	} else if body {
+		body = false
+	}
+	out, _ := httputil.DumpResponse(&responseCopy, body)
 	return out
 }

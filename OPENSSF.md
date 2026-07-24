@@ -32,9 +32,9 @@ No OpenSSF-defined ineligibility applies.
 | CI | Pull requests and pushes run pinned, least-privilege workflows |
 | Two-factor authentication | The Xquik-dev organization requires 2FA |
 
-The current Go 1.26.5 statement result is 93.57%.
+The current Go 1.26.5 statement result is 93.48%.
 
-The current Go 1.26.5 branch result is 81.54%.
+The current Go 1.26.5 branch result is 81.37%.
 
 ## Branch Measurement
 
@@ -56,7 +56,7 @@ It uses strict overlap to reject boundary-only parent ranges.
 
 CI forces rebuilds because cached packages omit tool catalogs.
 
-The gate includes all 1,224 reported production branches.
+The gate includes all 1,229 reported production branches.
 
 ## Outstanding Silver Blocker
 
