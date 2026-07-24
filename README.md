@@ -68,6 +68,31 @@ go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.6.2'
 
 <!-- x-release-please-end -->
 
+## Verify a Release
+
+Go module users install through the canonical module path.
+
+Verify Xquik's matching source release before upgrading:
+
+```sh
+release_tag=vVERSION
+archive="x-twitter-scraper-go-$release_tag.zip"
+
+gh release download "$release_tag" \
+  --repo Xquik-dev/x-twitter-scraper-go \
+  --pattern "$archive"
+
+gh attestation verify "$archive" \
+  --repo Xquik-dev/x-twitter-scraper-go \
+  --signer-workflow Xquik-dev/x-twitter-scraper-go/.github/workflows/release-provenance.yml \
+  --source-ref "refs/tags/$release_tag" \
+  --deny-self-hosted-runners
+```
+
+Require the Xquik-dev repository and expected release workflow.
+
+GitHub verifies the archive digest, signer identity, and transparency proof.
+
 ## Requirements
 
 This library requires Go 1.26.5 or newer.

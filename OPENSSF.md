@@ -58,6 +58,16 @@ CI forces rebuilds because cached packages omit tool catalogs.
 
 The gate includes all 1,224 reported production branches.
 
+## Outstanding Silver Blocker
+
+The release workflow now creates SLSA provenance for exact source archives.
+
+It also attaches each archive and Sigstore bundle to GitHub Releases.
+
+Run one post-merge release and verify its public artifact.
+
+Keep `signed_releases` Unmet until that verification succeeds.
+
 ## Outstanding Gold Blockers
 
 Human and organizational evidence remains incomplete.
@@ -88,6 +98,9 @@ go test -race ./...
 go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 uvx --from reuse reuse lint
 ./scripts/reproducible-build
+gh attestation verify ARCHIVE \
+  --repo Xquik-dev/x-twitter-scraper-go \
+  --signer-workflow Xquik-dev/x-twitter-scraper-go/.github/workflows/release-provenance.yml
 ```
 
 Reassess the register before every major release.
