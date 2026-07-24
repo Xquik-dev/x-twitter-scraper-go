@@ -23,6 +23,9 @@ import (
 var archiveTime = time.Date(1980, time.January, 1, 0, 0, 0, 0, time.UTC)
 
 func main() {
+	if len(os.Args) > 2 {
+		exitf("usage: ./scripts/reproducible-build [output.zip]")
+	}
 	paths := repositoryFiles()
 	first := buildArchive(paths)
 	second := buildArchive(paths)
@@ -36,6 +39,18 @@ func main() {
 		len(paths),
 		firstHash,
 	)
+	if len(os.Args) == 2 {
+		writeArchive(os.Args[1], first)
+	}
+}
+
+func writeArchive(outputPath string, contents []byte) {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0o755); err != nil {
+		exitf("create archive directory: %v", err)
+	}
+	if err := os.WriteFile(outputPath, contents, 0o644); err != nil {
+		exitf("write module archive: %v", err)
+	}
 }
 
 func repositoryFiles() []string {
