@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
+// SPDX-License-Identifier: Apache-2.0
+
 // The deserialization algorithm from apijson may be subject to improvements
 // between minor versions, particularly with respect to calling [json.Unmarshal]
 // into param unions.
