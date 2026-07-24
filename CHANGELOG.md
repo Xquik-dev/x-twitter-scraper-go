@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.7.0 (2026-07-24)
+
+Full Changelog: [v0.6.2...v0.7.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.6.2...v0.7.0)
+
+### Features
+
+* enforce OpenSSF Gold quality gates ([696a2c1](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/696a2c1104239667f9182916a5e6474bf810532b))
+
+
+### Bug Fixes
+
+* make diagnostic dumps concurrency-safe ([6c35deb](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/6c35deb74fab127bcde9947c0a915e90dbad067b))
+
+
+### Chores
+
+* add per-file license evidence ([ab79e56](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/ab79e56db99acb4aa4069f48fcf469de17dca319))
+
+
+### Documentation
+
+* clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
+
 ## 0.6.2 (2026-07-23)
 
 Full Changelog: [v0.6.1...v0.6.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.6.1...v0.6.2)
