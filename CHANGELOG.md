@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.1 (2026-07-24)
+
+Full Changelog: [v0.7.0...v0.7.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.7.0...v0.7.1)
+
+### Bug Fixes
+
+* publish assets before immutable release ([#18](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/18)) ([acc5ac8](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/acc5ac866388710e5050b27e08c4ad54fb2fc9d1))
+
 ## 0.7.0 (2026-07-24)
 
 Full Changelog: [v0.6.2...v0.7.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.6.2...v0.7.0)
