@@ -42,6 +42,8 @@ type XService struct {
 	Accounts XAccountService
 	// Connected X account management
 	AccountConnectionChallenges XAccountConnectionChallengeService
+	// Connected X account management
+	AccountConnectionAttempts XAccountConnectionAttemptService
 	// Look up, search, and analyze individual tweets
 	Bookmarks XBookmarkService
 	// X List followers, members, and tweets
@@ -64,6 +66,7 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 	r.Communities = NewXCommunityService(opts...)
 	r.Accounts = NewXAccountService(opts...)
 	r.AccountConnectionChallenges = NewXAccountConnectionChallengeService(opts...)
+	r.AccountConnectionAttempts = NewXAccountConnectionAttemptService(opts...)
 	r.Bookmarks = NewXBookmarkService(opts...)
 	r.Lists = NewXListService(opts...)
 	return

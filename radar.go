@@ -55,10 +55,22 @@ type RadarItem struct {
 	// "entertainment".
 	Category  RadarItemCategory `json:"category" api:"required"`
 	CreatedAt time.Time         `json:"createdAt" api:"required" format:"date-time"`
-	Language  string            `json:"language" api:"required"`
+	// BCP-47 language code. und means the source did not identify a language.
+	Language string `json:"language" api:"required"`
 	// Source-specific fields. Shape varies per source:
 	//
-	//   - reddit: { subreddit: string, author: string }
+	//   - reddit: { author, authorId?, subreddit, subredditId?, subredditSubscribers?,
+	//     sourceFormat, score?, upvoteRatio?, estimatedUpvotes?, estimatedDownvotes?,
+	//     numberComments?, numberCrossposts?, selftext?, contentUrl?, domain?,
+	//     postHint?, linkFlairText?, distinguished?, totalAwardsReceived?, viewCount?,
+	//     editedAt?, galleryImageUrls?, redditVideo?, archived?, contestMode?,
+	//     isCrosspostable?, isMeta?, isNsfw?, isOriginalContent?, isRobotIndexable?,
+	//     isSelf?, isSpoiler?, isVideo?, locked?, stickied? }. `score` is Reddit's
+	//     public net score. Exact public upvote and downvote counts are not available.
+	//     Estimated counts derive from the public score and upvote ratio, which Reddit
+	//     may fuzz. Comment bodies are not included. Current items combine public
+	//     listing discovery with server-rendered post data and use `sourceFormat: html`;
+	//     `json` and `rss` remain for legacy rows.
 	//   - github: { starsToday: number }
 	//   - hacker_news: { points: number, numberComments: number }
 	//   - google_trends: { approxTraffic: number }
@@ -66,11 +78,16 @@ type RadarItem struct {
 	//   - wikipedia: { views: number }
 	//   - trustmrr: { mrr, growthPercent, last30Days, total, customers,
 	//     activeSubscriptions, onSale, xHandle?, category?, askingPrice?, country?,
-	//     growthMrrPercent?, multiple?, paymentProvider?, rank? }
-	Metadata    map[string]any `json:"metadata" api:"required"`
-	PublishedAt time.Time      `json:"publishedAt" api:"required" format:"date-time"`
-	Region      string         `json:"region" api:"required"`
-	Score       float64        `json:"score" api:"required"`
+	//     foundedDate?, googleSearchImpressionsLast30Days?, growthMrrPercent?,
+	//     multiple?, paymentProvider?, profitMarginLast30Days?, rank?,
+	//     revenuePerVisitor?, targetAudience?, visitorsLast30Days? } For the startup
+	//     growth source, xHandle is the founder's X username without @. The rank field
+	//     is the source's revenue rank. Result order represents reported 30-day
+	//     revenue-growth rank.
+	Metadata    RadarItemMetadata `json:"metadata" api:"required"`
+	PublishedAt time.Time         `json:"publishedAt" api:"required" format:"date-time"`
+	Region      string            `json:"region" api:"required"`
+	Score       float64           `json:"score" api:"required"`
 	// Any of "github", "google_trends", "hacker_news", "polymarket", "reddit",
 	// "trustmrr", "wikipedia".
 	Source RadarItemSource `json:"source" api:"required"`
@@ -78,8 +95,9 @@ type RadarItem struct {
 	SourceID    string `json:"sourceId" api:"required"`
 	Title       string `json:"title" api:"required"`
 	Description string `json:"description"`
-	ImageURL    string `json:"imageUrl"`
-	URL         string `json:"url"`
+	// Source image. Startup growth items return the logo here.
+	ImageURL string `json:"imageUrl"`
+	URL      string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -119,6 +137,71 @@ const (
 	RadarItemCategoryBusiness      RadarItemCategory = "business"
 	RadarItemCategoryEntertainment RadarItemCategory = "entertainment"
 )
+
+// Source-specific fields. Shape varies per source:
+//
+//   - reddit: { author, authorId?, subreddit, subredditId?, subredditSubscribers?,
+//     sourceFormat, score?, upvoteRatio?, estimatedUpvotes?, estimatedDownvotes?,
+//     numberComments?, numberCrossposts?, selftext?, contentUrl?, domain?,
+//     postHint?, linkFlairText?, distinguished?, totalAwardsReceived?, viewCount?,
+//     editedAt?, galleryImageUrls?, redditVideo?, archived?, contestMode?,
+//     isCrosspostable?, isMeta?, isNsfw?, isOriginalContent?, isRobotIndexable?,
+//     isSelf?, isSpoiler?, isVideo?, locked?, stickied? }. `score` is Reddit's
+//     public net score. Exact public upvote and downvote counts are not available.
+//     Estimated counts derive from the public score and upvote ratio, which Reddit
+//     may fuzz. Comment bodies are not included. Current items combine public
+//     listing discovery with server-rendered post data and use `sourceFormat: html`;
+//     `json` and `rss` remain for legacy rows.
+//   - github: { starsToday: number }
+//   - hacker_news: { points: number, numberComments: number }
+//   - google_trends: { approxTraffic: number }
+//   - polymarket: { volume24hr: number }
+//   - wikipedia: { views: number }
+//   - trustmrr: { mrr, growthPercent, last30Days, total, customers,
+//     activeSubscriptions, onSale, xHandle?, category?, askingPrice?, country?,
+//     foundedDate?, googleSearchImpressionsLast30Days?, growthMrrPercent?,
+//     multiple?, paymentProvider?, profitMarginLast30Days?, rank?,
+//     revenuePerVisitor?, targetAudience?, visitorsLast30Days? } For the startup
+//     growth source, xHandle is the founder's X username without @. The rank field
+//     is the source's revenue rank. Result order represents reported 30-day
+//     revenue-growth rank.
+type RadarItemMetadata struct {
+	Author             string `json:"author"`
+	ContentURL         string `json:"contentUrl" format:"uri"`
+	EstimatedDownvotes int64  `json:"estimatedDownvotes"`
+	EstimatedUpvotes   int64  `json:"estimatedUpvotes"`
+	NumberComments     int64  `json:"numberComments"`
+	Score              int64  `json:"score"`
+	Selftext           string `json:"selftext"`
+	// Current items use html. json and rss are retained for legacy rows.
+	//
+	// Any of "html", "json", "rss".
+	SourceFormat string         `json:"sourceFormat"`
+	Subreddit    string         `json:"subreddit"`
+	UpvoteRatio  float64        `json:"upvoteRatio"`
+	ExtraFields  map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Author             respjson.Field
+		ContentURL         respjson.Field
+		EstimatedDownvotes respjson.Field
+		EstimatedUpvotes   respjson.Field
+		NumberComments     respjson.Field
+		Score              respjson.Field
+		Selftext           respjson.Field
+		SourceFormat       respjson.Field
+		Subreddit          respjson.Field
+		UpvoteRatio        respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RadarItemMetadata) RawJSON() string { return r.JSON.raw }
+func (r *RadarItemMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type RadarItemSource string
 
