@@ -108,7 +108,7 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 type XAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Derived connection health. `healthy` = session active. `needsReauth` = user must
+	// Derived connection health. `healthy` = ready to use. `needsReauth` = user must
 	// submit fresh credentials. `locked` = X locked the account; unlock on x.com
 	// first. `suspended` = X banned the account. `recovering` = cooldown ended; the
 	// account can reconnect on its next use. `temporaryIssue` = temporary connection
@@ -143,7 +143,7 @@ func (r *XAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Derived connection health. `healthy` = session active. `needsReauth` = user must
+// Derived connection health. `healthy` = ready to use. `needsReauth` = user must
 // submit fresh credentials. `locked` = X locked the account; unlock on x.com
 // first. `suspended` = X banned the account. `recovering` = cooldown ended; the
 // account can reconnect on its next use. `temporaryIssue` = temporary connection
