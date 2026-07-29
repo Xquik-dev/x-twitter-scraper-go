@@ -110,9 +110,9 @@ type XAccount struct {
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Derived connection health. `healthy` = session active. `needsReauth` = user must
 	// submit fresh credentials. `locked` = X locked the account; unlock on x.com
-	// first. `suspended` = X banned the account. `recovering` = past cooldown, will
-	// auto-retry on next use. `temporaryIssue` = temporary connection problem; retry
-	// shortly.
+	// first. `suspended` = X banned the account. `recovering` = cooldown ended; the
+	// account can reconnect on its next use. `temporaryIssue` = temporary connection
+	// problem; wait before the next use.
 	//
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
@@ -145,9 +145,9 @@ func (r *XAccount) UnmarshalJSON(data []byte) error {
 
 // Derived connection health. `healthy` = session active. `needsReauth` = user must
 // submit fresh credentials. `locked` = X locked the account; unlock on x.com
-// first. `suspended` = X banned the account. `recovering` = past cooldown, will
-// auto-retry on next use. `temporaryIssue` = temporary connection problem; retry
-// shortly.
+// first. `suspended` = X banned the account. `recovering` = cooldown ended; the
+// account can reconnect on its next use. `temporaryIssue` = temporary connection
+// problem; wait before the next use.
 type XAccountHealth string
 
 const (
@@ -203,45 +203,7 @@ const (
 	XAccountDetailHealthTemporaryIssue XAccountDetailHealth = "temporaryIssue"
 )
 
-// Sanitized X account summary returned by connect and reauth.
-type XAccountNewResponse struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
-	// "temporaryIssue".
-	Health    XAccountNewResponseHealth `json:"health" api:"required"`
-	Status    string                    `json:"status" api:"required"`
-	XUserID   string                    `json:"xUserId" api:"required"`
-	XUsername string                    `json:"xUsername" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Health      respjson.Field
-		Status      respjson.Field
-		XUserID     respjson.Field
-		XUsername   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XAccountNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *XAccountNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type XAccountNewResponseHealth string
-
-const (
-	XAccountNewResponseHealthHealthy        XAccountNewResponseHealth = "healthy"
-	XAccountNewResponseHealthLocked         XAccountNewResponseHealth = "locked"
-	XAccountNewResponseHealthNeedsReauth    XAccountNewResponseHealth = "needsReauth"
-	XAccountNewResponseHealthRecovering     XAccountNewResponseHealth = "recovering"
-	XAccountNewResponseHealthSuspended      XAccountNewResponseHealth = "suspended"
-	XAccountNewResponseHealthTemporaryIssue XAccountNewResponseHealth = "temporaryIssue"
-)
+type XAccountNewResponse = any
 
 type XAccountListResponse struct {
 	Accounts []XAccount `json:"accounts" api:"required"`
@@ -337,10 +299,10 @@ type XAccountNewParams struct {
 	Email string `json:"email" api:"required"`
 	// Account password
 	Password string `json:"password" api:"required"`
+	// Authenticator App TOTP secret required for durable login
+	TotpSecret string `json:"totp_secret" api:"required"`
 	// X username
 	Username string `json:"username" api:"required"`
-	// TOTP secret for 2FA
-	TotpSecret param.Opt[string] `json:"totp_secret,omitzero"`
 	paramObj
 }
 
@@ -357,7 +319,7 @@ type XAccountReauthParams struct {
 	Password string `json:"password" api:"required"`
 	// Email for the X account (updates stored email)
 	Email param.Opt[string] `json:"email,omitzero"`
-	// TOTP secret for 2FA re-authentication
+	// Replacement Authenticator App TOTP secret. Omit it to reuse the saved secret.
 	TotpSecret param.Opt[string] `json:"totp_secret,omitzero"`
 	paramObj
 }

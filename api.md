@@ -422,6 +422,16 @@ Methods:
 
 - <code title="post /x/account-connection-challenges/{id}/submit">client.X.AccountConnectionChallenges.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionChallengeService.Submit">Submit</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionChallengeSubmitParams">XAccountConnectionChallengeSubmitParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionChallengeSubmitResponse">XAccountConnectionChallengeSubmitResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## AccountConnectionAttempts
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionAttemptGetResponseUnion">XAccountConnectionAttemptGetResponseUnion</a>
+
+Methods:
+
+- <code title="get /x/account-connection-attempts/{id}">client.X.AccountConnectionAttempts.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionAttemptService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionAttemptGetResponseUnion">XAccountConnectionAttemptGetResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Bookmarks
 
 Response Types:

@@ -17,7 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
 
-func TestXAccountNewWithOptionalParams(t *testing.T) {
+func TestXAccountNew(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -33,8 +33,8 @@ func TestXAccountNewWithOptionalParams(t *testing.T) {
 	_, err := client.X.Accounts.New(context.TODO(), xtwitterscraper.XAccountNewParams{
 		Email:      "account@example.invalid",
 		Password:   "<ACCOUNT_PASSWORD>",
+		TotpSecret: "<TOTP_SECRET>",
 		Username:   "your_x_username",
-		TotpSecret: xtwitterscraper.String("<TOTP_SECRET>"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
