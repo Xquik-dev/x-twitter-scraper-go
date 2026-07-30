@@ -41,10 +41,10 @@ func NewComposeService(opts ...option.RequestOption) (r ComposeService) {
 	return
 }
 
-// Run one step of Xquik's three-step writing workflow. Compose returns questions
-// and editorial rules. Refine returns goal-specific guidance. Score applies
-// deterministic text checks. It does not predict reach or expose X ranking
-// weights.
+// Run one step of Xquik's three-step writing workflow. Compose returns questions,
+// editorial rules, and source-specific Radar recommendations. Refine returns
+// goal-specific guidance. Score applies deterministic text checks. It does not
+// predict reach or expose X ranking weights.
 func (r *ComposeService) New(ctx context.Context, body ComposeNewParams, opts ...option.RequestOption) (res *ComposeNewResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "compose"
@@ -68,6 +68,8 @@ type ComposeNewResponseUnion struct {
 	FollowUpQuestions []string `json:"followUpQuestions"`
 	IntentURL         string   `json:"intentUrl"`
 	NextStep          string   `json:"nextStep"`
+	// This field is from variant [ComposeNewResponseComposePrepareResult].
+	RadarRecommendations []ComposeNewResponseComposePrepareResultRadarRecommendation `json:"radarRecommendations"`
 	// This field is from variant [ComposeNewResponseComposePrepareResult].
 	ScorerWeights []ComposeNewResponseComposePrepareResultScorerWeight `json:"scorerWeights"`
 	// This field is from variant [ComposeNewResponseComposePrepareResult].
@@ -101,6 +103,7 @@ type ComposeNewResponseUnion struct {
 		FollowUpQuestions     respjson.Field
 		IntentURL             respjson.Field
 		NextStep              respjson.Field
+		RadarRecommendations  respjson.Field
 		ScorerWeights         respjson.Field
 		Source                respjson.Field
 		TopPenalties          respjson.Field
@@ -151,6 +154,8 @@ type ComposeNewResponseComposePrepareResult struct {
 	// X post intent seeded with the topic.
 	IntentURL string `json:"intentUrl" api:"required" format:"uri"`
 	NextStep  string `json:"nextStep" api:"required"`
+	// Sources and guidance for researching a fresh post angle.
+	RadarRecommendations []ComposeNewResponseComposePrepareResultRadarRecommendation `json:"radarRecommendations" api:"required"`
 	// Published signal names with unpublished weights as null.
 	ScorerWeights []ComposeNewResponseComposePrepareResultScorerWeight `json:"scorerWeights" api:"required"`
 	// Signal source and evidence limits.
@@ -171,6 +176,7 @@ type ComposeNewResponseComposePrepareResult struct {
 		FollowUpQuestions     respjson.Field
 		IntentURL             respjson.Field
 		NextStep              respjson.Field
+		RadarRecommendations  respjson.Field
 		ScorerWeights         respjson.Field
 		Source                respjson.Field
 		TopPenalties          respjson.Field
@@ -222,6 +228,35 @@ func (r ComposeNewResponseComposePrepareResultEngagementMultiplier) RawJSON() st
 	return r.JSON.raw
 }
 func (r *ComposeNewResponseComposePrepareResultEngagementMultiplier) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ComposeNewResponseComposePrepareResultRadarRecommendation struct {
+	// Radar endpoint for this source.
+	Endpoint string `json:"endpoint" api:"required"`
+	// Source-specific drafting guidance.
+	Guidance string `json:"guidance" api:"required"`
+	// Any of "reddit", "github", "trustmrr", "hacker_news", "google_trends",
+	// "wikipedia", "polymarket".
+	Source string `json:"source" api:"required"`
+	// Current-topic research this source supports.
+	UseFor string `json:"useFor" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Endpoint    respjson.Field
+		Guidance    respjson.Field
+		Source      respjson.Field
+		UseFor      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ComposeNewResponseComposePrepareResultRadarRecommendation) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ComposeNewResponseComposePrepareResultRadarRecommendation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
