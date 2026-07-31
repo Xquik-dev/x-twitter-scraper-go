@@ -16,6 +16,7 @@ Full Changelog: [v0.11.0...v0.12.0](https://github.com/Xquik-dev/x-twitter-scrap
 ### Bug Fixes
 
 * make diagnostic dumps concurrency-safe ([6c35deb](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/6c35deb74fab127bcde9947c0a915e90dbad067b))
+* make draft release lookup reliable ([#23](https://github.com/Xquik-dev/x-twitter-scraper-go/pull/23)) ([577b8c9](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/577b8c9585ce146f61c8f2b20a99696dd28ab680))
 * publish assets before immutable release ([#18](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/18)) ([acc5ac8](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/acc5ac866388710e5050b27e08c4ad54fb2fc9d1))
 
 
