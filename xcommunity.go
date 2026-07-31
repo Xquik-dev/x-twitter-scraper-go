@@ -740,8 +740,6 @@ type XCommunityGetInfoResponseCommunity struct {
 	Description string `json:"description"`
 	// Invitation policy
 	InvitesPolicy string `json:"invites_policy"`
-	// Whether the authenticated viewer is a member
-	IsMember bool `json:"is_member"`
 	// Whether the community is marked sensitive
 	IsNsfw bool `json:"is_nsfw"`
 	// Join policy (open or restricted)
@@ -754,8 +752,6 @@ type XCommunityGetInfoResponseCommunity struct {
 	Name string `json:"name"`
 	// Primary topic
 	PrimaryTopic XCommunityGetInfoResponseCommunityPrimaryTopic `json:"primary_topic"`
-	// Authenticated viewer's community role
-	Role string `json:"role"`
 	// Community rules
 	Rules []XCommunityGetInfoResponseCommunityRule `json:"rules"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -766,14 +762,12 @@ type XCommunityGetInfoResponseCommunity struct {
 		Creator        respjson.Field
 		Description    respjson.Field
 		InvitesPolicy  respjson.Field
-		IsMember       respjson.Field
 		IsNsfw         respjson.Field
 		JoinPolicy     respjson.Field
 		MemberCount    respjson.Field
 		ModeratorCount respjson.Field
 		Name           respjson.Field
 		PrimaryTopic   respjson.Field
-		Role           respjson.Field
 		Rules          respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
@@ -924,10 +918,8 @@ type XCommunityGetSearchParams struct {
 	Q string `query:"q" api:"required" json:"-"`
 	// Pagination cursor for community search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Maximum items requested from this page (1-100, default 20). The response can
-	// contain fewer items because the source returned fewer, filters removed items, or
-	// remaining credits cover fewer results. Keep requesting next_cursor while
-	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Sort order (Latest or Top)

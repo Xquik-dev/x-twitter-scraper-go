@@ -140,12 +140,13 @@ func (r *SupportTicketNewResponseAttachment) UnmarshalJSON(data []byte) error {
 }
 
 type SupportTicketGetResponse struct {
-	CreatedAt time.Time                         `json:"createdAt" format:"date-time"`
-	Messages  []SupportTicketGetResponseMessage `json:"messages"`
-	PublicID  string                            `json:"publicId"`
-	Status    string                            `json:"status"`
-	Subject   string                            `json:"subject"`
-	UpdatedAt time.Time                         `json:"updatedAt" format:"date-time"`
+	CreatedAt time.Time                         `json:"createdAt" api:"required" format:"date-time"`
+	Messages  []SupportTicketGetResponseMessage `json:"messages" api:"required"`
+	PublicID  string                            `json:"publicId" api:"required"`
+	// Any of "open", "in_progress", "resolved", "closed".
+	Status    SupportTicketGetResponseStatus `json:"status" api:"required"`
+	Subject   string                         `json:"subject" api:"required"`
+	UpdatedAt time.Time                      `json:"updatedAt" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -166,10 +167,11 @@ func (r *SupportTicketGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SupportTicketGetResponseMessage struct {
-	Attachments []SupportTicketGetResponseMessageAttachment `json:"attachments"`
-	Body        string                                      `json:"body"`
-	CreatedAt   time.Time                                   `json:"createdAt" format:"date-time"`
-	Sender      string                                      `json:"sender"`
+	Attachments []SupportTicketGetResponseMessageAttachment `json:"attachments" api:"required"`
+	Body        string                                      `json:"body" api:"required"`
+	CreatedAt   time.Time                                   `json:"createdAt" api:"required" format:"date-time"`
+	// Any of "user", "support", "system".
+	Sender string `json:"sender" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Attachments respjson.Field
@@ -226,9 +228,19 @@ func (r *SupportTicketGetResponseMessageAttachment) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SupportTicketGetResponseStatus string
+
+const (
+	SupportTicketGetResponseStatusOpen       SupportTicketGetResponseStatus = "open"
+	SupportTicketGetResponseStatusInProgress SupportTicketGetResponseStatus = "in_progress"
+	SupportTicketGetResponseStatusResolved   SupportTicketGetResponseStatus = "resolved"
+	SupportTicketGetResponseStatusClosed     SupportTicketGetResponseStatus = "closed"
+)
+
 type SupportTicketUpdateResponse struct {
-	PublicID string `json:"publicId"`
-	Status   string `json:"status"`
+	PublicID string `json:"publicId" api:"required"`
+	// Any of "open", "resolved", "closed".
+	Status SupportTicketUpdateResponseStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PublicID    respjson.Field
@@ -244,8 +256,16 @@ func (r *SupportTicketUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SupportTicketUpdateResponseStatus string
+
+const (
+	SupportTicketUpdateResponseStatusOpen     SupportTicketUpdateResponseStatus = "open"
+	SupportTicketUpdateResponseStatusResolved SupportTicketUpdateResponseStatus = "resolved"
+	SupportTicketUpdateResponseStatusClosed   SupportTicketUpdateResponseStatus = "closed"
+)
+
 type SupportTicketListResponse struct {
-	Tickets []SupportTicketListResponseTicket `json:"tickets"`
+	Tickets []SupportTicketListResponseTicket `json:"tickets" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Tickets     respjson.Field
@@ -261,12 +281,13 @@ func (r *SupportTicketListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SupportTicketListResponseTicket struct {
-	CreatedAt    time.Time `json:"createdAt" format:"date-time"`
-	MessageCount int64     `json:"messageCount"`
-	PublicID     string    `json:"publicId"`
-	Status       string    `json:"status"`
-	Subject      string    `json:"subject"`
-	UpdatedAt    time.Time `json:"updatedAt" format:"date-time"`
+	CreatedAt    time.Time `json:"createdAt" api:"required" format:"date-time"`
+	MessageCount int64     `json:"messageCount" api:"required"`
+	PublicID     string    `json:"publicId" api:"required"`
+	// Any of "open", "in_progress", "resolved", "closed".
+	Status    string    `json:"status" api:"required"`
+	Subject   string    `json:"subject" api:"required"`
+	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt    respjson.Field

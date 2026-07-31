@@ -665,10 +665,8 @@ type XUserGetLikesParams struct {
 	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
 	// Minimum retweets threshold.
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
-	// Maximum items requested from this page (1-100, default 20). The response can
-	// contain fewer items because the source returned fewer, filters removed items, or
-	// remaining credits cover fewer results. Keep requesting next_cursor while
-	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
@@ -783,10 +781,8 @@ type XUserGetMediaParams struct {
 	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
 	// Minimum retweets threshold.
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
-	// Maximum items requested from this page (1-100, default 20). The response can
-	// contain fewer items because the source returned fewer, filters removed items, or
-	// remaining credits cover fewer results. Keep requesting next_cursor while
-	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
@@ -901,10 +897,8 @@ type XUserGetMentionsParams struct {
 	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
 	// Minimum retweets threshold.
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
-	// Maximum items requested from this page (1-100, default 20). The response can
-	// contain fewer items because the source returned fewer, filters removed items, or
-	// remaining credits cover fewer results. Keep requesting next_cursor while
-	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
@@ -1025,10 +1019,8 @@ type XUserGetRepliesParams struct {
 	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
 	// Minimum retweets threshold.
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
-	// Maximum items requested from this page (1-100, default 20). The response can
-	// contain fewer items because the source returned fewer, filters removed items, or
-	// remaining credits cover fewer results. Keep requesting next_cursor while
-	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
@@ -1163,10 +1155,8 @@ type XUserGetTweetsParams struct {
 	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
 	// Minimum retweets threshold.
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
-	// Maximum items requested from this page (1-100, default 20). The response can
-	// contain fewer items because the source returned fewer, filters removed items, or
-	// remaining credits cover fewer results. Keep requesting next_cursor while
-	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
