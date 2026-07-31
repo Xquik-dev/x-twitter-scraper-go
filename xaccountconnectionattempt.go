@@ -53,37 +53,36 @@ func (r *XAccountConnectionAttemptService) Get(ctx context.Context, id string, o
 }
 
 // XAccountConnectionAttemptGetResponseUnion contains all possible properties and
-// values from
-// [XAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending],
-// [XAccountConnectionAttemptGetResponseXAccountConnectionAttemptSuccess],
-// [XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed],
-// [XAccountConnectionAttemptGetResponseXAccountConnectionChallenge].
+// values from [XAccountConnectionAttemptGetResponsePending],
+// [XAccountConnectionAttemptGetResponseSuccess],
+// [XAccountConnectionAttemptGetResponseFailed],
+// [XAccountConnectionAttemptGetResponseRequiresEmailCode].
+//
+// Use the [XAccountConnectionAttemptGetResponseUnion.AsAny] method to switch on
+// the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type XAccountConnectionAttemptGetResponseUnion struct {
 	ID     string `json:"id"`
 	Object string `json:"object"`
-	// This field is from variant
-	// [XAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending].
-	PollAfterMs int64  `json:"pollAfterMs"`
-	Status      string `json:"status"`
-	// This field is from variant
-	// [XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed].
+	// This field is from variant [XAccountConnectionAttemptGetResponsePending].
+	PollAfterMs int64 `json:"pollAfterMs"`
+	// Any of "pending", "success", "failed", "requires_email_code".
+	Status string `json:"status"`
+	// This field is from variant [XAccountConnectionAttemptGetResponseFailed].
 	Error string `json:"error"`
-	// This field is from variant
-	// [XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed].
+	// This field is from variant [XAccountConnectionAttemptGetResponseFailed].
 	Retryable bool `json:"retryable"`
-	// This field is from variant
-	// [XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed].
+	// This field is from variant [XAccountConnectionAttemptGetResponseFailed].
 	Reason string `json:"reason"`
 	// This field is from variant
-	// [XAccountConnectionAttemptGetResponseXAccountConnectionChallenge].
+	// [XAccountConnectionAttemptGetResponseRequiresEmailCode].
 	ExpiresAt time.Time `json:"expiresAt"`
 	// This field is from variant
-	// [XAccountConnectionAttemptGetResponseXAccountConnectionChallenge].
+	// [XAccountConnectionAttemptGetResponseRequiresEmailCode].
 	Message string `json:"message"`
 	// This field is from variant
-	// [XAccountConnectionAttemptGetResponseXAccountConnectionChallenge].
+	// [XAccountConnectionAttemptGetResponseRequiresEmailCode].
 	Username string `json:"username"`
 	JSON     struct {
 		ID          respjson.Field
@@ -100,22 +99,59 @@ type XAccountConnectionAttemptGetResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsXAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending() (v XAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending) {
+// anyXAccountConnectionAttemptGetResponse is implemented by each variant of
+// [XAccountConnectionAttemptGetResponseUnion] to add type safety for the return
+// type of [XAccountConnectionAttemptGetResponseUnion.AsAny]
+type anyXAccountConnectionAttemptGetResponse interface {
+	implXAccountConnectionAttemptGetResponseUnion()
+}
+
+func (XAccountConnectionAttemptGetResponsePending) implXAccountConnectionAttemptGetResponseUnion() {}
+func (XAccountConnectionAttemptGetResponseSuccess) implXAccountConnectionAttemptGetResponseUnion() {}
+func (XAccountConnectionAttemptGetResponseFailed) implXAccountConnectionAttemptGetResponseUnion()  {}
+func (XAccountConnectionAttemptGetResponseRequiresEmailCode) implXAccountConnectionAttemptGetResponseUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := XAccountConnectionAttemptGetResponseUnion.AsAny().(type) {
+//	case xtwitterscraper.XAccountConnectionAttemptGetResponsePending:
+//	case xtwitterscraper.XAccountConnectionAttemptGetResponseSuccess:
+//	case xtwitterscraper.XAccountConnectionAttemptGetResponseFailed:
+//	case xtwitterscraper.XAccountConnectionAttemptGetResponseRequiresEmailCode:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u XAccountConnectionAttemptGetResponseUnion) AsAny() anyXAccountConnectionAttemptGetResponse {
+	switch u.Status {
+	case "pending":
+		return u.AsPending()
+	case "success":
+		return u.AsSuccess()
+	case "failed":
+		return u.AsFailed()
+	case "requires_email_code":
+		return u.AsRequiresEmailCode()
+	}
+	return nil
+}
+
+func (u XAccountConnectionAttemptGetResponseUnion) AsPending() (v XAccountConnectionAttemptGetResponsePending) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsXAccountConnectionAttemptGetResponseXAccountConnectionAttemptSuccess() (v XAccountConnectionAttemptGetResponseXAccountConnectionAttemptSuccess) {
+func (u XAccountConnectionAttemptGetResponseUnion) AsSuccess() (v XAccountConnectionAttemptGetResponseSuccess) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsXAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed() (v XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed) {
+func (u XAccountConnectionAttemptGetResponseUnion) AsFailed() (v XAccountConnectionAttemptGetResponseFailed) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsXAccountConnectionAttemptGetResponseXAccountConnectionChallenge() (v XAccountConnectionAttemptGetResponseXAccountConnectionChallenge) {
+func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAccountConnectionAttemptGetResponseRequiresEmailCode) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -128,7 +164,7 @@ func (r *XAccountConnectionAttemptGetResponseUnion) UnmarshalJSON(data []byte) e
 }
 
 // The connection is still in progress.
-type XAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending struct {
+type XAccountConnectionAttemptGetResponsePending struct {
 	ID          string                             `json:"id" api:"required"`
 	Object      constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
 	PollAfterMs int64                              `json:"pollAfterMs" api:"required"`
@@ -145,15 +181,13 @@ type XAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending struct
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *XAccountConnectionAttemptGetResponseXAccountConnectionAttemptPending) UnmarshalJSON(data []byte) error {
+func (r XAccountConnectionAttemptGetResponsePending) RawJSON() string { return r.JSON.raw }
+func (r *XAccountConnectionAttemptGetResponsePending) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The account connected successfully.
-type XAccountConnectionAttemptGetResponseXAccountConnectionAttemptSuccess struct {
+type XAccountConnectionAttemptGetResponseSuccess struct {
 	ID     string                             `json:"id" api:"required"`
 	Object constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
 	Status constant.Success                   `json:"status" default:"success"`
@@ -168,15 +202,13 @@ type XAccountConnectionAttemptGetResponseXAccountConnectionAttemptSuccess struct
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountConnectionAttemptGetResponseXAccountConnectionAttemptSuccess) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *XAccountConnectionAttemptGetResponseXAccountConnectionAttemptSuccess) UnmarshalJSON(data []byte) error {
+func (r XAccountConnectionAttemptGetResponseSuccess) RawJSON() string { return r.JSON.raw }
+func (r *XAccountConnectionAttemptGetResponseSuccess) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The connection reached a final failure.
-type XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed struct {
+type XAccountConnectionAttemptGetResponseFailed struct {
 	ID        string                             `json:"id" api:"required"`
 	Error     string                             `json:"error" api:"required"`
 	Object    constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
@@ -197,24 +229,20 @@ type XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed struct 
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *XAccountConnectionAttemptGetResponseXAccountConnectionAttemptFailed) UnmarshalJSON(data []byte) error {
+func (r XAccountConnectionAttemptGetResponseFailed) RawJSON() string { return r.JSON.raw }
+func (r *XAccountConnectionAttemptGetResponseFailed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Resumable account connection challenge. Submit the email code to finish the same
 // connection attempt.
-type XAccountConnectionAttemptGetResponseXAccountConnectionChallenge struct {
-	ID        string    `json:"id" api:"required"`
-	ExpiresAt time.Time `json:"expiresAt" api:"required" format:"date-time"`
-	Message   string    `json:"message" api:"required"`
-	// Any of "x_account_connection_challenge".
-	Object string `json:"object" api:"required"`
-	// Any of "requires_email_code".
-	Status   string `json:"status" api:"required"`
-	Username string `json:"username" api:"required"`
+type XAccountConnectionAttemptGetResponseRequiresEmailCode struct {
+	ID        string                               `json:"id" api:"required"`
+	ExpiresAt time.Time                            `json:"expiresAt" api:"required" format:"date-time"`
+	Message   string                               `json:"message" api:"required"`
+	Object    constant.XAccountConnectionChallenge `json:"object" default:"x_account_connection_challenge"`
+	Status    constant.RequiresEmailCode           `json:"status" default:"requires_email_code"`
+	Username  string                               `json:"username" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -229,9 +257,7 @@ type XAccountConnectionAttemptGetResponseXAccountConnectionChallenge struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountConnectionAttemptGetResponseXAccountConnectionChallenge) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *XAccountConnectionAttemptGetResponseXAccountConnectionChallenge) UnmarshalJSON(data []byte) error {
+func (r XAccountConnectionAttemptGetResponseRequiresEmailCode) RawJSON() string { return r.JSON.raw }
+func (r *XAccountConnectionAttemptGetResponseRequiresEmailCode) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

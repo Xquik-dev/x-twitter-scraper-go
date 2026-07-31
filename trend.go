@@ -72,16 +72,25 @@ func (r *TrendListResponse) UnmarshalJSON(data []byte) error {
 type TrendListResponseTrend struct {
 	Name        string `json:"name" api:"required"`
 	Description string `json:"description"`
-	Query       string `json:"query"`
-	Rank        int64  `json:"rank"`
+	// Promotion identifier from X. Null for organic trends.
+	PromotedContent string `json:"promotedContent" api:"nullable"`
+	Query           string `json:"query"`
+	Rank            int64  `json:"rank"`
+	// Approximate public post volume when X supplies it.
+	TweetVolume int64 `json:"tweetVolume" api:"nullable"`
+	// X search URL for the trend.
+	URL string `json:"url" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name        respjson.Field
-		Description respjson.Field
-		Query       respjson.Field
-		Rank        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Name            respjson.Field
+		Description     respjson.Field
+		PromotedContent respjson.Field
+		Query           respjson.Field
+		Rank            respjson.Field
+		TweetVolume     respjson.Field
+		URL             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
