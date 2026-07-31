@@ -16,6 +16,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // Connected X account management
@@ -58,7 +59,7 @@ type XAccountConnectionChallengeSubmitResponse struct {
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
 	Health    XAccountConnectionChallengeSubmitResponseHealth `json:"health" api:"required"`
-	Status    string                                          `json:"status" api:"required"`
+	Status    constant.Active                                 `json:"status" default:"active"`
 	XUserID   string                                          `json:"xUserId" api:"required"`
 	XUsername string                                          `json:"xUsername" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

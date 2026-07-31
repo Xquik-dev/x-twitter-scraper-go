@@ -4,6 +4,7 @@ package xtwitterscraper
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // Connected X account management
@@ -40,7 +42,7 @@ func NewXAccountService(opts ...option.RequestOption) (r XAccountService) {
 }
 
 // Connect X account
-func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts ...option.RequestOption) (res *XAccountNewResponse, err error) {
+func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts ...option.RequestOption) (res *XAccountNewResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/accounts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -199,7 +201,150 @@ const (
 	XAccountDetailHealthTemporaryIssue XAccountDetailHealth = "temporaryIssue"
 )
 
-type XAccountNewResponse = any
+// XAccountNewResponseUnion contains all possible properties and values from
+// [XAccountNewResponseSanitizedXAccount],
+// [XAccountNewResponseXAccountConnectionAttemptPending],
+// [XAccountNewResponseXAccountConnectionChallenge].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type XAccountNewResponseUnion struct {
+	ID string `json:"id"`
+	// This field is from variant [XAccountNewResponseSanitizedXAccount].
+	CreatedAt time.Time `json:"createdAt"`
+	// This field is from variant [XAccountNewResponseSanitizedXAccount].
+	Health string `json:"health"`
+	Status string `json:"status"`
+	// This field is from variant [XAccountNewResponseSanitizedXAccount].
+	XUserID string `json:"xUserId"`
+	// This field is from variant [XAccountNewResponseSanitizedXAccount].
+	XUsername string `json:"xUsername"`
+	Object    string `json:"object"`
+	// This field is from variant
+	// [XAccountNewResponseXAccountConnectionAttemptPending].
+	PollAfterMs int64 `json:"pollAfterMs"`
+	// This field is from variant [XAccountNewResponseXAccountConnectionChallenge].
+	ExpiresAt time.Time `json:"expiresAt"`
+	// This field is from variant [XAccountNewResponseXAccountConnectionChallenge].
+	Message string `json:"message"`
+	// This field is from variant [XAccountNewResponseXAccountConnectionChallenge].
+	Username string `json:"username"`
+	JSON     struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Health      respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		Object      respjson.Field
+		PollAfterMs respjson.Field
+		ExpiresAt   respjson.Field
+		Message     respjson.Field
+		Username    respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u XAccountNewResponseUnion) AsXAccountNewResponseSanitizedXAccount() (v XAccountNewResponseSanitizedXAccount) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionAttemptPending() (v XAccountNewResponseXAccountConnectionAttemptPending) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionChallenge() (v XAccountNewResponseXAccountConnectionChallenge) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u XAccountNewResponseUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *XAccountNewResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sanitized X account summary returned by connect and reauth.
+type XAccountNewResponseSanitizedXAccount struct {
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
+	// "temporaryIssue".
+	Health    string          `json:"health" api:"required"`
+	Status    constant.Active `json:"status" default:"active"`
+	XUserID   string          `json:"xUserId" api:"required"`
+	XUsername string          `json:"xUsername" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Health      respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountNewResponseSanitizedXAccount) RawJSON() string { return r.JSON.raw }
+func (r *XAccountNewResponseSanitizedXAccount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The connection is still in progress.
+type XAccountNewResponseXAccountConnectionAttemptPending struct {
+	ID          string                             `json:"id" api:"required"`
+	Object      constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
+	PollAfterMs int64                              `json:"pollAfterMs" api:"required"`
+	Status      constant.Pending                   `json:"status" default:"pending"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Object      respjson.Field
+		PollAfterMs respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountNewResponseXAccountConnectionAttemptPending) RawJSON() string { return r.JSON.raw }
+func (r *XAccountNewResponseXAccountConnectionAttemptPending) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Resumable account connection challenge. Submit the email code to finish the same
+// connection attempt.
+type XAccountNewResponseXAccountConnectionChallenge struct {
+	ID        string                               `json:"id" api:"required"`
+	ExpiresAt time.Time                            `json:"expiresAt" api:"required" format:"date-time"`
+	Message   string                               `json:"message" api:"required"`
+	Object    constant.XAccountConnectionChallenge `json:"object" default:"x_account_connection_challenge"`
+	Status    constant.RequiresEmailCode           `json:"status" default:"requires_email_code"`
+	Username  string                               `json:"username" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExpiresAt   respjson.Field
+		Message     respjson.Field
+		Object      respjson.Field
+		Status      respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountNewResponseXAccountConnectionChallenge) RawJSON() string { return r.JSON.raw }
+func (r *XAccountNewResponseXAccountConnectionChallenge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type XAccountListResponse struct {
 	Accounts []XAccount `json:"accounts" api:"required"`
@@ -257,7 +402,7 @@ type XAccountReauthResponse struct {
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
 	Health    XAccountReauthResponseHealth `json:"health" api:"required"`
-	Status    string                       `json:"status" api:"required"`
+	Status    constant.Active              `json:"status" default:"active"`
 	XUserID   string                       `json:"xUserId" api:"required"`
 	XUsername string                       `json:"xUsername" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

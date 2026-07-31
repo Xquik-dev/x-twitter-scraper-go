@@ -35,6 +35,44 @@ type ContentDisclosureAIGenerated = shared.ContentDisclosureAIGenerated
 // This is an alias to an internal type.
 type EmbeddedTweet = shared.EmbeddedTweet
 
+// Article metadata attached to a tweet.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetArticle = shared.EmbeddedTweetArticle
+
+// Public card metadata attached to a tweet.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetCard = shared.EmbeddedTweetCard
+
+// Community Note presentation metadata returned by X.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetCommunityNote = shared.EmbeddedTweetCommunityNote
+
+// Edit history metadata returned by X.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetEdit = shared.EmbeddedTweetEdit
+
+// Complete Note Tweet content and rich-text metadata.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetNoteTweet = shared.EmbeddedTweetNoteTweet
+
+// This is an alias to an internal type.
+type EmbeddedTweetNoteTweetRichtextTag = shared.EmbeddedTweetNoteTweetRichtextTag
+
+// Public place metadata attached to a tweet.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetPlace = shared.EmbeddedTweetPlace
+
+// Engagement counts retained from a prior tweet edit.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetPreviousCounts = shared.EmbeddedTweetPreviousCounts
+
 // Type of monitor event fired when account activity occurs.
 //
 // This is an alias to an internal type.
@@ -103,11 +141,10 @@ const EventTypeProfilePinnedTweetChanged = shared.EventTypeProfilePinnedTweetCha
 // Equals "profile.unavailable.changed"
 const EventTypeProfileUnavailableChanged = shared.EventTypeProfileUnavailableChanged
 
-// Paginated tweet results. The item count can be lower than pageSize when the
-// source returns fewer tweets, filters remove tweets, or remaining credits cover
-// fewer results. Follow next_cursor while has_next_page is true. An empty page can
-// still have has_next_page true after filtering. Zero affordable results returns
-// 402 insufficient_credits.
+// Paginated tweets. Source visibility, filters, or remaining credits can reduce
+// results. An empty filtered page can still have has_next_page true. Follow
+// next_cursor while has_next_page is true. Zero affordable results returns 402
+// insufficient_credits.
 //
 // This is an alias to an internal type.
 type PaginatedTweets = shared.PaginatedTweets
@@ -127,6 +164,44 @@ type PaginatedUsers = shared.PaginatedUsers
 // This is an alias to an internal type.
 type SearchTweet = shared.SearchTweet
 
+// Article metadata attached to a tweet.
+//
+// This is an alias to an internal type.
+type SearchTweetArticle = shared.SearchTweetArticle
+
+// Public card metadata attached to a tweet.
+//
+// This is an alias to an internal type.
+type SearchTweetCard = shared.SearchTweetCard
+
+// Community Note presentation metadata returned by X.
+//
+// This is an alias to an internal type.
+type SearchTweetCommunityNote = shared.SearchTweetCommunityNote
+
+// Edit history metadata returned by X.
+//
+// This is an alias to an internal type.
+type SearchTweetEdit = shared.SearchTweetEdit
+
+// Complete Note Tweet content and rich-text metadata.
+//
+// This is an alias to an internal type.
+type SearchTweetNoteTweet = shared.SearchTweetNoteTweet
+
+// This is an alias to an internal type.
+type SearchTweetNoteTweetRichtextTag = shared.SearchTweetNoteTweetRichtextTag
+
+// Public place metadata attached to a tweet.
+//
+// This is an alias to an internal type.
+type SearchTweetPlace = shared.SearchTweetPlace
+
+// Engagement counts retained from a prior tweet edit.
+//
+// This is an alias to an internal type.
+type SearchTweetPreviousCounts = shared.SearchTweetPreviousCounts
+
 // Normalized media attached to a tweet.
 //
 // This is an alias to an internal type.
@@ -145,9 +220,33 @@ const TweetMediaTypeVideo = shared.TweetMediaTypeVideo
 const TweetMediaTypeAnimatedGif = shared.TweetMediaTypeAnimatedGif
 
 // This is an alias to an internal type.
+type TweetMediaFaceRect = shared.TweetMediaFaceRect
+
+// This is an alias to an internal type.
+type TweetMediaFocusRect = shared.TweetMediaFocusRect
+
+// This is an alias to an internal type.
+type TweetMediaSize = shared.TweetMediaSize
+
+// This is an alias to an internal type.
 type TweetMediaVideoVariant = shared.TweetMediaVideoVariant
 
 // X user profile with bio, follower counts, and verification status.
 //
 // This is an alias to an internal type.
 type UserProfile = shared.UserProfile
+
+// Organization affiliation label shown on an X profile.
+//
+// This is an alias to an internal type.
+type UserProfileAffiliatesHighlightedLabel = shared.UserProfileAffiliatesHighlightedLabel
+
+// Profile highlight availability and count metadata.
+//
+// This is an alias to an internal type.
+type UserProfileHighlightsInfo = shared.UserProfileHighlightsInfo
+
+// Identity verification metadata displayed by X.
+//
+// This is an alias to an internal type.
+type UserProfileIdentityVerification = shared.UserProfileIdentityVerification

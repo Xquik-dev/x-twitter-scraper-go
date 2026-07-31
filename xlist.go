@@ -115,10 +115,8 @@ type XListGetTweetsParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Include replies (default false)
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
-	// Maximum items requested from this page (1-100, default 20). The response can
-	// contain fewer items because the source returned fewer, filters removed items, or
-	// remaining credits cover fewer results. Keep requesting next_cursor while
-	// has_next_page is true, even when a page is empty. The deprecated limit and count
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Unix timestamp - filter after
