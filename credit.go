@@ -67,8 +67,8 @@ func (r *CreditService) GetTopupStatus(ctx context.Context, query CreditGetTopup
 	return res, err
 }
 
-// Create a Stripe Checkout session only after the user confirms. The request never
-// completes payment or adds credits by itself.
+// Create a hosted checkout only after the user confirms. The request never
+// completes payment or adds credits.
 func (r *CreditService) TopupBalance(ctx context.Context, body CreditTopupBalanceParams, opts ...option.RequestOption) (res *CreditTopupBalanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "credits/topup"
@@ -142,10 +142,10 @@ const (
 )
 
 type CreditTopupBalanceResponse struct {
-	// Stable first-party Xquik redirect URL for the active Stripe Checkout session.
+	// Stable Xquik redirect URL for the active checkout.
 	RedirectURL string `json:"redirect_url" api:"required" format:"uri"`
-	// Same stable first-party Xquik redirect URL as redirect_url. The response never
-	// exposes a raw Stripe Checkout URL.
+	// Same stable Xquik redirect URL as redirect_url. The response never exposes the
+	// hosted checkout URL.
 	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

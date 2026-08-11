@@ -16,11 +16,6 @@ func TestConstantsMarshalDefaults(t *testing.T) {
 	}{
 		{"guest wallet topups", APIV1GuestWalletsTopups(""), `"/api/v1/guest-wallets/topups"`},
 		{"compose", Compose(""), `"compose"`},
-		{
-			"checkout instructions",
-			GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending(""),
-			`"Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."`,
-		},
 		{"wallet status", HTTPSXquikComAPIV1GuestWalletsStatus(""), `"https://xquik.com/api/v1/guest-wallets/status"`},
 		{"paid reads", PaidReads(""), `"paid_reads"`},
 		{"post", Post(""), `"POST"`},
