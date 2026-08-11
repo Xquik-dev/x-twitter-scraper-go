@@ -44,7 +44,7 @@ func NewGuestWalletService(opts ...option.RequestOption) (r GuestWalletService) 
 
 // Create a one-use hosted checkout after the user confirms $10-$250 USD. The
 // request creates no charge. It returns a paid-read API key without an Xquik
-// account. Replays return the same key.
+// account. Idempotent replays return the same key.
 func (r *GuestWalletService) New(ctx context.Context, params GuestWalletNewParams, opts ...option.RequestOption) (res *GuestWalletNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
