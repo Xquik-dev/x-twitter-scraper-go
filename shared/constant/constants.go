@@ -18,25 +18,24 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type APIV1GuestWalletsTopups string                                                                                                                                                  // Always "/api/v1/guest-wallets/topups"
-type Active string                                                                                                                                                                   // Always "active"
-type Compose string                                                                                                                                                                  // Always "compose"
-type Failed string                                                                                                                                                                   // Always "failed"
-type GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending string // Always "Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."
-type HTTPSXquikComAPIV1GuestWalletsStatus string                                                                                                                                     // Always "https://xquik.com/api/v1/guest-wallets/status"
-type PaidReads string                                                                                                                                                                // Always "paid_reads"
-type Pending string                                                                                                                                                                  // Always "pending"
-type Post string                                                                                                                                                                     // Always "POST"
-type ProductionWeightNotPublishedByX string                                                                                                                                          // Always "Production weight not published by X"
-type Refine string                                                                                                                                                                   // Always "refine"
-type RequiresEmailCode string                                                                                                                                                        // Always "requires_email_code"
-type Score string                                                                                                                                                                    // Always "score"
-type StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable string                                                                                // Always "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
-type Success string                                                                                                                                                                  // Always "success"
-type Usd string                                                                                                                                                                      // Always "usd"
-type XAccountConnectionAttempt string                                                                                                                                                // Always "x_account_connection_attempt"
-type XAccountConnectionChallenge string                                                                                                                                              // Always "x_account_connection_challenge"
-type XWriteAction string                                                                                                                                                             // Always "x_write_action"
+type APIV1GuestWalletsTopups string                                                                   // Always "/api/v1/guest-wallets/topups"
+type Active string                                                                                    // Always "active"
+type Compose string                                                                                   // Always "compose"
+type Failed string                                                                                    // Always "failed"
+type HTTPSXquikComAPIV1GuestWalletsStatus string                                                      // Always "https://xquik.com/api/v1/guest-wallets/status"
+type PaidReads string                                                                                 // Always "paid_reads"
+type Pending string                                                                                   // Always "pending"
+type Post string                                                                                      // Always "POST"
+type ProductionWeightNotPublishedByX string                                                           // Always "Production weight not published by X"
+type Refine string                                                                                    // Always "refine"
+type RequiresEmailCode string                                                                         // Always "requires_email_code"
+type Score string                                                                                     // Always "score"
+type StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable string // Always "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
+type Success string                                                                                   // Always "success"
+type Usd string                                                                                       // Always "usd"
+type XAccountConnectionAttempt string                                                                 // Always "x_account_connection_attempt"
+type XAccountConnectionChallenge string                                                               // Always "x_account_connection_challenge"
+type XWriteAction string                                                                              // Always "x_write_action"
 
 func (c APIV1GuestWalletsTopups) Default() APIV1GuestWalletsTopups {
 	return "/api/v1/guest-wallets/topups"
@@ -44,9 +43,6 @@ func (c APIV1GuestWalletsTopups) Default() APIV1GuestWalletsTopups {
 func (c Active) Default() Active   { return "active" }
 func (c Compose) Default() Compose { return "compose" }
 func (c Failed) Default() Failed   { return "failed" }
-func (c GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending) Default() GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending {
-	return "Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."
-}
 func (c HTTPSXquikComAPIV1GuestWalletsStatus) Default() HTTPSXquikComAPIV1GuestWalletsStatus {
 	return "https://xquik.com/api/v1/guest-wallets/status"
 }
@@ -72,13 +68,10 @@ func (c XAccountConnectionChallenge) Default() XAccountConnectionChallenge {
 }
 func (c XWriteAction) Default() XWriteAction { return "x_write_action" }
 
-func (c APIV1GuestWalletsTopups) MarshalJSON() ([]byte, error) { return marshalString(c) }
-func (c Active) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
-func (c Compose) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
-func (c Failed) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
-func (c GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending) MarshalJSON() ([]byte, error) {
-	return marshalString(c)
-}
+func (c APIV1GuestWalletsTopups) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c Active) MarshalJSON() ([]byte, error)                               { return marshalString(c) }
+func (c Compose) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
+func (c Failed) MarshalJSON() ([]byte, error)                               { return marshalString(c) }
 func (c HTTPSXquikComAPIV1GuestWalletsStatus) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c PaidReads) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Pending) MarshalJSON() ([]byte, error)                              { return marshalString(c) }

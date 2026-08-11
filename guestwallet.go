@@ -38,11 +38,9 @@ func NewGuestWalletService(opts ...option.RequestOption) (r GuestWalletService) 
 	return
 }
 
-// Create a one-use Stripe-hosted checkout after the user explicitly confirms a
-// $10-$250 USD amount. This request creates no charge by itself. The user opens
-// checkout_url on Stripe. This endpoint returns the paid-read API key without
-// requiring an Xquik account, email, dashboard, or Xquik web page. An idempotent
-// replay returns the same key.
+// Create a one-use hosted checkout after the user confirms $10-$250 USD. The
+// request creates no charge. It returns a paid-read API key without an Xquik
+// account. Replays return the same key.
 func (r *GuestWalletService) New(ctx context.Context, params GuestWalletNewParams, opts ...option.RequestOption) (res *GuestWalletNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -54,10 +52,9 @@ func (r *GuestWalletService) New(ctx context.Context, params GuestWalletNewParam
 	return res, err
 }
 
-// Poll after Stripe payment. Use usable to decide whether paid reads can run. An
-// active wallet can remain usable while a top-up is pending. A new wallet becomes
-// usable only after verified webhook fulfillment. Send the guest key as
-// Authorization: Bearer.
+// Poll after payment. Use usable to decide whether paid reads can run. An active
+// wallet can remain usable while a top-up is pending. A new wallet becomes usable
+// only after payment is verified. Send the guest key as Authorization: Bearer.
 func (r *GuestWalletService) GetStatus(ctx context.Context, opts ...option.RequestOption) (res *GuestWalletGetStatusResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -66,10 +63,9 @@ func (r *GuestWalletService) GetStatus(ctx context.Context, opts ...option.Reque
 	return res, err
 }
 
-// Create a one-use Stripe-hosted checkout for an existing paid-read guest key
-// after the user explicitly confirms a $10-$250 USD amount. The key remains the
-// same. This request creates no charge by itself and never redirects through an
-// Xquik web page.
+// Create a one-use hosted checkout after the user confirms a $10-$250 USD amount
+// for an existing paid-read guest key. The key remains the same. This request
+// creates no charge and never redirects through Xquik.
 func (r *GuestWalletService) Topup(ctx context.Context, params GuestWalletTopupParams, opts ...option.RequestOption) (res *GuestWalletTopupResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -110,14 +106,15 @@ type GuestWalletNewResponse struct {
 	// secret. Never place it in a URL or log.
 	APIKey        string                              `json:"api_key" api:"required" format:"password"`
 	Authorization GuestWalletNewResponseAuthorization `json:"authorization" api:"required"`
-	// Raw Stripe-hosted checkout URL for user interaction.
+	// Hosted checkout URL for user interaction.
 	CheckoutURL      string                                                                                             `json:"checkout_url" api:"required" format:"uri"`
 	CredentialNotice constant.StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable `json:"credential_notice" default:"Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."`
 	// Credits granted after verified payment.
 	Credits string `json:"credits" api:"required"`
 	// Time when the pending checkout expires.
-	ExpiresAt    time.Time                                                                                                                                                                         `json:"expires_at" api:"required" format:"date-time"`
-	Instructions constant.GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending `json:"instructions" default:"Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// Hosted checkout and status polling instructions.
+	Instructions string `json:"instructions" api:"required"`
 	// Wait at least this long before polling status_url.
 	PollAfterSeconds        int64  `json:"poll_after_seconds" api:"required"`
 	PurchaseID              string `json:"purchase_id" api:"required"`
@@ -291,18 +288,19 @@ func (r *GuestWalletGetStatusResponseTopUp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Pending Stripe checkout and guest wallet purchase details.
+// Pending hosted checkout and guest wallet purchase details.
 type GuestWalletTopupResponse struct {
 	AccountRequired bool `json:"account_required" api:"required"`
 	// Confirmed USD amount for a guest wallet purchase.
 	Amount GuestWalletAmount `json:"amount" api:"required"`
-	// Raw Stripe-hosted checkout URL for user interaction.
+	// Hosted checkout URL for user interaction.
 	CheckoutURL string `json:"checkout_url" api:"required" format:"uri"`
 	// Credits granted after verified payment.
 	Credits string `json:"credits" api:"required"`
 	// Time when the pending checkout expires.
-	ExpiresAt    time.Time                                                                                                                                                                         `json:"expires_at" api:"required" format:"date-time"`
-	Instructions constant.GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending `json:"instructions" default:"Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// Hosted checkout and status polling instructions.
+	Instructions string `json:"instructions" api:"required"`
 	// Wait at least this long before polling status_url.
 	PollAfterSeconds        int64  `json:"poll_after_seconds" api:"required"`
 	PurchaseID              string `json:"purchase_id" api:"required"`
