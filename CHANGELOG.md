@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.1 (2026-08-11)
+
+Full Changelog: [v0.13.0...v0.13.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.13.0...v0.13.1)
+
+### Chores
+
+* **deps:** bump github/codeql-action/upload-sarif from 4.37.1 to 4.37.6 ([#32](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/32)) ([5b4a515](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/5b4a5154c313ecc613fe5c4fa468625092bb5c0b))
+* **deps:** bump ossf/scorecard-action from 2.4.3 to 2.4.4 ([#34](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/34)) ([f52356b](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/f52356bad0ff705081d48e4191eb884afd081af0))
+
 ## 0.13.0 (2026-07-31)
 
 Full Changelog: [v0.12.0...v0.13.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.12.0...v0.13.0)
