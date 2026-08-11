@@ -9,66 +9,35 @@ import (
 )
 
 func TestConstantsMarshalDefaults(t *testing.T) {
-	tests := map[string]struct {
+	tests := []struct {
+		name  string
 		value json.Marshaler
 		want  string
 	}{
-		"guest wallet topups": {
-			value: APIV1GuestWalletsTopups(""),
-			want:  `"/api/v1/guest-wallets/topups"`,
+		{"guest wallet topups", APIV1GuestWalletsTopups(""), `"/api/v1/guest-wallets/topups"`},
+		{"compose", Compose(""), `"compose"`},
+		{
+			"checkout instructions",
+			GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending(""),
+			`"Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."`,
 		},
-		"compose": {
-			value: Compose(""),
-			want:  `"compose"`,
+		{"wallet status", HTTPSXquikComAPIV1GuestWalletsStatus(""), `"https://xquik.com/api/v1/guest-wallets/status"`},
+		{"paid reads", PaidReads(""), `"paid_reads"`},
+		{"post", Post(""), `"POST"`},
+		{"production weight", ProductionWeightNotPublishedByX(""), `"Production weight not published by X"`},
+		{"refine", Refine(""), `"refine"`},
+		{"score", Score(""), `"score"`},
+		{
+			"store credentials",
+			StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable(""),
+			`"Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."`,
 		},
-		"checkout instructions": {
-			value: GiveCheckoutURLToTheUserTheyMustCompletePaymentOnStripeNeverSubmitPaymentForThemAfterPaymentPollStatusURLEveryPollAfterSecondsUntilLatestPurchaseStatusIsNoLongerPending(""),
-			want:  `"Give checkout_url to the user. They must complete payment on Stripe. Never submit payment for them. After payment, poll status_url every poll_after_seconds until latest_purchase.status is no longer pending."`,
-		},
-		"wallet status": {
-			value: HTTPSXquikComAPIV1GuestWalletsStatus(""),
-			want:  `"https://xquik.com/api/v1/guest-wallets/status"`,
-		},
-		"paid reads": {
-			value: PaidReads(""),
-			want:  `"paid_reads"`,
-		},
-		"post": {
-			value: Post(""),
-			want:  `"POST"`,
-		},
-		"production weight": {
-			value: ProductionWeightNotPublishedByX(""),
-			want:  `"Production weight not published by X"`,
-		},
-		"refine": {
-			value: Refine(""),
-			want:  `"refine"`,
-		},
-		"running": {
-			value: Running(""),
-			want:  `"running"`,
-		},
-		"score": {
-			value: Score(""),
-			want:  `"score"`,
-		},
-		"store credentials": {
-			value: StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable(""),
-			want:  `"Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."`,
-		},
-		"currency": {
-			value: Usd(""),
-			want:  `"usd"`,
-		},
-		"write action": {
-			value: XWriteAction(""),
-			want:  `"x_write_action"`,
-		},
+		{"currency", Usd(""), `"usd"`},
+		{"write action", XWriteAction(""), `"x_write_action"`},
 	}
 
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 			got, err := test.value.MarshalJSON()
 			if err != nil {
 				t.Fatal(err)

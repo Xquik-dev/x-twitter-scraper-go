@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.0 (2026-08-11)
+
+Full Changelog: [v0.13.2...v0.14.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.13.2...v0.14.0)
+
+### Features
+
+* **api:** api update ([e634040](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/e634040ab9a8d504a72cde1d33af279a21f641bb))
+
 ## 0.13.2 (2026-08-11)
 
 Full Changelog: [v0.13.1...v0.13.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.13.1...v0.13.2)

@@ -69,7 +69,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.13.2'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.14.0'
 ```
 
 <!-- x-release-please-end -->
@@ -123,14 +123,14 @@ func main() {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
 	)
-	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
 		Limit: xtwitterscraper.Int(10),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", paginatedTweets.HasNextPage)
+	fmt.Printf("%+v\n", response)
 }
 
 ```

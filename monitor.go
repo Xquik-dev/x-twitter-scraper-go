@@ -113,6 +113,12 @@ type Monitor struct {
 	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
 	Username      string    `json:"username" api:"required"`
 	XUserID       string    `json:"xUserId" api:"required"`
+	// When Xquik automatically paused this monitor.
+	PausedAt time.Time `json:"pausedAt" format:"date-time"`
+	// Why Xquik automatically paused this monitor.
+	//
+	// Any of "x_user_not_found".
+	PausedReason MonitorPausedReason `json:"pausedReason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -122,6 +128,8 @@ type Monitor struct {
 		NextBillingAt respjson.Field
 		Username      respjson.Field
 		XUserID       respjson.Field
+		PausedAt      respjson.Field
+		PausedReason  respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -132,6 +140,13 @@ func (r Monitor) RawJSON() string { return r.JSON.raw }
 func (r *Monitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Why Xquik automatically paused this monitor.
+type MonitorPausedReason string
+
+const (
+	MonitorPausedReasonXUserNotFound MonitorPausedReason = "x_user_not_found"
+)
 
 type MonitorNewResponse struct {
 	ID        string    `json:"id" api:"required"`

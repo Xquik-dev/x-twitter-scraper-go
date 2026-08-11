@@ -55,10 +55,11 @@ func TestEventListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Events.List(context.TODO(), xtwitterscraper.EventListParams{
-		Cursor:    xtwitterscraper.String("cursor"),
-		EventType: shared.EventTypeTweetNew,
-		Limit:     xtwitterscraper.Int(1),
-		MonitorID: xtwitterscraper.String("monitorId"),
+		Cursor:           xtwitterscraper.String("cursor"),
+		EventType:        shared.EventTypeTweetNew,
+		KeywordMonitorID: xtwitterscraper.String("keywordMonitorId"),
+		Limit:            xtwitterscraper.Int(1),
+		MonitorID:        xtwitterscraper.String("monitorId"),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

@@ -19,6 +19,8 @@ import (
 type SupportService struct {
 	options []option.RequestOption
 	// Support ticket management
+	Attachments SupportAttachmentService
+	// Support ticket management
 	Tickets SupportTicketService
 }
 
@@ -28,6 +30,7 @@ type SupportService struct {
 func NewSupportService(opts ...option.RequestOption) (r SupportService) {
 	r = SupportService{}
 	r.options = opts
+	r.Attachments = NewSupportAttachmentService(opts...)
 	r.Tickets = NewSupportTicketService(opts...)
 	return
 }
