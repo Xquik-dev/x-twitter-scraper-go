@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.2 (2026-08-11)
+
+Full Changelog: [v0.13.1...v0.13.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.13.1...v0.13.2)
+
+### Chores
+
+* **deps:** bump actions/attest from 4.2.1 to 4.2.2 ([#39](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/39)) ([51c218a](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/51c218a4944bb6c68a92cef70f684ceef4873e26))
+
 ## 0.13.1 (2026-08-11)
 
 Full Changelog: [v0.13.0...v0.13.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.13.0...v0.13.1)
