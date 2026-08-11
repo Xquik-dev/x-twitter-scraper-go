@@ -123,14 +123,14 @@ func main() {
 	client := xtwitterscraper.NewClient(
 		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
 	)
-	paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
 		Q:     "from:elonmusk",
 		Limit: xtwitterscraper.Int(10),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", paginatedTweets.HasNextPage)
+	fmt.Printf("%+v\n", response)
 }
 
 ```

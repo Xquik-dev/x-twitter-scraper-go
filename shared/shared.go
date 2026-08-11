@@ -406,10 +406,10 @@ const (
 	EventTypeProfileUnavailableChanged EventType = "profile.unavailable.changed"
 )
 
-// Paginated tweets. Source visibility, filters, or remaining credits can reduce
-// results. An empty filtered page can still have has_next_page true. Follow
-// next_cursor while has_next_page is true. Zero affordable results returns 402
-// insufficient_credits.
+// No-mode search, user Tweet, user reply, and direct reply reads use automatic
+// coverage. Shape, filters, aliases, and billing stay compatible. Unprefixed
+// cursors remain legacy. Follow next_cursor while has_next_page is true. An empty
+// filtered page can still have has_next_page true.
 type PaginatedTweets struct {
 	HasNextPage bool          `json:"has_next_page" api:"required"`
 	NextCursor  string        `json:"next_cursor" api:"required"`
@@ -430,11 +430,11 @@ func (r *PaginatedTweets) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Paginated user profiles. The item count can be lower than pageSize when the
-// source returns fewer profiles or remaining credits cover fewer results. Follow
-// next_cursor while has_next_page is true. A relationship can naturally contain
-// fewer profiles than requested. Zero affordable results returns 402
-// insufficient_credits.
+// Paginated user profiles. No-mode follower, following, and verified follower
+// requests merge independent views automatically. Response fields, page size,
+// aliases, filters, and per-returned-profile billing stay unchanged. Existing
+// unprefixed cursors retain legacy behavior. Follow next_cursor while
+// has_next_page is true.
 type PaginatedUsers struct {
 	HasNextPage bool          `json:"has_next_page" api:"required"`
 	NextCursor  string        `json:"next_cursor" api:"required"`
