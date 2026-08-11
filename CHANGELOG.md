@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.1 (2026-08-11)
+
+Full Changelog: [v0.15.0...v0.15.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.15.0...v0.15.1)
+
+### Bug Fixes
+
+* **api:** clarify idempotent guest-wallet replays ([#44](https://github.com/Xquik-dev/x-twitter-scraper-go/pull/44))
+
 ## 0.15.0 (2026-08-11)
 
 Full Changelog: [v0.14.0...v0.15.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.14.0...v0.15.0)
