@@ -30,7 +30,6 @@ type Post string                                                                
 type ProductionWeightNotPublishedByX string                                                                                                                                          // Always "Production weight not published by X"
 type Refine string                                                                                                                                                                   // Always "refine"
 type RequiresEmailCode string                                                                                                                                                        // Always "requires_email_code"
-type Running string                                                                                                                                                                  // Always "running"
 type Score string                                                                                                                                                                    // Always "score"
 type StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable string                                                                                // Always "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
 type Success string                                                                                                                                                                  // Always "success"
@@ -59,7 +58,6 @@ func (c ProductionWeightNotPublishedByX) Default() ProductionWeightNotPublishedB
 }
 func (c Refine) Default() Refine                       { return "refine" }
 func (c RequiresEmailCode) Default() RequiresEmailCode { return "requires_email_code" }
-func (c Running) Default() Running                     { return "running" }
 func (c Score) Default() Score                         { return "score" }
 func (c StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable) Default() StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable {
 	return "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
@@ -88,7 +86,6 @@ func (c Post) MarshalJSON() ([]byte, error)                                 { re
 func (c ProductionWeightNotPublishedByX) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Refine) MarshalJSON() ([]byte, error)                               { return marshalString(c) }
 func (c RequiresEmailCode) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
-func (c Running) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
 func (c Score) MarshalJSON() ([]byte, error)                                { return marshalString(c) }
 func (c StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable) MarshalJSON() ([]byte, error) {
 	return marshalString(c)

@@ -106,11 +106,9 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 type XAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Derived connection health. `healthy` = ready to use. `needsReauth` = user must
-	// submit fresh credentials. `locked` = X locked the account; unlock on x.com
-	// first. `suspended` = X banned the account. `recovering` = cooldown ended; the
-	// account can reconnect on its next use. `temporaryIssue` = temporary connection
-	// problem; wait before the next use.
+	// Derived health. `healthy` is ready. `needsReauth` needs credentials. `locked`
+	// must be unlocked on X. `suspended` is banned. `recovering` can reconnect. Wait
+	// before using `temporaryIssue`.
 	//
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
@@ -141,11 +139,9 @@ func (r *XAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Derived connection health. `healthy` = ready to use. `needsReauth` = user must
-// submit fresh credentials. `locked` = X locked the account; unlock on x.com
-// first. `suspended` = X banned the account. `recovering` = cooldown ended; the
-// account can reconnect on its next use. `temporaryIssue` = temporary connection
-// problem; wait before the next use.
+// Derived health. `healthy` is ready. `needsReauth` needs credentials. `locked`
+// must be unlocked on X. `suspended` is banned. `recovering` can reconnect. Wait
+// before using `temporaryIssue`.
 type XAccountHealth string
 
 const (

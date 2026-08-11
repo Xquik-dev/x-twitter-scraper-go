@@ -199,14 +199,16 @@ func (r *EventListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type EventListParams struct {
-	// Cursor for keyset pagination from prior response next_cursor
+	// Previous nextCursor.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Keyword monitor ID.
+	KeywordMonitorID param.Opt[string] `query:"keywordMonitorId,omitzero" json:"-"`
 	// Maximum number of items to return (1-100, default 50). For paid per-result
 	// endpoints, the returned count may be lower when remaining credits cannot cover
 	// the requested page. If zero paid results are affordable, the endpoint returns
 	// 402 insufficient_credits.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter events by monitor ID
+	// Account monitor ID.
 	MonitorID param.Opt[string] `query:"monitorId,omitzero" json:"-"`
 	// Filter events by type
 	//

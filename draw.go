@@ -249,7 +249,7 @@ func (r *DrawRunResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DrawListParams struct {
-	// Cursor for keyset pagination from prior response next_cursor
+	// Previous nextCursor.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Maximum number of items to return (1-100, default 50). For paid per-result
 	// endpoints, the returned count may be lower when remaining credits cannot cover
@@ -268,7 +268,8 @@ func (r DrawListParams) URLQuery() (v url.Values, err error) {
 }
 
 type DrawExportParams struct {
-	// Export output format
+	// Export output format. PDF entry exports include up to 10,000 rows. Other entry
+	// formats include up to 100,000 rows.
 	//
 	// Any of "csv", "json", "md", "md-document", "pdf", "txt", "xlsx".
 	Format DrawExportParamsFormat `query:"format,omitzero" api:"required" json:"-"`
@@ -287,7 +288,8 @@ func (r DrawExportParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Export output format
+// Export output format. PDF entry exports include up to 10,000 rows. Other entry
+// formats include up to 100,000 rows.
 type DrawExportParamsFormat string
 
 const (

@@ -874,12 +874,40 @@ func (r *XCommunityDeleteParams) UnmarshalJSON(data []byte) error {
 }
 
 type XCommunityGetMembersParams struct {
+	// Match any comma-separated or line-separated bio term, ignoring case.
+	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
 	// Pagination cursor
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with a location.
+	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
+	// Only return profiles with a website.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Match a location substring, ignoring case.
+	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
+	// Maximum follower count. Missing counts pass this maximum.
+	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Maximum following count.
+	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Maximum post count. maxPosts is also accepted.
+	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
+	// Minimum account age in whole days.
+	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
+	// Minimum follower count. Filtering happens before billing.
+	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Minimum following count.
+	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
+	// Minimum post count. minPosts is also accepted.
+	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
 	// Items per page (20-200, default 20). This is an upper bound for paid
 	// authenticated calls: remaining credits can reduce the returned page size, and
 	// zero affordable results returns 402 insufficient_credits.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Match a username substring, ignoring case.
+	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
+	// Only return verified profiles.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Match the verification type exactly, ignoring case.
+	VerifiedType param.Opt[string] `query:"verifiedType,omitzero" json:"-"`
 	paramObj
 }
 
@@ -893,8 +921,36 @@ func (r XCommunityGetMembersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XCommunityGetModeratorsParams struct {
+	// Match any comma-separated or line-separated bio term, ignoring case.
+	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
 	// Pagination cursor for community moderators
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with a location.
+	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
+	// Only return profiles with a website.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Match a location substring, ignoring case.
+	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
+	// Maximum follower count. Missing counts pass this maximum.
+	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Maximum following count.
+	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Maximum post count. maxPosts is also accepted.
+	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
+	// Minimum account age in whole days.
+	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
+	// Minimum follower count. Filtering happens before billing.
+	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Minimum following count.
+	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
+	// Minimum post count. minPosts is also accepted.
+	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Match a username substring, ignoring case.
+	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
+	// Only return verified profiles.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Match the verification type exactly, ignoring case.
+	VerifiedType param.Opt[string] `query:"verifiedType,omitzero" json:"-"`
 	paramObj
 }
 
