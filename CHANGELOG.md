@@ -1,5 +1,49 @@
 # Changelog
 
+## 0.17.0 (2026-08-12)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.16.0...v0.17.0)
+
+### Features
+
+* **api:** api update ([65b7e46](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/65b7e46a5529edeaae963564862575fed80d0ffa))
+* **api:** api update ([f09db18](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/f09db18dbb10b37dd8f8d70cf21410b7f5508279))
+* **api:** api update ([7222208](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/72222089240bb6903f794d2e0b0e7373116a271d))
+* **api:** api update ([f8084e8](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/f8084e83e19e250a9b46a526c4439fbe57c94619))
+* **api:** api update ([#44](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/44)) ([ae71ffd](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/ae71ffd41a4d4f11b449f4224ed901df3609ed8d))
+* **api:** publish provider-neutral checkout contracts ([#42](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/42)) ([95db019](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/95db019c2824c35ce1c7d7c625cdeb5f0ea81565))
+* enforce OpenSSF Gold quality gates ([696a2c1](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/696a2c1104239667f9182916a5e6474bf810532b))
+
+
+### Bug Fixes
+
+* make diagnostic dumps concurrency-safe ([6c35deb](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/6c35deb74fab127bcde9947c0a915e90dbad067b))
+* make draft release lookup reliable ([#23](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/23)) ([577b8c9](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/577b8c9585ce146f61c8f2b20a99696dd28ab680))
+* publish assets before immutable release ([#18](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/18)) ([acc5ac8](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/acc5ac866388710e5050b27e08c4ad54fb2fc9d1))
+
+
+### Chores
+
+* add FUNDING.yml pointing to xquik.com ([97cc8a9](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/97cc8a9cb1d7e268721debb5b177fdcdbaf2fad2))
+* add per-file license evidence ([ab79e56](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/ab79e56db99acb4aa4069f48fcf469de17dca319))
+* avoid failing Context7 refresh without secret ([7401976](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/740197678fc873102a3c8eb3cfdee13f1aebfac0))
+* **deps:** bump actions/attest from 4.2.1 to 4.2.2 ([#39](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/39)) ([51c218a](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/51c218a4944bb6c68a92cef70f684ceef4873e26))
+* **deps:** bump actions/setup-go from 6.5.0 to 7.0.0 ([#21](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/21)) ([f5bc310](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/f5bc310215ca309302332ffb8cd60b438c8e9d9c))
+* **deps:** bump github/codeql-action/upload-sarif from 4.37.1 to 4.37.6 ([#32](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/32)) ([5b4a515](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/5b4a5154c313ecc613fe5c4fa468625092bb5c0b))
+* **deps:** bump ossf/scorecard-action from 2.4.3 to 2.4.4 ([#34](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/34)) ([f52356b](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/f52356bad0ff705081d48e4191eb884afd081af0))
+* prepare v0.5.2 ([e49dced](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/e49dced219d42d7ab36990012e459061ac9f51b9))
+* refresh Go SDK dependencies ([9f148cc](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/9f148cc763746a8d68a886ed8a23763ac043ee8a))
+* sync repo ([9d47120](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/9d471208569e4262e693f18990eb915e6accb67a))
+
+
+### Documentation
+
+* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
+* clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
+* complete v0.12.0 release notes ([#31](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/31)) ([7d335f2](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/7d335f2552a800b804fe5095d28ff4555c07e95a))
+* map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
+
 ## 0.16.0 (2026-08-12)
 
 Full Changelog: [v0.15.1...v0.16.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.15.1...v0.16.0)
