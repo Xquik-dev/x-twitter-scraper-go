@@ -157,7 +157,9 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// No-mode search maximizes coverage.
+// No-mode search maximizes coverage. New cursorless `Latest` sessions return rows
+// newest-first across cursor pages. Existing cursors preserve their established
+// ordering.
 func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *XTweetSearchResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets/search"
@@ -1607,7 +1609,7 @@ type XTweetGetQuotesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
@@ -1778,7 +1780,7 @@ type XTweetGetRepliesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
@@ -1984,12 +1986,85 @@ func (r XTweetGetRetweetersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetThreadParams struct {
+	// Words or quoted phrases where any one can match. Separate with spaces, commas,
+	// or lines.
+	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
+	// Only return tweets from Blue-verified authors.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Cashtags separated by spaces, commas, or lines.
+	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for thread tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Exact phrase to match.
+	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
+	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Filter by author username.
+	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// Hashtags separated by spaces, commas, or lines.
+	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Language code filter, e.g. en or tr.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Maximum likes threshold. maxLikes is also accepted.
+	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
+	// Maximum quotes threshold.
+	MaxQuotes param.Opt[int64] `query:"maxQuotes,omitzero" json:"-"`
+	// Maximum replies threshold.
+	MaxReplies param.Opt[int64] `query:"maxReplies,omitzero" json:"-"`
+	// Maximum retweets threshold.
+	MaxRetweets param.Opt[int64] `query:"maxRetweets,omitzero" json:"-"`
+	// Filter tweets mentioning a username.
+	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
+	// Minimum bookmark count threshold.
+	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Minimum likes threshold. minLikes is also accepted.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum quote count threshold.
+	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Minimum view count threshold.
+	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Continue while has_next_page is true. Deprecated limit and count
 	// aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// Filter replies sent to a username.
+	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
+	// End date in YYYY-MM-DD format.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Filter by media type.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XTweetGetThreadParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XTweetGetThreadParamsQuotes `query:"quotes,omitzero" json:"-"`
+	// Reply mode.
+	//
+	// Any of "include", "exclude", "only".
+	Replies XTweetGetThreadParamsReplies `query:"replies,omitzero" json:"-"`
+	// Retweet mode.
+	//
+	// Any of "include", "exclude", "only".
+	Retweets XTweetGetThreadParamsRetweets `query:"retweets,omitzero" json:"-"`
 	paramObj
 }
 
@@ -2000,6 +2075,45 @@ func (r XTweetGetThreadParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by media type.
+type XTweetGetThreadParamsMediaType string
+
+const (
+	XTweetGetThreadParamsMediaTypeImages XTweetGetThreadParamsMediaType = "images"
+	XTweetGetThreadParamsMediaTypeVideos XTweetGetThreadParamsMediaType = "videos"
+	XTweetGetThreadParamsMediaTypeGifs   XTweetGetThreadParamsMediaType = "gifs"
+	XTweetGetThreadParamsMediaTypeMedia  XTweetGetThreadParamsMediaType = "media"
+	XTweetGetThreadParamsMediaTypeLinks  XTweetGetThreadParamsMediaType = "links"
+	XTweetGetThreadParamsMediaTypeNone   XTweetGetThreadParamsMediaType = "none"
+)
+
+// Quote mode.
+type XTweetGetThreadParamsQuotes string
+
+const (
+	XTweetGetThreadParamsQuotesInclude XTweetGetThreadParamsQuotes = "include"
+	XTweetGetThreadParamsQuotesExclude XTweetGetThreadParamsQuotes = "exclude"
+	XTweetGetThreadParamsQuotesOnly    XTweetGetThreadParamsQuotes = "only"
+)
+
+// Reply mode.
+type XTweetGetThreadParamsReplies string
+
+const (
+	XTweetGetThreadParamsRepliesInclude XTweetGetThreadParamsReplies = "include"
+	XTweetGetThreadParamsRepliesExclude XTweetGetThreadParamsReplies = "exclude"
+	XTweetGetThreadParamsRepliesOnly    XTweetGetThreadParamsReplies = "only"
+)
+
+// Retweet mode.
+type XTweetGetThreadParamsRetweets string
+
+const (
+	XTweetGetThreadParamsRetweetsInclude XTweetGetThreadParamsRetweets = "include"
+	XTweetGetThreadParamsRetweetsExclude XTweetGetThreadParamsRetweets = "exclude"
+	XTweetGetThreadParamsRetweetsOnly    XTweetGetThreadParamsRetweets = "only"
+)
 
 type XTweetSearchParams struct {
 	// Query, Tweet ID, or status URL. Valid inline bounds apply per page.
@@ -2058,7 +2172,7 @@ type XTweetSearchParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`

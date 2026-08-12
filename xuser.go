@@ -1218,7 +1218,7 @@ type XUserGetLikesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
@@ -1372,7 +1372,7 @@ type XUserGetMediaParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
@@ -1526,7 +1526,7 @@ type XUserGetMentionsParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
@@ -1687,7 +1687,7 @@ type XUserGetRepliesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
@@ -1889,7 +1889,7 @@ type XUserGetTweetsParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold.
+	// Minimum likes threshold. minLikes is also accepted.
 	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
