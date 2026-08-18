@@ -1,6 +1,6 @@
 module github.com/Xquik-dev/x-twitter-scraper-go
 
-go 1.26.5
+go 1.26.6
 
 require (
 	github.com/tidwall/gjson v1.19.0
