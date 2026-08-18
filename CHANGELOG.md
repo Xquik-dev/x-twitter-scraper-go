@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.1 (2026-08-18)
+
+Full Changelog: [v0.16.0...v0.16.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.16.0...v0.16.1)
+
+### Chores
+
+* update Go toolchain ([#48](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/48)) ([d0ee365](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/d0ee365dc02f842f6fb5594f1743681d0b956638))
+
 ## 0.16.0 (2026-08-12)
 
 Full Changelog: [v0.15.1...v0.16.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.15.1...v0.16.0)
