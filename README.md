@@ -19,7 +19,6 @@ It also covers monitoring, webhooks, bulk extractions, and posting automation.
 
 Use it when the official X API does not fit your workflow.
 It is a Twitter API alternative for documented automation tasks.
-Search tweets with keyword or advanced operator queries.
 Read profile tweets, followers, and following lists.
 Post tweets, replies, likes, reposts, follows, and direct messages.
 Xquik runs the scraping infrastructure behind the documented API.
@@ -101,7 +100,7 @@ GitHub verifies the archive digest, signer identity, and transparency proof.
 
 ## Requirements
 
-This library requires Go 1.26.5 or newer.
+This library requires Go 1.26.6 or newer.
 
 ## Usage
 
