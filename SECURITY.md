@@ -18,11 +18,9 @@ Include affected versions, impact, reproduction steps, and suggested mitigations
 
 Remove credentials, personal data, and private service details.
 
-We aim to acknowledge reports within 3 business days.
-
-We aim to provide a status update within 7 business days.
-
-We coordinate disclosure after confirming and fixing the issue.
+Maintainers acknowledge reports within 3 business days.
+Maintainers send status updates within 7 business days.
+Disclosure follows confirmation and a fix.
 
 ## Security Boundaries
 

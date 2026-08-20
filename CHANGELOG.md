@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.18.1 (2026-08-21)
+
+Full Changelog: [v0.18.0...v0.18.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.0...v0.18.1)
+
+### Documentation
+
+* tighten SDK guidance and examples
+
+### Bug Fixes
+
+* correct the middleware duration example
+
 ## 0.18.0 (2026-08-18)
 
 Full Changelog: [v0.17.0...v0.18.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.17.0...v0.18.0)
