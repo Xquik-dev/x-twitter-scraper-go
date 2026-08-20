@@ -1,8 +1,6 @@
 # Context7 Guide
 
-Use this page as the compact Context7-facing guide for the Xquik Go SDK. It
-focuses on install, authentication, first requests, and common X automation
-workflows.
+Install, authenticate, and send your first Xquik request from Go.
 
 ## Install
 
@@ -10,7 +8,7 @@ workflows.
 go get github.com/Xquik-dev/x-twitter-scraper-go@latest
 ```
 
-This SDK requires Go 1.26.5 or newer.
+Use Go 1.26.6 or newer.
 
 Import the SDK as `xtwitterscraper`:
 
@@ -29,7 +27,7 @@ Set an API key in the process environment:
 export X_TWITTER_SCRAPER_API_KEY="your-api-key"
 ```
 
-Then create a client:
+Create a client:
 
 ```go
 client := xtwitterscraper.NewClient(
@@ -77,18 +75,10 @@ for _, tweet := range paginatedTweets.Tweets {
 | Bulk extractions | `client.Extractions.Run` |
 | Regional trends | `client.Trends.List` |
 
-Use `api.md` for generated method coverage and
-<https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go> for Go type
-signatures.
+Use `api.md` for methods and [pkg.go.dev](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) for type signatures.
 
 ## Public Sources
 
-- GitHub: <https://github.com/Xquik-dev/x-twitter-scraper-go>
-- Go reference: <https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go>
-- Xquik Go SDK docs: <https://docs.xquik.com/sdks/go>
-- REST API docs: <https://docs.xquik.com/api-reference/overview>
-- OpenAPI spec: <https://xquik.com/openapi.json>
-- Context7: <https://context7.com/xquik-dev/x-twitter-scraper-go>
-- DeepWiki: <https://deepwiki.com/Xquik-dev/x-twitter-scraper-go>
+[GitHub](https://github.com/Xquik-dev/x-twitter-scraper-go) | [Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [SDK Guide](https://docs.xquik.com/sdks/go) | [REST API](https://docs.xquik.com/api-reference/overview) | [OpenAPI](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [DeepWiki](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.

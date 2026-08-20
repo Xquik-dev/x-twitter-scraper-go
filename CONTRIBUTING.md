@@ -1,12 +1,10 @@
 # Contributing
 
-Thank you for improving the Xquik Go SDK.
-
 Read [GOVERNANCE.md](GOVERNANCE.md) before proposing major changes.
 
 ## Set Up
 
-Install Go 1.26.5 or newer.
+Install Go 1.26.6 or newer.
 
 ```sh
 ./scripts/bootstrap
