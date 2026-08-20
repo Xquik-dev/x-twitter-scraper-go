@@ -32,9 +32,9 @@ No OpenSSF-defined ineligibility applies.
 | CI | Pull requests and pushes run pinned, least-privilege workflows |
 | Two-factor authentication | The Xquik-dev organization requires 2FA |
 
-The current Go 1.26.5 statement result is 93.48%.
+The current Go 1.26.6 statement result is 92.53%.
 
-The current Go 1.26.5 branch result is 81.37%.
+The current Go 1.26.6 branch result is 81.15%.
 
 ## Branch Measurement
 
@@ -56,17 +56,12 @@ It uses strict overlap to reject boundary-only parent ranges.
 
 CI forces rebuilds because cached packages omit tool catalogs.
 
-The gate includes all 1,229 reported production branches.
+The gate includes all 1,236 reported production branches.
 
 ## Outstanding Silver Blocker
 
-The release workflow now creates SLSA provenance for exact source archives.
-
-It also attaches each archive and Sigstore bundle to GitHub Releases.
-
-Run one post-merge release and verify its public artifact.
-
-Keep `signed_releases` Unmet until that verification succeeds.
+The release workflow creates SLSA provenance and attaches its Sigstore bundle.
+Verify one post-merge release before marking `signed_releases` Met.
 
 ## Outstanding Gold Blockers
 
@@ -82,7 +77,7 @@ Do not claim Gold while any mandatory criterion remains unmet.
 | Independent review | History does not prove 50% qualifying review coverage | Require and record independent reviews |
 | Human security review | No completed review exists within 5 years | Commission and publish a scoped review |
 
-This remediation pull request needs a different human reviewer.
+Gold eligibility still requires review by a different human.
 
 ## Maintenance
 

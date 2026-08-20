@@ -1,7 +1,4 @@
-# X (Twitter) Scraper Go SDK: Tweet Search, Profile Tweets, Followers & Posting
-
-> **Xquik is an independent third-party service.** Not affiliated with X Corp.
-> "Twitter" and "X" are trademarks of X Corp.
+# Xquik Go SDK: Twitter Search, Followers & X Automation
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13734/badge)](https://www.bestpractices.dev/projects/13734)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
@@ -13,35 +10,30 @@
 
 <!-- x-release-please-end -->
 
-Xquik is a typed Go SDK for the X (Twitter) Scraper API.
-It supports tweet search, profile timelines, user lookup, follower exports, and media workflows.
-It also covers monitoring, webhooks, bulk extractions, and posting automation.
+Use the Xquik Go SDK for Twitter search, profiles, followers, and media.
+Manage webhooks, bulk extractions, and X automation with typed Go methods.
+The module calls the documented Xquik REST API.
 
+## Twitter API Alternative
+
+This package does not call or emulate the official X API.
 Use it when the official X API does not fit your workflow.
-It is a Twitter API alternative for documented automation tasks.
-Read profile tweets, followers, and following lists.
-Post tweets, replies, likes, reposts, follows, and direct messages.
-Xquik runs the scraping infrastructure behind the documented API.
-
-Start with the generated [API map](api.md).
-Use the [Go package reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) for typed methods.
-Read the [REST API docs](https://docs.xquik.com/api-reference/overview) for endpoint details.
 
 [Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [OAuth-First MCP Guide](https://docs.xquik.com/mcp/overview)
 
-It is generated with [Stainless](https://www.stainless.com/).
+[Stainless](https://www.stainless.com/) generates the SDK from the public OpenAPI specification.
 
 ## Choose the Go SDK
 
-Choose this client for context-aware Go services and command-line tools.
-Use typed structs, pagination helpers, retries, and custom middleware.
+Choose this client for Go services and command-line tools.
+Use typed structs, pagination, retries, and custom middleware.
 Use REST when module installation is unavailable.
 
 ## Common X Data Tasks
 
 Use the linked Go reference for typed method names.
 
-| Customer Question | REST Route | Workflow Note |
+| Task | REST Route | Workflow Note |
 | --- | --- | --- |
 | How do I search tweets? | `GET /x/tweets/search` | Use keyword or advanced operator queries. |
 | How do I read a profile timeline? | `GET /x/users/{id}/tweets` | Paginate bounded results. |
@@ -75,9 +67,7 @@ go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.18.0'
 
 ## Verify a Release
 
-Go module users install through the canonical module path.
-
-Verify Xquik's matching source release before upgrading:
+Verify the matching source archive before upgrading:
 
 ```sh
 release_tag=vVERSION
@@ -94,13 +84,12 @@ gh attestation verify "$archive" \
   --deny-self-hosted-runners
 ```
 
-Require the Xquik-dev repository and expected release workflow.
-
-GitHub verifies the archive digest, signer identity, and transparency proof.
+Require the Xquik-dev repository and release workflow.
+GitHub verifies the digest, signer identity, and transparency proof.
 
 ## Requirements
 
-This library requires Go 1.26.6 or newer.
+Use Go 1.26.6 or newer.
 
 ## Usage
 

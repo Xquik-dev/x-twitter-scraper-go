@@ -1,7 +1,7 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "Xquik Go SDK",
-  "description": "Xquik Go SDK for X/Twitter workflows with typed REST methods for tweet search, user lookup, monitors, webhooks, media workflows, and extractions. Not affiliated with X Corp.",
+  "description": "Go SDK for Twitter search, profiles, followers, media, webhooks, bulk extractions, and X automation through the Xquik REST API. Not affiliated with X Corp.",
   "branch": "main",
   "excludeFolders": [
     ".devcontainer",
@@ -26,9 +26,9 @@
   "rules": [
     "Install with go get github.com/Xquik-dev/x-twitter-scraper-go.",
     "Authenticate with option.WithAPIKey or the X_TWITTER_SCRAPER_API_KEY environment variable.",
-    "Use README.md and docs/CONTEXT7.md first for install, API key setup, first request, package links, webhooks, and common Go workflows.",
+    "Read README.md and docs/CONTEXT7.md for installation, authentication, first requests, webhooks, and Go workflows.",
     "For remote agent access, link to https://docs.xquik.com/mcp/overview. The MCP server is separate from this REST SDK and prefers OAuth 2.1.",
-    "If Codex reports Authorization server response missing required issuer: expected https://xquik.com, do not repeat OAuth. Affected Codex releases discard the RFC 9207 iss value even though Xquik returns it. Set XQUIK_API_KEY and bearer_token_env_var = \"XQUIK_API_KEY\" in Codex TOML, then use https://docs.xquik.com/guides/troubleshooting#codex-oauth-issuer-validation-error and track https://github.com/openai/codex/issues/31573.",
+    "If Codex rejects the RFC 9207 issuer, stop OAuth retries. Set XQUIK_API_KEY and bearer_token_env_var = \"XQUIK_API_KEY\" in Codex TOML. Follow https://docs.xquik.com/guides/troubleshooting#codex-oauth-issuer-validation-error and track https://github.com/openai/codex/issues/31573.",
     "Use go.mod for module path, Go version, and dependency metadata.",
     "Use client.go and option/requestoption.go for client construction and request option patterns.",
     "Use xtweet.go for tweet search, posting, replies, retweeters, quotes, threads, and tweet retrieval workflows.",
