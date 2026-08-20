@@ -8,10 +8,7 @@ Assessment date: 2026-07-23.
 
 ## Eligibility
 
-This public Go SDK is active and released.
-
-It is eligible for the OpenSSF Best Practices badge.
-
+This active, released public SDK qualifies for the OpenSSF Best Practices badge.
 No OpenSSF-defined ineligibility applies.
 
 ## Verified Technical Controls
@@ -39,29 +36,20 @@ The current Go 1.26.6 branch result is 81.15%.
 ## Branch Measurement
 
 Go's standard coverage tool does not report branches.
-
 The gate pins the MIT-licensed `gocove` beta at commit `a0dceb9dadca`.
+That tool instruments every package and emits a native Go profile.
 
-The tool instruments every package and emits a native Go profile.
-
-The pinned release misjoins some nested branch ranges.
-
-It selects an outer containing block before the branch target.
-
-That defect marks executed switch and else branches as uncovered.
-
-The local verifier checks each target against positive profile ranges.
-
-It uses strict overlap to reject boundary-only parent ranges.
-
-CI forces rebuilds because cached packages omit tool catalogs.
-
+The pinned release can join nested ranges to an outer block.
+Executed switch and else branches can then appear uncovered.
+The verifier requires strict overlap with positive profile ranges.
+It rejects boundary-only parents and rebuilds packages without cached catalogs.
 The gate includes all 1,236 reported production branches.
 
-## Outstanding Silver Blocker
+## Release Provenance
 
-The release workflow creates SLSA provenance and attaches its Sigstore bundle.
-Verify one post-merge release before marking `signed_releases` Met.
+Release v0.18.0 includes a reproducible source archive and Sigstore bundle.
+GitHub verification confirms the digest, workflow, tag & hosted runner.
+The archive digest matches its attached SLSA provenance subject.
 
 ## Outstanding Gold Blockers
 
@@ -91,7 +79,7 @@ go mod verify
 ./scripts/branch-coverage
 go test -race ./...
 go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
-uvx --from reuse reuse lint
+uvx --from reuse==5.1.1 reuse lint
 ./scripts/reproducible-build
 gh attestation verify ARCHIVE \
   --repo Xquik-dev/x-twitter-scraper-go \

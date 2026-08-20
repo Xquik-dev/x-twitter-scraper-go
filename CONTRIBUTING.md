@@ -45,7 +45,7 @@ go mod verify
 ./scripts/branch-coverage
 go test -race ./...
 go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
-uvx --from reuse reuse lint
+uvx --from reuse==5.1.1 reuse lint
 ./scripts/reproducible-build
 ```
 

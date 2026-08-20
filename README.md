@@ -10,8 +10,8 @@
 
 <!-- x-release-please-end -->
 
-Use the Xquik Go SDK for Twitter search, profiles, followers, and media.
-Manage webhooks, bulk extractions, and X automation with typed Go methods.
+Use the Xquik Go SDK for Twitter search, profiles, followers & media.
+Manage webhooks, bulk extractions & X automation with typed Go methods.
 The module calls the documented Xquik REST API.
 
 ## Twitter API Alternative
@@ -21,27 +21,19 @@ Use it when the official X API does not fit your workflow.
 
 [Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [OAuth-First MCP Guide](https://docs.xquik.com/mcp/overview)
 
-[Stainless](https://www.stainless.com/) generates the SDK from the public OpenAPI specification.
-
-## Choose the Go SDK
-
-Choose this client for Go services and command-line tools.
-Use typed structs, pagination, retries, and custom middleware.
-Use REST when module installation is unavailable.
-
-## Common X Data Tasks
-
-Use the linked Go reference for typed method names.
+## Common Twitter & X Tasks
 
 | Task | REST Route | Workflow Note |
 | --- | --- | --- |
-| How do I search tweets? | `GET /x/tweets/search` | Use keyword or advanced operator queries. |
-| How do I read a profile timeline? | `GET /x/users/{id}/tweets` | Paginate bounded results. |
-| How do I scrape followers? | `GET /x/users/{id}/followers` | Use an extraction for complete datasets. |
-| How do I scrape following accounts? | `GET /x/users/{id}/following` | Use an extraction for complete datasets. |
-| How do I read my home timeline? | `GET /x/timeline` | Approve this private read. |
-| How do I monitor an account? | `POST /monitors` | Deliver events through HMAC webhooks. |
-| How do I post or reply? | `POST /x/tweets` | Confirm the account and payload. |
+| Search tweets without the X API | `GET /x/tweets/search` | Use keyword or advanced operator queries. |
+| Read an X profile timeline | `GET /x/users/{id}/tweets` | Paginate bounded results. |
+| Scrape Twitter followers | `GET /x/users/{id}/followers` | Use an extraction for complete datasets. |
+| Scrape following accounts | `GET /x/users/{id}/following` | Use an extraction for complete datasets. |
+| Read a home timeline | `GET /x/timeline` | Approve this private read. |
+| Export large X datasets | `POST /extractions` | Poll status, then download results. |
+| Download or upload media | `/x/media/*` | Use typed file helpers. |
+| Monitor an account | `POST /monitors` | Deliver events through HMAC webhooks. |
+| Post or reply | `POST /x/tweets` | Confirm the account and payload. |
 
 ## Installation
 
@@ -60,7 +52,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.18.0'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.18.1'
 ```
 
 <!-- x-release-please-end -->
@@ -93,7 +85,7 @@ Use Go 1.26.6 or newer.
 
 ## Usage
 
-The full API of this library can be found in [api.md](api.md).
+See [api.md](api.md) for the complete API.
 
 ```go
 package main
@@ -116,40 +108,32 @@ func main() {
 		Limit: xtwitterscraper.Int(10),
 	})
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	fmt.Printf("%+v\n", response)
 }
 
 ```
 
-### Request fields
+### Request Fields
 
-The xtwitterscraper library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
-semantics from the Go 1.24+ `encoding/json` release for request fields.
-
-Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`api:"required"\`</code>. These
-fields are always serialized, even their zero values.
-
-Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `xtwitterscraper.String(string)`, `xtwitterscraper.Int(int64)`, etc.
-
-Any `param.Opt[T]`, map, slice, struct or string enum uses the
-tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
-
-The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
+Request structs follow Go's [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson) semantics.
+Fields tagged <code>\`api:"required"\`</code> serialize even when their value is zero.
+Optional primitives use `param.Opt[T]` and constructors such as `xtwitterscraper.String`.
+Maps, slices, structs & enums tagged <code>\`json:"...,omitzero"\`</code> omit zero values.
+Use `param.IsOmitted(any)` to test any `omitzero` field.
 
 ```go
 p := xtwitterscraper.ExampleParams{
-	ID:   "id_xxx",                      // required property
-	Name: xtwitterscraper.String("..."), // optional property
+	ID:   "id_xxx",                      // Required.
+	Name: xtwitterscraper.String("..."), // Optional.
 
 	Point: xtwitterscraper.Point{
-		X: 0,                      // required field will serialize as 0
-		Y: xtwitterscraper.Int(1), // optional field will serialize as 1
-		// ... omitted non-required fields will not be serialized
+		X: 0,                      // Serializes as 0.
+		Y: xtwitterscraper.Int(1), // Serializes as 1.
 	},
 
-	Origin: xtwitterscraper.Origin{}, // the zero value of [Origin] is considered omitted
+	Origin: xtwitterscraper.Origin{}, // Omitted because it is zero.
 }
 ```
 
@@ -164,33 +148,28 @@ param.IsNull(p.Name)  // true
 param.IsNull(p.Point) // true
 ```
 
-Request structs contain a `.SetExtraFields(map[string]any)` method which can send non-conforming
-fields in the request body. Extra fields overwrite any struct fields with a matching
-key. For security reasons, only use `SetExtraFields` with trusted data.
+Use `.SetExtraFields(map[string]any)` only with trusted data.
+Extra fields can overwrite matching struct fields.
 
 To send a custom value instead of a struct, use `param.Override[T](value)`.
 
 ```go
-// In cases where the API specifies a given type,
-// but you want to send something else, use [SetExtraFields]:
+// Override the documented integer type.
 p.SetExtraFields(map[string]any{
-	"x": 0.01, // send "x" as a float instead of int
+	"x": 0.01,
 })
 
-// Send a number instead of an object
+// Send a number instead of an object.
 custom := param.Override[xtwitterscraper.FooParams](12)
 ```
 
-### Request unions
+### Request Unions
 
-Unions are represented as a struct with fields prefixed by "Of" for each of its variants,
-only one field can be non-zero. The non-zero field will be serialized.
-
-Sub-properties of the union can be accessed via methods on the union struct.
-These methods return a mutable pointer to the underlying data, if present.
+Each union variant uses an `Of`-prefixed field. Set only one field.
+The nonzero field is serialized. Getter methods return mutable pointers when present.
 
 ```go
-// Only one field can be non-zero, use param.IsOmitted() to check if a field is set
+// Set only one variant.
 type AnimalUnionParam struct {
 	OfCat *Cat `json:",omitzero,inline`
 	OfDog *Dog `json:",omitzero,inline`
@@ -205,17 +184,15 @@ animal := AnimalUnionParam{
 	},
 }
 
-// Mutating a field
+// Mutate a present field.
 if address := animal.GetOwner().GetAddress(); address != nil {
 	address.ZipCode = 94304
 }
 ```
 
-### Response objects
+### Response Objects
 
-All fields in response structs are ordinary value types (not pointers or wrappers).
-Response structs also include a special `JSON` field containing metadata about
-each property.
+Response fields use value types. The `JSON` field records decoding metadata.
 
 ```go
 type Animal struct {
@@ -231,10 +208,8 @@ type Animal struct {
 }
 ```
 
-To handle optional data, use the `.Valid()` method on the JSON field.
-`.Valid()` returns true when a field is present, non-null, and decoded successfully.
-
-If `.Valid()` is false, the corresponding field will simply be its zero value.
+`.Valid()` reports whether a field was present, non-null & decoded successfully.
+Invalid or omitted fields keep their zero value.
 
 ```go
 raw := `{"owners": 1, "name": null}`
@@ -242,20 +217,17 @@ raw := `{"owners": 1, "name": null}`
 var res Animal
 json.Unmarshal([]byte(raw), &res)
 
-// Accessing regular fields
-
+// Values.
 res.Owners // 1
 res.Name   // ""
 res.Age    // 0
 
-// Optional field checks
-
+// Presence checks.
 res.JSON.Owners.Valid() // true
 res.JSON.Name.Valid()   // false
 res.JSON.Age.Valid()    // false
 
-// Raw JSON values
-
+// Raw JSON.
 res.JSON.Owners.Raw()                  // "1"
 res.JSON.Name.Raw() == "null"          // true
 res.JSON.Name.Raw() == respjson.Null   // true
@@ -263,10 +235,7 @@ res.JSON.Age.Raw() == ""               // true
 res.JSON.Age.Raw() == respjson.Omitted // true
 ```
 
-These `.JSON` structs also include an `ExtraFields` map containing
-any properties in the json response that were not specified
-in the struct. This can be useful for API features not yet
-present in the SDK.
+`JSON.ExtraFields` retains response properties absent from the generated struct.
 
 ```go
 body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
@@ -274,12 +243,9 @@ body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
 
 ### Response Unions
 
-In responses, unions are represented by a flattened struct containing all possible fields from each of the
-object variants.
-To convert it to a variant use the `.AsFooVariant()` method or the `.AsAny()` method if present.
-
-If a response value union contains primitive values, primitive fields will be alongside
-the properties but prefixed with `Of` and feature the tag `json:"...,inline"`.
+Response unions flatten fields from every object variant.
+Use `.AsFooVariant()` or `.AsAny()` to select a variant.
+Primitive variants use `Of`-prefixed fields tagged `json:"...,inline"`.
 
 ```go
 type AnimalUnion struct {
@@ -297,12 +263,12 @@ type AnimalUnion struct {
 	} `json:"-"`
 }
 
-// If animal variant
+// Validate a shared field.
 if animal.Owner.Address.ZipCode == "" {
 	panic("missing zip code")
 }
 
-// Switch on the variant
+// Select the variant.
 switch variant := animal.AsAny().(type) {
 case Dog:
 case Cat:
@@ -313,46 +279,38 @@ default:
 
 ### RequestOptions
 
-This library uses the functional options pattern. Functions defined in the
-`option` package return a `RequestOption`, which is a closure that mutates a
-`RequestConfig`. These options can be supplied to the client or at individual
-requests. For example:
+The `option` package returns `RequestOption` closures that update `RequestConfig`.
+Apply them to the client or an individual request.
 
 ```go
 client := xtwitterscraper.NewClient(
-	// Adds a header to every request made by the client
+	// Add a header to every request.
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
 client.X.Tweets.Search(context.TODO(), ...,
-	// Override the header
+	// Override the client header.
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
-	// Add an undocumented field to the request body, using sjson syntax
+	// Add a request field with sjson syntax.
 	option.WithJSONSet("some.json.path", map[string]string{"my": "object"}),
 )
 ```
 
-The request option `option.WithDebugLog(nil)` may be helpful while debugging.
+`option.WithDebugLog(nil)` writes request and response content to the default logger.
+Use it only with safe local data.
 
 See the [full list of request options](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/option).
 
 ### Pagination
 
-This library provides some conveniences for working with paginated list endpoints.
-
-You can use `.ListAutoPaging()` methods to iterate through items across all pages:
-
-Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
-with additional helper methods like `.GetNextPage()`, e.g.:
+`.ListAutoPaging()` iterates across every page.
+`.List()` fetches one page; call `.GetNextPage()` for the next.
 
 ### Errors
 
-When the API returns a non-success status code, we return an error with type
-`*xtwitterscraper.Error`. This contains the `StatusCode`, `*http.Request`, and
-`*http.Response` values of the request, as well as the JSON of the error body
-(much like other response objects in the SDK).
-
-To handle errors, we recommend that you use the `errors.As` pattern:
+Non-2xx responses return `*xtwitterscraper.Error`.
+It contains the status, request, response & decoded error body.
+Use `errors.As` to inspect those details:
 
 ```go
 _, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
@@ -362,25 +320,21 @@ _, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchPar
 if err != nil {
 	var apierr *xtwitterscraper.Error
 	if errors.As(err, &apierr) {
-		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
-		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
+		fmt.Printf("Request failed with HTTP %d\n", apierr.StatusCode)
 	}
 	panic(err.Error()) // GET "/x/tweets/search": 400 Bad Request { ... }
 }
 ```
 
-When other errors occur, they are returned unwrapped; for example,
-if HTTP transport fails, you might receive `*url.Error` wrapping `*net.OpError`.
+Other errors remain unwrapped. Transport failures may return `*url.Error` wrapping `*net.OpError`.
 
 ### Timeouts
 
-Requests do not time out by default; use context to configure a timeout for a request lifecycle.
-
-Note that if a request is [retried](#retries), the context timeout does not start over.
-To set a per-retry timeout, use `option.WithRequestTimeout()`.
+Requests have no default timeout. Use a context for the full request lifecycle.
+Retries share that context deadline. Use `option.WithRequestTimeout()` for each attempt.
 
 ```go
-// This sets the timeout for the request, including all the retries.
+// Set one deadline across all attempts.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.X.Tweets.Search(
@@ -389,39 +343,34 @@ client.X.Tweets.Search(
 		Q:     "from:elonmusk",
 		Limit: xtwitterscraper.Int(10),
 	},
-	// This sets the per-retry timeout
+	// Limit each attempt.
 	option.WithRequestTimeout(20*time.Second),
 )
 ```
 
-### File uploads
+### File Uploads
 
-Request parameters that correspond to file uploads in multipart requests are typed as
-`io.Reader`. The contents of the `io.Reader` will by default be sent as a multipart form
-part with the file name of "anonymous_file" and content-type of "application/octet-stream".
-
-The file name and content-type can be customized by implementing `Name() string` or `ContentType()
-string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
-file returned by `os.Open` will be sent with the file name on disk.
-
-We also provide a helper `xtwitterscraper.File(reader io.Reader, filename string, contentType string)`
-which can be used to wrap any `io.Reader` with the appropriate file name and content type.
+Multipart file parameters accept `io.Reader`.
+The default filename is `anonymous_file`; the default media type is `application/octet-stream`.
+Implement `Name() string` or `ContentType() string` to override either value.
+`os.File` already supplies its disk filename through `Name()`.
+Use `xtwitterscraper.File` to wrap any reader with explicit metadata.
 
 ```go
-// A file from the file system
+// Read from disk.
 file, err := os.Open("/path/to/file")
 xtwitterscraper.XMediaUploadParams{
 	Account: "@elonmusk",
 	File:    file,
 }
 
-// A file from a string
+// Read from a string.
 xtwitterscraper.XMediaUploadParams{
 	Account: "@elonmusk",
 	File:    strings.NewReader("my file contents"),
 }
 
-// With a custom filename and contentType
+// Set a filename and media type.
 xtwitterscraper.XMediaUploadParams{
 	Account: "@elonmusk",
 	File:    xtwitterscraper.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
@@ -430,19 +379,17 @@ xtwitterscraper.XMediaUploadParams{
 
 ### Retries
 
-Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
-We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit,
-and >=500 Internal errors.
-
-You can use the `WithMaxRetries` option to configure or disable this:
+The SDK retries connection errors & HTTP 408, 409, 429, and 5xx responses.
+It uses exponential backoff with 2 retries by default.
+Use `WithMaxRetries` to change or disable retries:
 
 ```go
-// Configure the default for all requests:
+// Set the client default.
 client := xtwitterscraper.NewClient(
 	option.WithMaxRetries(0), // default is 2
 )
 
-// Override per-request:
+// Override one request.
 client.X.Tweets.Search(
 	context.TODO(),
 	xtwitterscraper.XTweetSearchParams{
@@ -453,13 +400,11 @@ client.X.Tweets.Search(
 )
 ```
 
-### Accessing raw response data (e.g. response headers)
+### Raw Response Data
 
-You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
-you need to examine response headers, status codes, or other details.
+Use `option.WithResponseInto()` to inspect response headers and status codes.
 
 ```go
-// Create a variable to store the HTTP response
 var response *http.Response
 paginatedTweets, err := client.X.Tweets.Search(
 	context.TODO(),
@@ -470,7 +415,7 @@ paginatedTweets, err := client.X.Tweets.Search(
 	option.WithResponseInto(&response),
 )
 if err != nil {
-	// handle error
+	panic(err)
 }
 fmt.Printf("%+v\n", paginatedTweets)
 
@@ -478,74 +423,57 @@ fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
 ```
 
-### Making custom/undocumented requests
+### Custom Requests
 
-This library is typed for convenient access to the documented API. If you need to access undocumented
-endpoints, params, or response properties, the library can still be used.
-
-#### Undocumented endpoints
-
-To make requests to undocumented endpoints, you can use `client.Get`, `client.Post`, and other HTTP verbs.
-`RequestOptions` on the client, such as retries, will be respected when making these requests.
+Use `client.Get`, `client.Post`, or another verb for undocumented endpoints.
+These methods retain client options such as retries.
 
 ```go
 var (
-    // params can be an io.Reader, a []byte, an encoding/json serializable object,
-    // or a "…Params" struct defined in this library.
-    params map[string]any
+	// Accepts io.Reader, []byte, JSON-compatible values, or SDK params.
+	params map[string]any
 
-    // result can be an []byte, *http.Response, a encoding/json deserializable object,
-    // or a model defined in this library.
-    result *http.Response
+	// Accepts []byte, *http.Response, JSON-compatible values, or SDK models.
+	result *http.Response
 )
 err := client.Post(context.Background(), "/unspecified", params, &result)
 if err != nil {
-    …
+	panic(err)
 }
 ```
 
-#### Undocumented request params
-
-To make requests using undocumented parameters, you may use either the `option.WithQuerySet()`
-or the `option.WithJSONSet()` methods.
+Use `option.WithQuerySet()` or `option.WithJSONSet()` for undocumented parameters.
 
 ```go
 params := FooNewParams{
-    ID:   "id_xxxx",
-    Data: FooNewParamsData{
-        FirstName: xtwitterscraper.String("John"),
-    },
+	ID: "id_xxxx",
+	Data: FooNewParamsData{
+		FirstName: xtwitterscraper.String("John"),
+	},
 }
 client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
 ```
 
-#### Undocumented response properties
-
-To access undocumented response properties, you may either access the raw JSON of the response as a string
-with `result.JSON.RawJSON()`, or get the raw JSON of a particular field on the result with
-`result.JSON.Foo.Raw()`.
-
-Any fields that are not present on the response struct will be saved and can be accessed by `result.JSON.ExtraFields()` which returns the extra fields as a `map[string]Field`.
+Use `result.JSON.RawJSON()` for the full body and `.Foo.Raw()` for one field.
+`result.JSON.ExtraFields()` returns fields absent from the generated response struct.
 
 ### Middleware
 
-We provide `option.WithMiddleware` which applies the given
-middleware to requests.
+Use `option.WithMiddleware` to wrap requests.
 
 ```go
 func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
-	// Before the request
+	// Before the request.
 	start := time.Now()
 	LogReq(req)
 
-	// Forward the request to the next handler
+	// Run the next handler.
 	res, err = next(req)
 
-	// Handle stuff after the request
-	end := time.Now()
-	LogRes(res, err, start - end)
+	// After the request.
+	LogRes(res, err, time.Since(start))
 
-    return res, err
+	return res, err
 }
 
 client := xtwitterscraper.NewClient(
@@ -553,31 +481,19 @@ client := xtwitterscraper.NewClient(
 )
 ```
 
-When multiple middlewares are provided as variadic arguments, the middlewares
-are applied left to right. If `option.WithMiddleware` is given
-multiple times, for example first in the client then the method, the
-middleware in the client will run first and the middleware given in the method
-will run next.
+Middleware runs left to right. Client middleware runs before request middleware.
+Use `option.WithHTTPClient(client)` to replace the current HTTP client.
+The replacement receives requests after middleware runs.
 
-You may also replace the default `http.Client` with
-`option.WithHTTPClient(client)`. Only one http client is
-accepted (this overwrites any previous client) and receives requests after any
-middleware has been applied.
+## Semantic Versioning
 
-## Semantic versioning
-
-This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backwards-incompatible changes may be released as minor versions:
-
-1. Changes to library internals which are technically public but not intended or documented for external use. _(Please open a GitHub issue to let us know if you are relying on such internals.)_
-2. Changes that we do not expect to impact the vast majority of users in practice.
-
-We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
-
-We are keen for your feedback; please open an [issue](https://www.github.com/Xquik-dev/x-twitter-scraper-go/issues) with questions, bugs, or suggestions.
+This package follows [SemVer](https://semver.org/spec/v2.0.0.html).
+Before v1.0, minor releases may change undocumented internals.
+Open an [issue](https://github.com/Xquik-dev/x-twitter-scraper-go/issues) before depending on them.
 
 ## Contributing
 
-See [the contributing documentation](./CONTRIBUTING.md).
+Read the [contribution guide](CONTRIBUTING.md).
 
 ## Security & Project Health
 
