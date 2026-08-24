@@ -2,6 +2,8 @@
 
 Read [GOVERNANCE.md](GOVERNANCE.md) before proposing major changes.
 
+Follow the shared [Xquik contribution policy][contribution-policy].
+
 ## Set Up
 
 Install Go 1.26.6 or newer.
@@ -55,27 +57,10 @@ Branch coverage must remain at least 80%.
 
 Add regression tests for every fixed defect.
 
-## Submit Changes
+## Submit changes
 
-Keep pull requests focused and explain user-visible behavior.
-
-Link relevant issues and public API contracts.
-
-Use clear Conventional Commit subjects when practical.
-
-Sign every commit with the Developer Certificate of Origin.
-
-```sh
-git commit --signoff
-```
-
-The sign-off confirms the [Developer Certificate of Origin](https://developercertificate.org/).
-
-Another human must review maintainer-authored, nontrivial changes.
-
-Reviewers follow the shared [review policy][review-policy].
-
-Address every review comment before merging.
+Use clear Conventional Commit subjects and sign commits with `git commit --signoff`.
+Follow the shared [review policy][review-policy].
 
 ## Report Security Issues
 
@@ -83,6 +68,7 @@ Never disclose suspected vulnerabilities in public issues.
 
 Follow [SECURITY.md](SECURITY.md) for private reporting.
 
+[contribution-policy]: https://github.com/Xquik-dev/.github/blob/main/CONTRIBUTING.md
 [review-policy]: https://github.com/Xquik-dev/.github/blob/main/REVIEWING.md
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
