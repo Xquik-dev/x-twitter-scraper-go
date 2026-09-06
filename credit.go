@@ -41,7 +41,7 @@ func NewCreditService(opts ...option.RequestOption) (r CreditService) {
 	return
 }
 
-// Redirect to an active top-up payment page
+// Redirects to the active hosted top-up checkout.
 func (r *CreditService) RedirectTopupCheckout(ctx context.Context, query CreditRedirectTopupCheckoutParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -51,7 +51,7 @@ func (r *CreditService) RedirectTopupCheckout(ctx context.Context, query CreditR
 	return err
 }
 
-// Get credits balance
+// Returns the account credit balance and usage context.
 func (r *CreditService) GetBalance(ctx context.Context, opts ...option.RequestOption) (res *CreditGetBalanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "credits"
@@ -59,7 +59,7 @@ func (r *CreditService) GetBalance(ctx context.Context, opts ...option.RequestOp
 	return res, err
 }
 
-// Get top-up billing status
+// Returns verification status for a credit top-up.
 func (r *CreditService) GetTopupStatus(ctx context.Context, query CreditGetTopupStatusParams, opts ...option.RequestOption) (res *CreditGetTopupStatusResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "credits/topup/status"

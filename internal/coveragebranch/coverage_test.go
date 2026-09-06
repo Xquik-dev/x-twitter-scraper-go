@@ -4,8 +4,12 @@
 package coveragebranch
 
 import (
+	"errors"
+	"fmt"
+	"strconv"
 	"strings"
 	"testing"
+	"testing/iotest"
 )
 
 func TestMeasureMatchesPositiveOverlaps(t *testing.T) {
@@ -81,5 +85,36 @@ func TestMeasureRejectsInvalidInputs(t *testing.T) {
 				t.Fatal("Measure() accepted invalid input")
 			}
 		})
+	}
+}
+
+func TestReadProfileRejectsOverflow(t *testing.T) {
+	overflow := strings.Repeat("9", 100)
+	for index, name := range []string{"start line", "start column", "end line", "end column", "count"} {
+		t.Run(name, func(t *testing.T) {
+			fields := []string{"1", "2", "3", "4", "1"}
+			fields[index] = overflow
+			profile := fmt.Sprintf("client.go:%s.%s,%s.%s 1 %s\n", fields[0], fields[1], fields[2], fields[3], fields[4])
+			entries, err := readProfile(strings.NewReader(profile))
+			if entries != nil || !errors.Is(err, strconv.ErrRange) || !strings.Contains(err.Error(), overflow) {
+				t.Fatalf("readProfile() = %v, %v; want wrapped overflow with value", entries, err)
+			}
+		})
+	}
+}
+
+func TestReadProfileSkipsUncoveredCoordinates(t *testing.T) {
+	profile := "client.go:" + strings.Repeat("9", 100) + ".1,2.3 1 0\n"
+	entries, err := readProfile(strings.NewReader(profile))
+	if err != nil || len(entries) != 0 {
+		t.Fatalf("readProfile() = %v, %v; want empty profile", entries, err)
+	}
+}
+
+func TestReadProfilePreservesReadError(t *testing.T) {
+	failure := errors.New("profile unavailable")
+	entries, err := readProfile(iotest.ErrReader(failure))
+	if entries != nil || !errors.Is(err, failure) || err.Error() != "read profile: profile unavailable" {
+		t.Fatalf("readProfile() = %v, %v; want wrapped read error", entries, err)
 	}
 }

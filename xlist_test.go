@@ -11,6 +11,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
@@ -46,7 +47,8 @@ func TestXListGetFollowersWithOptionalParams(t *testing.T) {
 			MinFollowers:      xtwitterscraper.Int(0),
 			MinFollowing:      xtwitterscraper.Int(0),
 			MinStatuses:       xtwitterscraper.Int(0),
-			PageSize:          xtwitterscraper.Int(20),
+			Mode:              xtwitterscraper.XListGetFollowersParamsModeStandard,
+			PageSize:          xtwitterscraper.Int(1),
 			UsernameContains:  xtwitterscraper.String("usernameContains"),
 			VerifiedOnly:      xtwitterscraper.Bool(true),
 			VerifiedType:      xtwitterscraper.String("verifiedType"),
@@ -90,7 +92,8 @@ func TestXListGetMembersWithOptionalParams(t *testing.T) {
 			MinFollowers:      xtwitterscraper.Int(0),
 			MinFollowing:      xtwitterscraper.Int(0),
 			MinStatuses:       xtwitterscraper.Int(0),
-			PageSize:          xtwitterscraper.Int(20),
+			Mode:              xtwitterscraper.XListGetMembersParamsModeStandard,
+			PageSize:          xtwitterscraper.Int(1),
 			UsernameContains:  xtwitterscraper.String("usernameContains"),
 			VerifiedOnly:      xtwitterscraper.Bool(true),
 			VerifiedType:      xtwitterscraper.String("verifiedType"),
@@ -122,11 +125,39 @@ func TestXListGetTweetsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XListGetTweetsParams{
-			Cursor:         xtwitterscraper.String("cursor"),
-			IncludeReplies: xtwitterscraper.Bool(true),
-			PageSize:       xtwitterscraper.Int(1),
-			SinceTime:      xtwitterscraper.String("sinceTime"),
-			UntilTime:      xtwitterscraper.String("untilTime"),
+			AnyWords:         xtwitterscraper.String("anyWords"),
+			BlueVerifiedOnly: xtwitterscraper.Bool(true),
+			Cashtags:         xtwitterscraper.String("cashtags"),
+			Cursor:           xtwitterscraper.String("cursor"),
+			ExactPhrase:      xtwitterscraper.String("exactPhrase"),
+			ExcludeWords:     xtwitterscraper.String("excludeWords"),
+			FromUser:         xtwitterscraper.String("fromUser"),
+			Hashtags:         xtwitterscraper.String("hashtags"),
+			IncludeReplies:   xtwitterscraper.Bool(true),
+			Language:         xtwitterscraper.String("language"),
+			MaxFaves:         xtwitterscraper.Int(0),
+			MaxQuotes:        xtwitterscraper.Int(0),
+			MaxReplies:       xtwitterscraper.Int(0),
+			MaxRetweets:      xtwitterscraper.Int(0),
+			MediaType:        xtwitterscraper.XListGetTweetsParamsMediaTypeImages,
+			Mentioning:       xtwitterscraper.String("mentioning"),
+			MinBookmarks:     xtwitterscraper.Int(0),
+			MinLikes:         xtwitterscraper.Int(0),
+			MinQuotes:        xtwitterscraper.Int(0),
+			MinReplies:       xtwitterscraper.Int(0),
+			MinRetweets:      xtwitterscraper.Int(0),
+			MinViews:         xtwitterscraper.Int(0),
+			Mode:             xtwitterscraper.XListGetTweetsParamsModeStandard,
+			NativeRetweets:   xtwitterscraper.Bool(true),
+			PageSize:         xtwitterscraper.Int(1),
+			Replies:          xtwitterscraper.XListGetTweetsParamsRepliesInclude,
+			Retweets:         xtwitterscraper.XListGetTweetsParamsRetweetsInclude,
+			SinceDate:        xtwitterscraper.Time(time.Now()),
+			SinceTime:        xtwitterscraper.String("sinceTime"),
+			ToUser:           xtwitterscraper.String("toUser"),
+			UntilDate:        xtwitterscraper.Time(time.Now()),
+			UntilTime:        xtwitterscraper.String("untilTime"),
+			VerifiedOnly:     xtwitterscraper.Bool(true),
 		},
 	)
 	if err != nil {

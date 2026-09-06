@@ -48,7 +48,7 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	return
 }
 
-// Get user profile with follower counts and verification
+// Returns one public profile with counts and verification details.
 func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.UserProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -60,7 +60,7 @@ func (r *XUserService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Remove follower
+// Removes a follower from a connected X account.
 func (r *XUserService) RemoveFollower(ctx context.Context, id string, params XUserRemoveFollowerParams, opts ...option.RequestOption) (res *XUserRemoveFollowerResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -75,7 +75,7 @@ func (r *XUserService) RemoveFollower(ctx context.Context, id string, params XUs
 	return res, err
 }
 
-// Look up multiple users by IDs in one call
+// Returns public profiles for the requested user IDs.
 func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, opts ...option.RequestOption) (res *XUserGetBatchResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/batch"
@@ -83,7 +83,7 @@ func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, 
 	return res, err
 }
 
-// List followers of a user
+// Returns public follower profiles for the selected user.
 func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserGetFollowersParams, opts ...option.RequestOption) (res *XUserGetFollowersResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -95,7 +95,7 @@ func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// List mutual followers between you and a user
+// Returns mutual profiles visible to the connected X account.
 func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query XUserGetFollowersYouKnowParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -107,7 +107,7 @@ func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query
 	return res, err
 }
 
-// List accounts a user follows
+// Returns public profiles followed by the selected user.
 func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserGetFollowingParams, opts ...option.RequestOption) (res *XUserGetFollowingResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -119,7 +119,7 @@ func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// List tweets liked by a user
+// Returns visible tweets liked by the selected user.
 func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLikesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -131,7 +131,7 @@ func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLi
 	return res, err
 }
 
-// List media tweets posted by a user
+// Returns public media posts from the selected user.
 func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMediaParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -143,7 +143,7 @@ func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMe
 	return res, err
 }
 
-// List tweets mentioning a user
+// Returns public posts mentioning the selected user.
 func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGetMentionsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -169,7 +169,7 @@ func (r *XUserService) GetReplies(ctx context.Context, id string, query XUserGet
 	return res, err
 }
 
-// Search users by name or username
+// Returns public profiles matching a name or username.
 func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/search"
@@ -177,8 +177,9 @@ func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams
 	return res, err
 }
 
-// Omit mode for automatic maximum coverage. Pass next_cursor unchanged. Unprefixed
-// cursors use legacy pagination. Shape and billing stay the same.
+// For multiple users, use createExtraction with tweet_search_extractor and
+// targetUsernames. Omit mode for automatic maximum coverage. Pass next_cursor
+// unchanged. Unprefixed cursors use legacy pagination.
 func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -190,7 +191,7 @@ func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetT
 	return res, err
 }
 
-// List verified followers of a user
+// Returns verified public profiles following the selected user.
 func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, query XUserGetVerifiedFollowersParams, opts ...option.RequestOption) (res *XUserGetVerifiedFollowersResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -202,9 +203,9 @@ func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, quer
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XUserRemoveFollowerResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -497,10 +498,9 @@ func (r *XUserRemoveFollowerResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Batch user lookup results. Duplicate requested IDs are ignored while preserving
-// first-seen order. unavailable_ids identifies processed IDs with no returned
-// profile. unprocessed_ids identifies IDs skipped when available credits limit
-// processing.
+// Batch lookup preserves first-seen ID order and ignores duplicate IDs.
+// unavailable_ids were processed without profiles. unprocessed_ids were
+// credit-limited.
 type XUserGetBatchResponse struct {
 	// Batch lookups never paginate.
 	HasNextPage bool `json:"has_next_page" api:"required"`
@@ -518,6 +518,8 @@ type XUserGetBatchResponse struct {
 	// IDs after adding credits.
 	UnprocessedIDs []string             `json:"unprocessed_ids" api:"required"`
 	Users          []shared.UserProfile `json:"users" api:"required"`
+	// Profiles rejected by the requested filters.
+	FilteredCount int64 `json:"filtered_count"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		HasNextPage    respjson.Field
@@ -528,6 +530,7 @@ type XUserGetBatchResponse struct {
 		UnavailableIDs respjson.Field
 		UnprocessedIDs respjson.Field
 		Users          respjson.Field
+		FilteredCount  respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
@@ -549,14 +552,18 @@ type XUserGetFollowersResponseUnion struct {
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
+	// This field is from variant [shared.PaginatedUsers],
+	// [XUserGetFollowersResponseUserListCoverageResponse].
+	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XUserGetFollowersResponseUserListCoverageResponse].
 	Diagnostic XUserGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		Diagnostic  respjson.Field
-		raw         string
+		HasNextPage   respjson.Field
+		NextCursor    respjson.Field
+		Users         respjson.Field
+		FilteredCount respjson.Field
+		Diagnostic    respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -577,11 +584,7 @@ func (r *XUserGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Paginated user profiles. No-mode follower, following, and verified follower
-// requests merge independent views automatically. Response fields, page size,
-// aliases, filters, and per-returned-profile billing stay unchanged. Existing
-// unprefixed cursors retain legacy behavior. Follow next_cursor while
-// has_next_page is true.
+// Terminal relationship coverage response with diagnostics.
 type XUserGetFollowersResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XUserGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -608,7 +611,7 @@ func (r *XUserGetFollowersResponseUserListCoverageResponse) UnmarshalJSON(data [
 
 // Coverage evidence across parallel relationship strategies.
 type XUserGetFollowersResponseUserListCoverageResponseDiagnostic struct {
-	// True when every strategy exhausted its source.
+	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
 	CursorFailureCount  int64 `json:"cursorFailureCount" api:"required"`
 	DeadlineReached     bool  `json:"deadlineReached" api:"required"`
@@ -616,7 +619,7 @@ type XUserGetFollowersResponseUserListCoverageResponseDiagnostic struct {
 	FailedStrategyCount int64 `json:"failedStrategyCount" api:"required"`
 	MalformedCount      int64 `json:"malformedCount" api:"required"`
 	PagesFetched        int64 `json:"pagesFetched" api:"required"`
-	// Whether credits or the requested limit reduced output.
+	// True when credits or the requested limit reduce output.
 	ResponseTruncated    bool                                                                  `json:"responseTruncated" api:"required"`
 	ResultLimitReached   bool                                                                  `json:"resultLimitReached" api:"required"`
 	ReturnedUsers        int64                                                                 `json:"returnedUsers" api:"required"`
@@ -653,9 +656,12 @@ func (r *XUserGetFollowersResponseUserListCoverageResponseDiagnostic) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Result counts and stop reason for one relationship strategy.
 type XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
+	// Reason a coverage strategy stopped.
+	//
 	// Any of "cursor_failure", "deadline", "exhausted", "failed", "page_limit",
 	// "result_limit", "stalled".
 	StopReason  string `json:"stopReason" api:"required"`
@@ -691,14 +697,18 @@ type XUserGetFollowingResponseUnion struct {
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetFollowingResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
+	// This field is from variant [shared.PaginatedUsers],
+	// [XUserGetFollowingResponseUserListCoverageResponse].
+	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XUserGetFollowingResponseUserListCoverageResponse].
 	Diagnostic XUserGetFollowingResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		Diagnostic  respjson.Field
-		raw         string
+		HasNextPage   respjson.Field
+		NextCursor    respjson.Field
+		Users         respjson.Field
+		FilteredCount respjson.Field
+		Diagnostic    respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -719,11 +729,7 @@ func (r *XUserGetFollowingResponseUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Paginated user profiles. No-mode follower, following, and verified follower
-// requests merge independent views automatically. Response fields, page size,
-// aliases, filters, and per-returned-profile billing stay unchanged. Existing
-// unprefixed cursors retain legacy behavior. Follow next_cursor while
-// has_next_page is true.
+// Terminal relationship coverage response with diagnostics.
 type XUserGetFollowingResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XUserGetFollowingResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -750,7 +756,7 @@ func (r *XUserGetFollowingResponseUserListCoverageResponse) UnmarshalJSON(data [
 
 // Coverage evidence across parallel relationship strategies.
 type XUserGetFollowingResponseUserListCoverageResponseDiagnostic struct {
-	// True when every strategy exhausted its source.
+	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
 	CursorFailureCount  int64 `json:"cursorFailureCount" api:"required"`
 	DeadlineReached     bool  `json:"deadlineReached" api:"required"`
@@ -758,7 +764,7 @@ type XUserGetFollowingResponseUserListCoverageResponseDiagnostic struct {
 	FailedStrategyCount int64 `json:"failedStrategyCount" api:"required"`
 	MalformedCount      int64 `json:"malformedCount" api:"required"`
 	PagesFetched        int64 `json:"pagesFetched" api:"required"`
-	// Whether credits or the requested limit reduced output.
+	// True when credits or the requested limit reduce output.
 	ResponseTruncated    bool                                                                  `json:"responseTruncated" api:"required"`
 	ResultLimitReached   bool                                                                  `json:"resultLimitReached" api:"required"`
 	ReturnedUsers        int64                                                                 `json:"returnedUsers" api:"required"`
@@ -795,9 +801,12 @@ func (r *XUserGetFollowingResponseUserListCoverageResponseDiagnostic) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Result counts and stop reason for one relationship strategy.
 type XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
+	// Reason a coverage strategy stopped.
+	//
 	// Any of "cursor_failure", "deadline", "exhausted", "failed", "page_limit",
 	// "result_limit", "stalled".
 	StopReason  string `json:"stopReason" api:"required"`
@@ -834,15 +843,19 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
+	// This field is from variant [shared.PaginatedUsers],
+	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
+	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant
 	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
 	Diagnostic XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Users       respjson.Field
-		Diagnostic  respjson.Field
-		raw         string
+		HasNextPage   respjson.Field
+		NextCursor    respjson.Field
+		Users         respjson.Field
+		FilteredCount respjson.Field
+		Diagnostic    respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -863,11 +876,7 @@ func (r *XUserGetVerifiedFollowersResponseUnion) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Paginated user profiles. No-mode follower, following, and verified follower
-// requests merge independent views automatically. Response fields, page size,
-// aliases, filters, and per-returned-profile billing stay unchanged. Existing
-// unprefixed cursors retain legacy behavior. Follow next_cursor while
-// has_next_page is true.
+// Terminal relationship coverage response with diagnostics.
 type XUserGetVerifiedFollowersResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -896,7 +905,7 @@ func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponse) UnmarshalJSO
 
 // Coverage evidence across parallel relationship strategies.
 type XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic struct {
-	// True when every strategy exhausted its source.
+	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
 	CursorFailureCount  int64 `json:"cursorFailureCount" api:"required"`
 	DeadlineReached     bool  `json:"deadlineReached" api:"required"`
@@ -904,7 +913,7 @@ type XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic struct 
 	FailedStrategyCount int64 `json:"failedStrategyCount" api:"required"`
 	MalformedCount      int64 `json:"malformedCount" api:"required"`
 	PagesFetched        int64 `json:"pagesFetched" api:"required"`
-	// Whether credits or the requested limit reduced output.
+	// True when credits or the requested limit reduce output.
 	ResponseTruncated    bool                                                                          `json:"responseTruncated" api:"required"`
 	ResultLimitReached   bool                                                                          `json:"resultLimitReached" api:"required"`
 	ReturnedUsers        int64                                                                         `json:"returnedUsers" api:"required"`
@@ -941,9 +950,12 @@ func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic) Un
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Result counts and stop reason for one relationship strategy.
 type XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
+	// Reason a coverage strategy stopped.
+	//
 	// Any of "cursor_failure", "deadline", "exhausted", "failed", "page_limit",
 	// "result_limit", "stalled".
 	StopReason  string `json:"stopReason" api:"required"`
@@ -988,6 +1000,14 @@ type XUserGetBatchParams struct {
 	// Comma-separated numeric user IDs (1-100 values). Duplicate IDs are ignored while
 	// preserving first-seen order.
 	IDs string `query:"ids" api:"required" json:"-"`
+	// Maximum follower count. Missing counts pass this maximum.
+	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Minimum account age in whole days.
+	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
+	// Minimum follower count. Filtering happens before billing.
+	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Only return verified profiles.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1011,14 +1031,13 @@ type XUserGetFollowersParams struct {
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
 	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
-	// Legacy page-size alias outside explicit coverage mode. Coverage accepts 1-10000.
-	// Prefer pageSize.
+	// Legacy follower limit. Coverage accepts 1-10000. Prefer pageSize.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Match a location substring, ignoring case.
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -1026,12 +1045,12 @@ type XUserGetFollowersParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
-	// profiles. Continue with has_next_page.
+	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
@@ -1078,7 +1097,7 @@ type XUserGetFollowersYouKnowParams struct {
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -1086,13 +1105,13 @@ type XUserGetFollowersYouKnowParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
-	// Maximum user profiles requested from this page (20-200, default 200). Source,
-	// filters, or credits can return fewer profiles. Keep requesting next_cursor while
-	// has_next_page is true. Deprecated aliases remain accepted.
+	// Maximum user profiles requested from this page (1-200, default 200). Source,
+	// filters, or credits can return fewer profiles. Follow next_cursor while the
+	// response reports more pages. Deprecated aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
@@ -1131,7 +1150,7 @@ type XUserGetFollowingParams struct {
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -1139,12 +1158,12 @@ type XUserGetFollowingParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
-	// profiles. Continue with has_next_page.
+	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
@@ -1192,7 +1211,7 @@ type XUserGetLikesParams struct {
 	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for liked tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude a source application.
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
@@ -1206,7 +1225,7 @@ type XUserGetLikesParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
@@ -1222,8 +1241,8 @@ type XUserGetLikesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -1239,8 +1258,8 @@ type XUserGetLikesParams struct {
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -1266,19 +1285,19 @@ type XUserGetLikesParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetLikesParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XUserGetLikesParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XUserGetLikesParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XUserGetLikesParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -1293,7 +1312,7 @@ func (r XUserGetLikesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XUserGetLikesParamsMediaType string
 
 const (
@@ -1305,7 +1324,7 @@ const (
 	XUserGetLikesParamsMediaTypeNone   XUserGetLikesParamsMediaType = "none"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XUserGetLikesParamsQuotes string
 
 const (
@@ -1314,7 +1333,7 @@ const (
 	XUserGetLikesParamsQuotesOnly    XUserGetLikesParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XUserGetLikesParamsReplies string
 
 const (
@@ -1323,7 +1342,7 @@ const (
 	XUserGetLikesParamsRepliesOnly    XUserGetLikesParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XUserGetLikesParamsRetweets string
 
 const (
@@ -1346,7 +1365,7 @@ type XUserGetMediaParams struct {
 	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for media tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude a source application.
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
@@ -1360,7 +1379,7 @@ type XUserGetMediaParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
@@ -1376,8 +1395,8 @@ type XUserGetMediaParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -1393,8 +1412,8 @@ type XUserGetMediaParams struct {
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -1420,19 +1439,19 @@ type XUserGetMediaParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetMediaParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XUserGetMediaParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XUserGetMediaParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XUserGetMediaParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -1447,7 +1466,7 @@ func (r XUserGetMediaParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XUserGetMediaParamsMediaType string
 
 const (
@@ -1459,7 +1478,7 @@ const (
 	XUserGetMediaParamsMediaTypeNone   XUserGetMediaParamsMediaType = "none"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XUserGetMediaParamsQuotes string
 
 const (
@@ -1468,7 +1487,7 @@ const (
 	XUserGetMediaParamsQuotesOnly    XUserGetMediaParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XUserGetMediaParamsReplies string
 
 const (
@@ -1477,7 +1496,7 @@ const (
 	XUserGetMediaParamsRepliesOnly    XUserGetMediaParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XUserGetMediaParamsRetweets string
 
 const (
@@ -1500,7 +1519,7 @@ type XUserGetMentionsParams struct {
 	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for mentions
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude a source application.
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
@@ -1514,7 +1533,7 @@ type XUserGetMentionsParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
@@ -1530,8 +1549,8 @@ type XUserGetMentionsParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -1547,8 +1566,8 @@ type XUserGetMentionsParams struct {
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -1560,7 +1579,7 @@ type XUserGetMentionsParams struct {
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Return Tweets newer than this Tweet ID.
 	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
-	// Unix timestamp - return mentions after this time
+	// Inclusive ISO bound for Tweet creation time.
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
@@ -1568,7 +1587,7 @@ type XUserGetMentionsParams struct {
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
-	// Unix timestamp - return mentions before this time
+	// Exclusive ISO bound for Tweet creation time.
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	// URL substring or domain filter.
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
@@ -1578,19 +1597,19 @@ type XUserGetMentionsParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetMentionsParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XUserGetMentionsParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XUserGetMentionsParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XUserGetMentionsParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -1605,7 +1624,7 @@ func (r XUserGetMentionsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XUserGetMentionsParamsMediaType string
 
 const (
@@ -1617,7 +1636,7 @@ const (
 	XUserGetMentionsParamsMediaTypeNone   XUserGetMentionsParamsMediaType = "none"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XUserGetMentionsParamsQuotes string
 
 const (
@@ -1626,7 +1645,7 @@ const (
 	XUserGetMentionsParamsQuotesOnly    XUserGetMentionsParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XUserGetMentionsParamsReplies string
 
 const (
@@ -1635,7 +1654,7 @@ const (
 	XUserGetMentionsParamsRepliesOnly    XUserGetMentionsParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XUserGetMentionsParamsRetweets string
 
 const (
@@ -1659,7 +1678,7 @@ type XUserGetRepliesParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude a source application.
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
@@ -1675,7 +1694,7 @@ type XUserGetRepliesParams struct {
 	IncludeParentTweet param.Opt[bool] `query:"includeParentTweet,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
@@ -1691,8 +1710,8 @@ type XUserGetRepliesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -1708,7 +1727,8 @@ type XUserGetRepliesParams struct {
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
 	// Automatic pages accept 1-300 Tweets. Standard pages keep 1-100. Default 20.
-	// Continue while has_next_page is true. Deprecated aliases remain accepted.
+	// Follow next_cursor while the response reports more pages. Deprecated aliases
+	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -1734,19 +1754,19 @@ type XUserGetRepliesParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetRepliesParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XUserGetRepliesParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XUserGetRepliesParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XUserGetRepliesParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -1761,7 +1781,7 @@ func (r XUserGetRepliesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XUserGetRepliesParamsMediaType string
 
 const (
@@ -1773,7 +1793,7 @@ const (
 	XUserGetRepliesParamsMediaTypeNone   XUserGetRepliesParamsMediaType = "none"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XUserGetRepliesParamsQuotes string
 
 const (
@@ -1782,7 +1802,7 @@ const (
 	XUserGetRepliesParamsQuotesOnly    XUserGetRepliesParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XUserGetRepliesParamsReplies string
 
 const (
@@ -1791,7 +1811,7 @@ const (
 	XUserGetRepliesParamsRepliesOnly    XUserGetRepliesParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XUserGetRepliesParamsRetweets string
 
 const (
@@ -1815,7 +1835,7 @@ type XUserGetSearchParams struct {
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -1823,10 +1843,14 @@ type XUserGetSearchParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
 	// Only return verified profiles.
@@ -1859,7 +1883,7 @@ type XUserGetTweetsParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude a source application.
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
@@ -1873,11 +1897,11 @@ type XUserGetTweetsParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Include parent tweet for replies
 	IncludeParentTweet param.Opt[bool] `query:"includeParentTweet,omitzero" json:"-"`
-	// Include reply tweets
+	// Include reply tweets unless replies specifies another mode.
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
@@ -1893,8 +1917,8 @@ type XUserGetTweetsParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -1910,7 +1934,8 @@ type XUserGetTweetsParams struct {
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
 	// Automatic pages accept 1-300 Tweets. Standard pages keep 1-100. Default 20.
-	// Continue while has_next_page is true. Deprecated aliases remain accepted.
+	// Follow next_cursor while the response reports more pages. Deprecated aliases
+	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -1936,19 +1961,19 @@ type XUserGetTweetsParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetTweetsParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XUserGetTweetsParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XUserGetTweetsParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XUserGetTweetsParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -1963,7 +1988,7 @@ func (r XUserGetTweetsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XUserGetTweetsParamsMediaType string
 
 const (
@@ -1975,7 +2000,7 @@ const (
 	XUserGetTweetsParamsMediaTypeNone   XUserGetTweetsParamsMediaType = "none"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XUserGetTweetsParamsQuotes string
 
 const (
@@ -1984,7 +2009,7 @@ const (
 	XUserGetTweetsParamsQuotesOnly    XUserGetTweetsParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XUserGetTweetsParamsReplies string
 
 const (
@@ -1993,7 +2018,7 @@ const (
 	XUserGetTweetsParamsRepliesOnly    XUserGetTweetsParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XUserGetTweetsParamsRetweets string
 
 const (
@@ -2003,7 +2028,7 @@ const (
 )
 
 type XUserGetVerifiedFollowersParams struct {
-	// Legacy cursor alias. Prefer cursor.
+	// Legacy verified-follower cursor alias. Prefer cursor.
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
@@ -2014,14 +2039,14 @@ type XUserGetVerifiedFollowersParams struct {
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
 	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
-	// Legacy page-size alias outside explicit coverage mode. Coverage accepts 1-10000.
-	// Prefer pageSize.
+	// Legacy verified-follower page-size alias. Coverage accepts 1-10000. Prefer
+	// pageSize.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Match a location substring, ignoring case.
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -2029,12 +2054,12 @@ type XUserGetVerifiedFollowersParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
-	// profiles. Continue with has_next_page.
+	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`

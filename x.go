@@ -89,7 +89,7 @@ func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...optio
 	return res, err
 }
 
-// Get home timeline
+// Returns the home timeline for the connected X account.
 func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelineParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/timeline"
@@ -97,7 +97,7 @@ func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelinePa
 	return res, err
 }
 
-// Get notifications
+// Returns notifications for the connected X account.
 func (r *XService) GetNotifications(ctx context.Context, query XGetNotificationsParams, opts ...option.RequestOption) (res *XGetNotificationsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/notifications"
@@ -105,7 +105,7 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 	return res, err
 }
 
-// Get trending hashtags and topics from X by region
+// Returns current X trends for the requested region.
 func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts ...option.RequestOption) (res *XGetTrendsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/trends"

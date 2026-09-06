@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "scripts": {
+    "check:all": "go mod verify && ./scripts/lint && ./scripts/test && ./scripts/coverage && ./scripts/branch-coverage && go test -race ./... && go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./... && uv tool run --from reuse==6.2.0 reuse lint && ./scripts/reproducible-build"
+  }
+}

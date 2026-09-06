@@ -40,7 +40,7 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 	return
 }
 
-// Download images and videos from tweets
+// Downloads images and videos attached to selected tweets.
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/media/download"
@@ -48,7 +48,7 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 	return res, err
 }
 
-// Upload media
+// Uploads media and returns an identifier for later writes.
 func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -83,9 +83,9 @@ func (r *XMediaDownloadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XMediaUploadResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.

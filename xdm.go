@@ -43,7 +43,7 @@ func NewXDmService(opts ...option.RequestOption) (r XDmService) {
 	return
 }
 
-// Get DM conversation history
+// Returns message history with one user for the connected X account.
 func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGetHistoryParams, opts ...option.RequestOption) (res *XDmGetHistoryResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if userID == "" {
@@ -55,7 +55,7 @@ func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGet
 	return res, err
 }
 
-// Send direct message
+// Sends a direct message through a connected X account.
 func (r *XDmService) Send(ctx context.Context, userID string, params XDmSendParams, opts ...option.RequestOption) (res *XDmSendResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -118,9 +118,9 @@ func (r *XDmGetHistoryResponseMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XDmSendResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.

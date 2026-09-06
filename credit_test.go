@@ -31,7 +31,7 @@ func TestCreditRedirectTopupCheckout(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	err := client.Credits.RedirectTopupCheckout(context.TODO(), xtwitterscraper.CreditRedirectTopupCheckoutParams{
-		SessionID: "session_id",
+		SessionID: "P",
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

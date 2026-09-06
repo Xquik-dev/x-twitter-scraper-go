@@ -44,7 +44,7 @@ func NewStyleService(opts ...option.RequestOption) (r StyleService) {
 	return
 }
 
-// Get cached style profile
+// Returns one cached writing style profile.
 func (r *StyleService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *StyleProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -56,7 +56,7 @@ func (r *StyleService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Save style profile with custom tweets
+// Creates or replaces a style profile from supplied posts.
 func (r *StyleService) Update(ctx context.Context, id string, body StyleUpdateParams, opts ...option.RequestOption) (res *StyleProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -68,7 +68,7 @@ func (r *StyleService) Update(ctx context.Context, id string, body StyleUpdatePa
 	return res, err
 }
 
-// List cached style profiles
+// Returns cached writing style profiles for the account.
 func (r *StyleService) List(ctx context.Context, opts ...option.RequestOption) (res *StyleListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "styles"
@@ -76,7 +76,7 @@ func (r *StyleService) List(ctx context.Context, opts ...option.RequestOption) (
 	return res, err
 }
 
-// Delete a style profile
+// Permanently removes one cached style profile.
 func (r *StyleService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -89,7 +89,7 @@ func (r *StyleService) Delete(ctx context.Context, id string, opts ...option.Req
 	return err
 }
 
-// Analyze writing style from recent tweets
+// Builds a writing style profile from recent public posts.
 func (r *StyleService) Analyze(ctx context.Context, body StyleAnalyzeParams, opts ...option.RequestOption) (res *StyleProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "styles"
@@ -97,7 +97,7 @@ func (r *StyleService) Analyze(ctx context.Context, body StyleAnalyzeParams, opt
 	return res, err
 }
 
-// Compare two style profiles
+// Compares language and engagement signals across two style profiles.
 func (r *StyleService) Compare(ctx context.Context, query StyleCompareParams, opts ...option.RequestOption) (res *StyleCompareResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "styles/compare"
@@ -105,7 +105,7 @@ func (r *StyleService) Compare(ctx context.Context, query StyleCompareParams, op
 	return res, err
 }
 
-// Get engagement metrics for style tweets
+// Returns engagement metrics for an analyzed public X profile.
 func (r *StyleService) GetPerformance(ctx context.Context, id string, opts ...option.RequestOption) (res *StyleGetPerformanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -119,21 +119,14 @@ func (r *StyleService) GetPerformance(ctx context.Context, id string, opts ...op
 
 // Full style profile with sampled tweets used for tone analysis.
 type StyleProfile struct {
-	FetchedAt    time.Time           `json:"fetchedAt" api:"required" format:"date-time"`
-	IsOwnAccount bool                `json:"isOwnAccount" api:"required"`
-	TweetCount   int64               `json:"tweetCount" api:"required"`
-	Tweets       []StyleProfileTweet `json:"tweets" api:"required"`
-	XUsername    string              `json:"xUsername" api:"required"`
+	Tweets []StyleProfileTweet `json:"tweets" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FetchedAt    respjson.Field
-		IsOwnAccount respjson.Field
-		TweetCount   respjson.Field
-		Tweets       respjson.Field
-		XUsername    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Tweets      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
+	StyleProfileSummary
 }
 
 // Returns the unmodified JSON received from the API
@@ -272,7 +265,7 @@ func (r *StyleGetPerformanceResponseTweet) UnmarshalJSON(data []byte) error {
 }
 
 type StyleUpdateParams struct {
-	// Display label for the style
+	// Display label. Must match the path ID, ignoring case.
 	Label string `json:"label" api:"required"`
 	// Array of tweet objects
 	Tweets []StyleUpdateParamsTweet `json:"tweets,omitzero" api:"required"`

@@ -44,7 +44,7 @@ func NewXUserFollowService(opts ...option.RequestOption) (r XUserFollowService) 
 	return
 }
 
-// Follow user
+// Follows a user through a connected X account.
 func (r *XUserFollowService) New(ctx context.Context, id string, params XUserFollowNewParams, opts ...option.RequestOption) (res *XUserFollowNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -59,7 +59,7 @@ func (r *XUserFollowService) New(ctx context.Context, id string, params XUserFol
 	return res, err
 }
 
-// Unfollow user
+// Unfollows a user through a connected X account.
 func (r *XUserFollowService) DeleteAll(ctx context.Context, id string, params XUserFollowDeleteAllParams, opts ...option.RequestOption) (res *XUserFollowDeleteAllResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -74,9 +74,9 @@ func (r *XUserFollowService) DeleteAll(ctx context.Context, id string, params XU
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XUserFollowNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -369,9 +369,9 @@ func (r *XUserFollowNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XUserFollowDeleteAllResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.

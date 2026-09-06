@@ -11,6 +11,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
@@ -31,11 +32,20 @@ func TestXCommunityTweetListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Communities.Tweets.List(context.TODO(), xtwitterscraper.XCommunityTweetListParams{
-		CommunityID: "321669910225",
-		Q:           "q",
-		Cursor:      xtwitterscraper.String("cursor"),
-		PageSize:    xtwitterscraper.Int(1),
-		QueryType:   xtwitterscraper.XCommunityTweetListParamsQueryTypeLatest,
+		CommunityID:  "321669910225",
+		Q:            "q",
+		Cursor:       xtwitterscraper.String("cursor"),
+		Language:     xtwitterscraper.String("language"),
+		MediaType:    xtwitterscraper.XCommunityTweetListParamsMediaTypeImages,
+		MinLikes:     xtwitterscraper.Int(0),
+		MinReplies:   xtwitterscraper.Int(0),
+		MinRetweets:  xtwitterscraper.Int(0),
+		MinViews:     xtwitterscraper.Int(0),
+		PageSize:     xtwitterscraper.Int(1),
+		QueryType:    xtwitterscraper.XCommunityTweetListParamsQueryTypeLatest,
+		SinceDate:    xtwitterscraper.Time(time.Now()),
+		UntilDate:    xtwitterscraper.Time(time.Now()),
+		VerifiedOnly: xtwitterscraper.Bool(true),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -63,8 +73,17 @@ func TestXCommunityTweetListByCommunityWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		xtwitterscraper.XCommunityTweetListByCommunityParams{
-			Cursor:   xtwitterscraper.String("cursor"),
-			PageSize: xtwitterscraper.Int(1),
+			Cursor:       xtwitterscraper.String("cursor"),
+			Language:     xtwitterscraper.String("language"),
+			MediaType:    xtwitterscraper.XCommunityTweetListByCommunityParamsMediaTypeImages,
+			MinLikes:     xtwitterscraper.Int(0),
+			MinReplies:   xtwitterscraper.Int(0),
+			MinRetweets:  xtwitterscraper.Int(0),
+			MinViews:     xtwitterscraper.Int(0),
+			PageSize:     xtwitterscraper.Int(1),
+			SinceDate:    xtwitterscraper.Time(time.Now()),
+			UntilDate:    xtwitterscraper.Time(time.Now()),
+			VerifiedOnly: xtwitterscraper.Bool(true),
 		},
 	)
 	if err != nil {

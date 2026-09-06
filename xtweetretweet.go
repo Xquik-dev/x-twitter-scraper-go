@@ -44,7 +44,7 @@ func NewXTweetRetweetService(opts ...option.RequestOption) (r XTweetRetweetServi
 	return
 }
 
-// Retweet
+// Reposts a tweet through a connected X account.
 func (r *XTweetRetweetService) New(ctx context.Context, id string, params XTweetRetweetNewParams, opts ...option.RequestOption) (res *XTweetRetweetNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -59,7 +59,7 @@ func (r *XTweetRetweetService) New(ctx context.Context, id string, params XTweet
 	return res, err
 }
 
-// Unretweet
+// Removes a repost through a connected X account.
 func (r *XTweetRetweetService) Delete(ctx context.Context, id string, params XTweetRetweetDeleteParams, opts ...option.RequestOption) (res *XTweetRetweetDeleteResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -74,9 +74,9 @@ func (r *XTweetRetweetService) Delete(ctx context.Context, id string, params XTw
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XTweetRetweetNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -369,9 +369,9 @@ func (r *XTweetRetweetNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XTweetRetweetDeleteResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.

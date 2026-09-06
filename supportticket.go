@@ -43,7 +43,7 @@ func NewSupportTicketService(opts ...option.RequestOption) (r SupportTicketServi
 	return
 }
 
-// Create a support ticket
+// Creates a support ticket with an initial message.
 func (r *SupportTicketService) New(ctx context.Context, params SupportTicketNewParams, opts ...option.RequestOption) (res *SupportTicketNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
@@ -54,7 +54,7 @@ func (r *SupportTicketService) New(ctx context.Context, params SupportTicketNewP
 	return res, err
 }
 
-// Get ticket with all messages
+// Returns one support ticket with its message history.
 func (r *SupportTicketService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SupportTicketGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -66,7 +66,7 @@ func (r *SupportTicketService) Get(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Update ticket status
+// Changes the open or closed state of a support ticket.
 func (r *SupportTicketService) Update(ctx context.Context, id string, body SupportTicketUpdateParams, opts ...option.RequestOption) (res *SupportTicketUpdateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -78,7 +78,7 @@ func (r *SupportTicketService) Update(ctx context.Context, id string, body Suppo
 	return res, err
 }
 
-// List user's support tickets
+// Returns support tickets owned by the authenticated user.
 func (r *SupportTicketService) List(ctx context.Context, opts ...option.RequestOption) (res *SupportTicketListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "support/tickets"
@@ -86,7 +86,7 @@ func (r *SupportTicketService) List(ctx context.Context, opts ...option.RequestO
 	return res, err
 }
 
-// Reply to a support ticket
+// Adds a message to an existing support ticket.
 func (r *SupportTicketService) Reply(ctx context.Context, id string, params SupportTicketReplyParams, opts ...option.RequestOption) (res *SupportTicketReplyResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
@@ -346,7 +346,9 @@ func (r *SupportTicketReplyResponseAttachment) UnmarshalJSON(data []byte) error 
 }
 
 type SupportTicketNewParams struct {
-	Body           string            `json:"body" api:"required"`
+	// Non-empty support message text.
+	Body string `json:"body" api:"required"`
+	// Non-empty support ticket subject.
 	Subject        string            `json:"subject" api:"required"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
@@ -383,6 +385,7 @@ const (
 )
 
 type SupportTicketReplyParams struct {
+	// Non-empty support message text.
 	Body           string            `json:"body" api:"required"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj

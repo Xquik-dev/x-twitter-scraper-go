@@ -42,7 +42,7 @@ func NewXProfileService(opts ...option.RequestOption) (r XProfileService) {
 	return
 }
 
-// Update X profile
+// Updates editable fields on a connected X profile.
 func (r *XProfileService) Update(ctx context.Context, params XProfileUpdateParams, opts ...option.RequestOption) (res *XProfileUpdateResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -53,7 +53,7 @@ func (r *XProfileService) Update(ctx context.Context, params XProfileUpdateParam
 	return res, err
 }
 
-// Update profile avatar
+// Replaces the avatar on a connected X profile.
 func (r *XProfileService) UpdateAvatar(ctx context.Context, params XProfileUpdateAvatarParams, opts ...option.RequestOption) (res *XProfileUpdateAvatarResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -64,7 +64,7 @@ func (r *XProfileService) UpdateAvatar(ctx context.Context, params XProfileUpdat
 	return res, err
 }
 
-// Update profile banner
+// Replaces the banner on a connected X profile.
 func (r *XProfileService) UpdateBanner(ctx context.Context, params XProfileUpdateBannerParams, opts ...option.RequestOption) (res *XProfileUpdateBannerResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -75,9 +75,9 @@ func (r *XProfileService) UpdateBanner(ctx context.Context, params XProfileUpdat
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XProfileUpdateResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -370,9 +370,9 @@ func (r *XProfileUpdateResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XProfileUpdateAvatarResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -665,9 +665,9 @@ func (r *XProfileUpdateAvatarResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XProfileUpdateBannerResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.

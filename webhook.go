@@ -44,7 +44,7 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 	return
 }
 
-// Create webhook
+// Registers an endpoint for signed event deliveries.
 func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *WebhookNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "webhooks"
@@ -52,7 +52,7 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 	return res, err
 }
 
-// Update webhook
+// Updates an endpoint, event selection, or delivery settings.
 func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpdateParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -64,7 +64,7 @@ func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpda
 	return res, err
 }
 
-// List webhooks
+// Returns configured webhook endpoints and delivery states.
 func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption) (res *WebhookListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "webhooks"
@@ -72,7 +72,7 @@ func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption)
 	return res, err
 }
 
-// Deactivate webhook
+// Stops future deliveries to the selected webhook.
 func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookDeactivateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -84,7 +84,7 @@ func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// List webhook deliveries
+// Returns recent delivery attempts and response outcomes.
 func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookListDeliveriesResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -96,7 +96,7 @@ func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...
 	return res, err
 }
 
-// Test and resume webhook endpoint
+// Tests the endpoint before resuming a manually paused webhook.
 func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookResumeResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -108,7 +108,7 @@ func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.R
 	return res, err
 }
 
-// Test webhook endpoint
+// Sends a signed test event to the configured endpoint.
 func (r *WebhookService) Test(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookTestResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -157,14 +157,14 @@ type Webhook struct {
 	// Consecutive failed delivery attempts since the last success.
 	ConsecutiveFailures int64     `json:"consecutiveFailures" api:"required"`
 	CreatedAt           time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Endpoint delivery state. needs_attention means delivery stopped after repeated
-	// failures.
+	// Endpoint delivery state. paused means the user paused delivery. needs_attention
+	// marks repeated failures. Delivery attempts continue.
 	//
 	// Any of "active", "paused", "needs_attention".
 	DeliveryStatus WebhookDeliveryStatus `json:"deliveryStatus" api:"required"`
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
-	// Consecutive delivery failures that pause the endpoint.
+	// Maximum reported failures before needs_attention. It does not pause delivery.
 	FailureHardCap int64  `json:"failureHardCap" api:"required"`
 	IsActive       bool   `json:"isActive" api:"required"`
 	URL            string `json:"url" api:"required" format:"uri"`
@@ -189,8 +189,8 @@ func (r *Webhook) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Endpoint delivery state. needs_attention means delivery stopped after repeated
-// failures.
+// Endpoint delivery state. paused means the user paused delivery. needs_attention
+// marks repeated failures. Delivery attempts continue.
 type WebhookDeliveryStatus string
 
 const (

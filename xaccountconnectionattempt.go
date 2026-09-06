@@ -40,7 +40,7 @@ func NewXAccountConnectionAttemptService(opts ...option.RequestOption) (r XAccou
 	return
 }
 
-// Get X account connection status
+// Returns progress for an X account connection attempt.
 func (r *XAccountConnectionAttemptService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountConnectionAttemptGetResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {

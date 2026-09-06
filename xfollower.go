@@ -40,7 +40,7 @@ func NewXFollowerService(opts ...option.RequestOption) (r XFollowerService) {
 	return
 }
 
-// Check if one user follows another
+// Returns whether one public account follows another.
 func (r *XFollowerService) Check(ctx context.Context, query XFollowerCheckParams, opts ...option.RequestOption) (res *XFollowerCheckResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/followers/check"

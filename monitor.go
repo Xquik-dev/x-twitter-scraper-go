@@ -21,6 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // X account monitoring with 1-second checks
@@ -58,7 +59,7 @@ func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ..
 	return res, err
 }
 
-// Get monitor
+// Returns configuration and status for one account monitor.
 func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Monitor, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -70,7 +71,7 @@ func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.Requ
 	return res, err
 }
 
-// Update monitor
+// Updates mutable settings for an existing account monitor.
 func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpdateParams, opts ...option.RequestOption) (res *Monitor, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -82,7 +83,7 @@ func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpda
 	return res, err
 }
 
-// List monitors
+// Returns account monitors with their current operating states.
 func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "monitors"
@@ -90,7 +91,8 @@ func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption)
 	return res, err
 }
 
-// Delete monitor
+// Stops one account monitor, then removes its stored events in bounded batches.
+// Poll statusUrl until the monitor returns 404.
 func (r *MonitorService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorDeactivateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -197,12 +199,17 @@ func (r *MonitorListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MonitorDeactivateResponse struct {
-	Success bool `json:"success" api:"required"`
+	DeletionStatus constant.Deleting `json:"deletionStatus" default:"deleting"`
+	// Poll this monitor URL until it returns 404.
+	StatusURL string `json:"statusUrl" api:"required"`
+	Success   bool   `json:"success" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		DeletionStatus respjson.Field
+		StatusURL      respjson.Field
+		Success        respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 

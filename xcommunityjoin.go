@@ -44,7 +44,7 @@ func NewXCommunityJoinService(opts ...option.RequestOption) (r XCommunityJoinSer
 	return
 }
 
-// Join community
+// Joins an X Community through a connected account.
 func (r *XCommunityJoinService) New(ctx context.Context, id string, params XCommunityJoinNewParams, opts ...option.RequestOption) (res *XCommunityJoinNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -59,7 +59,7 @@ func (r *XCommunityJoinService) New(ctx context.Context, id string, params XComm
 	return res, err
 }
 
-// Leave community
+// Leaves an X Community through a connected account.
 func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, params XCommunityJoinDeleteAllParams, opts ...option.RequestOption) (res *XCommunityJoinDeleteAllResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -74,9 +74,9 @@ func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, params
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XCommunityJoinNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -369,9 +369,9 @@ func (r *XCommunityJoinNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XCommunityJoinDeleteAllResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
