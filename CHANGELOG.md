@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.18.2 (2026-09-06)
+
+Full Changelog: [v0.18.1...v0.18.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.1...v0.18.2)
+
+### Bug Fixes
+
+* qualify regenerated response models ([19431c7](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/19431c7edc0c20fbd7af437c431fe5f90a9b48c7))
+
+
+### Documentation
+
+* enforce source LOC reduction ([#55](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/55)) ([7353628](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/73536286b884811f66ecb835c3571921a6032560))
+
 ## 0.18.1 (2026-08-21)
 
 Full Changelog: [v0.18.0...v0.18.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.0...v0.18.1)
