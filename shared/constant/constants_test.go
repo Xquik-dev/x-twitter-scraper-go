@@ -19,7 +19,7 @@ func TestConstantsMarshalDefaults(t *testing.T) {
 		{"wallet status", HTTPSXquikComAPIV1GuestWalletsStatus(""), `"https://xquik.com/api/v1/guest-wallets/status"`},
 		{"paid reads", PaidReads(""), `"paid_reads"`},
 		{"post", Post(""), `"POST"`},
-		{"production weight", ProductionWeightNotPublishedByX(""), `"Production weight not published by X"`},
+		{"source multiplier", SourceDefaultProductionValueCanVary(""), `"Source default; production value can vary"`},
 		{"refine", Refine(""), `"refine"`},
 		{"score", Score(""), `"score"`},
 		{

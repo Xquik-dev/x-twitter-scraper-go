@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
@@ -45,7 +46,7 @@ func NewXAccountService(opts ...option.RequestOption) (r XAccountService) {
 	return
 }
 
-// Connect X account
+// Starts a secure X account connection flow.
 func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts ...option.RequestOption) (res *XAccountNewResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/accounts"
@@ -53,7 +54,7 @@ func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts 
 	return res, err
 }
 
-// Get X account details
+// Returns one connected X account and its current status.
 func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -65,15 +66,16 @@ func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.Req
 	return res, err
 }
 
-// List connected X accounts
-func (r *XAccountService) List(ctx context.Context, opts ...option.RequestOption) (res *XAccountListResponse, err error) {
+// Returns connected accounts in creation order. Omit pagination for up to 10,000
+// accounts. Send limit or cursor for legacy pagination.
+func (r *XAccountService) List(ctx context.Context, query XAccountListParams, opts ...option.RequestOption) (res *XAccountListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/accounts"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
-// Disconnect X account
+// Disconnects one X account and removes stored session access.
 func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDeleteResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -94,7 +96,7 @@ func (r *XAccountService) BulkRetry(ctx context.Context, opts ...option.RequestO
 	return res, err
 }
 
-// Re-authenticate X account
+// Starts re-authentication for an existing X account connection.
 func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountReauthParams, opts ...option.RequestOption) (res *XAccountReauthResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -348,9 +350,15 @@ func (r *XAccountNewResponseXAccountConnectionChallenge) UnmarshalJSON(data []by
 
 type XAccountListResponse struct {
 	Accounts []XAccount `json:"accounts" api:"required"`
+	// Present on cursor-paginated responses.
+	HasMore bool `json:"hasMore"`
+	// Pass unchanged as cursor when hasMore is true.
+	NextCursor string `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Accounts    respjson.Field
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -453,6 +461,23 @@ func (r XAccountNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *XAccountNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type XAccountListParams struct {
+	// Previous nextCursor. Offset pagination is not supported.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum items per page: 1 to 100, default 50. Credits can reduce paid results.
+	// The endpoint returns 402 insufficient_credits when none are affordable.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XAccountListParams]'s query parameters as `url.Values`.
+func (r XAccountListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type XAccountReauthParams struct {

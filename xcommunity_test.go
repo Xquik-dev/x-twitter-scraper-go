@@ -11,6 +11,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
@@ -128,7 +129,7 @@ func TestXCommunityGetMembersWithOptionalParams(t *testing.T) {
 			MinFollowers:      xtwitterscraper.Int(0),
 			MinFollowing:      xtwitterscraper.Int(0),
 			MinStatuses:       xtwitterscraper.Int(0),
-			PageSize:          xtwitterscraper.Int(20),
+			PageSize:          xtwitterscraper.Int(1),
 			UsernameContains:  xtwitterscraper.String("usernameContains"),
 			VerifiedOnly:      xtwitterscraper.Bool(true),
 			VerifiedType:      xtwitterscraper.String("verifiedType"),
@@ -200,11 +201,20 @@ func TestXCommunityGetSearchWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Communities.GetSearch(context.TODO(), xtwitterscraper.XCommunityGetSearchParams{
-		CommunityID: "321669910225",
-		Q:           "q",
-		Cursor:      xtwitterscraper.String("cursor"),
-		PageSize:    xtwitterscraper.Int(1),
-		QueryType:   xtwitterscraper.XCommunityGetSearchParamsQueryTypeLatest,
+		CommunityID:  "321669910225",
+		Q:            "q",
+		Cursor:       xtwitterscraper.String("cursor"),
+		Language:     xtwitterscraper.String("language"),
+		MediaType:    xtwitterscraper.XCommunityGetSearchParamsMediaTypeImages,
+		MinLikes:     xtwitterscraper.Int(0),
+		MinReplies:   xtwitterscraper.Int(0),
+		MinRetweets:  xtwitterscraper.Int(0),
+		MinViews:     xtwitterscraper.Int(0),
+		PageSize:     xtwitterscraper.Int(1),
+		QueryType:    xtwitterscraper.XCommunityGetSearchParamsQueryTypeLatest,
+		SinceDate:    xtwitterscraper.Time(time.Now()),
+		UntilDate:    xtwitterscraper.Time(time.Now()),
+		VerifiedOnly: xtwitterscraper.Bool(true),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error

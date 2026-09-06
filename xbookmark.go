@@ -42,7 +42,7 @@ func NewXBookmarkService(opts ...option.RequestOption) (r XBookmarkService) {
 	return
 }
 
-// Get bookmarked tweets
+// Returns bookmarks from the connected X account.
 func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/bookmarks"
@@ -50,7 +50,7 @@ func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, 
 	return res, err
 }
 
-// Get bookmark folders
+// Returns bookmark folders from the connected X account.
 func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.RequestOption) (res *XBookmarkGetFoldersResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/bookmarks/folders"
@@ -60,9 +60,9 @@ func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.Reques
 
 type XBookmarkGetFoldersResponse struct {
 	Folders []XBookmarkGetFoldersResponseFolder `json:"folders" api:"required"`
-	// Always false for the current bookmark folder route
+	// Whether another folder page is available
 	HasNextPage bool `json:"has_next_page" api:"required"`
-	// Always empty for the current bookmark folder route
+	// Cursor for the next folder page
 	NextCursor string `json:"next_cursor" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -80,12 +80,18 @@ func (r *XBookmarkGetFoldersResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Bookmark folder and its optional public cover image.
 type XBookmarkGetFoldersResponseFolder struct {
-	ID   string `json:"id" api:"required"`
-	Name string `json:"name" api:"required"`
+	// Folder ID.
+	ID string `json:"id" api:"required"`
+	// Public folder cover image metadata.
+	Media XBookmarkGetFoldersResponseFolderMedia `json:"media"`
+	// Folder name.
+	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		Media       respjson.Field
 		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -95,6 +101,83 @@ type XBookmarkGetFoldersResponseFolder struct {
 // Returns the unmodified JSON received from the API
 func (r XBookmarkGetFoldersResponseFolder) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolder) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public folder cover image metadata.
+type XBookmarkGetFoldersResponseFolderMedia struct {
+	// Media object ID.
+	ID string `json:"id"`
+	// Media ID.
+	MediaID string `json:"mediaId"`
+	// Stable media key.
+	MediaKey string `json:"mediaKey"`
+	// Original image height.
+	OriginalImageHeight int64 `json:"originalImageHeight"`
+	// Original image URL.
+	OriginalImageURL string `json:"originalImageUrl"`
+	// Original image width.
+	OriginalImageWidth int64 `json:"originalImageWidth"`
+	// Dominant image colors and their proportions.
+	Palette []XBookmarkGetFoldersResponseFolderMediaPalette `json:"palette"`
+	// Media object type.
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                  respjson.Field
+		MediaID             respjson.Field
+		MediaKey            respjson.Field
+		OriginalImageHeight respjson.Field
+		OriginalImageURL    respjson.Field
+		OriginalImageWidth  respjson.Field
+		Palette             respjson.Field
+		Type                respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XBookmarkGetFoldersResponseFolderMedia) RawJSON() string { return r.JSON.raw }
+func (r *XBookmarkGetFoldersResponseFolderMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XBookmarkGetFoldersResponseFolderMediaPalette struct {
+	Percentage float64                                          `json:"percentage"`
+	Rgb        XBookmarkGetFoldersResponseFolderMediaPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XBookmarkGetFoldersResponseFolderMediaPalette) RawJSON() string { return r.JSON.raw }
+func (r *XBookmarkGetFoldersResponseFolderMediaPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XBookmarkGetFoldersResponseFolderMediaPaletteRgb struct {
+	Blue  float64 `json:"blue"`
+	Green float64 `json:"green"`
+	Red   float64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XBookmarkGetFoldersResponseFolderMediaPaletteRgb) RawJSON() string { return r.JSON.raw }
+func (r *XBookmarkGetFoldersResponseFolderMediaPaletteRgb) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -44,7 +44,7 @@ func NewDrawService(opts ...option.RequestOption) (r DrawService) {
 	return
 }
 
-// Get draw details
+// Returns draw rules, status, candidates, and selected winners.
 func (r *DrawService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DrawGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -56,7 +56,7 @@ func (r *DrawService) Get(ctx context.Context, id string, opts ...option.Request
 	return res, err
 }
 
-// List draws
+// Returns giveaway draws owned by the authenticated account.
 func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...option.RequestOption) (res *DrawListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "draws"
@@ -64,7 +64,7 @@ func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...op
 	return res, err
 }
 
-// Export draw data
+// Downloads draw evidence in the requested format.
 func (r *DrawService) Export(ctx context.Context, id string, query DrawExportParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
@@ -77,10 +77,8 @@ func (r *DrawService) Export(ctx context.Context, id string, query DrawExportPar
 	return res, err
 }
 
-// Runs a giveaway draw from a source tweet. The draw first checks the minimum
-// credits needed to inspect the source tweet and at least one candidate. Remaining
-// credits cap how many replies and retweeters can be inspected before filters and
-// winner selection run.
+// Checks credits, then draws winners from inspected replies and reposters.
+// Remaining credits cap inspected candidates.
 func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...option.RequestOption) (res *DrawRunResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "draws"
@@ -90,27 +88,15 @@ func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...optio
 
 // Full giveaway draw with tweet metrics, entries, and timing.
 type DrawDetail struct {
-	// Draw public ID.
-	ID                  string    `json:"id" api:"required"`
-	CreatedAt           time.Time `json:"createdAt" api:"required" format:"date-time"`
-	Status              string    `json:"status" api:"required"`
-	TotalEntries        int64     `json:"totalEntries" api:"required"`
-	TweetAuthorUsername string    `json:"tweetAuthorUsername" api:"required"`
-	TweetID             string    `json:"tweetId" api:"required"`
-	TweetLikeCount      int64     `json:"tweetLikeCount" api:"required"`
-	TweetQuoteCount     int64     `json:"tweetQuoteCount" api:"required"`
-	TweetReplyCount     int64     `json:"tweetReplyCount" api:"required"`
-	TweetRetweetCount   int64     `json:"tweetRetweetCount" api:"required"`
-	TweetText           string    `json:"tweetText" api:"required"`
-	TweetURL            string    `json:"tweetUrl" api:"required" format:"uri"`
-	ValidEntries        int64     `json:"validEntries" api:"required"`
-	DrawnAt             time.Time `json:"drawnAt" format:"date-time"`
+	TweetAuthorUsername string `json:"tweetAuthorUsername" api:"required"`
+	TweetID             string `json:"tweetId" api:"required"`
+	TweetLikeCount      int64  `json:"tweetLikeCount" api:"required"`
+	TweetQuoteCount     int64  `json:"tweetQuoteCount" api:"required"`
+	TweetReplyCount     int64  `json:"tweetReplyCount" api:"required"`
+	TweetRetweetCount   int64  `json:"tweetRetweetCount" api:"required"`
+	TweetText           string `json:"tweetText" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		CreatedAt           respjson.Field
-		Status              respjson.Field
-		TotalEntries        respjson.Field
 		TweetAuthorUsername respjson.Field
 		TweetID             respjson.Field
 		TweetLikeCount      respjson.Field
@@ -118,12 +104,10 @@ type DrawDetail struct {
 		TweetReplyCount     respjson.Field
 		TweetRetweetCount   respjson.Field
 		TweetText           respjson.Field
-		TweetURL            respjson.Field
-		ValidEntries        respjson.Field
-		DrawnAt             respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
+	DrawListItem
 }
 
 // Returns the unmodified JSON received from the API
@@ -253,12 +237,10 @@ func (r *DrawRunResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DrawListParams struct {
-	// Previous nextCursor.
+	// Previous nextCursor. Offset pagination is not supported.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Maximum number of items to return (1-100, default 50). For paid per-result
-	// endpoints, the returned count may be lower when remaining credits cannot cover
-	// the requested page. If zero paid results are affordable, the endpoint returns
-	// 402 insufficient_credits.
+	// Maximum items per page: 1 to 100, default 50. Credits can reduce paid results.
+	// The endpoint returns 402 insufficient_credits when none are affordable.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }

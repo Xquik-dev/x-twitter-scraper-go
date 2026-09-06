@@ -41,7 +41,7 @@ func NewTrendService(opts ...option.RequestOption) (r TrendService) {
 	return
 }
 
-// Get trending hashtags and topics by region (alias)
+// Returns current regional trends through the compatibility route.
 func (r *TrendService) List(ctx context.Context, query TrendListParams, opts ...option.RequestOption) (res *TrendListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "trends"
@@ -72,13 +72,13 @@ func (r *TrendListResponse) UnmarshalJSON(data []byte) error {
 type TrendListResponseTrend struct {
 	Name        string `json:"name" api:"required"`
 	Description string `json:"description"`
-	// Promotion identifier from X. Null for organic trends.
+	// Promotion ID for this trend, or null when organic.
 	PromotedContent string `json:"promotedContent" api:"nullable"`
 	Query           string `json:"query"`
 	Rank            int64  `json:"rank"`
-	// Approximate public post volume when X supplies it.
+	// Estimated post volume for this trend.
 	TweetVolume int64 `json:"tweetVolume" api:"nullable"`
-	// X search URL for the trend.
+	// Search URL associated with this trend.
 	URL string `json:"url" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

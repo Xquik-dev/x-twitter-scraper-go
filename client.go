@@ -38,7 +38,7 @@ type Client struct {
 	Monitors MonitorService
 	// Activity events from monitored accounts
 	Events EventService
-	// Bulk data extraction (23 tool types)
+	// Saved or bulk data extraction (23 tool types)
 	Extractions ExtractionService
 	// Giveaway draws from tweet replies
 	Draws DrawService

@@ -43,7 +43,7 @@ func NewXWriteActionService(opts ...option.RequestOption) (r XWriteActionService
 	return
 }
 
-// Get write action status
+// Returns the current state of an asynchronous write action.
 func (r *XWriteActionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XWriteActionGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -55,9 +55,9 @@ func (r *XWriteActionService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XWriteActionGetResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.

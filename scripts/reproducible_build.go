@@ -28,9 +28,8 @@ func main() {
 	}
 	paths := repositoryFiles()
 	first := buildArchive(paths)
-	second := buildArchive(paths)
 	firstHash := sha256.Sum256(first)
-	secondHash := sha256.Sum256(second)
+	secondHash := sha256.Sum256(buildArchive(paths))
 	if firstHash != secondHash {
 		exitf("module archives differ: %x != %x", firstHash, secondHash)
 	}
@@ -66,14 +65,7 @@ func repositoryFiles() []string {
 	if err != nil {
 		exitf("list repository files: %v", err)
 	}
-	rawPaths := bytes.Split(output, []byte{0})
-	paths := make([]string, 0, len(rawPaths))
-	for _, rawPath := range rawPaths {
-		if len(rawPath) == 0 {
-			continue
-		}
-		paths = append(paths, filepath.ToSlash(string(rawPath)))
-	}
+	paths := strings.FieldsFunc(filepath.ToSlash(string(output)), func(char rune) bool { return char == 0 })
 	sort.Strings(paths)
 	return paths
 }

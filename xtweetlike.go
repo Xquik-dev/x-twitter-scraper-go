@@ -44,7 +44,7 @@ func NewXTweetLikeService(opts ...option.RequestOption) (r XTweetLikeService) {
 	return
 }
 
-// Like tweet
+// Likes a post through a connected X account.
 func (r *XTweetLikeService) New(ctx context.Context, id string, params XTweetLikeNewParams, opts ...option.RequestOption) (res *XTweetLikeNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -59,7 +59,7 @@ func (r *XTweetLikeService) New(ctx context.Context, id string, params XTweetLik
 	return res, err
 }
 
-// Unlike tweet
+// Removes a like through a connected X account.
 func (r *XTweetLikeService) Delete(ctx context.Context, id string, params XTweetLikeDeleteParams, opts ...option.RequestOption) (res *XTweetLikeDeleteResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -74,9 +74,9 @@ func (r *XTweetLikeService) Delete(ctx context.Context, id string, params XTweet
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XTweetLikeNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -369,9 +369,9 @@ func (r *XTweetLikeNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XTweetLikeDeleteResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.

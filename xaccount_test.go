@@ -68,7 +68,7 @@ func TestXAccountGet(t *testing.T) {
 	}
 }
 
-func TestXAccountList(t *testing.T) {
+func TestXAccountListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -81,7 +81,10 @@ func TestXAccountList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.Accounts.List(context.TODO())
+	_, err := client.X.Accounts.List(context.TODO(), xtwitterscraper.XAccountListParams{
+		Cursor: xtwitterscraper.String("cursor"),
+		Limit:  xtwitterscraper.Int(1),
+	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {

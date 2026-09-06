@@ -45,7 +45,7 @@ func NewEventService(opts ...option.RequestOption) (r EventService) {
 	return
 }
 
-// Get event
+// Returns one monitor event owned by the account.
 func (r *EventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EventDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -57,7 +57,7 @@ func (r *EventService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// List events
+// Returns monitor events with cursor pagination and filters.
 func (r *EventService) List(ctx context.Context, query EventListParams, opts ...option.RequestOption) (res *EventListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "events"
@@ -203,14 +203,12 @@ func (r *EventListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type EventListParams struct {
-	// Previous nextCursor.
+	// Previous nextCursor. Offset pagination is not supported.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Keyword monitor ID.
 	KeywordMonitorID param.Opt[string] `query:"keywordMonitorId,omitzero" json:"-"`
-	// Maximum number of items to return (1-100, default 50). For paid per-result
-	// endpoints, the returned count may be lower when remaining credits cannot cover
-	// the requested page. If zero paid results are affordable, the endpoint returns
-	// 402 insufficient_credits.
+	// Maximum items per page: 1 to 100, default 50. Credits can reduce paid results.
+	// The endpoint returns 402 insufficient_credits when none are affordable.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Account monitor ID.
 	MonitorID param.Opt[string] `query:"monitorId,omitzero" json:"-"`

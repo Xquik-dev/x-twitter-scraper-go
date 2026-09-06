@@ -58,7 +58,8 @@ func (r *GuestWalletService) New(ctx context.Context, params GuestWalletNewParam
 
 // Poll after payment. Use usable to decide whether paid reads can run. An active
 // wallet can remain usable while a top-up is pending. A new wallet becomes usable
-// only after payment is verified. Send the guest key as Authorization: Bearer.
+// only after payment is verified. Send the guest key as Authorization: Bearer
+// xq\_...
 func (r *GuestWalletService) GetStatus(ctx context.Context, opts ...option.RequestOption) (res *GuestWalletGetStatusResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithAPIKeySecurity()}
 	opts = slices.Concat(preClientOpts, r.options, opts)

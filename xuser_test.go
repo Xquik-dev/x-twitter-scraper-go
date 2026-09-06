@@ -71,7 +71,7 @@ func TestXUserRemoveFollower(t *testing.T) {
 	}
 }
 
-func TestXUserGetBatch(t *testing.T) {
+func TestXUserGetBatchWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,7 +85,11 @@ func TestXUserGetBatch(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.X.Users.GetBatch(context.TODO(), xtwitterscraper.XUserGetBatchParams{
-		IDs: "ids",
+		IDs:               "ids",
+		MaxFollowers:      xtwitterscraper.Int(0),
+		MinAccountAgeDays: xtwitterscraper.Int(0),
+		MinFollowers:      xtwitterscraper.Int(0),
+		VerifiedOnly:      xtwitterscraper.Bool(true),
 	})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
@@ -128,7 +132,7 @@ func TestXUserGetFollowersWithOptionalParams(t *testing.T) {
 			MinFollowing:      xtwitterscraper.Int(0),
 			MinStatuses:       xtwitterscraper.Int(0),
 			Mode:              xtwitterscraper.XUserGetFollowersParamsModeStandard,
-			PageSize:          xtwitterscraper.Int(20),
+			PageSize:          xtwitterscraper.Int(1),
 			UsernameContains:  xtwitterscraper.String("usernameContains"),
 			VerifiedOnly:      xtwitterscraper.Bool(true),
 			VerifiedType:      xtwitterscraper.String("verifiedType"),
@@ -172,7 +176,7 @@ func TestXUserGetFollowersYouKnowWithOptionalParams(t *testing.T) {
 			MinFollowers:      xtwitterscraper.Int(0),
 			MinFollowing:      xtwitterscraper.Int(0),
 			MinStatuses:       xtwitterscraper.Int(0),
-			PageSize:          xtwitterscraper.Int(20),
+			PageSize:          xtwitterscraper.Int(1),
 			UsernameContains:  xtwitterscraper.String("usernameContains"),
 			VerifiedOnly:      xtwitterscraper.Bool(true),
 			VerifiedType:      xtwitterscraper.String("verifiedType"),
@@ -219,7 +223,7 @@ func TestXUserGetFollowingWithOptionalParams(t *testing.T) {
 			MinFollowing:      xtwitterscraper.Int(0),
 			MinStatuses:       xtwitterscraper.Int(0),
 			Mode:              xtwitterscraper.XUserGetFollowingParamsModeStandard,
-			PageSize:          xtwitterscraper.Int(20),
+			PageSize:          xtwitterscraper.Int(1),
 			UsernameContains:  xtwitterscraper.String("usernameContains"),
 			VerifiedOnly:      xtwitterscraper.Bool(true),
 			VerifiedType:      xtwitterscraper.String("verifiedType"),
@@ -273,7 +277,7 @@ func TestXUserGetLikesWithOptionalParams(t *testing.T) {
 			MediaType:         xtwitterscraper.XUserGetLikesParamsMediaTypeImages,
 			Mentioning:        xtwitterscraper.String("mentioning"),
 			MinBookmarks:      xtwitterscraper.Int(0),
-			MinFaves:          xtwitterscraper.Int(0),
+			MinLikes:          xtwitterscraper.Int(0),
 			MinQuotes:         xtwitterscraper.Int(0),
 			MinReplies:        xtwitterscraper.Int(0),
 			MinRetweets:       xtwitterscraper.Int(0),
@@ -347,7 +351,7 @@ func TestXUserGetMediaWithOptionalParams(t *testing.T) {
 			MediaType:         xtwitterscraper.XUserGetMediaParamsMediaTypeImages,
 			Mentioning:        xtwitterscraper.String("mentioning"),
 			MinBookmarks:      xtwitterscraper.Int(0),
-			MinFaves:          xtwitterscraper.Int(0),
+			MinLikes:          xtwitterscraper.Int(0),
 			MinQuotes:         xtwitterscraper.Int(0),
 			MinReplies:        xtwitterscraper.Int(0),
 			MinRetweets:       xtwitterscraper.Int(0),
@@ -421,7 +425,7 @@ func TestXUserGetMentionsWithOptionalParams(t *testing.T) {
 			MediaType:         xtwitterscraper.XUserGetMentionsParamsMediaTypeImages,
 			Mentioning:        xtwitterscraper.String("mentioning"),
 			MinBookmarks:      xtwitterscraper.Int(0),
-			MinFaves:          xtwitterscraper.Int(0),
+			MinLikes:          xtwitterscraper.Int(0),
 			MinQuotes:         xtwitterscraper.Int(0),
 			MinReplies:        xtwitterscraper.Int(0),
 			MinRetweets:       xtwitterscraper.Int(0),
@@ -498,7 +502,7 @@ func TestXUserGetRepliesWithOptionalParams(t *testing.T) {
 			MediaType:          xtwitterscraper.XUserGetRepliesParamsMediaTypeImages,
 			Mentioning:         xtwitterscraper.String("mentioning"),
 			MinBookmarks:       xtwitterscraper.Int(0),
-			MinFaves:           xtwitterscraper.Int(0),
+			MinLikes:           xtwitterscraper.Int(0),
 			MinQuotes:          xtwitterscraper.Int(0),
 			MinReplies:         xtwitterscraper.Int(0),
 			MinRetweets:        xtwitterscraper.Int(0),
@@ -560,6 +564,7 @@ func TestXUserGetSearchWithOptionalParams(t *testing.T) {
 		MinFollowers:      xtwitterscraper.Int(0),
 		MinFollowing:      xtwitterscraper.Int(0),
 		MinStatuses:       xtwitterscraper.Int(0),
+		PageSize:          xtwitterscraper.Int(1),
 		UsernameContains:  xtwitterscraper.String("usernameContains"),
 		VerifiedOnly:      xtwitterscraper.Bool(true),
 		VerifiedType:      xtwitterscraper.String("verifiedType"),
@@ -614,7 +619,7 @@ func TestXUserGetTweetsWithOptionalParams(t *testing.T) {
 			MediaType:          xtwitterscraper.XUserGetTweetsParamsMediaTypeImages,
 			Mentioning:         xtwitterscraper.String("mentioning"),
 			MinBookmarks:       xtwitterscraper.Int(0),
-			MinFaves:           xtwitterscraper.Int(0),
+			MinLikes:           xtwitterscraper.Int(0),
 			MinQuotes:          xtwitterscraper.Int(0),
 			MinReplies:         xtwitterscraper.Int(0),
 			MinRetweets:        xtwitterscraper.Int(0),
@@ -681,7 +686,7 @@ func TestXUserGetVerifiedFollowersWithOptionalParams(t *testing.T) {
 			MinFollowing:      xtwitterscraper.Int(0),
 			MinStatuses:       xtwitterscraper.Int(0),
 			Mode:              xtwitterscraper.XUserGetVerifiedFollowersParamsModeStandard,
-			PageSize:          xtwitterscraper.Int(20),
+			PageSize:          xtwitterscraper.Int(1),
 			UsernameContains:  xtwitterscraper.String("usernameContains"),
 			VerifiedOnly:      xtwitterscraper.Bool(true),
 			VerifiedType:      xtwitterscraper.String("verifiedType"),

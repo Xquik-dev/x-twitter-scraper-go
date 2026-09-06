@@ -21,6 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 // X account monitoring with 1-second checks
@@ -54,7 +55,7 @@ func (r *MonitorKeywordService) New(ctx context.Context, body MonitorKeywordNewP
 	return res, err
 }
 
-// Get keyword monitor
+// Returns configuration and status for one keyword monitor.
 func (r *MonitorKeywordService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorKeywordGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -66,7 +67,7 @@ func (r *MonitorKeywordService) Get(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Update keyword monitor
+// Updates mutable settings for an existing keyword monitor.
 func (r *MonitorKeywordService) Update(ctx context.Context, id string, body MonitorKeywordUpdateParams, opts ...option.RequestOption) (res *MonitorKeywordUpdateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -78,7 +79,7 @@ func (r *MonitorKeywordService) Update(ctx context.Context, id string, body Moni
 	return res, err
 }
 
-// List keyword monitors
+// Returns keyword monitors with their current operating states.
 func (r *MonitorKeywordService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorKeywordListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "monitors/keywords"
@@ -86,7 +87,8 @@ func (r *MonitorKeywordService) List(ctx context.Context, opts ...option.Request
 	return res, err
 }
 
-// Delete keyword monitor
+// Stops one keyword monitor, then removes its stored events in bounded batches.
+// Poll statusUrl until the monitor returns 404.
 func (r *MonitorKeywordService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorKeywordDeactivateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -233,12 +235,17 @@ func (r *MonitorKeywordListResponseMonitor) UnmarshalJSON(data []byte) error {
 }
 
 type MonitorKeywordDeactivateResponse struct {
-	Success bool `json:"success" api:"required"`
+	DeletionStatus constant.Deleting `json:"deletionStatus" default:"deleting"`
+	// Poll this monitor URL until it returns 404.
+	StatusURL string `json:"statusUrl" api:"required"`
+	Success   bool   `json:"success" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		DeletionStatus respjson.Field
+		StatusURL      respjson.Field
+		Success        respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 

@@ -39,7 +39,8 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 	return
 }
 
-// Get account info
+// Returns plan, credit, monitoring, and account settings for the authenticated
+// user.
 func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) (res *AccountGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "account"
@@ -47,7 +48,7 @@ func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) 
 	return res, err
 }
 
-// Set linked X username
+// Links an X username to the authenticated Xquik account.
 func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsernameParams, opts ...option.RequestOption) (res *AccountSetXUsernameResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "account/x-identity"
@@ -55,7 +56,7 @@ func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsern
 	return res, err
 }
 
-// Update account locale
+// Changes the locale used for account responses and notifications.
 func (r *AccountService) UpdateLocale(ctx context.Context, body AccountUpdateLocaleParams, opts ...option.RequestOption) (res *AccountUpdateLocaleResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "account"

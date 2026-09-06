@@ -21,9 +21,11 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// Bulk data extraction (23 tool types)
+// Saved or bulk data extraction (23 tool types)
 //
 // ExtractionService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -44,7 +46,7 @@ func NewExtractionService(opts ...option.RequestOption) (r ExtractionService) {
 	return
 }
 
-// Get extraction results
+// Returns status and up to 1,000 results. Follow nextCursor when hasMore is true.
 func (r *ExtractionService) Get(ctx context.Context, id string, query ExtractionGetParams, opts ...option.RequestOption) (res *ExtractionGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -56,7 +58,7 @@ func (r *ExtractionService) Get(ctx context.Context, id string, query Extraction
 	return res, err
 }
 
-// List extraction jobs
+// Returns extraction jobs with status and result counts.
 func (r *ExtractionService) List(ctx context.Context, query ExtractionListParams, opts ...option.RequestOption) (res *ExtractionListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "extractions"
@@ -64,7 +66,19 @@ func (r *ExtractionService) List(ctx context.Context, query ExtractionListParams
 	return res, err
 }
 
-// Estimate extraction cost
+// Cancels an active extraction without charging or saving rows.
+func (r *ExtractionService) Cancel(ctx context.Context, id string, opts ...option.RequestOption) (res *ExtractionCancelResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("extractions/%s", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return res, err
+}
+
+// Estimates extraction cost without creating a job.
 func (r *ExtractionService) EstimateCost(ctx context.Context, body ExtractionEstimateCostParams, opts ...option.RequestOption) (res *ExtractionEstimateCostResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "extractions/estimate"
@@ -72,7 +86,7 @@ func (r *ExtractionService) EstimateCost(ctx context.Context, body ExtractionEst
 	return res, err
 }
 
-// Export extraction results
+// Downloads completed extraction results in the requested format.
 func (r *ExtractionService) ExportResults(ctx context.Context, id string, query ExtractionExportResultsParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
@@ -85,8 +99,12 @@ func (r *ExtractionService) ExportResults(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Run extraction
+// Starts one single-target or multi-target extraction. Follow waitUrl, then page
+// statusUrl after completion.
 func (r *ExtractionService) Run(ctx context.Context, params ExtractionRunParams, opts ...option.RequestOption) (res *ExtractionRunResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.options, opts)
 	path := "extractions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
@@ -97,7 +115,7 @@ func (r *ExtractionService) Run(ctx context.Context, params ExtractionRunParams,
 type ExtractionJob struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	// Any of "running", "completed", "failed".
+	// Any of "pending", "running", "canceled", "completed", "failed".
 	Status ExtractionJobStatus `json:"status" api:"required"`
 	// Identifier for the extraction tool used to run a job.
 	//
@@ -112,16 +130,32 @@ type ExtractionJob struct {
 	ToolType     ExtractionJobToolType `json:"toolType" api:"required"`
 	TotalResults int64                 `json:"totalResults" api:"required"`
 	CompletedAt  time.Time             `json:"completedAt" format:"date-time"`
+	// Why a terminal job stopped.
+	//
+	// Any of "budget_limited", "canceled", "deadline_reached", "failed",
+	// "pagination_safety_limit", "partial_failure", "requested_limit_reached",
+	// "source_exhausted".
+	CompletionReason ExtractionJobCompletionReason `json:"completionReason"`
+	// Result limit after affordability checks.
+	EffectiveResultsLimit int64 `json:"effectiveResultsLimit"`
+	// Safe error code for a failed job.
+	ErrorMessage string `json:"errorMessage"`
+	// Requested result limit.
+	ResultsLimit int64 `json:"resultsLimit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Status       respjson.Field
-		ToolType     respjson.Field
-		TotalResults respjson.Field
-		CompletedAt  respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		Status                respjson.Field
+		ToolType              respjson.Field
+		TotalResults          respjson.Field
+		CompletedAt           respjson.Field
+		CompletionReason      respjson.Field
+		EffectiveResultsLimit respjson.Field
+		ErrorMessage          respjson.Field
+		ResultsLimit          respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -134,7 +168,9 @@ func (r *ExtractionJob) UnmarshalJSON(data []byte) error {
 type ExtractionJobStatus string
 
 const (
+	ExtractionJobStatusPending   ExtractionJobStatus = "pending"
 	ExtractionJobStatusRunning   ExtractionJobStatus = "running"
+	ExtractionJobStatusCanceled  ExtractionJobStatus = "canceled"
 	ExtractionJobStatusCompleted ExtractionJobStatus = "completed"
 	ExtractionJobStatusFailed    ExtractionJobStatus = "failed"
 )
@@ -168,17 +204,35 @@ const (
 	ExtractionJobToolTypeVerifiedFollowerExplorer   ExtractionJobToolType = "verified_follower_explorer"
 )
 
+// Why a terminal job stopped.
+type ExtractionJobCompletionReason string
+
+const (
+	ExtractionJobCompletionReasonBudgetLimited         ExtractionJobCompletionReason = "budget_limited"
+	ExtractionJobCompletionReasonCanceled              ExtractionJobCompletionReason = "canceled"
+	ExtractionJobCompletionReasonDeadlineReached       ExtractionJobCompletionReason = "deadline_reached"
+	ExtractionJobCompletionReasonFailed                ExtractionJobCompletionReason = "failed"
+	ExtractionJobCompletionReasonPaginationSafetyLimit ExtractionJobCompletionReason = "pagination_safety_limit"
+	ExtractionJobCompletionReasonPartialFailure        ExtractionJobCompletionReason = "partial_failure"
+	ExtractionJobCompletionReasonRequestedLimitReached ExtractionJobCompletionReason = "requested_limit_reached"
+	ExtractionJobCompletionReasonSourceExhausted       ExtractionJobCompletionReason = "source_exhausted"
+)
+
 type ExtractionGetResponse struct {
 	HasMore bool `json:"hasMore" api:"required"`
-	// Extraction job metadata - shape varies by tool type (JSON)
-	Job        map[string]any   `json:"job" api:"required"`
-	Results    []map[string]any `json:"results" api:"required"`
-	NextCursor string           `json:"nextCursor"`
+	// Extraction job tracking status, tool type, and result count.
+	Job         ExtractionJob                 `json:"job" api:"required"`
+	PollAfterMs int64                         `json:"pollAfterMs" api:"required"`
+	Results     []ExtractionGetResponseResult `json:"results" api:"required"`
+	WaitURL     string                        `json:"waitUrl" api:"required"`
+	NextCursor  string                        `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		HasMore     respjson.Field
 		Job         respjson.Field
+		PollAfterMs respjson.Field
 		Results     respjson.Field
+		WaitURL     respjson.Field
 		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -188,6 +242,65 @@ type ExtractionGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Represents a public row across supported extraction modes.
+type ExtractionGetResponseResult struct {
+	ID            string    `json:"id" api:"required"`
+	CreatedAt     time.Time `json:"createdAt" api:"required" format:"date-time"`
+	XUserID       string    `json:"xUserId" api:"required"`
+	BookmarkCount int64     `json:"bookmarkCount"`
+	// Public metadata whose fields are defined by X.
+	EnrichmentData map[string]any `json:"enrichmentData"`
+	LikeCount      int64          `json:"likeCount"`
+	// Attached media with outputPreset=flat. Default nested output uses
+	// enrichmentData.tweet.media.
+	Media            []shared.TweetMedia `json:"media"`
+	QuoteCount       int64               `json:"quoteCount"`
+	ReplyCount       int64               `json:"replyCount"`
+	RetweetCount     int64               `json:"retweetCount"`
+	TweetCreatedAt   time.Time           `json:"tweetCreatedAt" format:"date-time"`
+	TweetID          string              `json:"tweetId"`
+	TweetText        string              `json:"tweetText"`
+	TweetURL         string              `json:"tweetUrl" format:"uri"`
+	ViewCount        int64               `json:"viewCount"`
+	XDisplayName     string              `json:"xDisplayName"`
+	XFollowersCount  int64               `json:"xFollowersCount"`
+	XProfileImageURL string              `json:"xProfileImageUrl" format:"uri"`
+	XUsername        string              `json:"xUsername"`
+	XVerified        bool                `json:"xVerified"`
+	ExtraFields      map[string]any      `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		XUserID          respjson.Field
+		BookmarkCount    respjson.Field
+		EnrichmentData   respjson.Field
+		LikeCount        respjson.Field
+		Media            respjson.Field
+		QuoteCount       respjson.Field
+		ReplyCount       respjson.Field
+		RetweetCount     respjson.Field
+		TweetCreatedAt   respjson.Field
+		TweetID          respjson.Field
+		TweetText        respjson.Field
+		TweetURL         respjson.Field
+		ViewCount        respjson.Field
+		XDisplayName     respjson.Field
+		XFollowersCount  respjson.Field
+		XProfileImageURL respjson.Field
+		XUsername        respjson.Field
+		XVerified        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtractionGetResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *ExtractionGetResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -211,15 +324,38 @@ func (r *ExtractionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ExtractionCancelResponse struct {
+	ID     string            `json:"id" api:"required"`
+	Status constant.Canceled `json:"status" default:"canceled"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtractionCancelResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExtractionCancelResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Free conservative cost estimate. Post estimates use the supported cap without a
+// live profile lookup. It never creates a job or charges.
 type ExtractionEstimateCostResponse struct {
+	// Whether the balance covers the full estimate.
 	Allowed          bool   `json:"allowed" api:"required"`
 	CreditsAvailable string `json:"creditsAvailable" api:"required"`
 	CreditsRequired  string `json:"creditsRequired" api:"required"`
-	EstimatedResults int64  `json:"estimatedResults" api:"required"`
-	// Any of "followers", "following", "collection", "paginationCap", "posts",
-	// "quoteCount", "replyCount", "resultsLimit", "retweetCount", "unknown".
-	Source          ExtractionEstimateCostResponseSource `json:"source" api:"required"`
-	ResolvedXUserID string                               `json:"resolvedXUserId"`
+	// Credit calculation row count, not source availability.
+	EstimatedResults int64 `json:"estimatedResults" api:"required"`
+	// Any of "followers", "following", "collection", "paginationCap", "quoteCount",
+	// "replyCount", "resultsLimit", "retweetCount", "unknown".
+	Source ExtractionEstimateCostResponseSource `json:"source" api:"required"`
+	// Resolved X user ID from count-based profile estimates.
+	ResolvedXUserID string `json:"resolvedXUserId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allowed          respjson.Field
@@ -246,7 +382,6 @@ const (
 	ExtractionEstimateCostResponseSourceFollowing     ExtractionEstimateCostResponseSource = "following"
 	ExtractionEstimateCostResponseSourceCollection    ExtractionEstimateCostResponseSource = "collection"
 	ExtractionEstimateCostResponseSourcePaginationCap ExtractionEstimateCostResponseSource = "paginationCap"
-	ExtractionEstimateCostResponseSourcePosts         ExtractionEstimateCostResponseSource = "posts"
 	ExtractionEstimateCostResponseSourceQuoteCount    ExtractionEstimateCostResponseSource = "quoteCount"
 	ExtractionEstimateCostResponseSourceReplyCount    ExtractionEstimateCostResponseSource = "replyCount"
 	ExtractionEstimateCostResponseSourceResultsLimit  ExtractionEstimateCostResponseSource = "resultsLimit"
@@ -254,13 +389,20 @@ const (
 	ExtractionEstimateCostResponseSourceUnknown       ExtractionEstimateCostResponseSource = "unknown"
 )
 
+// Free conservative cost estimate. Post estimates use the supported cap without a
+// live profile lookup. It never creates a job or charges.
 type ExtractionRunResponse struct {
+	// Whether the balance covers the full estimate.
 	Allowed          bool   `json:"allowed" api:"required"`
 	CreditsAvailable string `json:"creditsAvailable" api:"required"`
 	CreditsRequired  string `json:"creditsRequired" api:"required"`
-	EstimatedResults int64  `json:"estimatedResults" api:"required"`
-	Source           string `json:"source" api:"required"`
-	ResolvedXUserID  string `json:"resolvedXUserId"`
+	// Credit calculation row count, not source availability.
+	EstimatedResults int64 `json:"estimatedResults" api:"required"`
+	// Any of "followers", "following", "collection", "paginationCap", "quoteCount",
+	// "replyCount", "resultsLimit", "retweetCount", "unknown".
+	Source ExtractionRunResponseSource `json:"source" api:"required"`
+	// Resolved X user ID from count-based profile estimates.
+	ResolvedXUserID string `json:"resolvedXUserId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allowed          respjson.Field
@@ -280,18 +422,35 @@ func (r *ExtractionRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ExtractionRunResponseSource string
+
+const (
+	ExtractionRunResponseSourceFollowers     ExtractionRunResponseSource = "followers"
+	ExtractionRunResponseSourceFollowing     ExtractionRunResponseSource = "following"
+	ExtractionRunResponseSourceCollection    ExtractionRunResponseSource = "collection"
+	ExtractionRunResponseSourcePaginationCap ExtractionRunResponseSource = "paginationCap"
+	ExtractionRunResponseSourceQuoteCount    ExtractionRunResponseSource = "quoteCount"
+	ExtractionRunResponseSourceReplyCount    ExtractionRunResponseSource = "replyCount"
+	ExtractionRunResponseSourceResultsLimit  ExtractionRunResponseSource = "resultsLimit"
+	ExtractionRunResponseSourceRetweetCount  ExtractionRunResponseSource = "retweetCount"
+	ExtractionRunResponseSourceUnknown       ExtractionRunResponseSource = "unknown"
+)
+
 type ExtractionGetParams struct {
-	// Previous nextCursor.
+	// Previous nextCursor. Offset pagination is not supported.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Use outputMode=raw instead.
 	IncludeRaw param.Opt[bool] `query:"includeRaw,omitzero" json:"-"`
-	// Maximum number of results to return (1-1000, default 100)
+	// Maximum results per page (1-1000, default 100).
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Wait up to this many seconds when the job is active.
+	Wait param.Opt[int64] `query:"wait,omitzero" json:"-"`
 	// Preserve source keys or convert result field names.
 	//
 	// Any of "source", "camelCase", "snake_case".
 	FieldStyle ExtractionGetParamsFieldStyle `query:"fieldStyle,omitzero" json:"-"`
-	// Select compact, full, or raw-compatible result fields.
+	// Use compact for core fields and tweet counts, full for nested enrichment, or raw
+	// for a source copy.
 	//
 	// Any of "compact", "full", "raw".
 	OutputMode ExtractionGetParamsOutputMode `query:"outputMode,omitzero" json:"-"`
@@ -319,7 +478,8 @@ const (
 	ExtractionGetParamsFieldStyleSnakeCase ExtractionGetParamsFieldStyle = "snake_case"
 )
 
-// Select compact, full, or raw-compatible result fields.
+// Use compact for core fields and tweet counts, full for nested enrichment, or raw
+// for a source copy.
 type ExtractionGetParamsOutputMode string
 
 const (
@@ -337,16 +497,14 @@ const (
 )
 
 type ExtractionListParams struct {
-	// Previous nextCursor.
+	// Previous nextCursor. Offset pagination is not supported.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Maximum number of items to return (1-100, default 50). For paid per-result
-	// endpoints, the returned count may be lower when remaining credits cannot cover
-	// the requested page. If zero paid results are affordable, the endpoint returns
-	// 402 insufficient_credits.
+	// Maximum items per page: 1 to 100, default 50. Credits can reduce paid results.
+	// The endpoint returns 402 insufficient_credits when none are affordable.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Filter by job status
 	//
-	// Any of "running", "completed", "failed".
+	// Any of "pending", "running", "canceled", "completed", "failed".
 	Status ExtractionListParamsStatus `query:"status,omitzero" json:"-"`
 	// Filter by extraction tool type
 	//
@@ -374,7 +532,9 @@ func (r ExtractionListParams) URLQuery() (v url.Values, err error) {
 type ExtractionListParamsStatus string
 
 const (
+	ExtractionListParamsStatusPending   ExtractionListParamsStatus = "pending"
 	ExtractionListParamsStatusRunning   ExtractionListParamsStatus = "running"
+	ExtractionListParamsStatusCanceled  ExtractionListParamsStatus = "canceled"
 	ExtractionListParamsStatusCompleted ExtractionListParamsStatus = "completed"
 	ExtractionListParamsStatusFailed    ExtractionListParamsStatus = "failed"
 )
@@ -422,8 +582,7 @@ type ExtractionEstimateCostParams struct {
 	ToolType ExtractionEstimateCostParamsToolType `json:"toolType,omitzero" api:"required"`
 	// Raw advanced search query appended as-is (tweet_search_extractor)
 	AdvancedQuery param.Opt[string] `json:"advancedQuery,omitzero"`
-	// Words or quoted phrases where any one can match. Separate with spaces, commas,
-	// or lines. (tweet_search_extractor)
+	// Any matching term or phrase (tweet_search_extractor).
 	AnyWords param.Opt[string] `json:"anyWords,omitzero"`
 	// Bio terms separated by commas or lines.
 	BioContains param.Opt[string] `json:"bioContains,omitzero"`
@@ -431,9 +590,9 @@ type ExtractionEstimateCostParams struct {
 	BlueVerifiedOnly param.Opt[bool] `json:"blueVerifiedOnly,omitzero"`
 	// Geo bounding box, e.g. -74.1 40.6 -73.9 40.8 (tweet_search_extractor)
 	BoundingBox param.Opt[string] `json:"boundingBox,omitzero"`
-	// Match the Tweet card name.
+	// Require Tweet cards whose name matches this value.
 	CardName param.Opt[string] `json:"cardName,omitzero"`
-	// Cashtags separated by spaces, commas, or lines. (tweet_search_extractor)
+	// Matching cashtags (tweet_search_extractor).
 	Cashtags param.Opt[string] `json:"cashtags,omitzero"`
 	// Conversation ID filter (tweet_search_extractor)
 	ConversationID param.Opt[string] `json:"conversationId,omitzero"`
@@ -443,16 +602,15 @@ type ExtractionEstimateCostParams struct {
 	ExactPhrase param.Opt[string] `json:"exactPhrase,omitzero"`
 	// Exclude replies from the source author.
 	ExcludeOriginalAuthor param.Opt[bool] `json:"excludeOriginalAuthor,omitzero"`
-	// Exclude a source application.
+	// Drop Tweets from this source application.
 	ExcludeSource param.Opt[string] `json:"excludeSource,omitzero"`
-	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
-	// (tweet_search_extractor)
+	// Excluded terms or phrases (tweet_search_extractor).
 	ExcludeWords param.Opt[string] `json:"excludeWords,omitzero"`
 	// Filter by author username (tweet_search_extractor)
 	FromUser param.Opt[string] `json:"fromUser,omitzero"`
-	// Match latitude, longitude, and radius.
+	// Restrict Tweets by latitude, longitude, and radius.
 	Geocode param.Opt[string] `json:"geocode,omitzero"`
-	// Hashtags separated by spaces, commas, or lines. (tweet_search_extractor)
+	// Matching hashtags (tweet_search_extractor).
 	Hashtags param.Opt[string] `json:"hashtags,omitzero"`
 	// Require a profile location.
 	HasLocation param.Opt[bool] `json:"hasLocation,omitzero"`
@@ -468,7 +626,7 @@ type ExtractionEstimateCostParams struct {
 	IncludeTargetMetadata param.Opt[bool] `json:"includeTargetMetadata,omitzero"`
 	// Only replies to this tweet ID (tweet_search_extractor)
 	InReplyToTweetID param.Opt[string] `json:"inReplyToTweetId,omitzero"`
-	// Language code filter (tweet_search_extractor)
+	// Tweet or Community search language.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Search within a list ID (tweet_search_extractor)
 	ListID param.Opt[string] `json:"listId,omitzero"`
@@ -480,7 +638,7 @@ type ExtractionEstimateCostParams struct {
 	MaxFollowers param.Opt[int64] `json:"maxFollowers,omitzero"`
 	// Maximum following count for profile results.
 	MaxFollowing param.Opt[int64] `json:"maxFollowing,omitzero"`
-	// Return Tweets older than this Tweet ID.
+	// Require Tweets older than this ID.
 	MaxID param.Opt[string] `json:"maxId,omitzero"`
 	// Maximum results collected for each target.
 	MaxItemsPerTarget param.Opt[int64] `json:"maxItemsPerTarget,omitzero"`
@@ -496,13 +654,13 @@ type ExtractionEstimateCostParams struct {
 	MaxReplies param.Opt[int64] `json:"maxReplies,omitzero"`
 	// Maximum Tweet repost count.
 	MaxRetweets param.Opt[int64] `json:"maxRetweets,omitzero"`
-	// Filter tweets mentioning a username (tweet_search_extractor)
+	// Mentions this username (tweet_search_extractor).
 	Mentioning param.Opt[string] `json:"mentioning,omitzero"`
 	// Minimum profile age in days.
 	MinAccountAgeDays param.Opt[int64] `json:"minAccountAgeDays,omitzero"`
 	// Minimum Tweet bookmark count.
 	MinBookmarks param.Opt[int64] `json:"minBookmarks,omitzero"`
-	// Minimum likes threshold (tweet_search_extractor)
+	// Tweet or Community search minimum likes.
 	MinFaves param.Opt[int64] `json:"minFaves,omitzero"`
 	// Minimum follower count for profile results.
 	MinFollowers param.Opt[int64] `json:"minFollowers,omitzero"`
@@ -512,17 +670,17 @@ type ExtractionEstimateCostParams struct {
 	MinPosts param.Opt[int64] `json:"minPosts,omitzero"`
 	// Minimum quote count threshold (tweet_search_extractor)
 	MinQuotes param.Opt[int64] `json:"minQuotes,omitzero"`
-	// Minimum replies threshold (tweet_search_extractor)
+	// Tweet or Community search minimum replies.
 	MinReplies param.Opt[int64] `json:"minReplies,omitzero"`
-	// Minimum retweets threshold (tweet_search_extractor)
+	// Tweet or Community search minimum reposts.
 	MinRetweets param.Opt[int64] `json:"minRetweets,omitzero"`
-	// Minimum Tweet view count.
+	// Tweet or Community search minimum views.
 	MinViews param.Opt[int64] `json:"minViews,omitzero"`
-	// Only return native reposts.
+	// Tweet or Community search native reposts.
 	NativeRetweets param.Opt[bool] `json:"nativeRetweets,omitzero"`
-	// Match a place name.
+	// Restrict Tweet search to this place name.
 	Near param.Opt[string] `json:"near,omitzero"`
-	// Only return news results.
+	// Require news-classified Tweet results.
 	News param.Opt[bool] `json:"news,omitzero"`
 	// Shortcut for dedupeMode=merge.
 	OverlapMode param.Opt[bool] `json:"overlapMode,omitzero"`
@@ -534,20 +692,20 @@ type ExtractionEstimateCostParams struct {
 	PointRadius param.Opt[string] `json:"pointRadius,omitzero"`
 	// Only quotes of this tweet ID (tweet_search_extractor)
 	QuotesOfTweetID param.Opt[string] `json:"quotesOfTweetId,omitzero"`
-	// Maximum number of results to extract. When set, the extraction stops after
-	// reaching this limit.
+	// Maximum unique results to emit. Billing follows emitted results, not this upper
+	// bound.
 	ResultsLimit param.Opt[int64] `json:"resultsLimit,omitzero"`
 	// Only retweets of this tweet ID (tweet_search_extractor)
 	RetweetsOfTweetID param.Opt[string] `json:"retweetsOfTweetId,omitzero"`
-	// Enable the safe-search filter.
+	// Apply safe-search filtering to Tweet results.
 	Safe param.Opt[bool] `json:"safe,omitzero"`
-	// Required for tweet_search_extractor & community_search.
+	// Required for tweet_search_extractor & community_search. Passed unchanged.
 	SearchQuery param.Opt[string] `json:"searchQuery,omitzero"`
-	// Start date YYYY-MM-DD (tweet_search_extractor)
+	// Tweet or Community search start date.
 	SinceDate param.Opt[time.Time] `json:"sinceDate,omitzero" format:"date"`
-	// Return Tweets newer than this Tweet ID.
+	// Require Tweets newer than this ID.
 	SinceID param.Opt[string] `json:"sinceId,omitzero"`
-	// Match the source application.
+	// Require Tweets from this source application.
 	Source param.Opt[string] `json:"source,omitzero"`
 	// Resume one reply target from this cursor.
 	StartCursor param.Opt[string] `json:"startCursor,omitzero"`
@@ -560,21 +718,21 @@ type ExtractionEstimateCostParams struct {
 	TargetSpaceID  param.Opt[string] `json:"targetSpaceId,omitzero"`
 	TargetTweetID  param.Opt[string] `json:"targetTweetId,omitzero"`
 	TargetUsername param.Opt[string] `json:"targetUsername,omitzero"`
-	// Filter replies sent to a username (tweet_search_extractor)
+	// Replies to this username (tweet_search_extractor).
 	ToUser param.Opt[string] `json:"toUser,omitzero"`
-	// End date YYYY-MM-DD (tweet_search_extractor)
+	// Tweet or Community search end date.
 	UntilDate param.Opt[time.Time] `json:"untilDate,omitzero" format:"date"`
 	// URL substring or domain filter (tweet_search_extractor)
 	URL param.Opt[string] `json:"url,omitzero"`
 	// Required username text.
 	UsernameContains param.Opt[string] `json:"usernameContains,omitzero"`
-	// Only verified authors (tweet_search_extractor)
+	// Tweet or Community search verified authors.
 	VerifiedOnly param.Opt[bool] `json:"verifiedOnly,omitzero"`
 	// Exact profile verification type.
 	VerifiedType param.Opt[string] `json:"verifiedType,omitzero"`
-	// Set the radius for the near filter.
+	// Set the radius around the requested place.
 	Within param.Opt[string] `json:"within,omitzero"`
-	// Match Tweets inside a recent time window.
+	// Restrict Tweets to this recent time window.
 	WithinTime param.Opt[string] `json:"withinTime,omitzero"`
 	// Reply collection strategy.
 	//
@@ -584,25 +742,25 @@ type ExtractionEstimateCostParams struct {
 	//
 	// Any of "none", "first", "merge".
 	DedupeMode ExtractionEstimateCostParamsDedupeMode `json:"dedupeMode,omitzero"`
-	// Media type filter (tweet_search_extractor)
+	// Tweet or Community search media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType ExtractionEstimateCostParamsMediaType `json:"mediaType,omitzero"`
-	// Search ranking applied to every query.
+	// Use Top for engagement. The relevance alias maps to Top.
 	//
-	// Any of "Latest", "Top", "Both".
+	// Any of "Latest", "Top", "Both", "relevance".
 	QueryType ExtractionEstimateCostParamsQueryType `json:"queryType,omitzero"`
-	// Quote mode (tweet_search_extractor)
+	// Choose whether tweet search includes, excludes, or isolates quotes.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes ExtractionEstimateCostParamsQuotes `json:"quotes,omitzero"`
 	// Profile relations processed within one job.
 	RelationTargets []ExtractionEstimateCostParamsRelationTarget `json:"relationTargets,omitzero"`
-	// Reply mode (tweet_search_extractor)
+	// Choose whether tweet search includes, excludes, or isolates replies.
 	//
 	// Any of "include", "exclude", "only".
 	Replies ExtractionEstimateCostParamsReplies `json:"replies,omitzero"`
-	// Retweet mode (tweet_search_extractor)
+	// Choose whether tweet search includes, excludes, or isolates reposts.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets ExtractionEstimateCostParamsRetweets `json:"retweets,omitzero"`
@@ -622,11 +780,13 @@ type ExtractionEstimateCostParams struct {
 	TargetCommunityIDs []string `json:"targetCommunityIds,omitzero"`
 	// List IDs processed as one collection job.
 	TargetListIDs []string `json:"targetListIds,omitzero"`
-	// Mixed targets auto-routed within one job.
+	// Mixed targets auto-routed within one job. Use tweet, replies, quotes, thread, or
+	// profile_media kinds to collect attached media.
 	Targets []ExtractionEstimateCostParamsTargetUnion `json:"targets,omitzero"`
 	// Tweet IDs processed as one collection job.
 	TargetTweetIDs []string `json:"targetTweetIds,omitzero"`
-	// Usernames processed as one collection job.
+	// Usernames processed concurrently in one job. With tweet_search_extractor, each
+	// username collects posts.
 	TargetUsernames []string `json:"targetUsernames,omitzero"`
 	// Reply end time as ISO 8601 or Unix seconds.
 	UntilTime ExtractionEstimateCostParamsUntilTimeUnion `json:"untilTime,omitzero" format:"date-time"`
@@ -690,7 +850,7 @@ const (
 	ExtractionEstimateCostParamsDedupeModeMerge ExtractionEstimateCostParamsDedupeMode = "merge"
 )
 
-// Media type filter (tweet_search_extractor)
+// Tweet or Community search media.
 type ExtractionEstimateCostParamsMediaType string
 
 const (
@@ -702,16 +862,17 @@ const (
 	ExtractionEstimateCostParamsMediaTypeNone   ExtractionEstimateCostParamsMediaType = "none"
 )
 
-// Search ranking applied to every query.
+// Use Top for engagement. The relevance alias maps to Top.
 type ExtractionEstimateCostParamsQueryType string
 
 const (
-	ExtractionEstimateCostParamsQueryTypeLatest ExtractionEstimateCostParamsQueryType = "Latest"
-	ExtractionEstimateCostParamsQueryTypeTop    ExtractionEstimateCostParamsQueryType = "Top"
-	ExtractionEstimateCostParamsQueryTypeBoth   ExtractionEstimateCostParamsQueryType = "Both"
+	ExtractionEstimateCostParamsQueryTypeLatest    ExtractionEstimateCostParamsQueryType = "Latest"
+	ExtractionEstimateCostParamsQueryTypeTop       ExtractionEstimateCostParamsQueryType = "Top"
+	ExtractionEstimateCostParamsQueryTypeBoth      ExtractionEstimateCostParamsQueryType = "Both"
+	ExtractionEstimateCostParamsQueryTypeRelevance ExtractionEstimateCostParamsQueryType = "relevance"
 )
 
-// Quote mode (tweet_search_extractor)
+// Choose whether tweet search includes, excludes, or isolates quotes.
 type ExtractionEstimateCostParamsQuotes string
 
 const (
@@ -745,7 +906,7 @@ func init() {
 	)
 }
 
-// Reply mode (tweet_search_extractor)
+// Choose whether tweet search includes, excludes, or isolates replies.
 type ExtractionEstimateCostParamsReplies string
 
 const (
@@ -754,7 +915,7 @@ const (
 	ExtractionEstimateCostParamsRepliesOnly    ExtractionEstimateCostParamsReplies = "only"
 )
 
-// Retweet mode (tweet_search_extractor)
+// Choose whether tweet search includes, excludes, or isolates reposts.
 type ExtractionEstimateCostParamsRetweets string
 
 const (
@@ -936,8 +1097,7 @@ type ExtractionRunParams struct {
 	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
 	// Raw advanced search query appended as-is (tweet_search_extractor)
 	AdvancedQuery param.Opt[string] `json:"advancedQuery,omitzero"`
-	// Words or quoted phrases where any one can match. Separate with spaces, commas,
-	// or lines. (tweet_search_extractor)
+	// Any matching term or phrase (tweet_search_extractor).
 	AnyWords param.Opt[string] `json:"anyWords,omitzero"`
 	// Bio terms separated by commas or lines.
 	BioContains param.Opt[string] `json:"bioContains,omitzero"`
@@ -945,9 +1105,9 @@ type ExtractionRunParams struct {
 	BlueVerifiedOnly param.Opt[bool] `json:"blueVerifiedOnly,omitzero"`
 	// Geo bounding box, e.g. -74.1 40.6 -73.9 40.8 (tweet_search_extractor)
 	BoundingBox param.Opt[string] `json:"boundingBox,omitzero"`
-	// Match the Tweet card name.
+	// Require Tweet cards whose name matches this value.
 	CardName param.Opt[string] `json:"cardName,omitzero"`
-	// Cashtags separated by spaces, commas, or lines. (tweet_search_extractor)
+	// Matching cashtags (tweet_search_extractor).
 	Cashtags param.Opt[string] `json:"cashtags,omitzero"`
 	// Conversation ID filter (tweet_search_extractor)
 	ConversationID param.Opt[string] `json:"conversationId,omitzero"`
@@ -957,16 +1117,15 @@ type ExtractionRunParams struct {
 	ExactPhrase param.Opt[string] `json:"exactPhrase,omitzero"`
 	// Exclude replies from the source author.
 	ExcludeOriginalAuthor param.Opt[bool] `json:"excludeOriginalAuthor,omitzero"`
-	// Exclude a source application.
+	// Drop Tweets from this source application.
 	ExcludeSource param.Opt[string] `json:"excludeSource,omitzero"`
-	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
-	// (tweet_search_extractor)
+	// Excluded terms or phrases (tweet_search_extractor).
 	ExcludeWords param.Opt[string] `json:"excludeWords,omitzero"`
 	// Filter by author username (tweet_search_extractor)
 	FromUser param.Opt[string] `json:"fromUser,omitzero"`
-	// Match latitude, longitude, and radius.
+	// Restrict Tweets by latitude, longitude, and radius.
 	Geocode param.Opt[string] `json:"geocode,omitzero"`
-	// Hashtags separated by spaces, commas, or lines. (tweet_search_extractor)
+	// Matching hashtags (tweet_search_extractor).
 	Hashtags param.Opt[string] `json:"hashtags,omitzero"`
 	// Require a profile location.
 	HasLocation param.Opt[bool] `json:"hasLocation,omitzero"`
@@ -982,7 +1141,7 @@ type ExtractionRunParams struct {
 	IncludeTargetMetadata param.Opt[bool] `json:"includeTargetMetadata,omitzero"`
 	// Only replies to this tweet ID (tweet_search_extractor)
 	InReplyToTweetID param.Opt[string] `json:"inReplyToTweetId,omitzero"`
-	// Language code filter (tweet_search_extractor)
+	// Tweet or Community search language.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Search within a list ID (tweet_search_extractor)
 	ListID param.Opt[string] `json:"listId,omitzero"`
@@ -994,7 +1153,7 @@ type ExtractionRunParams struct {
 	MaxFollowers param.Opt[int64] `json:"maxFollowers,omitzero"`
 	// Maximum following count for profile results.
 	MaxFollowing param.Opt[int64] `json:"maxFollowing,omitzero"`
-	// Return Tweets older than this Tweet ID.
+	// Require Tweets older than this ID.
 	MaxID param.Opt[string] `json:"maxId,omitzero"`
 	// Maximum results collected for each target.
 	MaxItemsPerTarget param.Opt[int64] `json:"maxItemsPerTarget,omitzero"`
@@ -1010,13 +1169,13 @@ type ExtractionRunParams struct {
 	MaxReplies param.Opt[int64] `json:"maxReplies,omitzero"`
 	// Maximum Tweet repost count.
 	MaxRetweets param.Opt[int64] `json:"maxRetweets,omitzero"`
-	// Filter tweets mentioning a username (tweet_search_extractor)
+	// Mentions this username (tweet_search_extractor).
 	Mentioning param.Opt[string] `json:"mentioning,omitzero"`
 	// Minimum profile age in days.
 	MinAccountAgeDays param.Opt[int64] `json:"minAccountAgeDays,omitzero"`
 	// Minimum Tweet bookmark count.
 	MinBookmarks param.Opt[int64] `json:"minBookmarks,omitzero"`
-	// Minimum likes threshold (tweet_search_extractor)
+	// Tweet or Community search minimum likes.
 	MinFaves param.Opt[int64] `json:"minFaves,omitzero"`
 	// Minimum follower count for profile results.
 	MinFollowers param.Opt[int64] `json:"minFollowers,omitzero"`
@@ -1026,17 +1185,17 @@ type ExtractionRunParams struct {
 	MinPosts param.Opt[int64] `json:"minPosts,omitzero"`
 	// Minimum quote count threshold (tweet_search_extractor)
 	MinQuotes param.Opt[int64] `json:"minQuotes,omitzero"`
-	// Minimum replies threshold (tweet_search_extractor)
+	// Tweet or Community search minimum replies.
 	MinReplies param.Opt[int64] `json:"minReplies,omitzero"`
-	// Minimum retweets threshold (tweet_search_extractor)
+	// Tweet or Community search minimum reposts.
 	MinRetweets param.Opt[int64] `json:"minRetweets,omitzero"`
-	// Minimum Tweet view count.
+	// Tweet or Community search minimum views.
 	MinViews param.Opt[int64] `json:"minViews,omitzero"`
-	// Only return native reposts.
+	// Tweet or Community search native reposts.
 	NativeRetweets param.Opt[bool] `json:"nativeRetweets,omitzero"`
-	// Match a place name.
+	// Restrict Tweet search to this place name.
 	Near param.Opt[string] `json:"near,omitzero"`
-	// Only return news results.
+	// Require news-classified Tweet results.
 	News param.Opt[bool] `json:"news,omitzero"`
 	// Shortcut for dedupeMode=merge.
 	OverlapMode param.Opt[bool] `json:"overlapMode,omitzero"`
@@ -1048,20 +1207,20 @@ type ExtractionRunParams struct {
 	PointRadius param.Opt[string] `json:"pointRadius,omitzero"`
 	// Only quotes of this tweet ID (tweet_search_extractor)
 	QuotesOfTweetID param.Opt[string] `json:"quotesOfTweetId,omitzero"`
-	// Maximum number of results to extract. When set, the extraction stops after
-	// reaching this limit.
+	// Maximum unique results to emit. Billing follows emitted results, not this upper
+	// bound.
 	ResultsLimit param.Opt[int64] `json:"resultsLimit,omitzero"`
 	// Only retweets of this tweet ID (tweet_search_extractor)
 	RetweetsOfTweetID param.Opt[string] `json:"retweetsOfTweetId,omitzero"`
-	// Enable the safe-search filter.
+	// Apply safe-search filtering to Tweet results.
 	Safe param.Opt[bool] `json:"safe,omitzero"`
-	// Required for tweet_search_extractor & community_search.
+	// Required for tweet_search_extractor & community_search. Passed unchanged.
 	SearchQuery param.Opt[string] `json:"searchQuery,omitzero"`
-	// Start date YYYY-MM-DD (tweet_search_extractor)
+	// Tweet or Community search start date.
 	SinceDate param.Opt[time.Time] `json:"sinceDate,omitzero" format:"date"`
-	// Return Tweets newer than this Tweet ID.
+	// Require Tweets newer than this ID.
 	SinceID param.Opt[string] `json:"sinceId,omitzero"`
-	// Match the source application.
+	// Require Tweets from this source application.
 	Source param.Opt[string] `json:"source,omitzero"`
 	// Resume one reply target from this cursor.
 	StartCursor param.Opt[string] `json:"startCursor,omitzero"`
@@ -1074,22 +1233,23 @@ type ExtractionRunParams struct {
 	TargetSpaceID  param.Opt[string] `json:"targetSpaceId,omitzero"`
 	TargetTweetID  param.Opt[string] `json:"targetTweetId,omitzero"`
 	TargetUsername param.Opt[string] `json:"targetUsername,omitzero"`
-	// Filter replies sent to a username (tweet_search_extractor)
+	// Replies to this username (tweet_search_extractor).
 	ToUser param.Opt[string] `json:"toUser,omitzero"`
-	// End date YYYY-MM-DD (tweet_search_extractor)
+	// Tweet or Community search end date.
 	UntilDate param.Opt[time.Time] `json:"untilDate,omitzero" format:"date"`
 	// URL substring or domain filter (tweet_search_extractor)
 	URL param.Opt[string] `json:"url,omitzero"`
 	// Required username text.
 	UsernameContains param.Opt[string] `json:"usernameContains,omitzero"`
-	// Only verified authors (tweet_search_extractor)
+	// Tweet or Community search verified authors.
 	VerifiedOnly param.Opt[bool] `json:"verifiedOnly,omitzero"`
 	// Exact profile verification type.
 	VerifiedType param.Opt[string] `json:"verifiedType,omitzero"`
-	// Set the radius for the near filter.
+	// Set the radius around the requested place.
 	Within param.Opt[string] `json:"within,omitzero"`
-	// Match Tweets inside a recent time window.
-	WithinTime param.Opt[string] `json:"withinTime,omitzero"`
+	// Restrict Tweets to this recent time window.
+	WithinTime     param.Opt[string] `json:"withinTime,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Reply collection strategy.
 	//
 	// Any of "auto", "complete", "direct", "search", "thread".
@@ -1098,25 +1258,25 @@ type ExtractionRunParams struct {
 	//
 	// Any of "none", "first", "merge".
 	DedupeMode ExtractionRunParamsDedupeMode `json:"dedupeMode,omitzero"`
-	// Media type filter (tweet_search_extractor)
+	// Tweet or Community search media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType ExtractionRunParamsMediaType `json:"mediaType,omitzero"`
-	// Search ranking applied to every query.
+	// Use Top for engagement. The relevance alias maps to Top.
 	//
-	// Any of "Latest", "Top", "Both".
+	// Any of "Latest", "Top", "Both", "relevance".
 	QueryType ExtractionRunParamsQueryType `json:"queryType,omitzero"`
-	// Quote mode (tweet_search_extractor)
+	// Choose whether tweet search includes, excludes, or isolates quotes.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes ExtractionRunParamsQuotes `json:"quotes,omitzero"`
 	// Profile relations processed within one job.
 	RelationTargets []ExtractionRunParamsRelationTarget `json:"relationTargets,omitzero"`
-	// Reply mode (tweet_search_extractor)
+	// Choose whether tweet search includes, excludes, or isolates replies.
 	//
 	// Any of "include", "exclude", "only".
 	Replies ExtractionRunParamsReplies `json:"replies,omitzero"`
-	// Retweet mode (tweet_search_extractor)
+	// Choose whether tweet search includes, excludes, or isolates reposts.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets ExtractionRunParamsRetweets `json:"retweets,omitzero"`
@@ -1136,11 +1296,13 @@ type ExtractionRunParams struct {
 	TargetCommunityIDs []string `json:"targetCommunityIds,omitzero"`
 	// List IDs processed as one collection job.
 	TargetListIDs []string `json:"targetListIds,omitzero"`
-	// Mixed targets auto-routed within one job.
+	// Mixed targets auto-routed within one job. Use tweet, replies, quotes, thread, or
+	// profile_media kinds to collect attached media.
 	Targets []ExtractionRunParamsTargetUnion `json:"targets,omitzero"`
 	// Tweet IDs processed as one collection job.
 	TargetTweetIDs []string `json:"targetTweetIds,omitzero"`
-	// Usernames processed as one collection job.
+	// Usernames processed concurrently in one job. With tweet_search_extractor, each
+	// username collects posts.
 	TargetUsernames []string `json:"targetUsernames,omitzero"`
 	// Reply end time as ISO 8601 or Unix seconds.
 	UntilTime ExtractionRunParamsUntilTimeUnion `json:"untilTime,omitzero" format:"date-time"`
@@ -1212,7 +1374,7 @@ const (
 	ExtractionRunParamsDedupeModeMerge ExtractionRunParamsDedupeMode = "merge"
 )
 
-// Media type filter (tweet_search_extractor)
+// Tweet or Community search media.
 type ExtractionRunParamsMediaType string
 
 const (
@@ -1224,16 +1386,17 @@ const (
 	ExtractionRunParamsMediaTypeNone   ExtractionRunParamsMediaType = "none"
 )
 
-// Search ranking applied to every query.
+// Use Top for engagement. The relevance alias maps to Top.
 type ExtractionRunParamsQueryType string
 
 const (
-	ExtractionRunParamsQueryTypeLatest ExtractionRunParamsQueryType = "Latest"
-	ExtractionRunParamsQueryTypeTop    ExtractionRunParamsQueryType = "Top"
-	ExtractionRunParamsQueryTypeBoth   ExtractionRunParamsQueryType = "Both"
+	ExtractionRunParamsQueryTypeLatest    ExtractionRunParamsQueryType = "Latest"
+	ExtractionRunParamsQueryTypeTop       ExtractionRunParamsQueryType = "Top"
+	ExtractionRunParamsQueryTypeBoth      ExtractionRunParamsQueryType = "Both"
+	ExtractionRunParamsQueryTypeRelevance ExtractionRunParamsQueryType = "relevance"
 )
 
-// Quote mode (tweet_search_extractor)
+// Choose whether tweet search includes, excludes, or isolates quotes.
 type ExtractionRunParamsQuotes string
 
 const (
@@ -1267,7 +1430,7 @@ func init() {
 	)
 }
 
-// Reply mode (tweet_search_extractor)
+// Choose whether tweet search includes, excludes, or isolates replies.
 type ExtractionRunParamsReplies string
 
 const (
@@ -1276,7 +1439,7 @@ const (
 	ExtractionRunParamsRepliesOnly    ExtractionRunParamsReplies = "only"
 )
 
-// Retweet mode (tweet_search_extractor)
+// Choose whether tweet search includes, excludes, or isolates reposts.
 type ExtractionRunParamsRetweets string
 
 const (

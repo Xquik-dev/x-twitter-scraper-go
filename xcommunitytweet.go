@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
@@ -42,7 +43,7 @@ func NewXCommunityTweetService(opts ...option.RequestOption) (r XCommunityTweetS
 	return
 }
 
-// Requires a Community ID and keyword query.
+// One resumable page. Requires a Community ID and query.
 func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/communities/tweets"
@@ -50,7 +51,7 @@ func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweet
 	return res, err
 }
 
-// List tweets posted in a community
+// Returns public tweets posted within one community.
 func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -63,17 +64,37 @@ func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string,
 }
 
 type XCommunityTweetListParams struct {
-	// Numeric ID of the community to search
+	// Numeric ID of the community whose posts to search
 	CommunityID string `query:"communityId" api:"required" json:"-"`
-	// Keyword query within the selected community
+	// Search query
 	Q string `query:"q" api:"required" json:"-"`
-	// Pagination cursor for community results
+	// Pagination cursor for community search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Filter by language. Alias `lang` is accepted.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Minimum view count threshold.
+	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
-	// Sort order for community results (Latest or Top)
+	// Start date in YYYY-MM-DD format.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// End date in YYYY-MM-DD format.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Filter media. Aliases: has_video, has_media.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XCommunityTweetListParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Sort order (Latest or Top)
 	//
 	// Any of "Latest", "Top".
 	QueryType XCommunityTweetListParamsQueryType `query:"queryType,omitzero" json:"-"`
@@ -89,7 +110,19 @@ func (r XCommunityTweetListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Sort order for community results (Latest or Top)
+// Filter media. Aliases: has_video, has_media.
+type XCommunityTweetListParamsMediaType string
+
+const (
+	XCommunityTweetListParamsMediaTypeImages XCommunityTweetListParamsMediaType = "images"
+	XCommunityTweetListParamsMediaTypeVideos XCommunityTweetListParamsMediaType = "videos"
+	XCommunityTweetListParamsMediaTypeGifs   XCommunityTweetListParamsMediaType = "gifs"
+	XCommunityTweetListParamsMediaTypeMedia  XCommunityTweetListParamsMediaType = "media"
+	XCommunityTweetListParamsMediaTypeLinks  XCommunityTweetListParamsMediaType = "links"
+	XCommunityTweetListParamsMediaTypeNone   XCommunityTweetListParamsMediaType = "none"
+)
+
+// Sort order (Latest or Top)
 type XCommunityTweetListParamsQueryType string
 
 const (
@@ -98,12 +131,32 @@ const (
 )
 
 type XCommunityTweetListByCommunityParams struct {
-	// Pagination cursor for community tweets
+	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Filter by language. Alias `lang` is accepted.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Minimum view count threshold.
+	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// End date in YYYY-MM-DD format.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Filter media. Aliases: has_video, has_media.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XCommunityTweetListByCommunityParamsMediaType `query:"mediaType,omitzero" json:"-"`
 	paramObj
 }
 
@@ -115,3 +168,15 @@ func (r XCommunityTweetListByCommunityParams) URLQuery() (v url.Values, err erro
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter media. Aliases: has_video, has_media.
+type XCommunityTweetListByCommunityParamsMediaType string
+
+const (
+	XCommunityTweetListByCommunityParamsMediaTypeImages XCommunityTweetListByCommunityParamsMediaType = "images"
+	XCommunityTweetListByCommunityParamsMediaTypeVideos XCommunityTweetListByCommunityParamsMediaType = "videos"
+	XCommunityTweetListByCommunityParamsMediaTypeGifs   XCommunityTweetListByCommunityParamsMediaType = "gifs"
+	XCommunityTweetListByCommunityParamsMediaTypeMedia  XCommunityTweetListByCommunityParamsMediaType = "media"
+	XCommunityTweetListByCommunityParamsMediaTypeLinks  XCommunityTweetListByCommunityParamsMediaType = "links"
+	XCommunityTweetListByCommunityParamsMediaTypeNone   XCommunityTweetListByCommunityParamsMediaType = "none"
+)

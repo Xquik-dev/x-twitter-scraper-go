@@ -44,7 +44,7 @@ func NewXAccountConnectionChallengeService(opts ...option.RequestOption) (r XAcc
 	return
 }
 
-// Submit X account email verification code
+// Submits the email code requested during X account connection.
 func (r *XAccountConnectionChallengeService) Submit(ctx context.Context, id string, body XAccountConnectionChallengeSubmitParams, opts ...option.RequestOption) (res *XAccountConnectionChallengeSubmitResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {

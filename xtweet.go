@@ -51,7 +51,7 @@ func NewXTweetService(opts ...option.RequestOption) (r XTweetService) {
 	return
 }
 
-// Create tweet
+// Publishes a post through a connected X account.
 func (r *XTweetService) New(ctx context.Context, params XTweetNewParams, opts ...option.RequestOption) (res *XTweetNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -62,7 +62,7 @@ func (r *XTweetService) New(ctx context.Context, params XTweetNewParams, opts ..
 	return res, err
 }
 
-// Get tweet with full text, author, metrics and media
+// Returns one public tweet with author, metrics, and media.
 func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XTweetGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -74,7 +74,7 @@ func (r *XTweetService) Get(ctx context.Context, id string, opts ...option.Reque
 	return res, err
 }
 
-// Get multiple tweets by IDs
+// Returns public tweet records for the requested IDs.
 func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets"
@@ -82,7 +82,7 @@ func (r *XTweetService) List(ctx context.Context, query XTweetListParams, opts .
 	return res, err
 }
 
-// Delete tweet
+// Deletes an authored post through a connected X account.
 func (r *XTweetService) Delete(ctx context.Context, id string, params XTweetDeleteParams, opts ...option.RequestOption) (res *XTweetDeleteResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -111,7 +111,7 @@ func (r *XTweetService) GetFavoriters(ctx context.Context, id string, query XTwe
 	return res, err
 }
 
-// List quote tweets of a tweet
+// Returns public posts quoting the selected tweet.
 func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGetQuotesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -123,9 +123,8 @@ func (r *XTweetService) GetQuotes(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// Returns direct replies. Omit mode for automatic maximum coverage with resumable
-// pagination. Complete mode returns nested replies, diagnostics, and 424 when
-// direct coverage stays below 80%.
+// Returns direct replies with automatic maximum coverage and pagination. Complete
+// mode adds nested replies, diagnostics, and a 424 below 80% coverage.
 func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetGetRepliesParams, opts ...option.RequestOption) (res *XTweetGetRepliesResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -137,7 +136,7 @@ func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetG
 	return res, err
 }
 
-// List users who retweeted a tweet
+// Returns public profiles that reposted the selected tweet.
 func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTweetGetRetweetersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -149,7 +148,7 @@ func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTwe
 	return res, err
 }
 
-// Get full conversation thread for a tweet
+// Returns visible posts from the selected conversation thread.
 func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGetThreadParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -161,9 +160,9 @@ func (r *XTweetService) GetThread(ctx context.Context, id string, query XTweetGe
 	return res, err
 }
 
-// No-mode search maximizes coverage. New cursorless `Latest` sessions return rows
-// newest-first across cursor pages. Existing cursors preserve their established
-// ordering.
+// Returns normalized tweets with author, like count, media, URL, and cursors. Set
+// q, limit, queryType, and minLikes. Omit mode for maximum coverage. Reuse
+// next_cursor without changing filters.
 func (r *XTweetService) Search(ctx context.Context, query XTweetSearchParams, opts ...option.RequestOption) (res *XTweetSearchResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/tweets/search"
@@ -203,110 +202,126 @@ type TweetDetail struct {
 	RetweetCount  int64  `json:"retweetCount" api:"required"`
 	Text          string `json:"text" api:"required"`
 	ViewCount     int64  `json:"viewCount" api:"required"`
-	// Article metadata attached to a tweet.
+	// Describes an X Article preview and its lifecycle metadata.
 	Article TweetDetailArticle `json:"article"`
 	// Tweet author profile. The lookup route always includes follower count and
 	// verification state. Other profile fields appear when available.
 	Author TweetAuthor `json:"author"`
-	// Public card metadata attached to a tweet.
+	// Describes a public card and its referenced profiles.
 	Card TweetDetailCard `json:"card"`
+	// Community ID.
+	CommunityID string `json:"communityId"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote TweetDetailCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
 	// partnership content or AI-generated media.
 	ContentDisclosure shared.ContentDisclosure `json:"contentDisclosure"`
-	// ID of the root tweet in the conversation thread
-	ConversationID string `json:"conversationId"`
-	CreatedAt      string `json:"createdAt"`
-	// Start and end offsets for rendered tweet text
-	DisplayTextRange []int64 `json:"displayTextRange"`
-	// Edit history metadata returned by X.
+	// Public reply policy and conversation owner.
+	ConversationControl TweetDetailConversationControl `json:"conversationControl"`
+	ConversationID      string                         `json:"conversationId"`
+	CreatedAt           string                         `json:"createdAt"`
+	DisplayTextRange    []int64                        `json:"displayTextRange"`
+	// Lists edit-chain identifiers and the remaining edit window.
 	Edit TweetDetailEdit `json:"edit"`
-	// Parsed entities from the tweet text (URLs, mentions, hashtags, media)
-	Entities map[string]any `json:"entities"`
-	// Tweet ID being replied to
-	InReplyToID string `json:"inReplyToId"`
-	// User ID being replied to
-	InReplyToUserID string `json:"inReplyToUserId"`
-	// Username being replied to
-	InReplyToUsername string `json:"inReplyToUsername"`
-	// Whether replies are limited for this tweet
-	IsLimitedReply bool `json:"isLimitedReply"`
-	// Whether this is a Note Tweet (long-form post, up to 25,000 characters)
-	IsNoteTweet bool `json:"isNoteTweet"`
-	// Whether this tweet quotes another tweet
-	IsQuoteStatus bool `json:"isQuoteStatus"`
-	// Whether this tweet is a reply to another tweet
-	IsReply        bool `json:"isReply"`
-	IsTranslatable bool `json:"isTranslatable"`
-	// Tweet language code
-	Lang string `json:"lang"`
-	// Attached media items, omitted when the tweet has no media
+	// Lists hashtags, symbols, links, and mentions from tweet text.
+	Entities TweetDetailEntities `json:"entities"`
+	// Public metadata whose fields are defined by X.
+	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
+	InReplyToID         string         `json:"inReplyToId"`
+	InReplyToUserID     string         `json:"inReplyToUserId"`
+	InReplyToUsername   string         `json:"inReplyToUsername"`
+	IsLimitedReply      bool           `json:"isLimitedReply"`
+	IsNoteTweet         bool           `json:"isNoteTweet"`
+	IsQuoteStatus       bool           `json:"isQuoteStatus"`
+	IsReply             bool           `json:"isReply"`
+	IsTranslatable      bool           `json:"isTranslatable"`
+	// Public metadata whose fields are defined by X.
+	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	Lang              string         `json:"lang"`
+	// Public interaction restrictions and user-facing prompts.
+	LimitedActions []TweetDetailLimitedAction `json:"limitedActions"`
+	// Attached media items, omitted when unavailable.
 	Media []shared.TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
 	NoteTweet TweetDetailNoteTweet `json:"noteTweet"`
-	// Public place metadata attached to a tweet.
+	// Describes public place metadata on a geotagged tweet.
 	Place             TweetDetailPlace `json:"place"`
 	PossiblySensitive bool             `json:"possiblySensitive"`
+	// Public metadata whose fields are defined by X.
+	PostCta map[string]any `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts TweetDetailPreviousCounts `json:"previousCounts"`
-	// Quoted or retweeted tweet context. Every object includes id, text, and
-	// engagement metrics. A zero metric can mean X did not report the count. Author,
-	// media, and conversation fields appear when available.
+	// Quoted or retweeted tweet context.
 	QuotedTweet shared.EmbeddedTweet `json:"quoted_tweet"`
-	// Quoted or retweeted tweet context. Every object includes id, text, and
-	// engagement metrics. A zero metric can mean X did not report the count. Author,
-	// media, and conversation fields appear when available.
+	// Quoted tweet ID.
+	QuotedTweetID string `json:"quotedTweetId"`
+	// Public post and user referenced by this reaction.
+	ReactionContext TweetDetailReactionContext `json:"reactionContext"`
+	// Quoted or retweeted tweet context.
 	RetweetedTweet shared.EmbeddedTweet `json:"retweeted_tweet"`
-	// Client application used to post this tweet
-	Source string `json:"source"`
-	// Tweet result type
-	Type string `json:"type"`
-	// Tweet permalink URL
-	URL       string `json:"url"`
-	ViewState string `json:"viewState"`
+	// Public metadata whose fields are defined by X.
+	Scopes map[string]any `json:"scopes"`
+	Source string         `json:"source"`
+	// Public visibility notice attached to an available tweet.
+	Tombstone TweetDetailTombstone `json:"tombstone"`
+	Type      string               `json:"type"`
+	// User IDs that left this conversation.
+	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
+	URL                string   `json:"url"`
+	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		BookmarkCount     respjson.Field
-		LikeCount         respjson.Field
-		QuoteCount        respjson.Field
-		ReplyCount        respjson.Field
-		RetweetCount      respjson.Field
-		Text              respjson.Field
-		ViewCount         respjson.Field
-		Article           respjson.Field
-		Author            respjson.Field
-		Card              respjson.Field
-		CommunityNote     respjson.Field
-		ContentDisclosure respjson.Field
-		ConversationID    respjson.Field
-		CreatedAt         respjson.Field
-		DisplayTextRange  respjson.Field
-		Edit              respjson.Field
-		Entities          respjson.Field
-		InReplyToID       respjson.Field
-		InReplyToUserID   respjson.Field
-		InReplyToUsername respjson.Field
-		IsLimitedReply    respjson.Field
-		IsNoteTweet       respjson.Field
-		IsQuoteStatus     respjson.Field
-		IsReply           respjson.Field
-		IsTranslatable    respjson.Field
-		Lang              respjson.Field
-		Media             respjson.Field
-		NoteTweet         respjson.Field
-		Place             respjson.Field
-		PossiblySensitive respjson.Field
-		PreviousCounts    respjson.Field
-		QuotedTweet       respjson.Field
-		RetweetedTweet    respjson.Field
-		Source            respjson.Field
-		Type              respjson.Field
-		URL               respjson.Field
-		ViewState         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ID                  respjson.Field
+		BookmarkCount       respjson.Field
+		LikeCount           respjson.Field
+		QuoteCount          respjson.Field
+		ReplyCount          respjson.Field
+		RetweetCount        respjson.Field
+		Text                respjson.Field
+		ViewCount           respjson.Field
+		Article             respjson.Field
+		Author              respjson.Field
+		Card                respjson.Field
+		CommunityID         respjson.Field
+		CommunityNote       respjson.Field
+		ContentDisclosure   respjson.Field
+		ConversationControl respjson.Field
+		ConversationID      respjson.Field
+		CreatedAt           respjson.Field
+		DisplayTextRange    respjson.Field
+		Edit                respjson.Field
+		Entities            respjson.Field
+		GrokShareAttachment respjson.Field
+		InReplyToID         respjson.Field
+		InReplyToUserID     respjson.Field
+		InReplyToUsername   respjson.Field
+		IsLimitedReply      respjson.Field
+		IsNoteTweet         respjson.Field
+		IsQuoteStatus       respjson.Field
+		IsReply             respjson.Field
+		IsTranslatable      respjson.Field
+		JetfuelAttachment   respjson.Field
+		Lang                respjson.Field
+		LimitedActions      respjson.Field
+		Media               respjson.Field
+		NoteTweet           respjson.Field
+		Place               respjson.Field
+		PossiblySensitive   respjson.Field
+		PostCta             respjson.Field
+		PreviousCounts      respjson.Field
+		QuotedTweet         respjson.Field
+		QuotedTweetID       respjson.Field
+		ReactionContext     respjson.Field
+		RetweetedTweet      respjson.Field
+		Scopes              respjson.Field
+		Source              respjson.Field
+		Tombstone           respjson.Field
+		Type                respjson.Field
+		UnmentionedUserIDs  respjson.Field
+		URL                 respjson.Field
+		ViewState           respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -316,20 +331,29 @@ func (r *TweetDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Article metadata attached to a tweet.
+// Describes an X Article preview and its lifecycle metadata.
 type TweetDetailArticle struct {
-	ID            string `json:"id"`
-	CoverMediaURL string `json:"coverMediaUrl"`
-	PreviewText   string `json:"previewText"`
-	Title         string `json:"title"`
+	ID string `json:"id"`
+	// Public metadata whose fields are defined by X.
+	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMediaURL string         `json:"coverMediaUrl"`
+	// Public metadata whose fields are defined by X.
+	LifecycleState map[string]any `json:"lifecycleState"`
+	// Public metadata whose fields are defined by X.
+	Metadata    map[string]any `json:"metadata"`
+	PreviewText string         `json:"previewText"`
+	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		CoverMediaURL respjson.Field
-		PreviewText   respjson.Field
-		Title         respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID             respjson.Field
+		CoverMedia     respjson.Field
+		CoverMediaURL  respjson.Field
+		LifecycleState respjson.Field
+		Metadata       respjson.Field
+		PreviewText    respjson.Field
+		Title          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -339,20 +363,29 @@ func (r *TweetDetailArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Public card metadata attached to a tweet.
+// Describes a public card and its referenced profiles.
 type TweetDetailCard struct {
-	ID            string         `json:"id"`
+	ID string `json:"id"`
+	// Public metadata whose fields are defined by X.
 	BindingValues map[string]any `json:"bindingValues"`
 	Name          string         `json:"name"`
-	URL           string         `json:"url"`
+	// Public metadata whose fields are defined by X.
+	Platform map[string]any `json:"platform"`
+	URL      string         `json:"url"`
+	// Unresolved card user references.
+	UserReferenceErrors []TweetDetailCardUserReferenceError `json:"userReferenceErrors"`
+	UserReferences      []shared.UserProfile                `json:"userReferences"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		BindingValues respjson.Field
-		Name          respjson.Field
-		URL           respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                  respjson.Field
+		BindingValues       respjson.Field
+		Name                respjson.Field
+		Platform            respjson.Field
+		URL                 respjson.Field
+		UserReferenceErrors respjson.Field
+		UserReferences      respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -362,20 +395,45 @@ func (r *TweetDetailCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type TweetDetailCardUserReferenceError struct {
+	Message string `json:"message"`
+	Reason  string `json:"reason"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailCardUserReferenceError) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailCardUserReferenceError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Community Note presentation metadata returned by X.
 type TweetDetailCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
 	Footer         string `json:"footer"`
-	ShortTitle     string `json:"shortTitle"`
-	Subtitle       string `json:"subtitle"`
-	Title          string `json:"title"`
-	VisualStyle    string `json:"visualStyle"`
+	FooterIconType string `json:"footerIconType"`
+	IconType       string `json:"iconType"`
+	// Public metadata whose fields are defined by X.
+	Metadata    map[string]any `json:"metadata"`
+	ShortTitle  string         `json:"shortTitle"`
+	Subtitle    string         `json:"subtitle"`
+	Title       string         `json:"title"`
+	VisualStyle string         `json:"visualStyle"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
 		DestinationURL respjson.Field
 		Footer         respjson.Field
+		FooterIconType respjson.Field
+		IconType       respjson.Field
+		Metadata       respjson.Field
 		ShortTitle     respjson.Field
 		Subtitle       respjson.Field
 		Title          respjson.Field
@@ -391,14 +449,37 @@ func (r *TweetDetailCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Edit history metadata returned by X.
+// Public reply policy and conversation owner.
+type TweetDetailConversationControl struct {
+	InviteViaMention bool   `json:"inviteViaMention"`
+	OwnerUsername    string `json:"ownerUsername"`
+	Policy           string `json:"policy"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InviteViaMention respjson.Field
+		OwnerUsername    respjson.Field
+		Policy           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailConversationControl) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailConversationControl) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Lists edit-chain identifiers and the remaining edit window.
 type TweetDetailEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
+	InitialTweetID     string   `json:"initialTweetId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EditableUntilMsecs respjson.Field
 		EditTweetIDs       respjson.Field
+		InitialTweetID     respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -410,11 +491,366 @@ func (r *TweetDetailEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Lists hashtags, symbols, links, and mentions from tweet text.
+type TweetDetailEntities struct {
+	Hashtags     []TweetDetailEntitiesHashtag     `json:"hashtags"`
+	Smarttags    []TweetDetailEntitiesSmarttag    `json:"smarttags"`
+	Symbols      []TweetDetailEntitiesSymbol      `json:"symbols"`
+	Timestamps   []TweetDetailEntitiesTimestamp   `json:"timestamps"`
+	URLs         []TweetDetailEntitiesURL         `json:"urls"`
+	UserMentions []TweetDetailEntitiesUserMention `json:"user_mentions"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hashtags     respjson.Field
+		Smarttags    respjson.Field
+		Symbols      respjson.Field
+		Timestamps   respjson.Field
+		URLs         respjson.Field
+		UserMentions respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntities) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntities) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Provides hashtag text and source offsets within a tweet.
+type TweetDetailEntitiesHashtag struct {
+	Text    string  `json:"text" api:"required"`
+	Indices []int64 `json:"indices"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Indices     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesHashtag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesHashtag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type TweetDetailEntitiesSmarttag struct {
+	Indices []int64                        `json:"indices"`
+	Seconds float64                        `json:"seconds"`
+	Tag     TweetDetailEntitiesSmarttagTag `json:"tag"`
+	Text    string                         `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSmarttag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesSmarttagTag struct {
+	Info TweetDetailEntitiesSmarttagTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesSmarttagTagInfo struct {
+	Info TweetDetailEntitiesSmarttagTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesSmarttagTagInfoInfo struct {
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type TweetDetailEntitiesSymbol struct {
+	Indices []int64                      `json:"indices"`
+	Seconds float64                      `json:"seconds"`
+	Tag     TweetDetailEntitiesSymbolTag `json:"tag"`
+	Text    string                       `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSymbol) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSymbol) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesSymbolTag struct {
+	Info TweetDetailEntitiesSymbolTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesSymbolTagInfo struct {
+	Info TweetDetailEntitiesSymbolTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesSymbolTagInfoInfo struct {
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type TweetDetailEntitiesTimestamp struct {
+	Indices []int64                         `json:"indices"`
+	Seconds float64                         `json:"seconds"`
+	Tag     TweetDetailEntitiesTimestampTag `json:"tag"`
+	Text    string                          `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesTimestamp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesTimestampTag struct {
+	Info TweetDetailEntitiesTimestampTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesTimestampTagInfo struct {
+	Info TweetDetailEntitiesTimestampTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailEntitiesTimestampTagInfoInfo struct {
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Provides shortened, display, and expanded URLs from tweet text.
+type TweetDetailEntitiesURL struct {
+	DisplayURL  string  `json:"display_url"`
+	ExpandedURL string  `json:"expanded_url"`
+	Indices     []int64 `json:"indices"`
+	URL         string  `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayURL  respjson.Field
+		ExpandedURL respjson.Field
+		Indices     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesURL) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Provides profile identity and source offsets for a mention.
+type TweetDetailEntitiesUserMention struct {
+	ScreenName string  `json:"screen_name" api:"required"`
+	IDStr      string  `json:"id_str"`
+	Indices    []int64 `json:"indices"`
+	Name       string  `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ScreenName  respjson.Field
+		IDStr       respjson.Field
+		Indices     respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailEntitiesUserMention) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailEntitiesUserMention) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailLimitedAction struct {
+	Action string                         `json:"action"`
+	Prompt TweetDetailLimitedActionPrompt `json:"prompt"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Prompt      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailLimitedAction) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailLimitedAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailLimitedActionPrompt struct {
+	CtaType  string `json:"ctaType"`
+	Headline string `json:"headline"`
+	// Public metadata whose fields are defined by X.
+	Metadata map[string]any `json:"metadata"`
+	Subtext  string         `json:"subtext"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CtaType     respjson.Field
+		Headline    respjson.Field
+		Metadata    respjson.Field
+		Subtext     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailLimitedActionPrompt) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailLimitedActionPrompt) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Complete Note Tweet content and rich-text metadata.
 type TweetDetailNoteTweet struct {
-	Text         string                            `json:"text" api:"required"`
-	ID           string                            `json:"id"`
-	Entities     map[string]any                    `json:"entities"`
+	Text string `json:"text" api:"required"`
+	ID   string `json:"id"`
+	// Lists hashtags, symbols, links, and mentions from tweet text.
+	Entities TweetDetailNoteTweetEntities `json:"entities"`
+	// Inline media positions in the Note Tweet text.
+	InlineMedia  []TweetDetailNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                              `json:"isExpandable"`
 	RichtextTags []TweetDetailNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -422,6 +858,7 @@ type TweetDetailNoteTweet struct {
 		Text         respjson.Field
 		ID           respjson.Field
 		Entities     respjson.Field
+		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
@@ -432,6 +869,335 @@ type TweetDetailNoteTweet struct {
 // Returns the unmodified JSON received from the API
 func (r TweetDetailNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *TweetDetailNoteTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Lists hashtags, symbols, links, and mentions from tweet text.
+type TweetDetailNoteTweetEntities struct {
+	Hashtags     []TweetDetailNoteTweetEntitiesHashtag     `json:"hashtags"`
+	Smarttags    []TweetDetailNoteTweetEntitiesSmarttag    `json:"smarttags"`
+	Symbols      []TweetDetailNoteTweetEntitiesSymbol      `json:"symbols"`
+	Timestamps   []TweetDetailNoteTweetEntitiesTimestamp   `json:"timestamps"`
+	URLs         []TweetDetailNoteTweetEntitiesURL         `json:"urls"`
+	UserMentions []TweetDetailNoteTweetEntitiesUserMention `json:"user_mentions"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hashtags     respjson.Field
+		Smarttags    respjson.Field
+		Symbols      respjson.Field
+		Timestamps   respjson.Field
+		URLs         respjson.Field
+		UserMentions respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntities) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntities) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Provides hashtag text and source offsets within a tweet.
+type TweetDetailNoteTweetEntitiesHashtag struct {
+	Text    string  `json:"text" api:"required"`
+	Indices []int64 `json:"indices"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Indices     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type TweetDetailNoteTweetEntitiesSmarttag struct {
+	Indices []int64                                 `json:"indices"`
+	Seconds float64                                 `json:"seconds"`
+	Tag     TweetDetailNoteTweetEntitiesSmarttagTag `json:"tag"`
+	Text    string                                  `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesSmarttagTag struct {
+	Info TweetDetailNoteTweetEntitiesSmarttagTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesSmarttagTagInfo struct {
+	Info TweetDetailNoteTweetEntitiesSmarttagTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type TweetDetailNoteTweetEntitiesSymbol struct {
+	Indices []int64                               `json:"indices"`
+	Seconds float64                               `json:"seconds"`
+	Tag     TweetDetailNoteTweetEntitiesSymbolTag `json:"tag"`
+	Text    string                                `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesSymbolTag struct {
+	Info TweetDetailNoteTweetEntitiesSymbolTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesSymbolTagInfo struct {
+	Info TweetDetailNoteTweetEntitiesSymbolTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type TweetDetailNoteTweetEntitiesTimestamp struct {
+	Indices []int64                                  `json:"indices"`
+	Seconds float64                                  `json:"seconds"`
+	Tag     TweetDetailNoteTweetEntitiesTimestampTag `json:"tag"`
+	Text    string                                   `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesTimestampTag struct {
+	Info TweetDetailNoteTweetEntitiesTimestampTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesTimestampTagInfo struct {
+	Info TweetDetailNoteTweetEntitiesTimestampTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Provides shortened, display, and expanded URLs from tweet text.
+type TweetDetailNoteTweetEntitiesURL struct {
+	DisplayURL  string  `json:"display_url"`
+	ExpandedURL string  `json:"expanded_url"`
+	Indices     []int64 `json:"indices"`
+	URL         string  `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayURL  respjson.Field
+		ExpandedURL respjson.Field
+		Indices     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Provides profile identity and source offsets for a mention.
+type TweetDetailNoteTweetEntitiesUserMention struct {
+	ScreenName string  `json:"screen_name" api:"required"`
+	IDStr      string  `json:"id_str"`
+	Indices    []int64 `json:"indices"`
+	Name       string  `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ScreenName  respjson.Field
+		IDStr       respjson.Field
+		Indices     respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailNoteTweetInlineMedia struct {
+	Index   int64  `json:"index" api:"required"`
+	MediaID string `json:"mediaId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Index       respjson.Field
+		MediaID     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailNoteTweetInlineMedia) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailNoteTweetInlineMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -455,9 +1221,10 @@ func (r *TweetDetailNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Public place metadata attached to a tweet.
+// Describes public place metadata on a geotagged tweet.
 type TweetDetailPlace struct {
-	ID          string         `json:"id"`
+	ID string `json:"id"`
+	// Public metadata whose fields are defined by X.
 	BoundingBox map[string]any `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
@@ -511,9 +1278,112 @@ func (r *TweetDetailPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Public post and user referenced by this reaction.
+type TweetDetailReactionContext struct {
+	// Referenced post ID.
+	ReactedToPostID string `json:"reactedToPostId"`
+	// X user profile with bio, follower counts, and verification status.
+	ReactedToUser shared.UserProfile `json:"reactedToUser"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ReactedToPostID respjson.Field
+		ReactedToUser   respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailReactionContext) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailReactionContext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public visibility notice attached to an available tweet.
+type TweetDetailTombstone struct {
+	Text TweetDetailTombstoneText `json:"text"`
+	// Visibility notice type.
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailTombstone) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailTombstone) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailTombstoneText struct {
+	Entities []TweetDetailTombstoneTextEntity `json:"entities"`
+	// Right-to-left text direction.
+	Rtl bool `json:"rtl"`
+	// Human-readable notice text.
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Rtl         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailTombstoneText) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailTombstoneText) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailTombstoneTextEntity struct {
+	FromIndex int64                             `json:"fromIndex"`
+	Ref       TweetDetailTombstoneTextEntityRef `json:"ref"`
+	ToIndex   int64                             `json:"toIndex"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FromIndex   respjson.Field
+		Ref         respjson.Field
+		ToIndex     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailTombstoneTextEntity) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailTombstoneTextEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailTombstoneTextEntityRef struct {
+	Type    string `json:"type"`
+	URL     string `json:"url"`
+	URLType string `json:"urlType"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		URL         respjson.Field
+		URLType     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailTombstoneTextEntityRef) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailTombstoneTextEntityRef) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XTweetNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -828,9 +1698,9 @@ func (r *XTweetGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XTweetDeleteResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -1270,6 +2140,7 @@ func (r *XTweetGetRepliesResponseDiagnosticRichness) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Result counts and stop reason for one reply strategy.
 type XTweetGetRepliesResponseDiagnosticStrategiesAttempted struct {
 	Name             string `json:"name" api:"required"`
 	NewDirectReplies int64  `json:"newDirectReplies" api:"required"`
@@ -1306,14 +2177,18 @@ type XTweetSearchResponseUnion struct {
 	// This field is from variant [shared.PaginatedTweets],
 	// [XTweetSearchResponseTweetSearchCoverageResponse].
 	Tweets []shared.SearchTweet `json:"tweets"`
+	// This field is from variant [shared.PaginatedTweets],
+	// [XTweetSearchResponseTweetSearchCoverageResponse].
+	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XTweetSearchResponseTweetSearchCoverageResponse].
 	Diagnostic XTweetSearchResponseTweetSearchCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage respjson.Field
-		NextCursor  respjson.Field
-		Tweets      respjson.Field
-		Diagnostic  respjson.Field
-		raw         string
+		HasNextPage   respjson.Field
+		NextCursor    respjson.Field
+		Tweets        respjson.Field
+		FilteredCount respjson.Field
+		Diagnostic    respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -1334,10 +2209,7 @@ func (r *XTweetSearchResponseUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// No-mode search, user Tweet, user reply, and direct reply reads use automatic
-// coverage. Shape, filters, aliases, and billing stay compatible. Unprefixed
-// cursors remain legacy. Follow next_cursor while has_next_page is true. An empty
-// filtered page can still have has_next_page true.
+// Terminal Tweet search coverage response with diagnostics.
 type XTweetSearchResponseTweetSearchCoverageResponse struct {
 	// Coverage evidence across parallel search strategies.
 	Diagnostic XTweetSearchResponseTweetSearchCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -1364,7 +2236,7 @@ func (r *XTweetSearchResponseTweetSearchCoverageResponse) UnmarshalJSON(data []b
 
 // Coverage evidence across parallel search strategies.
 type XTweetSearchResponseTweetSearchCoverageResponseDiagnostic struct {
-	// True when every strategy exhausted its source.
+	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
 	CursorFailureCount  int64 `json:"cursorFailureCount" api:"required"`
 	DeadlineReached     bool  `json:"deadlineReached" api:"required"`
@@ -1374,7 +2246,7 @@ type XTweetSearchResponseTweetSearchCoverageResponseDiagnostic struct {
 	PagesFetched        int64 `json:"pagesFetched" api:"required"`
 	// Whether bounded time windows ran in parallel.
 	Partitioned bool `json:"partitioned" api:"required"`
-	// Whether credits or the requested limit reduced output.
+	// True when credits or the requested limit reduce output.
 	ResponseTruncated    bool                                                                `json:"responseTruncated" api:"required"`
 	ResultLimitReached   bool                                                                `json:"resultLimitReached" api:"required"`
 	ReturnedTweets       int64                                                               `json:"returnedTweets" api:"required"`
@@ -1412,11 +2284,14 @@ func (r *XTweetSearchResponseTweetSearchCoverageResponseDiagnostic) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Result counts and stop reason for one Tweet search strategy.
 type XTweetSearchResponseTweetSearchCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
 	// Any of "Latest", "Top".
 	QueryType string `json:"queryType" api:"required"`
+	// Reason a coverage strategy stopped.
+	//
 	// Any of "cursor_failure", "deadline", "exhausted", "failed", "page_limit",
 	// "result_limit", "stalled".
 	StopReason  string `json:"stopReason" api:"required"`
@@ -1533,7 +2408,7 @@ type XTweetGetFavoritersParams struct {
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -1541,13 +2416,13 @@ type XTweetGetFavoritersParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
-	// Maximum user profiles requested from this page (20-200, default 200). Source,
-	// filters, or credits can return fewer profiles. Keep requesting next_cursor while
-	// has_next_page is true. Deprecated aliases remain accepted.
+	// Maximum user profiles requested from this page (1-200, default 200). Source,
+	// filters, or credits can return fewer profiles. Follow next_cursor while the
+	// response reports more pages. Deprecated aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
@@ -1579,9 +2454,10 @@ type XTweetGetQuotesParams struct {
 	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
 	// Conversation ID filter.
 	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
-	// Pagination cursor for quote tweets
+	// Cursor from the previous response. Xquik cursors resume automatic coverage.
+	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude a source application.
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
@@ -1593,11 +2469,11 @@ type XTweetGetQuotesParams struct {
 	Geocode param.Opt[string] `query:"geocode,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
-	// Include reply quotes (default false)
+	// Include reply tweets unless replies specifies another mode.
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
@@ -1613,8 +2489,8 @@ type XTweetGetQuotesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -1629,9 +2505,9 @@ type XTweetGetQuotesParams struct {
 	Near param.Opt[string] `query:"near,omitzero" json:"-"`
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
-	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// Automatic pages accept 1-300 Tweets. Standard pages keep 1-100. Default 20.
+	// Follow next_cursor while the response reports more pages. Deprecated aliases
+	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -1643,7 +2519,7 @@ type XTweetGetQuotesParams struct {
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Return Tweets newer than this Tweet ID.
 	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
-	// Unix timestamp - return quotes posted after this time
+	// Inclusive ISO bound for Tweet creation time.
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
@@ -1651,7 +2527,7 @@ type XTweetGetQuotesParams struct {
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
-	// Unix timestamp - return quotes posted before this time
+	// Exclusive ISO bound for Tweet creation time.
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	// URL substring or domain filter.
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
@@ -1661,19 +2537,23 @@ type XTweetGetQuotesParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XTweetGetQuotesParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Quote mode.
+	// Optional legacy pagination override.
+	//
+	// Any of "standard".
+	Mode XTweetGetQuotesParamsMode `query:"mode,omitzero" json:"-"`
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XTweetGetQuotesParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XTweetGetQuotesParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XTweetGetQuotesParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -1688,7 +2568,7 @@ func (r XTweetGetQuotesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XTweetGetQuotesParamsMediaType string
 
 const (
@@ -1700,7 +2580,14 @@ const (
 	XTweetGetQuotesParamsMediaTypeNone   XTweetGetQuotesParamsMediaType = "none"
 )
 
-// Quote mode.
+// Optional legacy pagination override.
+type XTweetGetQuotesParamsMode string
+
+const (
+	XTweetGetQuotesParamsModeStandard XTweetGetQuotesParamsMode = "standard"
+)
+
+// Only when the caller requests a quote mode.
 type XTweetGetQuotesParamsQuotes string
 
 const (
@@ -1709,7 +2596,7 @@ const (
 	XTweetGetQuotesParamsQuotesOnly    XTweetGetQuotesParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XTweetGetQuotesParamsReplies string
 
 const (
@@ -1718,7 +2605,7 @@ const (
 	XTweetGetQuotesParamsRepliesOnly    XTweetGetQuotesParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XTweetGetQuotesParamsRetweets string
 
 const (
@@ -1742,7 +2629,7 @@ type XTweetGetRepliesParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude replies written by the source-post author.
 	ExcludeOriginalAuthor param.Opt[bool] `query:"excludeOriginalAuthor,omitzero" json:"-"`
@@ -1762,11 +2649,10 @@ type XTweetGetRepliesParams struct {
 	IncludeOriginalPost param.Opt[bool] `query:"includeOriginalPost,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
-	// With mode=complete, maximum combined direct and nested reply rows (1-25000,
-	// default 25000). Automatic pages accept 1-300. Standard pages accept 1-100.
-	// Prefer pageSize outside complete mode.
+	// Complete mode caps combined direct and nested replies at 25,000. Automatic pages
+	// accept 1-300. Standard pages accept 1-100.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Maximum reply depth from the source post.
 	MaxDepth param.Opt[int64] `query:"maxDepth,omitzero" json:"-"`
@@ -1784,8 +2670,8 @@ type XTweetGetRepliesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -1801,7 +2687,8 @@ type XTweetGetRepliesParams struct {
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
 	// Automatic pages accept 1-300 Tweets. Standard pages keep 1-100. Default 20.
-	// Continue while has_next_page is true. Deprecated aliases remain accepted.
+	// Follow next_cursor while the response reports more pages. Deprecated aliases
+	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -1813,7 +2700,7 @@ type XTweetGetRepliesParams struct {
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Return Tweets newer than this Tweet ID.
 	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
-	// Unix timestamp - return replies posted after this time
+	// Inclusive ISO bound for Tweet creation time.
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
@@ -1821,7 +2708,7 @@ type XTweetGetRepliesParams struct {
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
-	// Unix timestamp - return replies posted before this time
+	// Exclusive ISO bound for Tweet creation time.
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	// URL substring or domain filter.
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
@@ -1831,26 +2718,24 @@ type XTweetGetRepliesParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XTweetGetRepliesParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Optional advanced override. Omit mode for automatic maximum direct reply
-	// coverage with pagination. Standard keeps legacy pagination. Complete returns
-	// direct and nested replies with diagnostics, scope, depth, sorting, and
-	// original-post controls.
+	// Override automatic coverage. Standard uses legacy pagination. Complete adds
+	// nested replies, diagnostics, scope, depth, sorting, and original-post controls.
 	//
 	// Any of "standard", "complete".
 	Mode XTweetGetRepliesParamsMode `query:"mode,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XTweetGetRepliesParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XTweetGetRepliesParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XTweetGetRepliesParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -1873,7 +2758,7 @@ func (r XTweetGetRepliesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XTweetGetRepliesParamsMediaType string
 
 const (
@@ -1885,10 +2770,8 @@ const (
 	XTweetGetRepliesParamsMediaTypeNone   XTweetGetRepliesParamsMediaType = "none"
 )
 
-// Optional advanced override. Omit mode for automatic maximum direct reply
-// coverage with pagination. Standard keeps legacy pagination. Complete returns
-// direct and nested replies with diagnostics, scope, depth, sorting, and
-// original-post controls.
+// Override automatic coverage. Standard uses legacy pagination. Complete adds
+// nested replies, diagnostics, scope, depth, sorting, and original-post controls.
 type XTweetGetRepliesParamsMode string
 
 const (
@@ -1896,7 +2779,7 @@ const (
 	XTweetGetRepliesParamsModeComplete XTweetGetRepliesParamsMode = "complete"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XTweetGetRepliesParamsQuotes string
 
 const (
@@ -1905,7 +2788,7 @@ const (
 	XTweetGetRepliesParamsQuotesOnly    XTweetGetRepliesParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XTweetGetRepliesParamsReplies string
 
 const (
@@ -1914,7 +2797,7 @@ const (
 	XTweetGetRepliesParamsRepliesOnly    XTweetGetRepliesParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XTweetGetRepliesParamsRetweets string
 
 const (
@@ -1955,7 +2838,7 @@ type XTweetGetRetweetersParams struct {
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -1963,13 +2846,13 @@ type XTweetGetRetweetersParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
-	// Maximum user profiles requested from this page (20-200, default 200). Source,
-	// filters, or credits can return fewer profiles. Keep requesting next_cursor while
-	// has_next_page is true. Deprecated aliases remain accepted.
+	// Maximum user profiles requested from this page (1-200, default 200). Source,
+	// filters, or credits can return fewer profiles. Follow next_cursor while the
+	// response reports more pages. Deprecated aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
@@ -2001,7 +2884,7 @@ type XTweetGetThreadParams struct {
 	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for thread tweets
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
@@ -2011,7 +2894,7 @@ type XTweetGetThreadParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
@@ -2025,8 +2908,8 @@ type XTweetGetThreadParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -2036,8 +2919,8 @@ type XTweetGetThreadParams struct {
 	// Minimum view count threshold.
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
@@ -2053,19 +2936,19 @@ type XTweetGetThreadParams struct {
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
 	// Only return tweets from verified authors.
 	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XTweetGetThreadParamsMediaType `query:"mediaType,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XTweetGetThreadParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XTweetGetThreadParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XTweetGetThreadParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -2080,7 +2963,7 @@ func (r XTweetGetThreadParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XTweetGetThreadParamsMediaType string
 
 const (
@@ -2092,7 +2975,7 @@ const (
 	XTweetGetThreadParamsMediaTypeNone   XTweetGetThreadParamsMediaType = "none"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XTweetGetThreadParamsQuotes string
 
 const (
@@ -2101,7 +2984,7 @@ const (
 	XTweetGetThreadParamsQuotesOnly    XTweetGetThreadParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XTweetGetThreadParamsReplies string
 
 const (
@@ -2110,7 +2993,7 @@ const (
 	XTweetGetThreadParamsRepliesOnly    XTweetGetThreadParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XTweetGetThreadParamsRetweets string
 
 const (
@@ -2120,7 +3003,8 @@ const (
 )
 
 type XTweetSearchParams struct {
-	// Query, Tweet ID, or status URL. Valid inline bounds apply per page.
+	// Query, Tweet ID, or URL. Hyphens negate terms. Use exactPhrase for literals.
+	// Valid bounds apply per page.
 	Q string `query:"q" api:"required" json:"-"`
 	// Raw advanced search query appended as-is.
 	AdvancedQuery param.Opt[string] `query:"advancedQuery,omitzero" json:"-"`
@@ -2140,7 +3024,7 @@ type XTweetSearchParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Exact phrase to match.
+	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Exclude a source application.
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
@@ -2154,11 +3038,12 @@ type XTweetSearchParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
-	// Language code filter, e.g. en or tr.
+	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
-	// Result upper bound. Omit it for the existing 20-row page size. Explicit coverage
-	// defaults to 2000 and allows 10000. For paid requests, remaining credits can
-	// reduce results. Zero affordable results returns 402.
+	// Unique matching result upper bound after filtering. Default 20. Explicit
+	// coverage defaults to 2000. It returns retained rows and deadline diagnostics
+	// when time expires. Only returned rows are billed. Credits may reduce results;
+	// zero affordable rows returns 402. Aliases: pageSize, count, max_results.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Search within a list ID.
 	ListID param.Opt[string] `query:"listId,omitzero" json:"-"`
@@ -2176,8 +3061,8 @@ type XTweetSearchParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
-	// Minimum likes threshold. minLikes is also accepted.
-	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
 	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
@@ -2208,7 +3093,7 @@ type XTweetSearchParams struct {
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Return Tweets newer than this Tweet ID.
 	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
-	// Inclusive ISO bound.
+	// Inclusive ISO bound for Tweet creation time.
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
@@ -2216,7 +3101,7 @@ type XTweetSearchParams struct {
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
-	// Exclusive ISO bound.
+	// Exclusive ISO bound for Tweet creation time.
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	// URL substring or domain filter.
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
@@ -2226,7 +3111,7 @@ type XTweetSearchParams struct {
 	Within param.Opt[string] `query:"within,omitzero" json:"-"`
 	// Match Tweets inside a recent time window.
 	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
-	// Filter by media type.
+	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XTweetSearchParamsMediaType `query:"mediaType,omitzero" json:"-"`
@@ -2235,19 +3120,19 @@ type XTweetSearchParams struct {
 	//
 	// Any of "standard", "coverage".
 	Mode XTweetSearchParamsMode `query:"mode,omitzero" json:"-"`
-	// Sort order - Latest (chronological) or Top (engagement-ranked)
+	// Latest is chronological; Top ranks engagement. Aliases: result_type, sort_order.
 	//
 	// Any of "Latest", "Top".
 	QueryType XTweetSearchParamsQueryType `query:"queryType,omitzero" json:"-"`
-	// Quote mode.
+	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
 	Quotes XTweetSearchParamsQuotes `query:"quotes,omitzero" json:"-"`
-	// Reply mode.
+	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
 	Replies XTweetSearchParamsReplies `query:"replies,omitzero" json:"-"`
-	// Retweet mode.
+	// Only when the caller requests a repost mode.
 	//
 	// Any of "include", "exclude", "only".
 	Retweets XTweetSearchParamsRetweets `query:"retweets,omitzero" json:"-"`
@@ -2262,7 +3147,7 @@ func (r XTweetSearchParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by media type.
+// Filter media. Aliases: has_video, has_media.
 type XTweetSearchParamsMediaType string
 
 const (
@@ -2283,7 +3168,7 @@ const (
 	XTweetSearchParamsModeCoverage XTweetSearchParamsMode = "coverage"
 )
 
-// Sort order - Latest (chronological) or Top (engagement-ranked)
+// Latest is chronological; Top ranks engagement. Aliases: result_type, sort_order.
 type XTweetSearchParamsQueryType string
 
 const (
@@ -2291,7 +3176,7 @@ const (
 	XTweetSearchParamsQueryTypeTop    XTweetSearchParamsQueryType = "Top"
 )
 
-// Quote mode.
+// Only when the caller requests a quote mode.
 type XTweetSearchParamsQuotes string
 
 const (
@@ -2300,7 +3185,7 @@ const (
 	XTweetSearchParamsQuotesOnly    XTweetSearchParamsQuotes = "only"
 )
 
-// Reply mode.
+// Only when the caller requests a reply mode.
 type XTweetSearchParamsReplies string
 
 const (
@@ -2309,7 +3194,7 @@ const (
 	XTweetSearchParamsRepliesOnly    XTweetSearchParamsReplies = "only"
 )
 
-// Retweet mode.
+// Only when the caller requests a repost mode.
 type XTweetSearchParamsRetweets string
 
 const (

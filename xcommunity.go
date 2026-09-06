@@ -50,7 +50,7 @@ func NewXCommunityService(opts ...option.RequestOption) (r XCommunityService) {
 	return
 }
 
-// Create community
+// Creates an X Community through a connected account.
 func (r *XCommunityService) New(ctx context.Context, params XCommunityNewParams, opts ...option.RequestOption) (res *XCommunityNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -61,7 +61,7 @@ func (r *XCommunityService) New(ctx context.Context, params XCommunityNewParams,
 	return res, err
 }
 
-// Delete community
+// Deletes an owned X Community through a connected account.
 func (r *XCommunityService) Delete(ctx context.Context, id string, params XCommunityDeleteParams, opts ...option.RequestOption) (res *XCommunityDeleteResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -76,7 +76,7 @@ func (r *XCommunityService) Delete(ctx context.Context, id string, params XCommu
 	return res, err
 }
 
-// Get community name, description and member count
+// Returns public identity and membership counts for one community.
 func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...option.RequestOption) (res *XCommunityGetInfoResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -88,7 +88,7 @@ func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// List members of a community
+// Returns public member profiles for one community.
 func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCommunityGetMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -100,7 +100,7 @@ func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCo
 	return res, err
 }
 
-// List moderators of a community
+// Returns public moderator profiles for one community.
 func (r *XCommunityService) GetModerators(ctx context.Context, id string, query XCommunityGetModeratorsParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -112,7 +112,7 @@ func (r *XCommunityService) GetModerators(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Returns tweets, not community records. Requires a Community ID.
+// Returns one tweet page, not community records.
 func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/communities/search"
@@ -120,9 +120,9 @@ func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSe
 	return res, err
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XCommunityNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -415,9 +415,9 @@ func (r *XCommunityNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Durable write lifecycle record. Poll statusUrl until terminal is true. Reusing
-// the original Idempotency-Key returns this same record. Submit a new write only
-// when safeToRetry is true, using a new key.
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
 type XCommunityDeleteResponse struct {
 	ID string `json:"id" api:"required"`
 	// Connected account selected for the write.
@@ -880,7 +880,7 @@ func (r *XCommunityDeleteParams) UnmarshalJSON(data []byte) error {
 type XCommunityGetMembersParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
-	// Pagination cursor
+	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
@@ -890,7 +890,7 @@ type XCommunityGetMembersParams struct {
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -898,13 +898,11 @@ type XCommunityGetMembersParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
-	// Items per page (20-200, default 20). This is an upper bound for paid
-	// authenticated calls: remaining credits can reduce the returned page size, and
-	// zero affordable results returns 402 insufficient_credits.
+	// Maximum user profiles per page (1-200, default 20).
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
@@ -927,7 +925,7 @@ func (r XCommunityGetMembersParams) URLQuery() (v url.Values, err error) {
 type XCommunityGetModeratorsParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
-	// Pagination cursor for community moderators
+	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
@@ -937,7 +935,7 @@ type XCommunityGetModeratorsParams struct {
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
-	// Maximum following count.
+	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
@@ -945,7 +943,7 @@ type XCommunityGetModeratorsParams struct {
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
-	// Minimum following count.
+	// Profiles must follow at least this many accounts.
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
@@ -974,10 +972,30 @@ type XCommunityGetSearchParams struct {
 	Q string `query:"q" api:"required" json:"-"`
 	// Pagination cursor for community search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Filter by language. Alias `lang` is accepted.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Minimum view count threshold.
+	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
-	// results. Continue while has_next_page is true. Deprecated limit and count
-	// aliases remain accepted.
+	// results. Follow next_cursor while the response reports more pages. Deprecated
+	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// End date in YYYY-MM-DD format.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Filter media. Aliases: has_video, has_media.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XCommunityGetSearchParamsMediaType `query:"mediaType,omitzero" json:"-"`
 	// Sort order (Latest or Top)
 	//
 	// Any of "Latest", "Top".
@@ -993,6 +1011,18 @@ func (r XCommunityGetSearchParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter media. Aliases: has_video, has_media.
+type XCommunityGetSearchParamsMediaType string
+
+const (
+	XCommunityGetSearchParamsMediaTypeImages XCommunityGetSearchParamsMediaType = "images"
+	XCommunityGetSearchParamsMediaTypeVideos XCommunityGetSearchParamsMediaType = "videos"
+	XCommunityGetSearchParamsMediaTypeGifs   XCommunityGetSearchParamsMediaType = "gifs"
+	XCommunityGetSearchParamsMediaTypeMedia  XCommunityGetSearchParamsMediaType = "media"
+	XCommunityGetSearchParamsMediaTypeLinks  XCommunityGetSearchParamsMediaType = "links"
+	XCommunityGetSearchParamsMediaTypeNone   XCommunityGetSearchParamsMediaType = "none"
+)
 
 // Sort order (Latest or Top)
 type XCommunityGetSearchParamsQueryType string

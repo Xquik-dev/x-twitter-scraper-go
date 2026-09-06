@@ -41,10 +41,8 @@ func NewComposeService(opts ...option.RequestOption) (r ComposeService) {
 	return
 }
 
-// Run one step of Xquik's three-step writing workflow. Compose returns questions,
-// editorial rules, and source-specific Radar recommendations. Refine returns
-// goal-specific guidance. Score applies deterministic text checks. It does not
-// predict reach or expose X ranking weights.
+// Uses xai-org/x-algorithm facts to compose and refine text. Score checks text. It
+// never predicts reach or engagement.
 func (r *ComposeService) New(ctx context.Context, body ComposeNewParams, opts ...option.RequestOption) (res *ComposeNewResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "compose"
@@ -143,10 +141,11 @@ func (r *ComposeNewResponseUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Rules, questions, and research guidance for drafting a post.
 type ComposeNewResponseComposePrepareResult struct {
-	// Xquik editorial heuristics, ordered for the goal.
+	// Facts derived only from xai-org/x-algorithm.
 	ContentRules []ComposeNewResponseComposePrepareResultContentRule `json:"contentRules" api:"required"`
-	// Published engagement signal names. Production multipliers are not published.
+	// Source ranking signals. Repository defaults may vary in production.
 	EngagementMultipliers []ComposeNewResponseComposePrepareResultEngagementMultiplier `json:"engagementMultipliers" api:"required"`
 	// Publication limit for timing and decay claims.
 	EngagementVelocity string   `json:"engagementVelocity" api:"required"`
@@ -154,9 +153,11 @@ type ComposeNewResponseComposePrepareResult struct {
 	// X post intent seeded with the topic.
 	IntentURL string `json:"intentUrl" api:"required" format:"uri"`
 	NextStep  string `json:"nextStep" api:"required"`
-	// Sources and guidance for researching a fresh post angle.
+	// Deprecated compatibility field. Always empty.
+	//
+	// Deprecated: deprecated
 	RadarRecommendations []ComposeNewResponseComposePrepareResultRadarRecommendation `json:"radarRecommendations" api:"required"`
-	// Published signal names with unpublished weights as null.
+	// Source signals with production values withheld as null.
 	ScorerWeights []ComposeNewResponseComposePrepareResultScorerWeight `json:"scorerWeights" api:"required"`
 	// Signal source and evidence limits.
 	Source string `json:"source" api:"required"`
@@ -194,6 +195,7 @@ func (r *ComposeNewResponseComposePrepareResult) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// One source-backed ranking fact returned during preparation.
 type ComposeNewResponseComposePrepareResultContentRule struct {
 	Rule string `json:"rule" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -210,10 +212,11 @@ func (r *ComposeNewResponseComposePrepareResultContentRule) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// One ranking signal and its source-value limit.
 type ComposeNewResponseComposePrepareResultEngagementMultiplier struct {
 	// Human-readable published signal name.
-	Action     string                                   `json:"action" api:"required"`
-	Multiplier constant.ProductionWeightNotPublishedByX `json:"multiplier" default:"Production weight not published by X"`
+	Action     string                                       `json:"action" api:"required"`
+	Multiplier constant.SourceDefaultProductionValueCanVary `json:"multiplier" default:"Source default; production value can vary"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Action      respjson.Field
@@ -231,6 +234,9 @@ func (r *ComposeNewResponseComposePrepareResultEngagementMultiplier) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Deprecated compatibility schema. The response array is empty.
+//
+// Deprecated: deprecated
 type ComposeNewResponseComposePrepareResultRadarRecommendation struct {
 	// Radar endpoint for this source.
 	Endpoint string `json:"endpoint" api:"required"`
@@ -260,12 +266,13 @@ func (r *ComposeNewResponseComposePrepareResultRadarRecommendation) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// One source ranking signal without a production claim.
 type ComposeNewResponseComposePrepareResultScorerWeight struct {
-	// Signal direction and publication limit.
+	// Signal direction and production limit.
 	Context string `json:"context" api:"required"`
 	// Signal name from X's public ranking repository.
 	Signal string `json:"signal" api:"required"`
-	// X does not publish the production weight.
+	// Null prevents source defaults becoming production claims.
 	Weight any `json:"weight" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -283,6 +290,7 @@ func (r *ComposeNewResponseComposePrepareResultScorerWeight) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A saved username style and analyzed post count.
 type ComposeNewResponseComposePrepareResultSavedStyle struct {
 	TweetCount int64  `json:"tweetCount" api:"required"`
 	Username   string `json:"username" api:"required"`
@@ -301,11 +309,13 @@ func (r *ComposeNewResponseComposePrepareResultSavedStyle) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Source-backed guidance for refining a post.
 type ComposeNewResponseComposeRefineResult struct {
-	// Goal, tone, media, and editorial guidance.
-	CompositionGuidance []string                                              `json:"compositionGuidance" api:"required"`
-	ExamplePatterns     []ComposeNewResponseComposeRefineResultExamplePattern `json:"examplePatterns" api:"required"`
-	// X post intent seeded with the topic.
+	// Request context and xai-org/x-algorithm guidance.
+	CompositionGuidance []string `json:"compositionGuidance" api:"required"`
+	// Deprecated: deprecated
+	ExamplePatterns []ComposeNewResponseComposeRefineResultExamplePattern `json:"examplePatterns" api:"required"`
+	// X post intent generated for the refined topic.
 	IntentURL string `json:"intentUrl" api:"required" format:"uri"`
 	NextStep  string `json:"nextStep" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -325,6 +335,9 @@ func (r *ComposeNewResponseComposeRefineResult) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Deprecated example-pattern schema. The response array is empty.
+//
+// Deprecated: deprecated
 type ComposeNewResponseComposeRefineResultExamplePattern struct {
 	Description string `json:"description" api:"required"`
 	Pattern     string `json:"pattern" api:"required"`
@@ -343,8 +356,9 @@ func (r *ComposeNewResponseComposeRefineResultExamplePattern) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Posting validation without a fabricated ranking score.
 type ComposeNewResponseComposeScoreResult struct {
-	// Deterministic editorial checks. Not a reach prediction.
+	// Deterministic input validation. Not a reach prediction.
 	Checklist     []ComposeNewResponseComposeScoreResultChecklist `json:"checklist" api:"required"`
 	NextStep      string                                          `json:"nextStep" api:"required"`
 	Passed        bool                                            `json:"passed" api:"required"`
@@ -373,6 +387,7 @@ func (r *ComposeNewResponseComposeScoreResult) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// One deterministic draft check.
 type ComposeNewResponseComposeScoreResultChecklist struct {
 	Factor string `json:"factor" api:"required"`
 	Passed bool   `json:"passed" api:"required"`
@@ -400,11 +415,14 @@ type ComposeNewParams struct {
 	// Request body variants
 	//
 
-	// This field is a request body variant, only one variant field can be set.
+	// This field is a request body variant, only one variant field can be set. Inputs
+	// for preparing source-backed post guidance.
 	OfComposePrepareRequest *ComposeNewParamsBodyComposePrepareRequest `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
+	// This field is a request body variant, only one variant field can be set. Inputs
+	// for refining a post plan.
 	OfComposeRefineRequest *ComposeNewParamsBodyComposeRefineRequest `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
+	// This field is a request body variant, only one variant field can be set. Inputs
+	// for checking a post draft.
 	OfComposeScoreRequest *ComposeNewParamsBodyComposeScoreRequest `json:",inline"`
 
 	paramObj
@@ -417,13 +435,15 @@ func (r *ComposeNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Inputs for preparing source-backed post guidance.
+//
 // The properties Step, Topic are required.
 type ComposeNewParamsBodyComposePrepareRequest struct {
 	// Subject for the post.
 	Topic string `json:"topic" api:"required"`
 	// Username from a style analysis saved to this account.
 	StyleUsername param.Opt[string] `json:"styleUsername,omitzero"`
-	// Editorial goal used to order the rules and questions.
+	// User goal used for one follow-up question.
 	//
 	// Any of "engagement", "followers", "authority", "conversation".
 	Goal string `json:"goal,omitzero"`
@@ -447,15 +467,17 @@ func init() {
 	)
 }
 
+// Inputs for refining a post plan.
+//
 // The properties Goal, Step, Tone, Topic are required.
 type ComposeNewParamsBodyComposeRefineRequest struct {
-	// Editorial goal for the guidance.
+	// User goal interpreted against published ranking signals.
 	//
 	// Any of "engagement", "followers", "authority", "conversation".
 	Goal string `json:"goal,omitzero" api:"required"`
 	// Requested writing tone.
 	Tone string `json:"tone" api:"required"`
-	// Subject for the post.
+	// Subject to refine into a post.
 	Topic string `json:"topic" api:"required"`
 	// Audience, constraints, sources, or other writing context.
 	AdditionalContext param.Opt[string] `json:"additionalContext,omitzero"`
@@ -488,15 +510,19 @@ func init() {
 	)
 }
 
+// Inputs for checking a post draft.
+//
 // The properties Draft, Step are required.
 type ComposeNewParamsBodyComposeScoreRequest struct {
-	// Full post text for deterministic editorial checks.
+	// Full post text. The endpoint never assigns a ranking score.
 	Draft string `json:"draft" api:"required"`
-	// True when a separate link card is attached.
+	// Accepted for backward compatibility. No guidance uses it.
+	//
+	// Deprecated: Ignored. Remove this field.
 	HasLink param.Opt[bool] `json:"hasLink,omitzero"`
 	// Accepted for backward compatibility. Text checks ignore this field.
 	//
-	// Deprecated: Ignored. Remove this field. Use hasLink for a separate link card.
+	// Deprecated: Ignored. Remove this field.
 	HasMedia param.Opt[bool] `json:"hasMedia,omitzero"`
 	// This field can be elided, and will marshal its zero value as "score".
 	Step        constant.Score `json:"step" default:"score"`

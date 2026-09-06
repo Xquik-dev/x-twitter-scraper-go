@@ -34,7 +34,7 @@ func TestComposeNewWithOptionalParams(t *testing.T) {
 		OfComposePrepareRequest: &xtwitterscraper.ComposeNewParamsBodyComposePrepareRequest{
 			Topic:         "PostgreSQL query planning",
 			Goal:          "engagement",
-			StyleUsername: xtwitterscraper.String("x"),
+			StyleUsername: xtwitterscraper.String("example_user"),
 		},
 	})
 	if err != nil {

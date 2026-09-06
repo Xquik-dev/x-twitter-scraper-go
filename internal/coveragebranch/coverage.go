@@ -95,25 +95,13 @@ func readProfile(profile io.Reader) (map[string][]profileEntry, error) {
 			continue
 		}
 
-		startLine, err := parseInt(match[2])
-		if err != nil {
-			return nil, err
-		}
-		startCol, err := parseInt(match[3])
-		if err != nil {
-			return nil, err
-		}
-		endLine, err := parseInt(match[4])
-		if err != nil {
-			return nil, err
-		}
-		endCol, err := parseInt(match[5])
-		if err != nil {
-			return nil, err
-		}
-		entry := profileEntry{
-			start: position{line: startLine, col: startCol},
-			end:   position{line: endLine, col: endCol},
+		entry := profileEntry{}
+		for index, target := range []*int{&entry.start.line, &entry.start.col, &entry.end.line, &entry.end.col} {
+			number, err := parseInt(match[index+2])
+			if err != nil {
+				return nil, err
+			}
+			*target = number
 		}
 		entries[match[1]] = append(entries[match[1]], entry)
 	}

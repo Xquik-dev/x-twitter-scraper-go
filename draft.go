@@ -44,7 +44,7 @@ func NewDraftService(opts ...option.RequestOption) (r DraftService) {
 	return
 }
 
-// Save a tweet draft
+// Saves editable post text as an account draft.
 func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...option.RequestOption) (res *DraftDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "drafts"
@@ -52,7 +52,7 @@ func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...opt
 	return res, err
 }
 
-// Get draft by ID
+// Returns one saved draft owned by the authenticated account.
 func (r *DraftService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DraftDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -64,7 +64,7 @@ func (r *DraftService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// List saved drafts
+// Returns saved drafts owned by the authenticated account.
 func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...option.RequestOption) (res *DraftListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "drafts"
@@ -72,7 +72,7 @@ func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...
 	return res, err
 }
 
-// Delete a draft
+// Permanently removes one saved draft.
 func (r *DraftService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -112,23 +112,14 @@ func (r *Draft) UnmarshalJSON(data []byte) error {
 
 // Full tweet draft including update timestamp.
 type DraftDetail struct {
-	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
-	Text      string    `json:"text" api:"required"`
 	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
-	Goal      string    `json:"goal"`
-	Topic     string    `json:"topic"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Text        respjson.Field
 		UpdatedAt   respjson.Field
-		Goal        respjson.Field
-		Topic       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	Draft
 }
 
 // Returns the unmodified JSON received from the API
@@ -185,10 +176,8 @@ const (
 type DraftListParams struct {
 	// Cursor for pagination
 	AfterCursor param.Opt[string] `query:"afterCursor,omitzero" json:"-"`
-	// Maximum number of items to return (1-100, default 50). For paid per-result
-	// endpoints, the returned count may be lower when remaining credits cannot cover
-	// the requested page. If zero paid results are affordable, the endpoint returns
-	// 402 insufficient_credits.
+	// Maximum items per page: 1 to 100, default 50. Credits can reduce paid results.
+	// The endpoint returns 402 insufficient_credits when none are affordable.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
