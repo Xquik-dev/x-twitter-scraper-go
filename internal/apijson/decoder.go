@@ -662,16 +662,10 @@ func setUnexportedField(field reflect.Value, value any) {
 }
 
 func guardStrict(state *decoderState, cond bool) bool {
-	if !cond {
-		return false
+	if cond && !state.strict {
+		state.exactness = loose
 	}
-
-	if state.strict {
-		return true
-	}
-
-	state.exactness = loose
-	return false
+	return cond && state.strict
 }
 
 func canParseAsNumber(str string) bool {

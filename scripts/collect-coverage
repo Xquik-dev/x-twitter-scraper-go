@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+coverage_profile="$(mktemp "${TMPDIR:-/tmp}/xquik-go-coverage.XXXXXX")"
+echo "Coverage profile: $coverage_profile"
+
+echo "==> Collecting statement, function, and line coverage"
+go test ./... -coverpkg=./... -coverprofile="$coverage_profile"
+go run github.com/boumenot/gocover-cobertura@v1.5.0 -strict -by-files < "$coverage_profile" > "$coverage_profile.xml"
+
+if [ -n "${XQUIK_COVERAGE_DIR:-}" ]; then
+  cp "$coverage_profile" "$XQUIK_COVERAGE_DIR/coverage.out"
+  cp "$coverage_profile.xml" "$XQUIK_COVERAGE_DIR/coverage.xml"
+fi

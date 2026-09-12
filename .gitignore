@@ -22,6 +22,8 @@ Brewfile.lock.json
 *.log.*
 coverage.out
 .cache/
+dist/
+.venv/
 .tmp/
 tmp/
 temp/

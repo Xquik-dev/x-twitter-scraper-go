@@ -6,7 +6,6 @@
 package json
 
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/shims"
 	"reflect"
 	"time"
 )
@@ -26,14 +25,11 @@ func TimeLayout(fmt string) string {
 	}
 }
 
-var timeType = shims.TypeFor[time.Time]()
+var timeType = reflect.TypeFor[time.Time]()
 
-func newTimeEncoder() encoderFunc {
-	return func(e *encodeState, v reflect.Value, opts encOpts) {
-		t := v.Interface().(time.Time)
-		fmtted := t.Format(TimeLayout(opts.timefmt))
-		stringEncoder(e, reflect.ValueOf(fmtted), opts)
-	}
+func timeEncoder(e *encodeState, v reflect.Value, opts encOpts) {
+	formatted := v.Interface().(time.Time).Format(TimeLayout(opts.timefmt))
+	stringEncoder(e, reflect.ValueOf(formatted), opts)
 }
 
 // Uses continuation passing style, to add the timefmt option to k
@@ -44,22 +40,13 @@ func continueWithTimeFmt(timefmt string, k encoderFunc) encoderFunc {
 	}
 }
 
-func timeMarshalEncoder(e *encodeState, v reflect.Value, opts encOpts) bool {
-	tm, ok := v.Interface().(TimeMarshaler)
-	if !ok {
-		return false
+func marshalWithTimeLayout(m Marshaler, layout string) ([]byte, error) {
+	if tm, ok := m.(TimeMarshaler); ok {
+		if b := tm.MarshalJSONWithTimeLayout(layout); b != nil {
+			return b, nil
+		}
 	}
-
-	b := tm.MarshalJSONWithTimeLayout(opts.timefmt)
-	if b != nil {
-		e.Grow(len(b))
-		out := e.AvailableBuffer()
-		out, _ = appendCompact(out, b, opts)
-		e.Buffer.Write(out)
-		return true
-	}
-
-	return false
+	return m.MarshalJSON()
 }
 
 // EDIT(end)

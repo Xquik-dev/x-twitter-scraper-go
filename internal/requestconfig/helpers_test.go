@@ -52,14 +52,17 @@ func TestRetryHelpers(t *testing.T) {
 		t.Fatal("nil response returned retry delay")
 	}
 	headers := []struct {
-		value string
-		want  time.Duration
+		header http.Header
+		want   time.Duration
 	}{
-		{value: "250", want: 250 * time.Millisecond},
-		{value: "0.5", want: 500 * time.Microsecond},
+		{http.Header{"Retry-After-Ms": {"250"}}, 250 * time.Millisecond},
+		{http.Header{"Retry-After-Ms": {"0.5"}}, 500 * time.Microsecond},
+		{http.Header{"Retry-After": {"0.5"}}, 500 * time.Millisecond},
+		{http.Header{"Retry-After-Ms": {"0"}, "Retry-After": {"20"}}, 0},
+		{http.Header{"Retry-After-Ms": {"invalid"}, "Retry-After": {"2"}}, 2 * time.Second},
 	}
 	for _, test := range headers {
-		res := &http.Response{Header: http.Header{"Retry-After-Ms": {test.value}}}
+		res := &http.Response{Header: test.header}
 		if got, ok := parseRetryAfterHeader(res); !ok || got != test.want {
 			t.Fatalf("parseRetryAfterHeader() = %s, %t", got, ok)
 		}
@@ -75,8 +78,15 @@ func TestRetryHelpers(t *testing.T) {
 	if got := retryDelay(&http.Response{Header: http.Header{"Retry-After-Ms": {"0"}}}, 0); got != 0 {
 		t.Fatalf("retryDelay() = %s", got)
 	}
-	if got := retryDelay(nil, 20); got < 6*time.Second || got > 8*time.Second {
-		t.Fatalf("capped retryDelay() = %s", got)
+	for retryCount, ceiling := range []time.Duration{500 * time.Millisecond, time.Second, 2 * time.Second, 4 * time.Second} {
+		if got := retryDelay(nil, retryCount); got < ceiling*3/4 || got > ceiling {
+			t.Fatalf("retryDelay(%d) = %s, ceiling %s", retryCount, got, ceiling)
+		}
+	}
+	for _, retryCount := range []int{4, 20, 35, 64, int(^uint(0) >> 1)} {
+		if got := retryDelay(nil, retryCount); got < 6*time.Second || got > 8*time.Second {
+			t.Fatalf("capped retryDelay(%d) = %s", retryCount, got)
+		}
 	}
 }
 

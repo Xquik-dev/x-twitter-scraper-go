@@ -21,6 +21,7 @@ func TestDebugLoggingRedactsSensitiveHeaders(t *testing.T) {
 		t.Fatal(err)
 	}
 	req.Header.Set("Authorization", "Bearer secret")
+	req.Header.Set("Proxy-Authorization", "Basic synthetic-proxy-secret")
 	req.Header.Add("Cookie", "one")
 	req.Header.Add("Cookie", "two")
 	req.Header.Set("X-Public", "visible")
@@ -35,7 +36,8 @@ func TestDebugLoggingRedactsSensitiveHeaders(t *testing.T) {
 	if !bytes.Contains(requestDump, []byte("Authorization: ***")) {
 		t.Fatalf("request dump did not redact authorization: %s", requestDump)
 	}
-	if req.Header.Get("Authorization") != "Bearer secret" {
+	if req.Header.Get("Authorization") != "Bearer secret" ||
+		req.Header.Get("Proxy-Authorization") != "Basic synthetic-proxy-secret" {
 		t.Fatal("request headers were modified")
 	}
 
@@ -72,6 +74,7 @@ func TestWithDebugLog(t *testing.T) {
 		t.Fatal(err)
 	}
 	req.Header.Set("X-API-Key", "secret")
+	req.Header.Set("Proxy-Authorization", "Basic synthetic-proxy-secret")
 	cfg := &requestconfig.RequestConfig{Request: req}
 	if err := WithDebugLog(logger).Apply(cfg); err != nil {
 		t.Fatal(err)

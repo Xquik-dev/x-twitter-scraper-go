@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.19.0 (2026-09-12)
+
+Full Changelog: [v0.18.1...v0.19.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.1...v0.19.0)
+
+- Add optional retweet timestamp requests and nullable `retweetedAt` response fields.
+- Redact sensitive headers regardless of capitalization without changing the input.
+- Use Go 1.27.1 and native license checks.
+- Preserve JSON behavior while replacing obsolete compatibility helpers.
+
 ## 0.18.1 (2026-08-21)
 
 Full Changelog: [v0.18.0...v0.18.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.0...v0.18.1)

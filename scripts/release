@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+set -euo pipefail
+cd "$(dirname "$0")/.."
+trap 'release_exit=$?; if ((release_exit)); then printf "{\"status\":\"failed\",\"exitCode\":%d}\n" "$release_exit"; fi' EXIT
+mode="${1:?Use prepare, publish, or verify.}"
+case "$mode" in prepare|publish|verify) ;; *) echo 'Use prepare, publish, or verify.' >&2; exit 2 ;; esac
+[[ -z "$(git status --porcelain)" ]] || { echo 'Commit verified changes before release preparation.' >&2; exit 1; }
+revision=$(git rev-parse HEAD)
+version=$(jq -er '."."' .release-please-manifest.json)
+[[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 2
+tag="v$version"
+artifacts="$PWD/dist/releases/$revision"
+archive="$artifacts/x-twitter-scraper-go-$tag.zip"
+bundle="$artifacts/x-twitter-scraper-go-$tag.sigstore.json"
+if [[ "$mode" != verify ]]; then
+  bun run check:all >&2
+  bun run build >&2
+  mkdir -p "$artifacts"
+  bash scripts/reproducible-build "$archive" >&2
+fi
+[[ "$(git rev-parse HEAD)" == "$revision" && -z "$(git status --porcelain)" ]] || { echo 'Sources changed during release preparation.' >&2; exit 1; }
+if [[ "$mode" == publish ]]; then
+  git fetch origin main >&2
+  git merge-base --is-ancestor "$revision" origin/main || { echo 'Merge the release into main first.' >&2; exit 1; }
+  [[ "$(git rev-parse "$tag^{commit}")" == "$revision" ]] || { echo 'Create the matching immutable release tag first.' >&2; exit 1; }
+  : "${XQUIK_RELEASE_IDENTITY:?Set the authorized signing identity.}"
+  : "${XQUIK_RELEASE_ISSUER:?Set its OpenID Connect issuer.}"
+  signer=(uv run --python 3.14.7 --locked --project "$PWD/tools/signing" sigstore)
+  jq -n --arg revision "$revision" --arg tag "$tag" \
+    '{buildDefinition:{buildType:"https://github.com/Xquik-dev/x-twitter-scraper-go/blob/main/scripts/reproducible-build",externalParameters:{tag:$tag},resolvedDependencies:[{uri:"git+https://github.com/Xquik-dev/x-twitter-scraper-go",digest:{gitCommit:$revision}}]},runDetails:{builder:{id:"https://github.com/Xquik-dev/x-twitter-scraper-go/blob/main/scripts/release"}}}' > "$artifacts/provenance.json"
+  if [[ ! -f "$bundle" ]]; then
+    "${signer[@]}" attest --predicate-type https://slsa.dev/provenance/v1 --predicate "$artifacts/provenance.json" --bundle "$bundle" "$archive" >&2
+  fi
+  "${signer[@]}" verify identity --bundle "$bundle" \
+    --cert-identity "$XQUIK_RELEASE_IDENTITY" --cert-oidc-issuer "$XQUIK_RELEASE_ISSUER" "$archive" >&2
+  jq -e --slurpfile expected "$artifacts/provenance.json" \
+    '.dsseEnvelope.payload | @base64d | fromjson | .predicateType == "https://slsa.dev/provenance/v1" and .predicate == $expected[0]' "$bundle" >&2
+  [[ "$(git rev-parse HEAD)" == "$revision" && -z "$(git status --porcelain)" ]] || { echo 'Sources changed during signing.' >&2; exit 1; }
+  git push origin "refs/tags/$tag" >&2
+  if ! gh release view "$tag" --json tagName >/dev/null 2>&1; then
+    gh release create "$tag" --verify-tag --draft --title "Go SDK $version" --notes-file CHANGELOG.md >&2
+  fi
+  for artifact in "$archive" "$bundle"; do
+    name=$(basename "$artifact")
+    existing=$(gh release view "$tag" --json assets --jq ".assets[] | select(.name == \"$name\") | .digest")
+    if [[ -n "$existing" ]]; then
+      [[ "$existing" == "sha256:$(shasum -a 256 "$artifact" | cut -d ' ' -f 1)" ]] || { echo "Conflicting release artifact: $name" >&2; exit 1; }
+    else
+      gh release upload "$tag" "$artifact" >&2
+    fi
+  done
+fi
+if [[ "$mode" != prepare ]]; then
+  bash scripts/verify-release "$tag" "$revision"
+fi
+if [[ "$mode" == publish ]]; then gh release edit "$tag" --draft=false --latest --verify-tag >&2; fi
+jq -n --arg action "$mode" --arg version "$version" --arg revision "$revision" --arg artifacts "$artifacts" \
+  '{status:"completed",action:$action,version:$version,commit:$revision,artifacts:$artifacts}'

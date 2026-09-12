@@ -6,22 +6,7 @@
 
 package json
 
-import "errors"
+import stdjson "encoding/json"
 
-// RawMessage retains the upstream test helper removed from the shipped shim.
-type RawMessage []byte
-
-func (m RawMessage) MarshalJSON() ([]byte, error) {
-	if m == nil {
-		return []byte("null"), nil
-	}
-	return m, nil
-}
-
-func (m *RawMessage) UnmarshalJSON(data []byte) error {
-	if m == nil {
-		return errors.New("json.RawMessage: UnmarshalJSON on nil pointer")
-	}
-	*m = append((*m)[0:0], data...)
-	return nil
-}
+// RawMessage lets the upstream tests use Go's original implementation.
+type RawMessage = stdjson.RawMessage

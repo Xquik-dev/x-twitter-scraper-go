@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -191,179 +192,111 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 }
 
 func TestNewRequestConfigRejectsInvalidInput(t *testing.T) {
-	if _, err := NewRequestConfig(
-		context.Background(),
-		http.MethodPost,
-		"/tweets",
-		map[string]any{"unsupported": make(chan int)},
-		nil,
-	); err == nil {
-		t.Fatal("unsupported JSON body was accepted")
-	}
-
-	if _, err := NewRequestConfig(
-		context.Background(),
-		"bad\nmethod",
-		"/tweets",
-		nil,
-		nil,
-	); err == nil {
-		t.Fatal("invalid method was accepted")
-	}
-
 	wantErr := errors.New("option failed")
-	failingOption := RequestOptionFunc(func(*RequestConfig) error { return wantErr })
-	if _, err := NewRequestConfig(
-		context.Background(),
-		http.MethodGet,
-		"/tweets",
-		nil,
-		nil,
-		failingOption,
-	); !errors.Is(err, wantErr) {
-		t.Fatalf("option error = %v", err)
+	for _, test := range []struct {
+		name    string
+		method  string
+		path    string
+		body    any
+		option  RequestOption
+		wantErr error
+	}{
+		{"unsupported JSON body", http.MethodPost, "/tweets", map[string]any{"unsupported": make(chan int)}, nil, nil},
+		{"invalid method", "bad\nmethod", "/tweets", nil, nil, nil},
+		{"invalid query URL", http.MethodGet, "/%zz", queryBody{values: url.Values{"limit": {"1"}}}, nil, url.EscapeError("%zz")},
+		{"option failure", http.MethodGet, "/tweets", nil, RequestOptionFunc(func(*RequestConfig) error { return wantErr }), wantErr},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			var options []RequestOption
+			if test.option != nil {
+				options = append(options, test.option)
+			}
+			_, err := NewRequestConfig(context.Background(), test.method, test.path, test.body, nil, options...)
+			if err == nil || test.wantErr != nil && !errors.Is(err, test.wantErr) {
+				t.Fatalf("error = %v, expected rejection with cause %v", err, test.wantErr)
+			}
+		})
 	}
 }
 
 func TestNewRequestConfigAppliesTimeoutAndSecurity(t *testing.T) {
-	cfg, err := NewRequestConfig(
-		context.Background(),
-		http.MethodGet,
-		"/tweets",
-		nil,
-		nil,
-		RequestOptionFunc(func(cfg *RequestConfig) error {
-			cfg.RequestTimeout = 3 * time.Second
-			cfg.APIKey = "api-key"
-			cfg.BearerToken = "bearer-token"
-			return nil
-		}),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got := cfg.Request.Header.Get("X-Stainless-Timeout"); got != "3" {
-		t.Fatalf("X-Stainless-Timeout = %q", got)
-	}
-	if cfg.Request.Header.Get("X-API-Key") != "api-key" ||
-		cfg.Request.Header.Get("Authorization") != "Bearer bearer-token" {
-		t.Fatal("security headers were not applied")
-	}
-
-	override, err := NewRequestConfig(
-		context.Background(),
-		http.MethodGet,
-		"/tweets",
-		nil,
-		nil,
-		RequestOptionFunc(func(cfg *RequestConfig) error {
-			cfg.Request.Header.Set("X-Stainless-Timeout", "custom")
-			cfg.Request.Header.Set("X-API-Key", "caller")
-			cfg.Request.Header.Set("Authorization", "caller")
-			return nil
-		}),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if override.Request.Header.Get("X-Stainless-Timeout") != "custom" ||
-		override.Request.Header.Get("X-API-Key") != "caller" ||
-		override.Request.Header.Get("Authorization") != "caller" {
-		t.Fatal("caller headers were overwritten")
+	for _, override := range []bool{false, true} {
+		name := "configured headers"
+		want := map[string]string{
+			"X-Stainless-Timeout": "3",
+			"X-API-Key":           "api-key",
+			"Authorization":       "Bearer bearer-token",
+		}
+		if override {
+			name = "caller headers"
+			want = map[string]string{"X-Stainless-Timeout": "custom", "X-API-Key": "caller", "Authorization": "caller"}
+		}
+		t.Run(name, func(t *testing.T) {
+			cfg, err := NewRequestConfig(context.Background(), http.MethodGet, "/tweets", nil, nil,
+				RequestOptionFunc(func(cfg *RequestConfig) error {
+					cfg.RequestTimeout = 3 * time.Second
+					cfg.APIKey = "api-key"
+					cfg.BearerToken = "bearer-token"
+					if override {
+						for key, value := range want {
+							cfg.Request.Header.Set(key, value)
+						}
+					}
+					return nil
+				}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for key, value := range want {
+				if got := cfg.Request.Header.Get(key); got != value {
+					t.Errorf("%s = %q, want %q", key, got, value)
+				}
+			}
+		})
 	}
 }
 
 func TestExecuteDecodesResponses(t *testing.T) {
-	t.Run("JSON object", func(t *testing.T) {
-		var dst struct {
-			ID string `json:"id"`
-		}
-		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = io.WriteString(w, `{"id":"tweet-1"}`)
-		}, http.MethodGet, nil, &dst)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if dst.ID != "tweet-1" {
-			t.Fatalf("ID = %q", dst.ID)
-		}
-	})
-
-	t.Run("JSON bytes", func(t *testing.T) {
-		var dst []byte
-		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-			w.Header().Set("Content-Type", "application/problem+json")
-			_, _ = io.WriteString(w, `{"ok":true}`)
-		}, http.MethodGet, nil, &dst)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got := string(dst); got != `{"ok":true}` {
-			t.Fatalf("body = %q", got)
-		}
-	})
-
-	t.Run("plain string", func(t *testing.T) {
-		var dst string
-		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-			_, _ = io.WriteString(w, "timeline")
-		}, http.MethodGet, nil, &dst)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if dst != "timeline" {
-			t.Fatalf("body = %q", dst)
-		}
-	})
-
-	t.Run("plain string pointer", func(t *testing.T) {
-		var dst *string
-		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			_, _ = io.WriteString(w, "followers")
-		}, http.MethodGet, nil, &dst)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if dst == nil || *dst != "followers" {
-			t.Fatalf("body = %v", dst)
-		}
-	})
-
-	t.Run("plain bytes", func(t *testing.T) {
-		var dst []byte
-		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-			w.Header().Set("Content-Type", "application/octet-stream")
-			_, _ = io.WriteString(w, "media")
-		}, http.MethodGet, nil, &dst)
-		if err != nil || string(dst) != "media" {
-			t.Fatalf("body = %q, error = %v", dst, err)
-		}
-	})
-
-	t.Run("unsupported plain destination", func(t *testing.T) {
-		var dst int
-		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			_, _ = io.WriteString(w, "42")
-		}, http.MethodGet, nil, &dst)
-		if err == nil {
-			t.Fatal("unsupported destination was accepted")
-		}
-	})
-
-	t.Run("invalid JSON", func(t *testing.T) {
-		var dst map[string]any
-		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = io.WriteString(w, "{")
-		}, http.MethodGet, nil, &dst)
-		if err == nil || !strings.Contains(err.Error(), "error parsing response json") {
-			t.Fatalf("error = %v", err)
-		}
-	})
+	type tweet struct {
+		ID string `json:"id"`
+	}
+	followers := "followers"
+	for _, test := range []struct {
+		name        string
+		contentType string
+		body        string
+		dst         any
+		want        any
+		wantErr     bool
+		errorText   string
+	}{
+		{"JSON object", "application/json", `{"id":"tweet-1"}`, new(tweet), tweet{ID: "tweet-1"}, false, ""},
+		{"JSON bytes", "application/problem+json", `{"ok":true}`, new([]byte), []byte(`{"ok":true}`), false, ""},
+		{"plain string", "text/plain; charset=utf-8", "timeline", new(string), "timeline", false, ""},
+		{"plain string pointer", "text/plain", "followers", new(*string), &followers, false, ""},
+		{"plain bytes", "application/octet-stream", "media", new([]byte), []byte("media"), false, ""},
+		{"unsupported plain destination", "text/plain", "42", new(int), nil, true, ""},
+		{"invalid JSON", "application/json", "{", new(map[string]any), nil, true, "error parsing response json"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Type", test.contentType)
+				_, _ = io.WriteString(w, test.body)
+			}, http.MethodGet, nil, test.dst)
+			if (err != nil) != test.wantErr {
+				t.Fatalf("error = %v, want error = %t", err, test.wantErr)
+			}
+			if err != nil {
+				if !strings.Contains(err.Error(), test.errorText) {
+					t.Fatalf("error = %v, want containing %q", err, test.errorText)
+				}
+				return
+			}
+			if got := reflect.ValueOf(test.dst).Elem().Interface(); !reflect.DeepEqual(got, test.want) {
+				t.Fatalf("destination = %#v, want %#v", got, test.want)
+			}
+		})
+	}
 }
 
 func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
@@ -440,7 +373,8 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 			t.Fatal(err)
 		}
 		if string(content) != "body" {
-			t.Fatalf("request body = %q", content)
+			t.Errorf("request body = %q", content)
+			return
 		}
 		if attempts == 1 {
 			w.Header().Set("Retry-After-Ms", "0")
@@ -453,7 +387,11 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 	defer server.Close()
 
 	var dst map[string]any
-	cfg := testConfig(t, http.MethodPost, "/resource", bytes.NewBufferString("body"), &dst)
+	reader := bytes.NewReader([]byte("skipbody"))
+	if _, err := reader.Seek(4, io.SeekStart); err != nil {
+		t.Fatal(err)
+	}
+	cfg := testConfig(t, http.MethodPost, "/resource", reader, &dst)
 	cfg.BaseURL, _ = url.Parse(server.URL + "/")
 	cfg.MaxRetries = 1
 	if err := cfg.Execute(); err != nil {
@@ -463,18 +401,20 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 		t.Fatalf("attempts = %d", attempts)
 	}
 
-	readerCfg := testConfig(t, http.MethodPost, "/resource", bytes.NewReader([]byte("body")), nil)
-	readerCfg.BaseURL, _ = url.Parse(server.URL + "/")
-	readerCfg.MaxRetries = 0
-	if err := readerCfg.Execute(); err != nil {
-		t.Fatal(err)
-	}
-
-	closerCfg := testConfig(t, http.MethodPost, "/resource", io.NopCloser(strings.NewReader("body")), nil)
-	closerCfg.BaseURL, _ = url.Parse(server.URL + "/")
-	closerCfg.MaxRetries = 0
-	if err := closerCfg.Execute(); err != nil {
-		t.Fatal(err)
+	for name, body := range map[string]io.Reader{
+		"byte reader":   bytes.NewReader([]byte("body")),
+		"byte buffer":   bytes.NewBufferString("body"),
+		"string reader": strings.NewReader("body"),
+		"read closer":   io.NopCloser(strings.NewReader("body")),
+	} {
+		t.Run(name, func(t *testing.T) {
+			readerCfg := testConfig(t, http.MethodPost, "/resource", body, nil)
+			readerCfg.BaseURL = cfg.BaseURL
+			readerCfg.MaxRetries = 0
+			if err := readerCfg.Execute(); err != nil {
+				t.Fatal(err)
+			}
+		})
 	}
 }
 

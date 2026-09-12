@@ -39,8 +39,8 @@ func (r *Error) UnmarshalJSON(data []byte) error {
 }
 
 func (r *Error) Error() string {
-	// Attempt to re-populate the response body
-	return fmt.Sprintf("%s %q: %d %s %s", r.Request.Method, r.Request.URL, r.Response.StatusCode, http.StatusText(r.Response.StatusCode), r.JSON.raw)
+	// Keep URL passwords out of diagnostic strings.
+	return fmt.Sprintf("%s %q: %d %s %s", r.Request.Method, r.Request.URL.Redacted(), r.Response.StatusCode, http.StatusText(r.Response.StatusCode), r.JSON.raw)
 }
 
 func (r *Error) DumpRequest(body bool) []byte {

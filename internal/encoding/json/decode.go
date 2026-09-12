@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Vendored from Go 1.24.0-pre-release
-// To find alterations, check package shims, and comments beginning in SHIM().
 //
 // Copyright 2010 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
@@ -16,7 +15,6 @@ import (
 	"encoding"
 	"encoding/base64"
 	"fmt"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/shims"
 	"reflect"
 	"strconv"
 	"strings"
@@ -602,8 +600,7 @@ func (d *decodeState) array(v reflect.Value) error {
 
 var nullLiteral = []byte("null")
 
-// SHIM(reflect): reflect.TypeFor[T]() reflect.T
-var textUnmarshalerType = shims.TypeFor[encoding.TextUnmarshaler]()
+var textUnmarshalerType = reflect.TypeFor[encoding.TextUnmarshaler]()
 
 // object consumes an object from d.data[d.off-1:], decoding into v.
 // The first byte ('{') of the object has been read already.
@@ -794,9 +791,7 @@ func (d *decodeState) object(v reflect.Value) error {
 				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 					s := string(key)
 					n, err := strconv.ParseInt(s, 10, 64)
-					// SHIM(reflect): reflect.Type.OverflowInt(int64) bool
-					okt := shims.OverflowableType{Type: kt}
-					if err != nil || okt.OverflowInt(n) {
+					if err != nil || kt.OverflowInt(n) {
 						d.saveError(&UnmarshalTypeError{Value: "number " + s, Type: kt, Offset: int64(start + 1)})
 						break
 					}
@@ -805,9 +800,7 @@ func (d *decodeState) object(v reflect.Value) error {
 				case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
 					s := string(key)
 					n, err := strconv.ParseUint(s, 10, 64)
-					// SHIM(reflect): reflect.Type.OverflowUint(uint64) bool
-					okt := shims.OverflowableType{Type: kt}
-					if err != nil || okt.OverflowUint(n) {
+					if err != nil || kt.OverflowUint(n) {
 						d.saveError(&UnmarshalTypeError{Value: "number " + s, Type: kt, Offset: int64(start + 1)})
 						break
 					}
@@ -851,14 +844,12 @@ func (d *decodeState) convertNumber(s string) (any, error) {
 	}
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
-		// SHIM(reflect): reflect.TypeFor[T]() reflect.Type
-		return nil, &UnmarshalTypeError{Value: "number " + s, Type: shims.TypeFor[float64](), Offset: int64(d.off)}
+		return nil, &UnmarshalTypeError{Value: "number " + s, Type: reflect.TypeFor[float64](), Offset: int64(d.off)}
 	}
 	return f, nil
 }
 
-// SHIM(reflect): TypeFor[T]() reflect.Type
-var numberType = shims.TypeFor[Number]()
+var numberType = reflect.TypeFor[Number]()
 
 // literalStore decodes a literal stored in item into v.
 //

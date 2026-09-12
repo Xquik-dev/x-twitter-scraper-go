@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+set -euo pipefail
+cd "$(dirname "$0")/.."
+codeql="${XQUIK_CODEQL_BIN:-$HOME/.cache/xquik-codeql/2.27.0/codeql/codeql}"
+[[ "$("$codeql" version --format=terse)" == 2.27.0 ]]
+report="$(mktemp -d "${TMPDIR:-/tmp}/xquik-codeql.XXXXXX")"
+echo "CodeQL reports: $report"
+"$codeql" database create "$report/database" --language=go --build-mode=autobuild --source-root="$PWD" --threads=4
+"$codeql" database analyze "$report/database" codeql/go-queries@1.6.10:codeql-suites/go-security-extended.qls --format=sarifv2.1.0 --output="$report/report.sarif" --threads=4
+cat "$report/report.sarif"
+go run ./cmd/codeql-security < "$report/report.sarif"

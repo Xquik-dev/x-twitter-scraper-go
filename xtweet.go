@@ -136,7 +136,8 @@ func (r *XTweetService) GetReplies(ctx context.Context, id string, query XTweetG
 	return res, err
 }
 
-// Returns public profiles that reposted the selected tweet.
+// Lists reposting profiles. Optional timestamps come from the newest profile page.
+// Extra reads add latency. Missing or failed matches leave null timestamps.
 func (r *XTweetService) GetRetweeters(ctx context.Context, id string, query XTweetGetRetweetersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -259,9 +260,13 @@ type TweetDetail struct {
 	ReactionContext TweetDetailReactionContext `json:"reactionContext"`
 	// Quoted or retweeted tweet context.
 	RetweetedTweet shared.EmbeddedTweet `json:"retweeted_tweet"`
+	// Repost event time in UTC. Null when unavailable; omitted for other posts.
+	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
+	// Sports game context attached to the post, when available.
+	SportsContext TweetDetailSportsContext `json:"sportsContext"`
 	// Public visibility notice attached to an available tweet.
 	Tombstone TweetDetailTombstone `json:"tombstone"`
 	Type      string               `json:"type"`
@@ -313,8 +318,10 @@ type TweetDetail struct {
 		QuotedTweetID       respjson.Field
 		ReactionContext     respjson.Field
 		RetweetedTweet      respjson.Field
+		RetweetedAt         respjson.Field
 		Scopes              respjson.Field
 		Source              respjson.Field
+		SportsContext       respjson.Field
 		Tombstone           respjson.Field
 		Type                respjson.Field
 		UnmentionedUserIDs  respjson.Field
@@ -1282,7 +1289,7 @@ func (r *TweetDetailPreviousCounts) UnmarshalJSON(data []byte) error {
 type TweetDetailReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
-	// X user profile with bio, follower counts, and verification status.
+	// Public X profile.
 	ReactedToUser shared.UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1296,6 +1303,110 @@ type TweetDetailReactionContext struct {
 // Returns the unmodified JSON received from the API
 func (r TweetDetailReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *TweetDetailReactionContext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sports game context attached to the post, when available.
+type TweetDetailSportsContext struct {
+	// Teams and their reported scores.
+	Competitors []TweetDetailSportsContextCompetitor `json:"competitors"`
+	// Game ID.
+	GameID string `json:"gameId"`
+	// Scheduled Unix time in milliseconds, preserving the source representation.
+	ScheduledAtMs TweetDetailSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
+	// Game state reported by the source.
+	State string `json:"state"`
+	// Display text for game progress.
+	StatusText string `json:"statusText"`
+	// Game title.
+	Title string `json:"title"`
+	// Game link.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Competitors   respjson.Field
+		GameID        respjson.Field
+		ScheduledAtMs respjson.Field
+		State         respjson.Field
+		StatusText    respjson.Field
+		Title         respjson.Field
+		URL           respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailSportsContext) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailSportsContext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TweetDetailSportsContextCompetitor struct {
+	// Team abbreviation.
+	Abbreviation string `json:"abbreviation"`
+	// Team logo for dark backgrounds.
+	DarkLogoURL string `json:"darkLogoUrl"`
+	// Team logo for light backgrounds.
+	LogoURL string `json:"logoUrl"`
+	// Team name.
+	Name string `json:"name"`
+	// Score display text.
+	Score string `json:"score"`
+	// Team ID.
+	TeamID string `json:"teamId"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Abbreviation respjson.Field
+		DarkLogoURL  respjson.Field
+		LogoURL      respjson.Field
+		Name         respjson.Field
+		Score        respjson.Field
+		TeamID       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetDetailSportsContextCompetitor) RawJSON() string { return r.JSON.raw }
+func (r *TweetDetailSportsContextCompetitor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TweetDetailSportsContextScheduledAtMsUnion contains all possible properties and
+// values from [float64], [string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfFloat OfString]
+type TweetDetailSportsContextScheduledAtMsUnion struct {
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfFloat  respjson.Field
+		OfString respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u TweetDetailSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TweetDetailSportsContextScheduledAtMsUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TweetDetailSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TweetDetailSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2651,8 +2762,9 @@ type XTweetGetRepliesParams struct {
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
-	// Complete mode caps combined direct and nested replies at 25,000. Automatic pages
-	// accept 1-300. Standard pages accept 1-100.
+	// Complete mode defaults to 25,000 combined direct and nested replies. Set a
+	// smaller or larger total with limit. Automatic pages accept 1-300. Standard pages
+	// accept 1-100.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Maximum reply depth from the source post.
 	MaxDepth param.Opt[int64] `query:"maxDepth,omitzero" json:"-"`
@@ -2834,6 +2946,8 @@ type XTweetGetRetweetersParams struct {
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
 	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Look up repost event times.
+	IncludeRetweetTimestamp param.Opt[bool] `query:"includeRetweetTimestamp,omitzero" json:"-"`
 	// Match a location substring, ignoring case.
 	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.

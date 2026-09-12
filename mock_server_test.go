@@ -8,6 +8,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/srvgit/gocove/cov"
 )
 
 func TestMain(m *testing.M) {
@@ -19,6 +21,6 @@ func TestMain(m *testing.M) {
 	if err := os.Setenv("TEST_API_BASE_URL", server.URL); err != nil {
 		panic(err)
 	}
-	// Return normally so instrumented test wrappers can flush observations.
+	defer cov.Flush()
 	m.Run()
 }

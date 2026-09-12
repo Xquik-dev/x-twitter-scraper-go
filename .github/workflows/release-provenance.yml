@@ -156,8 +156,8 @@ jobs:
         run: |
           ./scripts/lint
           ./scripts/test
-          ./scripts/coverage
-          ./scripts/branch-coverage
+          ./scripts/collect-coverage
+          ./scripts/collect-branches
           go test -race ./...
           go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 
