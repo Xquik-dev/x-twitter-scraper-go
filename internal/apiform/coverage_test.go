@@ -70,74 +70,37 @@ func newCoverageWriter(t *testing.T) (*bytes.Buffer, *multipart.Writer) {
 }
 
 func TestMarshalEntryPointsAndEdgeCases(t *testing.T) {
-	t.Run("Marshal", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := Marshal(map[string]string{"query": "tweet search"}, writer); err != nil {
-			t.Fatal(err)
-		}
-		if err := writer.Close(); err != nil {
-			t.Fatal(err)
-		}
-	})
-
-	t.Run("MarshalRoot", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := MarshalRoot(map[string]string{"query": "timeline"}, writer); err != nil {
-			t.Fatal(err)
-		}
-		if err := writer.Close(); err != nil {
-			t.Fatal(err)
-		}
-	})
-
-	t.Run("nil", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := Marshal(nil, writer); err != nil {
-			t.Fatal(err)
-		}
-		var pointer *Primitives
-		if err := Marshal(pointer, writer); err != nil {
-			t.Fatal(err)
-		}
-	})
-
-	t.Run("comma arrays", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := MarshalWithSettings([]int{}, writer, "comma"); err != nil {
-			t.Fatal(err)
-		}
-		if err := MarshalWithSettings([]int{1, 2}, writer, "comma"); err != nil {
-			t.Fatal(err)
-		}
-	})
-
-	t.Run("unsupported array format", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := MarshalWithSettings([]int{1}, writer, "invalid"); err == nil {
-			t.Fatal("unsupported array format was accepted")
-		}
-	})
-
-	t.Run("unsupported primitive", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := Marshal(complex(1, 2), writer); err == nil {
-			t.Fatal("unsupported primitive was accepted")
-		}
-	})
-
-	t.Run("non-string map key", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := Marshal(map[int]string{1: "tweet"}, writer); err == nil {
-			t.Fatal("non-string map key was accepted")
-		}
-	})
-
-	t.Run("empty union", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
-		if err := Marshal(StructUnionWrapper{}, writer); err == nil {
-			t.Fatal("empty union was accepted")
-		}
-	})
+	for _, test := range []struct {
+		name    string
+		marshal func(any, *multipart.Writer) error
+		values  []any
+		wantErr bool
+	}{
+		{"Marshal", Marshal, []any{map[string]string{"query": "tweet search"}}, false},
+		{"MarshalRoot", MarshalRoot, []any{map[string]string{"query": "timeline"}}, false},
+		{"nil", Marshal, []any{nil, (*Primitives)(nil)}, false},
+		{"comma arrays", func(value any, writer *multipart.Writer) error {
+			return MarshalWithSettings(value, writer, "comma")
+		}, []any{[]int{}, []int{1, 2}}, false},
+		{"unsupported array format", func(value any, writer *multipart.Writer) error {
+			return MarshalWithSettings(value, writer, "invalid")
+		}, []any{[]int{1}}, true},
+		{"unsupported primitive", Marshal, []any{complex(1, 2)}, true},
+		{"non-string map key", Marshal, []any{map[int]string{1: "tweet"}}, true},
+		{"empty union", Marshal, []any{StructUnionWrapper{}}, true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			_, writer := newCoverageWriter(t)
+			for _, value := range test.values {
+				if err := test.marshal(value, writer); (err != nil) != test.wantErr {
+					t.Fatalf("Marshal(%#v) error = %v, want error = %t", value, err, test.wantErr)
+				}
+			}
+			if err := writer.Close(); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
 
 	t.Run("reader metadata", func(t *testing.T) {
 		buffer, writer := newCoverageWriter(t)

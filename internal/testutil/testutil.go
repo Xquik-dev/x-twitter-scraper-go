@@ -12,7 +12,7 @@ import (
 )
 
 func CheckTestServer(t *testing.T, url string) bool {
-	if _, err := http.Get(url); err != nil {
+	if response, err := http.Get(url); err != nil {
 		const SKIP_MOCK_TESTS = "SKIP_MOCK_TESTS"
 		if str, ok := os.LookupEnv(SKIP_MOCK_TESTS); ok {
 			skip, err := strconv.ParseBool(str)
@@ -26,6 +26,9 @@ func CheckTestServer(t *testing.T, url string) bool {
 			t.Errorf("The test will not run without a mock server running against your OpenAPI spec. You can set the environment variable %s to true to skip running any tests that require the mock server", SKIP_MOCK_TESTS)
 			return false
 		}
+	} else if err := response.Body.Close(); err != nil {
+		t.Errorf("Close test server response: %v", err)
+		return false
 	}
 	return true
 }

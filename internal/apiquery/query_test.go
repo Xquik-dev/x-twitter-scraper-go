@@ -106,6 +106,16 @@ type DeeplyNested3 struct {
 	D *string `query:"d"`
 }
 
+func nestedQuery(value *string) DeeplyNested {
+	return DeeplyNested{
+		A: DeeplyNested1{
+			B: DeeplyNested2{
+				C: DeeplyNested3{D: value},
+			},
+		},
+	}
+}
+
 type RichPrimitives struct {
 	A param.Opt[string] `query:"a"`
 }
@@ -345,57 +355,25 @@ var tests = map[string]struct {
 
 	"deeply_nested_brackets": {
 		`a[b][c][d]=hello`,
-		DeeplyNested{
-			A: DeeplyNested1{
-				B: DeeplyNested2{
-					C: DeeplyNested3{
-						D: P("hello"),
-					},
-				},
-			},
-		},
+		nestedQuery(P("hello")),
 		QuerySettings{NestedFormat: NestedQueryFormatBrackets},
 	},
 
 	"deeply_nested_dots": {
 		`a.b.c.d=hello`,
-		DeeplyNested{
-			A: DeeplyNested1{
-				B: DeeplyNested2{
-					C: DeeplyNested3{
-						D: P("hello"),
-					},
-				},
-			},
-		},
+		nestedQuery(P("hello")),
 		QuerySettings{NestedFormat: NestedQueryFormatDots},
 	},
 
 	"deeply_nested_brackets_empty": {
 		``,
-		DeeplyNested{
-			A: DeeplyNested1{
-				B: DeeplyNested2{
-					C: DeeplyNested3{
-						D: nil,
-					},
-				},
-			},
-		},
+		nestedQuery(nil),
 		QuerySettings{NestedFormat: NestedQueryFormatBrackets},
 	},
 
 	"deeply_nested_dots_empty": {
 		``,
-		DeeplyNested{
-			A: DeeplyNested1{
-				B: DeeplyNested2{
-					C: DeeplyNested3{
-						D: nil,
-					},
-				},
-			},
-		},
+		nestedQuery(nil),
 		QuerySettings{NestedFormat: NestedQueryFormatDots},
 	},
 

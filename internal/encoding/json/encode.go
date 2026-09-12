@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Vendored from Go 1.24.0-pre-release
-// To find alterations, check package shims, and comments beginning in SHIM().
 //
 // Copyright 2010 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
@@ -22,7 +21,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/sentinel"
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/shims"
 	"math"
 	"reflect"
 	"slices"
@@ -182,7 +180,7 @@ func Marshal(v any, opts ...Option) ([]byte, error) {
 	defer encodeStatePool.Put(e)
 
 	// EDIT(begin): don't escape HTML by default, and apply options
-	encOpts := encOpts{escapeHTML: shims.EscapeHTMLByDefault}
+	encOpts := encOpts{escapeHTML: true}
 	if opts != nil {
 		encOpts = encOpts.apply(opts...)
 	}
@@ -406,10 +404,8 @@ func typeEncoder(t reflect.Type) encoderFunc {
 }
 
 var (
-	// SHIM(begin): TypeFor[T]() reflect.Type
-	marshalerType     = shims.TypeFor[Marshaler]()
-	textMarshalerType = shims.TypeFor[encoding.TextMarshaler]()
-	// SHIM(end)
+	marshalerType     = reflect.TypeFor[Marshaler]()
+	textMarshalerType = reflect.TypeFor[encoding.TextMarshaler]()
 )
 
 // newTypeEncoder constructs an encoderFunc for a type.
@@ -417,7 +413,7 @@ var (
 func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
 	// EDIT(begin): add custom time encoder
 	if t == timeType {
-		return newTimeEncoder()
+		return timeEncoder
 	}
 	// EDIT(end)
 
@@ -470,27 +466,21 @@ func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
 }
 
 func invalidValueEncoder(e *encodeState, v reflect.Value, _ encOpts) {
-	e.WriteString("null")
+	e.Buffer.WriteString("null")
 }
 
 func marshalerEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	if v.Kind() == reflect.Pointer && v.IsNil() {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 	m, ok := v.Interface().(Marshaler)
 	if !ok {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 
-	// EDIT(begin): use custom time encoder
-	if timeMarshalEncoder(e, v, opts) {
-		return
-	}
-	// EDIT(end)
-
-	b, err := m.MarshalJSON()
+	b, err := marshalWithTimeLayout(m, opts.timefmt)
 	if err == nil {
 		e.Grow(len(b))
 		out := e.AvailableBuffer()
@@ -505,18 +495,12 @@ func marshalerEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 func addrMarshalerEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	va := v.Addr()
 	if va.IsNil() {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
-
-	// EDIT(begin): use custom time encoder
-	if timeMarshalEncoder(e, v, opts) {
-		return
-	}
-	// EDIT(end)
 
 	m := va.Interface().(Marshaler)
-	b, err := m.MarshalJSON()
+	b, err := marshalWithTimeLayout(m, opts.timefmt)
 	if err == nil {
 		e.Grow(len(b))
 		out := e.AvailableBuffer()
@@ -530,25 +514,25 @@ func addrMarshalerEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 
 func textMarshalerEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	if v.Kind() == reflect.Pointer && v.IsNil() {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 	m, ok := v.Interface().(encoding.TextMarshaler)
 	if !ok {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 	b, err := m.MarshalText()
 	if err != nil {
 		e.error(&MarshalerError{v.Type(), err, "MarshalText"})
 	}
-	e.Write(appendString(e.AvailableBuffer(), b, opts.escapeHTML))
+	e.Buffer.Write(appendString(e.AvailableBuffer(), b, opts.escapeHTML))
 }
 
 func addrTextMarshalerEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	va := v.Addr()
 	if va.IsNil() {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 	m := va.Interface().(encoding.TextMarshaler)
@@ -556,7 +540,7 @@ func addrTextMarshalerEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	if err != nil {
 		e.error(&MarshalerError{v.Type(), err, "MarshalText"})
 	}
-	e.Write(appendString(e.AvailableBuffer(), b, opts.escapeHTML))
+	e.Buffer.Write(appendString(e.AvailableBuffer(), b, opts.escapeHTML))
 }
 
 func boolEncoder(e *encodeState, v reflect.Value, opts encOpts) {
@@ -564,7 +548,7 @@ func boolEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	b = mayAppendQuote(b, opts.quoted)
 	b = strconv.AppendBool(b, v.Bool())
 	b = mayAppendQuote(b, opts.quoted)
-	e.Write(b)
+	e.Buffer.Write(b)
 }
 
 func intEncoder(e *encodeState, v reflect.Value, opts encOpts) {
@@ -572,7 +556,7 @@ func intEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	b = mayAppendQuote(b, opts.quoted)
 	b = strconv.AppendInt(b, v.Int(), 10)
 	b = mayAppendQuote(b, opts.quoted)
-	e.Write(b)
+	e.Buffer.Write(b)
 }
 
 func uintEncoder(e *encodeState, v reflect.Value, opts encOpts) {
@@ -580,7 +564,7 @@ func uintEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	b = mayAppendQuote(b, opts.quoted)
 	b = strconv.AppendUint(b, v.Uint(), 10)
 	b = mayAppendQuote(b, opts.quoted)
-	e.Write(b)
+	e.Buffer.Write(b)
 }
 
 type floatEncoder int // number of bits
@@ -616,7 +600,7 @@ func (bits floatEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 		}
 	}
 	b = mayAppendQuote(b, opts.quoted)
-	e.Write(b)
+	e.Buffer.Write(b)
 }
 
 var (
@@ -639,14 +623,14 @@ func stringEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 		b = mayAppendQuote(b, opts.quoted)
 		b = append(b, numStr...)
 		b = mayAppendQuote(b, opts.quoted)
-		e.Write(b)
+		e.Buffer.Write(b)
 		return
 	}
 	if opts.quoted {
 		b := appendString(nil, v.String(), opts.escapeHTML)
-		e.Write(appendString(e.AvailableBuffer(), b, false)) // no need to escape again since it is already escaped
+		e.Buffer.Write(appendString(e.AvailableBuffer(), b, false)) // no need to escape again since it is already escaped
 	} else {
-		e.Write(appendString(e.AvailableBuffer(), v.String(), opts.escapeHTML))
+		e.Buffer.Write(appendString(e.AvailableBuffer(), v.String(), opts.escapeHTML))
 	}
 }
 
@@ -722,7 +706,7 @@ func isValidNumber(s string) bool {
 
 func interfaceEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	if v.IsNil() {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 	e.reflectValue(v.Elem(), opts)
@@ -764,20 +748,20 @@ FieldLoop:
 			(f.omitZero && (f.isZero == nil && fv.IsZero() || (f.isZero != nil && f.isZero(fv)))) {
 			continue
 		}
-		e.WriteByte(next)
+		e.Buffer.WriteByte(next)
 		next = ','
 		if opts.escapeHTML {
-			e.WriteString(f.nameEscHTML)
+			e.Buffer.WriteString(f.nameEscHTML)
 		} else {
-			e.WriteString(f.nameNonEsc)
+			e.Buffer.WriteString(f.nameNonEsc)
 		}
 		opts.quoted = f.quoted
 		f.encoder(e, fv, opts)
 	}
 	if next == '{' {
-		e.WriteString("{}")
+		e.Buffer.WriteString("{}")
 	} else {
-		e.WriteByte('}')
+		e.Buffer.WriteByte('}')
 	}
 }
 
@@ -792,7 +776,7 @@ type mapEncoder struct {
 
 func (me mapEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 	if v.IsNil() /* EDIT(begin) */ || sentinel.IsValueNull(v) /* EDIT(end) */ {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 	if e.ptrLevel++; e.ptrLevel > startDetectingCyclesAfter {
@@ -805,7 +789,7 @@ func (me mapEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 		e.ptrSeen[ptr] = struct{}{}
 		defer delete(e.ptrSeen, ptr)
 	}
-	e.WriteByte('{')
+	e.Buffer.WriteByte('{')
 
 	// Extract and sort the keys.
 	var (
@@ -825,13 +809,13 @@ func (me mapEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 
 	for i, kv := range sv {
 		if i > 0 {
-			e.WriteByte(',')
+			e.Buffer.WriteByte(',')
 		}
-		e.Write(appendString(e.AvailableBuffer(), kv.ks, opts.escapeHTML))
-		e.WriteByte(':')
+		e.Buffer.Write(appendString(e.AvailableBuffer(), kv.ks, opts.escapeHTML))
+		e.Buffer.WriteByte(':')
 		me.elemEnc(e, kv.v, opts)
 	}
-	e.WriteByte('}')
+	e.Buffer.WriteByte('}')
 	e.ptrLevel--
 }
 
@@ -851,17 +835,16 @@ func newMapEncoder(t reflect.Type) encoderFunc {
 
 func encodeByteSlice(e *encodeState, v reflect.Value, _ encOpts) {
 	if v.IsNil() {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 
 	s := v.Bytes()
 	b := e.AvailableBuffer()
 	b = append(b, '"')
-	// SHIM(base64): base64.StdEncoding.AppendEncode([]byte, []byte) []byte
-	b = (shims.AppendableStdEncoding{Encoding: base64.StdEncoding}).AppendEncode(b, s)
+	b = base64.StdEncoding.AppendEncode(b, s)
 	b = append(b, '"')
-	e.Write(b)
+	e.Buffer.Write(b)
 }
 
 // sliceEncoder just wraps an arrayEncoder, checking to make sure the value isn't nil.
@@ -871,7 +854,7 @@ type sliceEncoder struct {
 
 func (se sliceEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 	if v.IsNil() /* EDIT(begin) */ || sentinel.IsValueNull(v) /* EDIT(end) */ {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 	if e.ptrLevel++; e.ptrLevel > startDetectingCyclesAfter {
@@ -910,15 +893,15 @@ type arrayEncoder struct {
 }
 
 func (ae arrayEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
-	e.WriteByte('[')
+	e.Buffer.WriteByte('[')
 	n := v.Len()
 	for i := 0; i < n; i++ {
 		if i > 0 {
-			e.WriteByte(',')
+			e.Buffer.WriteByte(',')
 		}
 		ae.elemEnc(e, v.Index(i), opts)
 	}
-	e.WriteByte(']')
+	e.Buffer.WriteByte(']')
 }
 
 func newArrayEncoder(t reflect.Type) encoderFunc {
@@ -932,7 +915,7 @@ type ptrEncoder struct {
 
 func (pe ptrEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 	if v.IsNil() {
-		e.WriteString("null")
+		e.Buffer.WriteString("null")
 		return
 	}
 
@@ -1126,8 +1109,7 @@ type isZeroer interface {
 	IsZero() bool
 }
 
-// SHIM(reflect): TypeFor[T]() reflect.Type
-var isZeroerType = shims.TypeFor[isZeroer]()
+var isZeroerType = reflect.TypeFor[isZeroer]()
 
 // typeFields returns a list of fields that JSON should recognize for the given type.
 // The algorithm is breadth-first search over the set of structs to include - the top struct

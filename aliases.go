@@ -773,6 +773,19 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts = shared.Embed
 // This is an alias to an internal type.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -981,6 +994,19 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts = shared.Em
 // This is an alias to an internal type.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -994,6 +1020,19 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntity = shar
 
 // This is an alias to an internal type.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef
+
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetQuotedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
 // Public visibility notice attached to an available tweet.
 //
@@ -1387,6 +1426,19 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts = shared.Em
 // This is an alias to an internal type.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -1595,6 +1647,19 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts = shared
 // This is an alias to an internal type.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -1609,6 +1674,19 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity = s
 // This is an alias to an internal type.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -1622,6 +1700,19 @@ type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntity = shared.Embedded
 
 // This is an alias to an internal type.
 type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef
+
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
 // Public visibility notice attached to an available tweet.
 //
@@ -2199,6 +2290,19 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts = shared.Em
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -2407,6 +2511,19 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts = shared
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -2420,6 +2537,19 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntity = s
 
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef
+
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
 // Public visibility notice attached to an available tweet.
 //
@@ -2813,6 +2943,19 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts = shared
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -3021,6 +3164,19 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts = sha
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -3034,6 +3190,19 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity 
 
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef
+
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
 // Public visibility notice attached to an available tweet.
 //
@@ -3049,6 +3218,19 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity = shared.Embed
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -3062,6 +3244,19 @@ type EmbeddedTweetRetweetedTweetTombstoneTextEntity = shared.EmbeddedTweetRetwee
 
 // This is an alias to an internal type.
 type EmbeddedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetTombstoneTextEntityRef
+
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetSportsContext = shared.EmbeddedTweetSportsContext
+
+// This is an alias to an internal type.
+type EmbeddedTweetSportsContextCompetitor = shared.EmbeddedTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type EmbeddedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetSportsContextScheduledAtMsUnion
 
 // Public visibility notice attached to an available tweet.
 //
@@ -3350,6 +3545,19 @@ type SearchTweetPreviousCounts = shared.SearchTweetPreviousCounts
 // This is an alias to an internal type.
 type SearchTweetReactionContext = shared.SearchTweetReactionContext
 
+// Sports game context attached to the post, when available.
+//
+// This is an alias to an internal type.
+type SearchTweetSportsContext = shared.SearchTweetSportsContext
+
+// This is an alias to an internal type.
+type SearchTweetSportsContextCompetitor = shared.SearchTweetSportsContextCompetitor
+
+// Scheduled Unix time in milliseconds, preserving the source representation.
+//
+// This is an alias to an internal type.
+type SearchTweetSportsContextScheduledAtMsUnion = shared.SearchTweetSportsContextScheduledAtMsUnion
+
 // Public visibility notice attached to an available tweet.
 //
 // This is an alias to an internal type.
@@ -3396,7 +3604,7 @@ type TweetMediaTag = shared.TweetMediaTag
 // This is an alias to an internal type.
 type TweetMediaVideoVariant = shared.TweetMediaVideoVariant
 
-// X user profile with bio, follower counts, and verification status.
+// Public X profile.
 //
 // This is an alias to an internal type.
 type UserProfile = shared.UserProfile

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+set -euo pipefail
+trap 'status=$?; if ((status)); then printf "{\"status\":\"failed\",\"exitCode\":%d}\n" "$status"; fi' EXIT
+version="${1:?Pass the v-prefixed release version.}"
+revision="${2:?Pass the expected full commit SHA.}"
+[[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ && "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo 'Invalid version or commit SHA.' >&2; exit 2; }
+evidence=$(mktemp -d "${TMPDIR:-/tmp}/xquik-go-registry.XXXXXX")
+export GOWORK=off GOPROXY=https://proxy.golang.org GOSUMDB=sum.golang.org
+export GOPRIVATE= GONOPROXY= GONOSUMDB= GOMODCACHE="$evidence/modules"
+module=github.com/Xquik-dev/x-twitter-scraper-go
+cd "$evidence"
+go mod init example.invalid/xquik-release-verification >&2
+go mod download -json "$module@$version" > module.json
+jq -e --arg module "$module" --arg version "$version" --arg revision "$revision" \
+  '.Path == $module and .Version == $version and .Origin.Hash == $revision and .Origin.Ref == ("refs/tags/" + $version) and (.Sum | startswith("h1:")) and (.GoModSum | startswith("h1:"))' module.json >&2
+go get "$module@$version" >&2
+go mod verify >&2
+cat > main.go <<'EOF'
+package main
+
+import xquik "github.com/Xquik-dev/x-twitter-scraper-go"
+
+func main() { _ = xquik.NewClient() }
+EOF
+go run . >&2
+jq -n --arg version "$version" --arg revision "$revision" --arg evidence "$evidence" \
+  '{status:"completed", action:"verify", version:$version, commit:$revision, evidence:$evidence}'

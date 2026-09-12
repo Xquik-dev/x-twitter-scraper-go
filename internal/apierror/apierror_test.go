@@ -12,18 +12,20 @@ import (
 )
 
 func TestErrorDebuggingHelpers(t *testing.T) {
-	req, err := http.NewRequest(http.MethodPost, "https://example.com/tweets", strings.NewReader(`{"text":"hello"}`))
+	req, err := http.NewRequest(http.MethodPost, "https://user:password-secret@example.com/tweets", strings.NewReader(`{"text":"hello"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
 	req.Header.Set("Authorization", "Bearer secret")
 	req.Header.Set("X-API-Key", "api-secret")
 	req.Header.Set("Cookie", "session=secret")
+	req.Header["authorization"] = []string{"lowercase-secret"}
 	resp := &http.Response{
 		StatusCode: http.StatusBadRequest,
 		Header: http.Header{
 			"Content-Type": {"application/json"},
 			"Set-Cookie":   {"session=secret"},
+			"set-cookie":   {"session=secret; Path=/"},
 		},
 		Body: io.NopCloser(strings.NewReader(`{"message":"bad request"}`)),
 	}
@@ -34,7 +36,7 @@ func TestErrorDebuggingHelpers(t *testing.T) {
 	if got := apiErr.RawJSON(); got != `{"message":"bad request"}` {
 		t.Fatalf("RawJSON() = %q", got)
 	}
-	if got := apiErr.Error(); !strings.Contains(got, "400 Bad Request") {
+	if got := apiErr.Error(); !strings.Contains(got, "400 Bad Request") || strings.Contains(got, "password-secret") {
 		t.Fatalf("Error() = %q", got)
 	}
 	if dump := apiErr.DumpRequest(true); !strings.Contains(string(dump), `"text":"hello"`) {
@@ -47,7 +49,7 @@ func TestErrorDebuggingHelpers(t *testing.T) {
 	} else if strings.Contains(string(dump), "session=secret") {
 		t.Fatalf("DumpResponse() exposed a cookie: %s", dump)
 	}
-	if req.Header.Get("Authorization") != "Bearer secret" ||
+	if req.URL.User.String() != "user:password-secret" || req.Header.Get("Authorization") != "Bearer secret" ||
 		resp.Header.Get("Set-Cookie") != "session=secret" {
 		t.Fatal("diagnostic dumps modified live headers")
 	}

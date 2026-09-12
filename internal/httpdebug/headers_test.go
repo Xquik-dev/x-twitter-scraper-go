@@ -30,8 +30,25 @@ func TestRedactHeadersPreservesInput(t *testing.T) {
 }
 
 func TestRedactHeadersReturnsPublicHeaders(t *testing.T) {
-	headers := http.Header{"X-Public": {"visible"}}
-	if got := RedactHeaders(headers); !reflect.DeepEqual(got, headers) {
-		t.Fatalf("public headers changed: %v", got)
+	for _, headers := range []http.Header{nil, {"X-Public": {"visible"}, "Authorization": nil, "Cookie": {}}} {
+		if got := RedactHeaders(headers); !reflect.DeepEqual(got, headers) {
+			t.Fatalf("public or empty headers changed: %v", got)
+		}
+	}
+}
+
+func TestRedactHeadersMatchesEveryKeyCase(t *testing.T) {
+	for _, name := range []string{"authorization", "AUTHORIZATION", "proxy-authorization", "PROXY-AUTHORIZATION", "api-key", "API-KEY", "x-api-key", "X-API-KEY", "cookie", "COOKIE", "set-cookie", "SET-COOKIE"} {
+		t.Run(name, func(t *testing.T) {
+			headers := http.Header{name: {"synthetic-one", "synthetic-two"}, "X-Public": {"visible"}}
+			original := headers.Clone()
+			redacted := RedactHeaders(headers)
+			if !reflect.DeepEqual(redacted[name], []string{"***", "***"}) {
+				t.Fatalf("sensitive header %s was not fully redacted", name)
+			}
+			if !reflect.DeepEqual(headers, original) || redacted.Get("X-Public") != "visible" {
+				t.Fatal("redaction changed input or public metadata")
+			}
+		})
 	}
 }

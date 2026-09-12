@@ -144,6 +144,16 @@ type MultipartMarshalerMiddle struct {
 	Child int `form:"child"`
 }
 
+// expectedForm supplies literal MIME framing without using the encoder under test.
+func expectedForm(fields ...[2]string) string {
+	var body strings.Builder
+	for _, field := range fields {
+		body.WriteString("--xxx\nContent-Disposition: form-data; name=\"" + field[0] + "\"\n\n" + field[1] + "\n")
+	}
+	body.WriteString("--xxx--\n")
+	return body.String()
+}
+
 var tests = map[string]struct {
 	buf string
 	val any
@@ -160,183 +170,76 @@ some file contents...
 			File: io.Reader(bytes.NewBuffer([]byte("some file contents..."))),
 		},
 	},
+	"eight_bit_integers": {expectedForm([2]string{"max", "255"}, [2]string{"min", "-128"}, [2]string{"zero", "0"}), map[string]any{"max": uint8(255), "min": int8(-128), "zero": int8(0)}},
 	"map_string": {
-		`--xxx
-Content-Disposition: form-data; name="foo"
-
-bar
---xxx--
-`,
+		expectedForm(
+			[2]string{"foo", "bar"},
+		),
 		map[string]string{"foo": "bar"},
 	},
 
 	"map_interface": {
-		`--xxx
-Content-Disposition: form-data; name="a"
-
-1
---xxx
-Content-Disposition: form-data; name="b"
-
-str
---xxx
-Content-Disposition: form-data; name="c"
-
-false
---xxx--
-`,
+		expectedForm(
+			[2]string{"a", "1"},
+			[2]string{"b", "str"},
+			[2]string{"c", "false"},
+		),
 		map[string]any{"a": float64(1), "b": "str", "c": false},
 	},
 
 	"primitive_struct": {
-		`--xxx
-Content-Disposition: form-data; name="a"
-
-false
---xxx
-Content-Disposition: form-data; name="b"
-
-237628372683
---xxx
-Content-Disposition: form-data; name="c"
-
-654
---xxx
-Content-Disposition: form-data; name="d"
-
-9999.43
---xxx
-Content-Disposition: form-data; name="e"
-
-43.76
---xxx
-Content-Disposition: form-data; name="f.0"
-
-1
---xxx
-Content-Disposition: form-data; name="f.1"
-
-2
---xxx
-Content-Disposition: form-data; name="f.2"
-
-3
---xxx
-Content-Disposition: form-data; name="f.3"
-
-4
---xxx--
-`,
+		expectedForm(
+			[2]string{"a", "false"},
+			[2]string{"b", "237628372683"},
+			[2]string{"c", "654"},
+			[2]string{"d", "9999.43"},
+			[2]string{"e", "43.76"},
+			[2]string{"f.0", "1"},
+			[2]string{"f.1", "2"},
+			[2]string{"f.2", "3"},
+			[2]string{"f.3", "4"},
+		),
 		Primitives{A: false, B: 237628372683, C: uint(654), D: 9999.43, E: 43.76, F: []int{1, 2, 3, 4}},
 	},
 	"primitive_struct,brackets": {
-		`--xxx
-Content-Disposition: form-data; name="f[]"
-
-1
---xxx
-Content-Disposition: form-data; name="f[]"
-
-2
---xxx
-Content-Disposition: form-data; name="f[]"
-
-3
---xxx
-Content-Disposition: form-data; name="f[]"
-
-4
---xxx--
-`,
+		expectedForm(
+			[2]string{"f[]", "1"},
+			[2]string{"f[]", "2"},
+			[2]string{"f[]", "3"},
+			[2]string{"f[]", "4"},
+		),
 		PrimitivesBrackets{F: []int_{1, 2, 3, 4}},
 	},
 
 	"slices": {
-		`--xxx
-Content-Disposition: form-data; name="slices.0.a"
-
-false
---xxx
-Content-Disposition: form-data; name="slices.0.b"
-
-237628372683
---xxx
-Content-Disposition: form-data; name="slices.0.c"
-
-654
---xxx
-Content-Disposition: form-data; name="slices.0.d"
-
-9999.43
---xxx
-Content-Disposition: form-data; name="slices.0.e"
-
-43.76
---xxx
-Content-Disposition: form-data; name="slices.0.f.0"
-
-1
---xxx
-Content-Disposition: form-data; name="slices.0.f.1"
-
-2
---xxx
-Content-Disposition: form-data; name="slices.0.f.2"
-
-3
---xxx
-Content-Disposition: form-data; name="slices.0.f.3"
-
-4
---xxx--
-`,
+		expectedForm(
+			[2]string{"slices.0.a", "false"},
+			[2]string{"slices.0.b", "237628372683"},
+			[2]string{"slices.0.c", "654"},
+			[2]string{"slices.0.d", "9999.43"},
+			[2]string{"slices.0.e", "43.76"},
+			[2]string{"slices.0.f.0", "1"},
+			[2]string{"slices.0.f.1", "2"},
+			[2]string{"slices.0.f.2", "3"},
+			[2]string{"slices.0.f.3", "4"},
+		),
 		Slices{
 			Slice: []Primitives{{A: false, B: 237628372683, C: uint(654), D: 9999.43, E: 43.76, F: []int{1, 2, 3, 4}}},
 		},
 	},
 	"primitive_pointer_struct": {
-		`--xxx
-Content-Disposition: form-data; name="a"
-
-false
---xxx
-Content-Disposition: form-data; name="b"
-
-237628372683
---xxx
-Content-Disposition: form-data; name="c"
-
-654
---xxx
-Content-Disposition: form-data; name="d"
-
-9999.43
---xxx
-Content-Disposition: form-data; name="e"
-
-43.76
---xxx
-Content-Disposition: form-data; name="f.0"
-
-1
---xxx
-Content-Disposition: form-data; name="f.1"
-
-2
---xxx
-Content-Disposition: form-data; name="f.2"
-
-3
---xxx
-Content-Disposition: form-data; name="f.3"
-
-4
---xxx
-Content-Disposition: form-data; name="f.4"
-
-5
---xxx--
-`,
+		expectedForm(
+			[2]string{"a", "false"},
+			[2]string{"b", "237628372683"},
+			[2]string{"c", "654"},
+			[2]string{"d", "9999.43"},
+			[2]string{"e", "43.76"},
+			[2]string{"f.0", "1"},
+			[2]string{"f.1", "2"},
+			[2]string{"f.2", "3"},
+			[2]string{"f.3", "4"},
+			[2]string{"f.4", "5"},
+		),
 		PrimitivePointers{
 			A: P(false),
 			B: P(237628372683),
@@ -348,16 +251,10 @@ Content-Disposition: form-data; name="f.4"
 	},
 
 	"datetime_struct": {
-		`--xxx
-Content-Disposition: form-data; name="date"
-
-2006-01-02
---xxx
-Content-Disposition: form-data; name="date-time"
-
-2006-01-02T15:04:05Z
---xxx--
-`,
+		expectedForm(
+			[2]string{"date", "2006-01-02"},
+			[2]string{"date-time", "2006-01-02T15:04:05Z"},
+		),
 		DateTime{
 			Date:     time.Date(2006, time.January, 2, 0, 0, 0, 0, time.UTC),
 			DateTime: time.Date(2006, time.January, 2, 15, 4, 5, 0, time.UTC),
@@ -365,20 +262,11 @@ Content-Disposition: form-data; name="date-time"
 	},
 
 	"additional_properties": {
-		`--xxx
-Content-Disposition: form-data; name="a"
-
-true
---xxx
-Content-Disposition: form-data; name="bar"
-
-value
---xxx
-Content-Disposition: form-data; name="foo"
-
-true
---xxx--
-`,
+		expectedForm(
+			[2]string{"a", "true"},
+			[2]string{"bar", "value"},
+			[2]string{"foo", "true"},
+		),
 		AdditionalProperties{
 			A: true,
 			Extras: map[string]any{
@@ -388,52 +276,34 @@ true
 		},
 	},
 	"recursive_struct,brackets": {
-		`--xxx
-Content-Disposition: form-data; name="child[name]"
-
-Alex
---xxx
-Content-Disposition: form-data; name="name"
-
-Robert
---xxx--
-`,
+		expectedForm(
+			[2]string{"child[name]", "Alex"},
+			[2]string{"name", "Robert"},
+		),
 		Recursive{Name: "Robert", Child: &Recursive{Name: "Alex"}},
 	},
 
 	"recursive_struct": {
-		`--xxx
-Content-Disposition: form-data; name="child.name"
-
-Alex
---xxx
-Content-Disposition: form-data; name="name"
-
-Robert
---xxx--
-`,
+		expectedForm(
+			[2]string{"child.name", "Alex"},
+			[2]string{"name", "Robert"},
+		),
 		Recursive{Name: "Robert", Child: &Recursive{Name: "Alex"}},
 	},
 
 	"unknown_struct_number": {
-		`--xxx
-Content-Disposition: form-data; name="unknown"
-
-12
---xxx--
-`,
+		expectedForm(
+			[2]string{"unknown", "12"},
+		),
 		UnknownStruct{
 			Unknown: 12.,
 		},
 	},
 
 	"unknown_struct_map": {
-		`--xxx
-Content-Disposition: form-data; name="unknown.foo"
-
-bar
---xxx--
-`,
+		expectedForm(
+			[2]string{"unknown.foo", "bar"},
+		),
 		UnknownStruct{
 			Unknown: map[string]any{
 				"foo": "bar",
@@ -442,44 +312,29 @@ bar
 	},
 
 	"struct_union_integer": {
-		`--xxx
-Content-Disposition: form-data; name="union"
-
-12
---xxx--
-`,
+		expectedForm(
+			[2]string{"union", "12"},
+		),
 		StructUnionWrapper{
 			Union: StructUnion{OfInt: param.NewOpt[int64](12)},
 		},
 	},
 
 	"union_integer": {
-		`--xxx
-Content-Disposition: form-data; name="union"
-
-12
---xxx--
-`,
+		expectedForm(
+			[2]string{"union", "12"},
+		),
 		UnionStruct{
 			Union: UnionInteger(12),
 		},
 	},
 
 	"struct_union_struct_discriminated_a": {
-		`--xxx
-Content-Disposition: form-data; name="union.a"
-
-foo
---xxx
-Content-Disposition: form-data; name="union.b"
-
-bar
---xxx
-Content-Disposition: form-data; name="union.type"
-
-typeA
---xxx--
-`,
+		expectedForm(
+			[2]string{"union.a", "foo"},
+			[2]string{"union.b", "bar"},
+			[2]string{"union.type", "typeA"},
+		),
 		StructUnionWrapper{
 			Union: StructUnion{OfA: UnionStructA{
 				Type: "typeA",
@@ -490,20 +345,11 @@ typeA
 	},
 
 	"union_struct_discriminated_a": {
-		`--xxx
-Content-Disposition: form-data; name="union.a"
-
-foo
---xxx
-Content-Disposition: form-data; name="union.b"
-
-bar
---xxx
-Content-Disposition: form-data; name="union.type"
-
-typeA
---xxx--
-`,
+		expectedForm(
+			[2]string{"union.a", "foo"},
+			[2]string{"union.b", "bar"},
+			[2]string{"union.type", "typeA"},
+		),
 
 		UnionStruct{
 			Union: UnionStructA{
@@ -515,16 +361,10 @@ typeA
 	},
 
 	"struct_union_struct_discriminated_b": {
-		`--xxx
-Content-Disposition: form-data; name="union.a"
-
-foo
---xxx
-Content-Disposition: form-data; name="union.type"
-
-typeB
---xxx--
-`,
+		expectedForm(
+			[2]string{"union.a", "foo"},
+			[2]string{"union.type", "typeB"},
+		),
 		StructUnionWrapper{
 			Union: StructUnion{OfB: UnionStructB{
 				Type: "typeB",
@@ -534,16 +374,10 @@ typeB
 	},
 
 	"union_struct_discriminated_b": {
-		`--xxx
-Content-Disposition: form-data; name="union.a"
-
-foo
---xxx
-Content-Disposition: form-data; name="union.type"
-
-typeB
---xxx--
-`,
+		expectedForm(
+			[2]string{"union.a", "foo"},
+			[2]string{"union.type", "typeB"},
+		),
 		UnionStruct{
 			Union: UnionStructB{
 				Type: "typeB",
@@ -553,54 +387,36 @@ typeB
 	},
 
 	"union_struct_time": {
-		`--xxx
-Content-Disposition: form-data; name="union"
-
-2010-05-23
---xxx--
-`,
+		expectedForm(
+			[2]string{"union", "2010-05-23"},
+		),
 		UnionStruct{
 			Union: UnionTime(time.Date(2010, 05, 23, 0, 0, 0, 0, time.UTC)),
 		},
 	},
 	"constant_zero_value": {
-		`--xxx
-Content-Disposition: form-data; name="anchor"
-
-created_at
---xxx
-Content-Disposition: form-data; name="seconds"
-
-3600
---xxx--
-`,
+		expectedForm(
+			[2]string{"anchor", "created_at"},
+			[2]string{"seconds", "3600"},
+		),
 		ConstantStruct{
 			Seconds: 3600,
 		},
 	},
 	"constant_explicit_value": {
-		`--xxx
-Content-Disposition: form-data; name="anchor"
-
-created_at_override
---xxx
-Content-Disposition: form-data; name="seconds"
-
-3600
---xxx--
-`,
+		expectedForm(
+			[2]string{"anchor", "created_at_override"},
+			[2]string{"seconds", "3600"},
+		),
 		ConstantStruct{
 			Anchor:  "created_at_override",
 			Seconds: 3600,
 		},
 	},
 	"deeply-nested-struct,brackets": {
-		`--xxx
-Content-Disposition: form-data; name="middle[middleNext][child]"
-
-10
---xxx--
-`,
+		expectedForm(
+			[2]string{"middle[middleNext][child]", "10"},
+		),
 		MultipartMarshalerParent{
 			Middle: MultipartMarshalerMiddleNext{
 				MiddleNext: MultipartMarshalerMiddle{
@@ -610,12 +426,9 @@ Content-Disposition: form-data; name="middle[middleNext][child]"
 		},
 	},
 	"deeply-nested-map,brackets": {
-		`--xxx
-Content-Disposition: form-data; name="middle[middleNext][child]"
-
-10
---xxx--
-`,
+		expectedForm(
+			[2]string{"middle[middleNext][child]", "10"},
+		),
 		map[string]any{"middle": map[string]any{"middleNext": map[string]any{"child": 10}}},
 	},
 }

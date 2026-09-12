@@ -148,7 +148,9 @@ func TestEncoderIndent(t *testing.T) {
 	enc := NewEncoder(&buf)
 	enc.SetIndent(">", ".")
 	for _, v := range streamTest {
-		enc.Encode(v)
+		if err := enc.Encode(v); err != nil {
+			t.Fatalf("Encode(%#v): %v", v, err)
+		}
 	}
 	if got, want := buf.String(), streamEncodedIndent; got != want {
 		t.Errorf("Encode mismatch:\ngot:\n%s\n\nwant:\n%s", got, want)

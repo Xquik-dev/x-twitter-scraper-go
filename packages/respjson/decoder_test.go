@@ -48,116 +48,58 @@ func (r *SubFields) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func TestUnmarshalUnionString(t *testing.T) {
-	rawJSON := `"123"`
-	testUnmarshalUnion(t, rawJSON, func(res UnionOfStringIntOrObject) map[string]error {
-		return map[string]error{
-			"rawJSON": checkEqual(res.RawJSON(), rawJSON),
-
-			"string":          checkEqual(res.OfString, "123"),
-			"int":             checkEqual(res.OfInt, 0),
-			"$.type":          checkEqual(res.Type, ""),
-			"$.function.name": checkEqual(res.Function.Name, ""),
-
-			"string.meta":          checkMeta(res.JSON.OfString, rawJSON, shouldBePresent),
-			"int.meta":             checkMeta(res.JSON.OfInt, "", shouldBeNullish),
-			"$.type.meta":          checkMeta(res.JSON.Type, "", shouldBeNullish),
-			"$.function.meta":      checkMeta(res.Function.JSON.Name, "", shouldBeNullish),
-			"$.function.name.meta": checkMeta(res.Function.JSON.Name, "", shouldBeNullish),
-		}
-	})
-}
-
-func TestUnmarshalUnionInt(t *testing.T) {
-	rawJSON := `123`
-	testUnmarshalUnion(t, rawJSON, func(res UnionOfStringIntOrObject) map[string]error {
-		return map[string]error{
-			"rawJSON": checkEqual(res.RawJSON(), rawJSON),
-
-			"string":          checkEqual(res.OfString, ""),
-			"int":             checkEqual(res.OfInt, 123),
-			"$.type":          checkEqual(res.Type, ""),
-			"$.function.name": checkEqual(res.Function.Name, ""),
-			"$.function.bool": checkEqual(res.Function.OfBool, false),
-
-			"string.meta":          checkMeta(res.JSON.OfString, "", shouldBeNullish),
-			"int.meta":             checkMeta(res.JSON.OfInt, rawJSON, shouldBePresent),
-			"$.type.meta":          checkMeta(res.JSON.Type, "", shouldBeNullish),
-			"$.function.meta":      checkMeta(res.Function.JSON.Name, "", shouldBeNullish),
-			"$.function.name.meta": checkMeta(res.Function.JSON.Name, "", shouldBeNullish),
-		}
-	})
-
-	testUnmarshalUnion(t, `0`, func(res UnionOfStringIntOrObject) map[string]error {
-		return map[string]error{
-			"rawJSON": checkEqual(res.RawJSON(), "0"),
-			"string":  checkEqual(res.OfString, ""),
-
-			"int":         checkEqual(res.OfInt, 0),
-			"int.meta":    checkMeta(res.JSON.OfInt, "0", shouldBePresent),
-			"string.meta": checkMeta(res.JSON.OfString, "", shouldBeNullish),
-		}
-	})
-}
-
-func TestUnmarshalUnionObject(t *testing.T) {
-	rawJSON := `{"type":"auto","function":{"name":"test_fn"}}`
-	testUnmarshalUnion(t, rawJSON, func(res UnionOfStringIntOrObject) map[string]error {
-		return map[string]error{
-			"rawJSON": checkEqual(res.RawJSON(), rawJSON),
-
-			"string":          checkEqual(res.OfString, ""),
-			"int":             checkEqual(res.OfInt, 0),
-			"$.type":          checkEqual(res.Type, "auto"),
-			"$.function.name": checkEqual(res.Function.Name, "test_fn"),
-			"$.function.bool": checkEqual(res.Function.OfBool, false),
-
-			"string.meta":          checkMeta(res.JSON.OfString, "", shouldBeNullish),
-			"int.meta":             checkMeta(res.JSON.OfInt, "", shouldBeNullish),
-			"$.type.meta":          checkMeta(res.JSON.Type, `"auto"`, shouldBePresent),
-			"$.function.meta":      checkMeta(res.JSON.Function, `{"name":"test_fn"}`, shouldBePresent),
-			"$.function.name.meta": checkMeta(res.Function.JSON.Name, `"test_fn"`, shouldBePresent),
-			"$.function.bool.meta": checkMeta(res.Function.JSON.OfBool, "", shouldBeNullish),
-		}
-	})
-}
-
-func TestUnmarshalUnionObjectWithInlineSubUnion(t *testing.T) {
-	rawJSON := `{"type":"auto","function":true}`
-	testUnmarshalUnion(t, rawJSON, func(res UnionOfStringIntOrObject) map[string]error {
-		return map[string]error{
-			"rawJSON": checkEqual(res.RawJSON(), rawJSON),
-
-			"string":     checkEqual(res.OfString, ""),
-			"int":        checkEqual(res.OfInt, 0),
-			"$.type":     checkEqual(res.Type, "auto"),
-			"$.function": checkEqual(res.Function.OfBool, true),
-
-			"string.meta":          checkMeta(res.JSON.OfString, "", shouldBeNullish),
-			"int.meta":             checkMeta(res.JSON.OfInt, "", shouldBeNullish),
-			"$.type.meta":          checkMeta(res.JSON.Type, `"auto"`, shouldBePresent),
-			"$.function.meta":      checkMeta(res.JSON.Function, `true`, shouldBePresent),
-			"$.function.name.meta": checkMeta(res.Function.JSON.Name, "", shouldBeNullish),
-			"$.function.bool.meta": checkMeta(res.Function.JSON.OfBool, `true`, shouldBePresent),
-		}
-	})
-}
-
-/*********/
-/* UTILS */
-/*********/
-
-func testUnmarshalUnion[T any](t *testing.T, raw string, check testChecks[T]) {
-	var res T
-	err := json.Unmarshal([]byte(raw), &res)
-	if err != nil {
-		t.Fatalf("failed to unmarshal %v", err.Error())
-	}
-
-	for label, fail := range check(res) {
-		if fail != nil {
-			t.Errorf("failed check %v: %v", label, fail.Error())
-		}
+func TestUnmarshalUnion(t *testing.T) {
+	for _, test := range []struct {
+		name     string
+		raw      string
+		want     UnionOfStringIntOrObject
+		metadata map[string]string
+	}{
+		{"string", `"123"`, UnionOfStringIntOrObject{OfString: "123"}, map[string]string{"string": `"123"`}},
+		{"int", `123`, UnionOfStringIntOrObject{OfInt: 123}, map[string]string{"int": "123"}},
+		{"zero", `0`, UnionOfStringIntOrObject{}, map[string]string{"int": "0"}},
+		{"object", `{"type":"auto","function":{"name":"test_fn"}}`,
+			UnionOfStringIntOrObject{Type: "auto", Function: SubFields{Name: "test_fn"}},
+			map[string]string{"type": `"auto"`, "function": `{"name":"test_fn"}`, "function.name": `"test_fn"`}},
+		{"inline", `{"type":"auto","function":true}`,
+			UnionOfStringIntOrObject{Type: "auto", Function: SubFields{OfBool: true}},
+			map[string]string{"type": `"auto"`, "function": "true", "function.bool": "true"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			var res UnionOfStringIntOrObject
+			if err := json.Unmarshal([]byte(test.raw), &res); err != nil {
+				t.Fatal(err)
+			}
+			for label, err := range map[string]error{
+				"rawJSON":       checkEqual(res.RawJSON(), test.raw),
+				"string":        checkEqual(res.OfString, test.want.OfString),
+				"int":           checkEqual(res.OfInt, test.want.OfInt),
+				"type":          checkEqual(res.Type, test.want.Type),
+				"function.name": checkEqual(res.Function.Name, test.want.Function.Name),
+				"function.bool": checkEqual(res.Function.OfBool, test.want.Function.OfBool),
+			} {
+				if err != nil {
+					t.Errorf("%s: %v", label, err)
+				}
+			}
+			for label, field := range map[string]rj.Field{
+				"string":        res.JSON.OfString,
+				"int":           res.JSON.OfInt,
+				"type":          res.JSON.Type,
+				"function":      res.JSON.Function,
+				"function.name": res.Function.JSON.Name,
+				"function.bool": res.Function.JSON.OfBool,
+			} {
+				raw, present := test.metadata[label]
+				status := shouldBeNullish
+				if present {
+					status = shouldBePresent
+				}
+				if err := checkMeta(field, raw, status); err != nil {
+					t.Errorf("%s metadata: %v", label, err)
+				}
+			}
+		})
 	}
 }
 
@@ -176,8 +118,6 @@ const (
 	shouldBeInvalid
 )
 
-type testChecks[T any] func(T) map[string]error
-
 func checkMeta(got rj.Field, raw string, stat metaStatus) error {
 	switch stat {
 	case shouldBePresent:
@@ -188,10 +128,7 @@ func checkMeta(got rj.Field, raw string, stat metaStatus) error {
 			return fmt.Errorf("expected field to be present with raw value %v, but got %v", raw, got.Raw())
 		}
 	case shouldBeNullish:
-		if got.Valid() {
-			return fmt.Errorf("expected field to be nullish, but got %v", got.Raw())
-		}
-		if got.Raw() != rj.Omitted && got.Raw() != rj.Null {
+		if got.Valid() || (got.Raw() != rj.Omitted && got.Raw() != rj.Null) {
 			return fmt.Errorf("expected field to be nullish, but got %v", got.Raw())
 		}
 	case shouldBeInvalid:

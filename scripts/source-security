@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+set -euo pipefail
+cd "$(dirname "$0")/.."
+report="$(mktemp "${TMPDIR:-/tmp}/xquik-gosec.XXXXXX")"
+status=0
+go run github.com/securego/gosec/v2/cmd/gosec@v2.29.0 -tests -nosec -enable-audit -track-suppressions -fmt=json ./... > "$report" || status=$?
+cat "$report"
+echo "Raw source scan exit: $status; retained report: $report"
+if [ "$status" -gt 1 ]; then exit "$status"; fi
+go run ./cmd/source-security < "$report"

@@ -12,7 +12,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math"
 	"math/rand"
 	"mime"
 	"net/http"
@@ -133,7 +132,10 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 		}
 		params := q.Encode()
 		if params != "" {
-			parsed, _ := url.Parse(u)
+			parsed, err := url.Parse(u)
+			if err != nil {
+				return nil, err
+			}
 			if parsed.RawQuery != "" {
 				parsed.RawQuery = parsed.RawQuery + "&" + params
 				u = parsed.String()
@@ -296,55 +298,18 @@ func parseRetryAfterHeader(resp *http.Response) (time.Duration, bool) {
 	if resp == nil {
 		return 0, false
 	}
-
-	type retryData struct {
-		header string
-		units  time.Duration
-
-		// custom is used when the regular algorithm failed and is optional.
-		// the returned duration is used verbatim (units is not applied).
-		custom func(string) (time.Duration, bool)
+	if milliseconds, err := strconv.ParseFloat(resp.Header.Get("Retry-After-Ms"), 64); err == nil {
+		return time.Duration(milliseconds * float64(time.Millisecond)), true
 	}
-
-	nop := func(string) (time.Duration, bool) { return 0, false }
-
-	// the headers are listed in order of preference
-	retries := []retryData{
-		{
-			header: "Retry-After-Ms",
-			units:  time.Millisecond,
-			custom: nop,
-		},
-		{
-			header: "Retry-After",
-			units:  time.Second,
-
-			// retry-after values are expressed in either number of
-			// seconds or an HTTP-date indicating when to try again
-			custom: func(ra string) (time.Duration, bool) {
-				t, err := time.Parse(time.RFC1123, ra)
-				if err != nil {
-					return 0, false
-				}
-				return time.Until(t), true
-			},
-		},
+	value := resp.Header.Get("Retry-After")
+	if seconds, err := strconv.ParseFloat(value, 64); err == nil {
+		return time.Duration(seconds * float64(time.Second)), true
 	}
-
-	for _, retry := range retries {
-		v := resp.Header.Get(retry.header)
-		if v == "" {
-			continue
-		}
-		if retryAfter, err := strconv.ParseFloat(v, 64); err == nil {
-			return time.Duration(retryAfter * float64(retry.units)), true
-		}
-		if d, ok := retry.custom(v); ok {
-			return d, true
-		}
+	date, err := time.Parse(time.RFC1123, value)
+	if err != nil {
+		return 0, false
 	}
-
-	return 0, false
+	return time.Until(date), true
 }
 
 // isBeforeContextDeadline reports whether the non-zero Time t is
@@ -352,10 +317,7 @@ func parseRetryAfterHeader(resp *http.Response) (time.Duration, bool) {
 // always reports true (the deadline is considered infinite).
 func isBeforeContextDeadline(t time.Time, ctx context.Context) bool {
 	d, ok := ctx.Deadline()
-	if !ok {
-		return true
-	}
-	return t.Before(d)
+	return !ok || t.Before(d)
 }
 
 // bodyWithTimeout is an io.ReadCloser which can observe a context's cancel func
@@ -366,14 +328,7 @@ type bodyWithTimeout struct {
 }
 
 func (b *bodyWithTimeout) Read(p []byte) (n int, err error) {
-	n, err = b.rc.Read(p)
-	if err == nil {
-		return n, nil
-	}
-	if err == io.EOF {
-		return n, err
-	}
-	return n, err
+	return b.rc.Read(p)
 }
 
 func (b *bodyWithTimeout) Close() error {
@@ -388,15 +343,8 @@ func retryDelay(res *http.Response, retryCount int) time.Duration {
 		return max(0, retryAfterDelay)
 	}
 
-	maxDelay := 8 * time.Second
-	delay := time.Duration(0.5 * float64(time.Second) * math.Pow(2, float64(retryCount)))
-	if delay > maxDelay {
-		delay = maxDelay
-	}
-
-	jitter := rand.Int63n(int64(delay / 4))
-	delay -= time.Duration(jitter)
-	return delay
+	delay := 500 * time.Millisecond << min(max(retryCount, 0), 4)
+	return delay - time.Duration(rand.Int63n(int64(delay/4)))
 }
 
 func (cfg *RequestConfig) Execute() (err error) {
@@ -414,25 +362,14 @@ func (cfg *RequestConfig) Execute() (err error) {
 	}
 
 	if cfg.Body != nil && cfg.Request.Body == nil {
-		switch body := cfg.Body.(type) {
-		case *bytes.Buffer:
-			b := body.Bytes()
-			cfg.Request.ContentLength = int64(body.Len())
-			cfg.Request.GetBody = func() (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(b)), nil }
-			cfg.Request.Body, _ = cfg.Request.GetBody()
-		case *bytes.Reader:
-			cfg.Request.ContentLength = int64(body.Len())
-			cfg.Request.GetBody = func() (io.ReadCloser, error) {
-				_, err := body.Seek(0, 0)
-				return io.NopCloser(body), err
-			}
-			cfg.Request.Body, _ = cfg.Request.GetBody()
-		default:
-			if rc, ok := body.(io.ReadCloser); ok {
-				cfg.Request.Body = rc
-			} else {
-				cfg.Request.Body = io.NopCloser(body)
-			}
+		bodyRequest, err := http.NewRequestWithContext(cfg.Request.Context(), cfg.Request.Method, cfg.Request.URL.String(), cfg.Body)
+		if err != nil {
+			return err
+		}
+		cfg.Request.Body = bodyRequest.Body
+		if bodyRequest.GetBody != nil {
+			cfg.Request.GetBody = bodyRequest.GetBody
+			cfg.Request.ContentLength = bodyRequest.ContentLength
 		}
 	}
 

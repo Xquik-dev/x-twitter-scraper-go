@@ -5,7 +5,6 @@
 package param_test
 
 import (
-	"encoding/json"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"testing"
 )
@@ -22,19 +21,13 @@ func (n Nullables) MarshalJSON() ([]byte, error) {
 }
 
 func TestNullMarshal(t *testing.T) {
-	bytes, err := json.Marshal(Nullables{})
-	if err != nil {
-		t.Fatalf("json error %v", err.Error())
-	}
-	if string(bytes) != `{}` {
-		t.Fatalf("expected empty object, got %s", string(bytes))
-	}
+	assertJSON(t, Nullables{}, `{}`)
 
 	obj := Nullables{
 		Slice: param.NullSlice[[]int](),
 		Map:   param.NullMap[map[string]int](),
 	}
-	bytes, err = json.Marshal(obj)
+	assertJSON(t, obj, `{"slice":null,"map":null}`)
 
 	if !param.IsNull(obj.Slice) {
 		t.Fatal("failed null check")
@@ -43,11 +36,4 @@ func TestNullMarshal(t *testing.T) {
 		t.Fatal("failed null check")
 	}
 
-	if err != nil {
-		t.Fatalf("json error %v", err.Error())
-	}
-	exp := `{"slice":null,"map":null}`
-	if string(bytes) != exp {
-		t.Fatalf("expected %s, got %s", exp, string(bytes))
-	}
 }

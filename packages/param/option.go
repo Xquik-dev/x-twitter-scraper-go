@@ -70,18 +70,13 @@ func (o Opt[T]) MarshalJSON() ([]byte, error) {
 }
 
 func (o *Opt[T]) UnmarshalJSON(data []byte) error {
-	if string(data) == "null" {
-		o.status = null
-		return nil
-	}
-
 	var value *T
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
 
 	if value == nil {
-		o.status = omitted
+		o.status = null
 		return nil
 	}
 

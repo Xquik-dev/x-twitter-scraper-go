@@ -78,32 +78,28 @@ func TestCompactAndIndent(t *testing.T) {
 	var buf bytes.Buffer
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
-			buf.Reset()
-			if err := Compact(&buf, []byte(tt.compact)); err != nil {
-				t.Errorf("%s: Compact error: %v", tt.Where, err)
-			} else if got := buf.String(); got != tt.compact {
-				t.Errorf("%s: Compact:\n\tgot:  %s\n\twant: %s", tt.Where, indentNewlines(got), indentNewlines(tt.compact))
+			for _, operation := range []struct {
+				name   string
+				format func(*bytes.Buffer, []byte) error
+				want   string
+			}{
+				{"Compact", Compact, tt.compact},
+				{"Indent", func(dst *bytes.Buffer, src []byte) error { return Indent(dst, src, "", "\t") }, tt.indent},
+			} {
+				for _, input := range []string{tt.compact, tt.indent} {
+					for _, initial := range []string{"", "existing:"} {
+						buf.Reset()
+						buf.WriteString(initial)
+						if err := operation.format(&buf, []byte(input)); err != nil {
+							t.Errorf("%s: %s error: %v", tt.Where, operation.name, err)
+						} else if got := buf.String(); got != initial+operation.want {
+							t.Errorf("%s: %s(%q): got %q, want %q", tt.Where, operation.name, input, got, initial+operation.want)
+						}
+					}
+				}
 			}
-
-			buf.Reset()
-			if err := Compact(&buf, []byte(tt.indent)); err != nil {
-				t.Errorf("%s: Compact error: %v", tt.Where, err)
-			} else if got := buf.String(); got != tt.compact {
-				t.Errorf("%s: Compact:\n\tgot:  %s\n\twant: %s", tt.Where, indentNewlines(got), indentNewlines(tt.compact))
-			}
-
-			buf.Reset()
-			if err := Indent(&buf, []byte(tt.indent), "", "\t"); err != nil {
-				t.Errorf("%s: Indent error: %v", tt.Where, err)
-			} else if got := buf.String(); got != tt.indent {
-				t.Errorf("%s: Compact:\n\tgot:  %s\n\twant: %s", tt.Where, indentNewlines(got), indentNewlines(tt.indent))
-			}
-
-			buf.Reset()
-			if err := Indent(&buf, []byte(tt.compact), "", "\t"); err != nil {
-				t.Errorf("%s: Indent error: %v", tt.Where, err)
-			} else if got := buf.String(); got != tt.indent {
-				t.Errorf("%s: Compact:\n\tgot:  %s\n\twant: %s", tt.Where, indentNewlines(got), indentNewlines(tt.indent))
+			if got, err := appendIndent([]byte("existing:"), []byte(tt.compact), "", "\t"); err != nil || string(got) != "existing:"+tt.indent {
+				t.Errorf("appendIndent(%q) = %q, %v", tt.compact, got, err)
 			}
 		})
 	}
@@ -197,11 +193,13 @@ func TestIndentErrors(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
-			slice := make([]uint8, 0)
-			buf := bytes.NewBuffer(slice)
-			if err := Indent(buf, []uint8(tt.in), "", ""); err != nil {
-				if !reflect.DeepEqual(err, tt.err) {
-					t.Fatalf("%s: Indent error:\n\tgot:  %v\n\twant: %v", tt.Where, err, tt.err)
+			for _, initial := range []string{"", "existing:"} {
+				buf := bytes.NewBufferString(initial)
+				if err := Indent(buf, []byte(tt.in), "", ""); !reflect.DeepEqual(err, tt.err) {
+					t.Fatalf("%s: Indent error: got %#v, want %#v", tt.Where, err, tt.err)
+				}
+				if got, err := appendIndent([]byte(initial), []byte(tt.in), "", ""); !reflect.DeepEqual(err, tt.err) || string(got) != initial || buf.String() != initial {
+					t.Fatalf("Indent failure changed output or error: %q, %q, %#v", got, buf.String(), err)
 				}
 			}
 		})

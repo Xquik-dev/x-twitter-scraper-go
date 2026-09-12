@@ -58,39 +58,37 @@ func (s StructWithAdditionalProperties) MarshalJSON() ([]byte, error) {
 	return param.MarshalWithExtras(s, (*shadow)(&s), s.ExtraFields)
 }
 
+func assertJSON(t *testing.T, value any, expected string) {
+	t.Helper()
+	data, err := json.Marshal(value)
+	if err != nil {
+		t.Fatalf("marshal %T: %v; expected %s", value, err, expected)
+	}
+	if string(data) != expected {
+		t.Fatalf("marshal %T: expected %s, received %s", value, expected, data)
+	}
+}
+
 func TestIsNullish(t *testing.T) {
-	nullTests := map[string]param.ParamNullable{
-		"null_string": param.Null[string](),
-		"null_int64":  param.Null[int64](),
-		"null_time":   param.Null[time.Time](),
-		"null_struct": param.NullStruct[Struct](),
-	}
-
-	for name, test := range nullTests {
+	for name, test := range map[string]struct {
+		value param.ParamNullable
+		null  bool
+	}{
+		"null_string": {param.Null[string](), true},
+		"null_int64":  {param.Null[int64](), true},
+		"null_time":   {param.Null[time.Time](), true},
+		"null_struct": {param.NullStruct[Struct](), true},
+		"omit_string": {param.Opt[string]{}, false},
+		"omit_int64":  {param.Opt[int64]{}, false},
+		"omit_time":   {param.Opt[time.Time]{}, false},
+		"omit_struct": {Struct{}, false},
+	} {
 		t.Run(name, func(t *testing.T) {
-			if !param.IsNull(test) {
-				t.Fatalf("expected %s to be null", name)
+			if got := param.IsNull(test.value); got != test.null {
+				t.Fatalf("%s: IsNull = %t, want %t", name, got, test.null)
 			}
-			if param.IsOmitted(test) {
-				t.Fatalf("expected %s to not be omitted", name)
-			}
-		})
-	}
-
-	omitTests := map[string]param.ParamNullable{
-		"omit_string": param.Opt[string]{},
-		"omit_int64":  param.Opt[int64]{},
-		"omit_time":   param.Opt[time.Time]{},
-		"omit_struct": Struct{},
-	}
-
-	for name, test := range omitTests {
-		t.Run(name, func(t *testing.T) {
-			if param.IsNull(test) {
-				t.Fatalf("expected %s to be null", name)
-			}
-			if !param.IsOmitted(test) {
-				t.Fatalf("expected %s to not be omitted", name)
+			if got := param.IsOmitted(test.value); got == test.null {
+				t.Fatalf("%s: IsOmitted = %t, want %t", name, got, !test.null)
 			}
 		})
 	}
@@ -152,13 +150,7 @@ func TestFieldMarshal(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			b, err := json.Marshal(test.value)
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-			if string(b) != test.expected {
-				t.Fatalf("expected %s, received %s", test.expected, string(b))
-			}
+			assertJSON(t, test.value, test.expected)
 		})
 	}
 }
@@ -173,14 +165,7 @@ func TestAdditionalProperties(t *testing.T) {
 	}
 	exp := `{"first":"hello","second":14,"hi":"there"}`
 
-	bytes, err := json.Marshal(s)
-	if err != nil {
-		t.Fatalf("failed to marshal: %v", err)
-	}
-
-	if string(bytes) != exp {
-		t.Fatalf("expected %s, got %s", exp, string(bytes))
-	}
+	assertJSON(t, s, exp)
 }
 
 func TestExtraFields(t *testing.T) {
@@ -192,13 +177,7 @@ func TestExtraFields(t *testing.T) {
 		"extra": Struct{A: "recursive"},
 		"b":     nil,
 	})
-	bytes, err := json.Marshal(v)
-	if err != nil {
-		t.Fatalf("failed to marshal: %v", err)
-	}
-	if string(bytes) != `{"a":"hello","b":null,"extra":{"a":"recursive","b":0}}` {
-		t.Fatalf("failed to marshal: got %v", string(bytes))
-	}
+	assertJSON(t, v, `{"a":"hello","b":null,"extra":{"a":"recursive","b":0}}`)
 	if v.B != 123 {
 		t.Fatalf("marshal modified field B: got %v", v.B)
 	}
@@ -213,13 +192,7 @@ func TestExtraFieldsForceOmitted(t *testing.T) {
 	v.SetExtraFields(map[string]any{
 		"b": param.Omit,
 	})
-	bytes, err := json.Marshal(v)
-	if err != nil {
-		t.Fatalf("failed to marshal: %v", err)
-	}
-	if string(bytes) != `{"a":""}` {
-		t.Fatalf("failed to marshal: got %v", string(bytes))
-	}
+	assertJSON(t, v, `{"a":""}`)
 }
 
 type UnionWithDates struct {
@@ -253,13 +226,7 @@ func TestUnionDateMarshal(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			b, err := json.Marshal(test.value)
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-			if string(b) != test.expected {
-				t.Fatalf("expected %s, received %s", test.expected, string(b))
-			}
+			assertJSON(t, test.value, test.expected)
 		})
 	}
 }
@@ -295,13 +262,7 @@ func TestOverride(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			b, err := json.Marshal(test.value)
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-			if string(b) != test.expected {
-				t.Fatalf("expected %s, received %s", test.expected, string(b))
-			}
+			assertJSON(t, test.value, test.expected)
 			if _, ok := test.value.Overrides(); !ok {
 				t.Fatalf("expected to be overridden")
 			}
@@ -360,13 +321,7 @@ func TestOverriddenUnion(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			b, err := json.Marshal(test.value)
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-			if string(b) != test.expected {
-				t.Fatalf("expected %s, received %s", test.expected, string(b))
-			}
+			assertJSON(t, test.value, test.expected)
 		})
 	}
 }
@@ -374,13 +329,7 @@ func TestOverriddenUnion(t *testing.T) {
 func TestNullStructUnion(t *testing.T) {
 	nullUnion := param.NullStruct[PrimitiveUnion]()
 
-	b, err := json.Marshal(nullUnion)
-	if err != nil {
-		t.Fatalf("didn't expect error %v", err)
-	}
-	if string(b) != "null" {
-		t.Fatalf("expected null, received %s", string(b))
-	}
+	assertJSON(t, nullUnion, "null")
 }
 
 //
@@ -516,42 +465,27 @@ func TestAppendCompact(t *testing.T) {
 	}
 
 	for name, test := range tests {
-		t.Run(name+"/marshal-json", func(t *testing.T) {
-			b, err := test.value.MarshalJSON()
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-			if string(b) != test.expected {
-				t.Fatalf("expected %s (%s), received %s", test.expected, reflect.TypeOf(test.value), string(b))
-			}
-		})
-
-		t.Run(name+"/json-marshal", func(t *testing.T) {
-			b, err := json.Marshal(test.value)
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-
-			// expected output of JSON Marshal should always be compacted
-			var compactedExpected bytes.Buffer
-			err = json.Compact(&compactedExpected, []byte(test.expected))
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-
-			if string(b) != compactedExpected.String() {
-				t.Fatalf("expected %s (%s), received %s", test.expected, reflect.TypeOf(test.value), string(b))
-			}
-		})
-
-		t.Run(name+"/shimjson-marshal", func(t *testing.T) {
-			b, err := shimjson.Marshal(test.value)
-			if err != nil {
-				t.Fatalf("didn't expect error %v, expected %s", err, test.expected)
-			}
-			if string(b) != test.expected {
-				t.Logf("expected %s (%s), received %s", test.expected, reflect.TypeOf(test.value), string(b))
-			}
-		})
+		var compacted bytes.Buffer
+		if err := json.Compact(&compacted, []byte(test.expected)); err != nil {
+			t.Fatalf("invalid expected JSON for %s: %v", name, err)
+		}
+		for method, check := range map[string]struct {
+			marshal  func() ([]byte, error)
+			expected string
+		}{
+			"marshal-json":     {test.value.MarshalJSON, test.expected},
+			"json-marshal":     {func() ([]byte, error) { return json.Marshal(test.value) }, compacted.String()},
+			"shimjson-marshal": {func() ([]byte, error) { return shimjson.Marshal(test.value) }, compacted.String()},
+		} {
+			t.Run(name+"/"+method, func(t *testing.T) {
+				b, err := check.marshal()
+				if err != nil {
+					t.Fatalf("didn't expect error %v, expected %s", err, check.expected)
+				}
+				if string(b) != check.expected {
+					t.Fatalf("expected %s (%s), received %s", check.expected, reflect.TypeOf(test.value), b)
+				}
+			})
+		}
 	}
 }

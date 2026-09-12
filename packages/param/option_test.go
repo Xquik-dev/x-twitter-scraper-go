@@ -49,12 +49,17 @@ func TestOptJSONAndTimeLayout(t *testing.T) {
 		!decoded.Valid() || decoded.Value != "timeline" {
 		t.Fatalf("decoded = %+v, %v", decoded, err)
 	}
-	if err := json.Unmarshal([]byte(`null`), &decoded); err != nil || decoded.Valid() {
-		t.Fatalf("decoded null = %+v, %v", decoded, err)
+	for _, raw := range []string{`null`, ` null `, "\t\nnull\r\n"} {
+		decoded = NewOpt("timeline")
+		if err := decoded.UnmarshalJSON([]byte(raw)); err != nil || decoded.Valid() || !decoded.null() {
+			t.Fatalf("decoded %q = %+v, %v", raw, decoded, err)
+		}
+		decoded = NewOpt("timeline")
+		if err := json.Unmarshal([]byte(raw), &decoded); err != nil || decoded.Valid() || !decoded.null() {
+			t.Fatalf("standard decoding %q = %+v, %v", raw, decoded, err)
+		}
 	}
-	if err := json.Unmarshal([]byte(` null `), &decoded); err != nil || decoded.Valid() {
-		t.Fatalf("decoded spaced null = %+v, %v", decoded, err)
-	}
+
 	if err := json.Unmarshal([]byte(`{`), &decoded); err == nil {
 		t.Fatal("invalid JSON was accepted")
 	}

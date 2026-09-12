@@ -156,26 +156,20 @@ func (e *encoder) newPrimitiveTypeEncoder(t reflect.Type) encoderFunc {
 		}
 	case reflect.Bool:
 		return func(key string, v reflect.Value, writer *multipart.Writer) error {
-			if v.Bool() {
-				return writer.WriteField(key, "true")
-			}
-			return writer.WriteField(key, "false")
+			return writer.WriteField(key, strconv.FormatBool(v.Bool()))
 		}
-	case reflect.Int, reflect.Int16, reflect.Int32, reflect.Int64:
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return func(key string, v reflect.Value, writer *multipart.Writer) error {
 			return writer.WriteField(key, strconv.FormatInt(v.Int(), 10))
 		}
-	case reflect.Uint, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		return func(key string, v reflect.Value, writer *multipart.Writer) error {
 			return writer.WriteField(key, strconv.FormatUint(v.Uint(), 10))
 		}
-	case reflect.Float32:
+	case reflect.Float32, reflect.Float64:
+		bitSize := t.Bits()
 		return func(key string, v reflect.Value, writer *multipart.Writer) error {
-			return writer.WriteField(key, strconv.FormatFloat(v.Float(), 'f', -1, 32))
-		}
-	case reflect.Float64:
-		return func(key string, v reflect.Value, writer *multipart.Writer) error {
-			return writer.WriteField(key, strconv.FormatFloat(v.Float(), 'f', -1, 64))
+			return writer.WriteField(key, strconv.FormatFloat(v.Float(), 'f', -1, bitSize))
 		}
 	default:
 		return func(key string, v reflect.Value, writer *multipart.Writer) error {

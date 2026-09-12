@@ -6,28 +6,23 @@ package httpdebug
 
 import "net/http"
 
-var sensitiveHeaders = []string{
-	"authorization",
-	"api-key",
-	"x-api-key",
-	"cookie",
-	"set-cookie",
-}
-
 // RedactHeaders replaces sensitive values without changing the input.
 func RedactHeaders(headers http.Header) http.Header {
 	var redacted http.Header
-	for _, name := range sensitiveHeaders {
-		values := headers.Values(name)
+	for name, values := range headers {
+		switch http.CanonicalHeaderKey(name) {
+		case "Authorization", "Proxy-Authorization", "Api-Key", "X-Api-Key", "Cookie", "Set-Cookie":
+		default:
+			continue
+		}
 		if len(values) == 0 {
 			continue
 		}
 		if redacted == nil {
 			redacted = headers.Clone()
 		}
-		redacted.Del(name)
-		for range values {
-			redacted.Add(name, "***")
+		for index := range values {
+			redacted[name][index] = "***"
 		}
 	}
 	if redacted == nil {

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+set -euo pipefail
+cd "$(dirname "$0")/.."
+XQUIK_COVERAGE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/xquik-go-checks.XXXXXX")"
+export XQUIK_COVERAGE_DIR
+echo "Check reports: $XQUIK_COVERAGE_DIR"
+echo "P99 gap: representative SDK latency distributions and measurement coverage remain unverified."
+go mod verify
+status=0
+bun run --parallel --no-exit-on-error check:lint check:tests report:coverage report:branches check:race check:fuzz check:security check:source-security check:codeql check:licenses check:signing-security || status=$?
+go run ./cmd/coverage-gain "$XQUIK_COVERAGE_DIR" || status=$?
+exit "$status"

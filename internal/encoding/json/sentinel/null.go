@@ -5,7 +5,6 @@
 package sentinel
 
 import (
-	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/shims"
 	"reflect"
 	"sync"
 )
@@ -19,7 +18,7 @@ type cacheEntry struct {
 var nullCache sync.Map // map[reflect.Type]cacheEntry
 
 func NewNullSentinel[T any](mk func() T) T {
-	t := shims.TypeFor[T]()
+	t := reflect.TypeFor[T]()
 	entry, loaded := nullCache.Load(t) // avoid premature allocation
 	if !loaded {
 		x := mk()
@@ -40,7 +39,7 @@ func IsValueNull(v reflect.Value) bool {
 }
 
 func IsNull[T any](v T) bool {
-	t := shims.TypeFor[T]()
+	t := reflect.TypeFor[T]()
 	switch t.Kind() {
 	case reflect.Map, reflect.Slice:
 		null, ok := nullCache.Load(t)

@@ -6,17 +6,28 @@ package apijson_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"reflect"
 	"testing"
 )
 
+func assertDecoded[T any](t *testing.T, raw string, target T, shouldFail bool) {
+	t.Helper()
+	var dst T
+	err := json.Unmarshal([]byte(raw), &dst)
+	if (err != nil) != shouldFail {
+		t.Fatalf("unmarshal %s into %T: error %v, expected failure %t", raw, dst, err, shouldFail)
+	}
+	if !reflect.DeepEqual(dst, target) {
+		t.Fatalf("unmarshal %s: got %#v but expected %#v", raw, dst, target)
+	}
+}
+
 func TestOptionalDecoders(t *testing.T) {
 	cases := map[string]struct {
 		buf string
-		val any
+		val param.Opt[string]
 	}{
 
 		"opt_string_present": {
@@ -39,14 +50,7 @@ func TestOptionalDecoders(t *testing.T) {
 
 	for name, test := range cases {
 		t.Run(name, func(t *testing.T) {
-			result := reflect.New(reflect.TypeOf(test.val))
-			if err := json.Unmarshal([]byte(test.buf), result.Interface()); err != nil {
-				t.Fatalf("deserialization of %v failed with error %v", result, err)
-			}
-
-			if !reflect.DeepEqual(result.Elem().Interface(), test.val) {
-				t.Fatalf("expected '%s' to deserialize to \n%#v\nbut got\n%#v", test.buf, test.val, result.Elem().Interface())
-			}
+			assertDecoded(t, test.buf, test.val, false)
 		})
 	}
 }
@@ -71,7 +75,6 @@ func (o *BasicObject) UnmarshalJSON(data []byte) error { return apijson.Unmarsha
 
 func TestBasicObjectWithNull(t *testing.T) {
 	raw := `{"opt_int":null,"opt_string":null,"opt_bool":null}`
-	var dst BasicObject
 	target := BasicObject{
 		OptInt: param.Null[int64](),
 		// OptFloat:  param.Opt[float64]{},
@@ -79,20 +82,11 @@ func TestBasicObjectWithNull(t *testing.T) {
 		OptBool:   param.Null[bool](),
 	}
 
-	err := json.Unmarshal([]byte(raw), &dst)
-	if err != nil {
-		t.Fatalf("failed unmarshal")
-	}
-
-	if !reflect.DeepEqual(dst, target) {
-		t.Fatalf("failed equality check %#v", dst)
-	}
+	assertDecoded(t, raw, target, false)
 }
 
-func TestBasicObject(t *testing.T) {
-	raw := `{"req_int":1,"req_float":1.3,"req_string":"test","req_bool":true,"opt_int":2,"opt_float":2.0,"opt_string":"test","opt_bool":false}`
-	var dst BasicObject
-	target := BasicObject{
+func expectedBasicObject() BasicObject {
+	return BasicObject{
 		ReqInt:    1,
 		ReqFloat:  1.3,
 		ReqString: "test",
@@ -102,15 +96,13 @@ func TestBasicObject(t *testing.T) {
 		OptString: param.NewOpt("test"),
 		OptBool:   param.NewOpt(false),
 	}
+}
 
-	err := json.Unmarshal([]byte(raw), &dst)
-	if err != nil {
-		t.Fatalf("failed unmarshal")
-	}
+func TestBasicObject(t *testing.T) {
+	raw := `{"req_int":1,"req_float":1.3,"req_string":"test","req_bool":true,"opt_int":2,"opt_float":2.0,"opt_string":"test","opt_bool":false}`
+	target := expectedBasicObject()
 
-	if !reflect.DeepEqual(dst, target) {
-		t.Fatalf("failed equality check %#v", dst)
-	}
+	assertDecoded(t, raw, target, false)
 }
 
 type ComplexObject struct {
@@ -127,30 +119,13 @@ func init() {
 
 func TestComplexObject(t *testing.T) {
 	raw := `{"basic":{"req_int":1,"req_float":1.3,"req_string":"test","req_bool":true,"opt_int":2,"opt_float":2.0,"opt_string":"test","opt_bool":false},"enum":"a"}`
-	var dst ComplexObject
 
 	target := ComplexObject{
-		Basic: BasicObject{
-			ReqInt:    1,
-			ReqFloat:  1.3,
-			ReqString: "test",
-			ReqBool:   true,
-			OptInt:    param.NewOpt[int64](2),
-			OptFloat:  param.NewOpt(2.0),
-			OptString: param.NewOpt("test"),
-			OptBool:   param.NewOpt(false),
-		},
-		Enum: "a",
+		Basic: expectedBasicObject(),
+		Enum:  "a",
 	}
 
-	err := json.Unmarshal([]byte(raw), &dst)
-	if err != nil {
-		t.Fatalf("failed unmarshal")
-	}
-
-	if !reflect.DeepEqual(dst, target) {
-		t.Fatalf("failed equality check %#v", dst)
-	}
+	assertDecoded(t, raw, target, false)
 }
 
 type paramUnion = param.APIUnion
@@ -299,13 +274,13 @@ func TestUnionStruct(t *testing.T) {
 		var dst UnionStruct
 		t.Run(name, func(t *testing.T) {
 			err := json.Unmarshal([]byte(test.raw), &dst)
-			if err != nil && !test.shouldFail {
+			if (err != nil) != test.shouldFail {
 				t.Fatalf("failed unmarshal with err: %v %#v", err, dst)
 			}
 
 			if !reflect.DeepEqual(dst, test.target) {
 				if dst.OfMemberA != nil {
-					fmt.Printf("%#v", dst.OfMemberA)
+					t.Logf("member A: %#v", dst.OfMemberA)
 				}
 				t.Fatalf("failed equality, got %#v but expected %#v", dst, test.target)
 			}
@@ -428,17 +403,7 @@ func TestDiscriminatedUnion(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			var dst DiscriminatedUnion
-			err := json.Unmarshal([]byte(test.raw), &dst)
-			if err != nil && !test.shouldFail {
-				t.Fatalf("failed unmarshal with err: %v", err)
-			}
-			if err == nil && test.shouldFail {
-				t.Fatalf("expected unmarshal to fail but it succeeded")
-			}
-			if !reflect.DeepEqual(dst, test.target) {
-				t.Fatalf("failed equality, got %#v but expected %#v", dst, test.target)
-			}
+			assertDecoded(t, test.raw, test.target, test.shouldFail)
 		})
 	}
 }
@@ -486,17 +451,7 @@ func TestMultiDiscriminatorUnion(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			var dst MultiDiscriminatorUnion
-			err := json.Unmarshal([]byte(test.raw), &dst)
-			if err != nil && !test.shouldFail {
-				t.Fatalf("failed unmarshal with err: %v", err)
-			}
-			if err == nil && test.shouldFail {
-				t.Fatalf("expected unmarshal to fail but it succeeded")
-			}
-			if !reflect.DeepEqual(dst, test.target) {
-				t.Fatalf("failed equality, got %#v but expected %#v", dst, test.target)
-			}
+			assertDecoded(t, test.raw, test.target, test.shouldFail)
 		})
 	}
 }

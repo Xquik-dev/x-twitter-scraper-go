@@ -4,7 +4,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-set -exuo pipefail
+set +x
+set -euo pipefail
 
 DIST_DIR="dist"
 FILENAME="source.zip"
@@ -31,25 +32,15 @@ done
 
 zip "${DIST_DIR}/${FILENAME}" "${relative_files[@]}"
 
-RESPONSE=$(curl -X POST "$URL?filename=$FILENAME" \
+RESPONSE=$(curl --fail-with-body --silent --show-error -X POST "$URL?filename=$FILENAME" \
   -H "Authorization: Bearer $AUTH" \
   -H "Content-Type: application/json")
 
-SIGNED_URL=$(echo "$RESPONSE" | jq -r '.url')
+SIGNED_URL=$(printf '%s' "$RESPONSE" | jq -er '.url | select(type == "string" and length > 0)')
 
-if [[ "$SIGNED_URL" == "null" ]]; then
-  echo -e "\033[31mFailed to get signed URL.\033[0m"
-  exit 1
-fi
-
-UPLOAD_RESPONSE=$(curl -v -X PUT \
+curl --fail-with-body --silent --show-error -X PUT \
   -H "Content-Type: application/zip" \
-  --data-binary "@${DIST_DIR}/${FILENAME}" "$SIGNED_URL" 2>&1)
+  --data-binary "@${DIST_DIR}/${FILENAME}" "$SIGNED_URL" >/dev/null
 
-if echo "$UPLOAD_RESPONSE" | grep -q "HTTP/[0-9.]* 200"; then
-  echo -e "\033[32mUploaded build to Stainless storage.\033[0m"
-  echo -e "\033[32mInstallation: Download and unzip: 'https://pkg.stainless.com/s/x-twitter-scraper-go/$SHA'. Run 'go mod edit -replace github.com/Xquik-dev/x-twitter-scraper-go=/path/to/unzipped_directory'.\033[0m"
-else
-  echo -e "\033[31mFailed to upload artifact.\033[0m"
-  exit 1
-fi
+echo -e "\033[32mUploaded build to Stainless storage.\033[0m"
+echo -e "\033[32mInstallation: Download and unzip: 'https://pkg.stainless.com/s/x-twitter-scraper-go/$SHA'. Run 'go mod edit -replace github.com/Xquik-dev/x-twitter-scraper-go=/path/to/unzipped_directory'.\033[0m"
