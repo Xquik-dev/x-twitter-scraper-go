@@ -60,7 +60,7 @@ Full Changelog: [v0.17.0...v0.18.0](https://github.com/Xquik-dev/x-twitter-scrap
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * complete v0.12.0 release notes ([#31](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/31)) ([7d335f2](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/7d335f2552a800b804fe5095d28ff4555c07e95a))
@@ -105,7 +105,7 @@ Full Changelog: [v0.16.1...v0.17.0](https://github.com/Xquik-dev/x-twitter-scrap
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * complete v0.12.0 release notes ([#31](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/31)) ([7d335f2](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/7d335f2552a800b804fe5095d28ff4555c07e95a))
@@ -201,7 +201,7 @@ Full Changelog: [v0.12.0...v0.13.0](https://github.com/Xquik-dev/x-twitter-scrap
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
@@ -239,7 +239,7 @@ Full Changelog: [v0.11.0...v0.12.0](https://github.com/Xquik-dev/x-twitter-scrap
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
@@ -276,7 +276,7 @@ Full Changelog: [v0.10.0...v0.11.0](https://github.com/Xquik-dev/x-twitter-scrap
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
@@ -315,7 +315,7 @@ Full Changelog: [v0.9.0...v0.10.0](https://github.com/Xquik-dev/x-twitter-scrape
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
@@ -352,7 +352,7 @@ Full Changelog: [v0.8.0...v0.9.0](https://github.com/Xquik-dev/x-twitter-scraper
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
@@ -388,7 +388,7 @@ Full Changelog: [v0.7.1...v0.8.0](https://github.com/Xquik-dev/x-twitter-scraper
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 * add DeepWiki badge ([884f895](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/884f895bd2883295b94a71f0162dab7d13e43df2))
 * clarify repository discovery ([26c6fa3](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/26c6fa3b735576ffb942812f0d7b0ddb590058a9))
 * map common X data tasks ([#12](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/12)) ([39cfa7e](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/39cfa7efd4ee63bf301de922d90367682130fab7))
@@ -499,7 +499,7 @@ Full Changelog: [v0.4.0...v0.4.1](https://github.com/Xquik-dev/x-twitter-scraper
 
 ### Documentation
 
-* add Contributor Covenant 2.1 Code of Conduct ([#2192](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/2192)) ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
+* add Contributor Covenant 2.1 Code of Conduct ([80c6f70](https://github.com/Xquik-dev/x-twitter-scraper-go/commit/80c6f70b5cf1ace74f29e9e867671d9856bed365))
 
 ## 0.4.0 (2026-04-22)
 
