@@ -157,6 +157,9 @@ func (u8 *u8marshal) UnmarshalText(b []byte) error {
 	if err != nil {
 		return err
 	}
+	if n < 0 || n > math.MaxUint8 {
+		return &strconv.NumError{Func: "Atoi", Num: string(b[1:]), Err: strconv.ErrRange}
+	}
 	*u8 = u8marshal(n)
 	return nil
 }

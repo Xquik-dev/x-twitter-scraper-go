@@ -1,44 +1,8 @@
 #!/usr/bin/env bash
 
 # SPDX-FileCopyrightText: 2026 Xquik contributors
-#
 # SPDX-License-Identifier: Apache-2.0
 
 set -euo pipefail
-
 cd "$(dirname "$0")/.."
-
-readonly gocove_version="v0.0.0-20260427173940-a0dceb9dadca"
-readonly temp_root="${TMPDIR:-/tmp}"
-branch_workspace="$(mktemp -d "${temp_root%/}/xquik-gocove.XXXXXX")"
-readonly branch_meta="$branch_workspace/meta"
-readonly branch_cache="$branch_workspace/go-cache"
-mkdir -p "$branch_meta" "$branch_cache"
-
-cleanup() {
-  case "$branch_workspace" in
-    "${temp_root%/}"/xquik-gocove.*)
-      rm -rf -- "$branch_cache"
-      ;;
-    *)
-      echo "Refusing to remove unexpected path: $branch_workspace" >&2
-      ;;
-  esac
-}
-trap cleanup EXIT
-
-export GOCOVE_META_DIR="$branch_meta"
-export GOCACHE="$branch_cache"
-
-echo "==> Collecting branch coverage"
-# Rebuild every package. gocove does not emit catalogs for Go cache hits.
-go run "github.com/srvgit/gocove/cmd/gocove@${gocove_version}" test -a ./...
-go run "github.com/srvgit/gocove/cmd/gocove@${gocove_version}" \
-  report \
-  --meta-dir="$branch_meta" \
-  --format=json > "$branch_meta/report.json"
-
-if [ -n "${XQUIK_COVERAGE_DIR:-}" ]; then
-  cp "$branch_meta/report.json" "$XQUIK_COVERAGE_DIR/branches.json"
-  cp "$branch_meta/_gocove/cover.profile" "$XQUIK_COVERAGE_DIR/branches.cover"
-fi
+go run ./cmd/coverage-gain --collect-branches

@@ -46,19 +46,28 @@ bun run build
 SDK commits are exempt from LOC reductions and per-commit coverage gains.
 
 Preserve coverage and report all four metrics against the verified parent.
+Each metric preserves its parent ratio or adds no uncovered items.
+
+Run `bun run report:baseline` on the clean parent before checking a candidate.
+It collects native reports and binds all 4 metrics to the commit and toolchain.
+Reports stay in Git's common directory under `coverage-baselines/go-packages-v3/COMMIT`.
+The recorder embeds the current collectors to measure the actual parent source.
+Unit profiles retain unexecuted source; native child counters add real CLI execution.
+Branch reports include cross-package execution and retain the original catalogs and counters.
+Existing evidence and source changes during collection stop publication.
 
 SDK checks have no time limit; builds run separately.
 
 Full checks run the complete 2-minute fuzz campaign directly.
 SDK elapsed time remains visible and never blocks delivery by itself.
 
-Install official CodeQL CLI 2.27.0 and verify its published archive checksum.
+Install official CodeQL CLI 2.27.1 and verify its published archive checksum.
 Set `XQUIK_CODEQL_BIN` to the executable or use its default location:
-`~/.cache/xquik-codeql/2.27.0/codeql/codeql`.
+`~/.cache/xquik-codeql/2.27.1/codeql/codeql`.
 Download the pinned query pack before validation:
 
 ```sh
-"$XQUIK_CODEQL_BIN" pack download codeql/go-queries@1.6.10
+"${XQUIK_CODEQL_BIN:-$HOME/.cache/xquik-codeql/2.27.1/codeql/codeql}" pack download codeql/go-queries@1.6.11
 ```
 
 Each full check extracts a fresh database and runs security-extended queries.
@@ -77,9 +86,9 @@ JSON output identifies success or failure. Raw module evidence remains available
 Prepare releases with `bun run release:prepare` from a clean, committed checkout.
 It runs complete validation and creates a reproducible source archive.
 After merging, create the matching `vVERSION` tag on that commit.
-Try the release workflow when Actions is available; otherwise run `bun run release:publish`.
+Run `bun run release:publish` from an authorized local release runner.
 The local publisher uses locked Sigstore 4.5.0 tooling and GitHub CLI authentication.
-Use uv 0.12.13; the command selects Python 3.14.7 automatically.
+Use uv 0.12.21; the command selects Python 3.14.8 automatically.
 Set `XQUIK_RELEASE_IDENTITY` and `XQUIK_RELEASE_ISSUER` to the authorized signer.
 Signing uses Sigstore authentication and records local build provenance publicly.
 Local attestations identify the signer, not a GitHub Actions workflow.

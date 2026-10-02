@@ -6,12 +6,13 @@
     "check:tests": "./scripts/test",
     "check:race": "go test -race ./...",
     "check:fuzz": "go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime=2m",
-    "check:security": "go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...",
+    "check:security": "go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...",
     "check:source-security": "./scripts/source-security",
     "check:licenses": "bash scripts/licenses.sh lint",
     "build": "go build ./... && ./scripts/reproducible-build",
     "report:coverage": "./scripts/collect-coverage",
     "report:branches": "./scripts/collect-branches",
+    "report:baseline": "go run ./cmd/coverage-gain --record",
     "install:licenses": "bash scripts/licenses.sh install",
     "check:codeql": "./scripts/codeql-security",
     "release:verify": "bash scripts/verify-release",
@@ -28,6 +29,6 @@
       "patchURL": "https://raw.githubusercontent.com/Xquik-dev/xquik-docs/64d29260f8dc053a4bd78c8a91982a0a8085aba4/patches/comply-licensing.patch",
       "patchSha256": "6e71602a7b292e06be7b97ba75ad54935ba5c24c5ce543928032d0a3cfccb1c7"
     },
-    "rustVersion": "1.98.1"
+    "rustVersion": "1.99.0"
   }
 }

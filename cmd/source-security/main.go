@@ -33,6 +33,7 @@ func verify(input io.Reader, sources fs.FS, root string) error {
 			Rule                          string `json:"rule_id"`
 			File, Line, Code              string
 			Nosec                         bool
+			Suppressions                  []json.RawMessage
 			Severity, Confidence, Details string
 		}
 	}
@@ -40,7 +41,7 @@ func verify(input io.Reader, sources fs.FS, root string) error {
 	if err := decoder.Decode(&report); err != nil {
 		return err
 	}
-	var extra any
+	var extra json.RawMessage
 	if err := decoder.Decode(&extra); err != io.EOF {
 		return fmt.Errorf("invalid trailing scanner output: %v", err)
 	}
@@ -58,7 +59,7 @@ func verify(input io.Reader, sources fs.FS, root string) error {
 		}
 		item := [8]string{issue.Rule, filepath.ToSlash(name), issue.Line, issue.Code, fmt.Sprintf("%x", sha256.Sum256(data)), issue.Severity, issue.Confidence, issue.Details}
 		fingerprint := fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%q", item))))
-		if issue.Nosec || !approved[fingerprint] {
+		if issue.Nosec || len(issue.Suppressions) != 0 || !approved[fingerprint] {
 			return fmt.Errorf("unreviewed or changed finding: %s %s:%s", issue.Rule, name, issue.Line)
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func TestValidate(t *testing.T) {
-	const valid = `{"version":"2.1.0","runs":[{"results":[],"invocations":[{"executionSuccessful":true,"toolExecutionNotifications":[{"level":"none","descriptor":{"id":"go/diagnostics/successfully-extracted-files"}}]}]}]}`
+	const valid = `{"version":"2.1.0","runs":[{"results":[],"invocations":[{"executionSuccessful":true,"toolExecutionNotifications":[{"level":"none","descriptor":{"id":"go/diagnostics/successfully-extracted-files"},"locations":[{"physicalLocation":{"artifactLocation":{"uri":"fixture.go","uriBaseId":"%SRCROOT%"}}}]}]}]}]}`
 	for _, test := range []struct {
 		name, report string
 		pass         bool
@@ -28,7 +28,7 @@ func TestValidate(t *testing.T) {
 		{"no extraction", strings.Replace(valid, "successfully-extracted-files", "other", 1), false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			if err := validate([]byte(test.report)); (err == nil) != test.pass {
+			if _, err := validate([]byte(test.report), []string{"fixture.go"}); (err == nil) != test.pass {
 				t.Fatalf("validation error=%v, want pass=%v", err, test.pass)
 			}
 		})

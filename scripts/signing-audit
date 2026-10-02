@@ -4,5 +4,5 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 requirements=$(mktemp "${TMPDIR:-/tmp}/xquik-signing-requirements.XXXXXX")
-uv export --locked --python 3.14.7 --project tools/signing --no-emit-project --format requirements-txt --output-file "$requirements" >/dev/null
-UV_PYTHON=3.14.7 uv tool run --from pip-audit==2.10.1 pip-audit --require-hashes --disable-pip -r "$requirements"
+uv export --locked --python 3.14.8 --project tools/signing --no-emit-project --format requirements-txt --output-file "$requirements" >/dev/null
+UV_PYTHON=3.14.8 uv tool run --from pip-audit==2.10.1 pip-audit --require-hashes --disable-pip -r "$requirements"

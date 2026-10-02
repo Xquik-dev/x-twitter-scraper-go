@@ -17,16 +17,18 @@ type Metric struct {
 func Compare(parent, current map[string]Metric) error {
 	for _, name := range []string{"statements", "branches", "functions", "lines"} {
 		percentages := [2]float64{}
+		uncovered := [2]int64{}
 		for i, report := range []map[string]Metric{parent, current} {
 			value, exists := report[name]
 			if !exists || value.Total <= 0 || value.Covered < 0 || value.Covered > value.Total || value.Skipped != 0 {
 				return fmt.Errorf("invalid %s counts in report %d", name, i)
 			}
 			percentages[i] = 100 * float64(value.Covered) / float64(value.Total)
+			uncovered[i] = value.Total - value.Covered
 		}
 		required := percentages[0]
-		if percentages[1]+1e-10 < required {
-			return fmt.Errorf("%s coverage %.8f%% must reach %.8f%%", name, percentages[1], required)
+		if percentages[1]+1e-10 < required && uncovered[1] > uncovered[0] {
+			return fmt.Errorf("%s coverage %.8f%% must reach %.8f%% or keep uncovered items at %d; measured %d", name, percentages[1], required, uncovered[0], uncovered[1])
 		}
 	}
 	return nil

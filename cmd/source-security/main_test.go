@@ -36,6 +36,7 @@ func TestExactReviewedFindings(t *testing.T) {
 		{"missing reports", strings.Replace(report, `"found":1`, `"found":2`, 1), review, "", false},
 		{"suppressed", strings.Replace(report, `"nosec":0`, `"nosec":1`, 1), review, "", false},
 		{"suppressed issue", strings.Replace(report, `"rule_id"`, `"nosec":true,"rule_id"`, 1), review, "", false},
+		{"external suppression metadata", strings.Replace(report, `"rule_id"`, `"suppressions":[{"kind":"external","justification":"excluded rule"}],"rule_id"`, 1), review, "", false},
 		{"analysis failure", strings.Replace(report, `"Golang errors":{}`, `"Golang errors":{"example.go":["failed"]}`, 1), review, "", false},
 		{"extra document", report + "{}", review, "", false},
 		{"truncated trailing output", report + "{", review, "", false},

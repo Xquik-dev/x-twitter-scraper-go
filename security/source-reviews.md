@@ -1,51 +1,41 @@
 # Approved source findings
 
-The user approved these 123 exact findings on 2026-09-12.
+The catalog contains 118 exact reviewed findings.
+The owner approved the original 123 findings on 2026-09-12.
+The 2026-10-02 review removed 5 resolved records.
+A separate independent review renewed 5 unchanged diagnostics after the byte-range fix.
+Their source hashes and line references come from the fresh native scan.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
 Their order is rule, file, line, code, source hash, severity, confidence, details.
 These records preserve the complete reviewed source excerpts and reasons.
 
-## G115 in internal/encoding/json/decode_upstream_test.go:335
+## G115 in internal/encoding/json/decode_upstream_test.go:338
 
 Upstream test-only custom byte marshaler. Callers supply bounded literal fixture values. Not used to validate security-sensitive input or included in library builds. This review does not claim the test helper validates arbitrary integer ranges.
 
-Source SHA-256: `c9e5bf874a2aa1daf49b0ff1253ba34d4c0f77099dc6ef733e271f9117cf565c`
+Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
 Severity: HIGH. Confidence: MEDIUM.
 Finding: integer overflow conversion int64 -> byte
 
 ```go
-334: 	}
-335: 	*b = byteWithMarshalText(i)
-336: 	return nil
+337: 	}
+338: 	*b = byteWithMarshalText(i)
+339: 	return nil
 ```
 
-## G115 in internal/encoding/json/decode_upstream_test.go:307
+## G115 in internal/encoding/json/decode_upstream_test.go:310
 
 Upstream test-only custom byte marshaler. Callers supply bounded literal fixture values. Not used to validate security-sensitive input or included in library builds. This review does not claim the test helper validates arbitrary integer ranges.
 
-Source SHA-256: `c9e5bf874a2aa1daf49b0ff1253ba34d4c0f77099dc6ef733e271f9117cf565c`
+Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
 Severity: HIGH. Confidence: MEDIUM.
 Finding: integer overflow conversion int64 -> byte
 
 ```go
-306: 	}
-307: 	*b = byteWithMarshalJSON(i)
-308: 	return nil
-```
-
-## G115 in internal/encoding/json/decode_upstream_test.go:160
-
-Upstream test-only custom byte marshaler. Callers supply bounded literal fixture values. Not used to validate security-sensitive input or included in library builds. This review does not claim the test helper validates arbitrary integer ranges.
-
-Source SHA-256: `c9e5bf874a2aa1daf49b0ff1253ba34d4c0f77099dc6ef733e271f9117cf565c`
-Severity: HIGH. Confidence: MEDIUM.
-Finding: integer overflow conversion int -> uint8
-
-```go
-159: 	}
-160: 	*u8 = u8marshal(n)
-161: 	return nil
+309: 	}
+310: 	*b = byteWithMarshalJSON(i)
+311: 	return nil
 ```
 
 ## G404 in internal/requestconfig/requestconfig.go:347
@@ -216,20 +206,6 @@ Finding: Path traversal via taint analysis
 70: 			return err
 ```
 
-## G703 in cmd/coverage-gain/main.go:55
-
-Explicit local CLI output paths. No remote path source or claimed confinement boundary.
-
-Source SHA-256: `231c1e43b633c36028f604e68e0894b7ef5e38057d56a5b23091d8a0cda532be`
-Severity: HIGH. Confidence: HIGH.
-Finding: Path traversal via taint analysis
-
-```go
-54: 	}
-55: 	if err := os.WriteFile(filepath.Join(directory, "summary.json"), data, 0o600); err != nil {
-56: 		return err
-```
-
 ## G705 in cmd/reproducible-build/upload_test.go:36
 
 Local upload test returns a JSON fixture to a CLI client. No browser rendering or HTML sink in the tested flow.
@@ -284,48 +260,6 @@ Finding: Subprocess launched with variable
 23: 	git := func(args ...string) ([]byte, error) {
 24: 		command := exec.Command("git", args...)
 25: 		command.Env = append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(directory, "index"), "TZ=UTC")
-```
-
-## G204 in cmd/coverage-gain/main.go:19
-
-Fixed executable and argument array. Build helpers consume local Git arguments; upload test invokes the fixed repository script. No shell interpolation of remote data.
-
-Source SHA-256: `231c1e43b633c36028f604e68e0894b7ef5e38057d56a5b23091d8a0cda532be`
-Severity: MEDIUM. Confidence: HIGH.
-Finding: Subprocess launched with variable
-
-```go
-18: func git(args ...string) (string, error) {
-19: 	command := exec.Command("git", args...)
-20: 	command.Env = append(os.Environ(), "LC_ALL=C")
-```
-
-## G204 in cmd/coverage-gain/main_test.go:26
-
-Fixed executable and argument array. Build helpers consume local Git arguments; upload test invokes the fixed repository script. No shell interpolation of remote data.
-
-Source SHA-256: `2fac5356ad419874263c4eea2e6250d9bec9cb121ab89dfc828ef722e1acf1a3`
-Severity: MEDIUM. Confidence: HIGH.
-Finding: Subprocess launched with a potential tainted input or cmd arguments
-
-```go
-25: 		t.Helper()
-26: 		command := exec.Command("git", append([]string{"-c", "user.name=Coverage test", "-c", "user.email=coverage@example.test", "-c", "commit.gpgsign=false"}, args...)...)
-27: 		if data, err := command.CombinedOutput(); err != nil {
-```
-
-## G304 in cmd/coverage-gain/main_test.go:84
-
-Test reads its own summary artifact within a temporary directory.
-
-Source SHA-256: `2fac5356ad419874263c4eea2e6250d9bec9cb121ab89dfc828ef722e1acf1a3`
-Severity: MEDIUM. Confidence: HIGH.
-Finding: Potential file inclusion via variable
-
-```go
-83: 	}
-84: 	report, err := os.ReadFile(filepath.Join(directory, "summary.json"))
-85: 	if err != nil || !strings.Contains(string(report), `"Covered": 1`) {
 ```
 
 ## G107 in internal/testutil/testutil.go:15
@@ -1504,46 +1438,46 @@ Finding: Errors unhandled
 1334: 	t.Error("Marshal should have panicked")
 ```
 
-## G104 in internal/encoding/json/decode_upstream_test.go:2637
+## G104 in internal/encoding/json/decode_upstream_test.go:2640
 
 Panic regression: deferred recover assertion or following failure statement rejects ordinary return. An error result is not the asserted behavior.
 
-Source SHA-256: `c9e5bf874a2aa1daf49b0ff1253ba34d4c0f77099dc6ef733e271f9117cf565c`
+Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-2636: 	}()
-2637: 	Unmarshal([]byte("{}"), &unmarshalPanic{})
-2638: 	t.Fatalf("Unmarshal should have panicked")
+2639: 	}()
+2640: 	Unmarshal([]byte("{}"), &unmarshalPanic{})
+2641: 	t.Fatalf("Unmarshal should have panicked")
 ```
 
-## G104 in internal/encoding/json/decode_upstream_test.go:1368
+## G104 in internal/encoding/json/decode_upstream_test.go:1371
 
 Best-effort diagnostic serialization inside a branch that already fails the test. Errors cannot turn the test green.
 
-Source SHA-256: `c9e5bf874a2aa1daf49b0ff1253ba34d4c0f77099dc6ef733e271f9117cf565c`
+Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-1367: 				gotJSON, _ := Marshal(got)
-1368: 				wantJSON, _ := Marshal(tt.out)
-1369: 				t.Fatalf("%s: Decode:\n\tgot:  %#+v\n\twant: %#+v\n\n\tgotJSON:  %s\n\twantJSON: %s", tt.Where, got, tt.out, gotJSON, wantJSON)
+1370: 				gotJSON, _ := Marshal(got)
+1371: 				wantJSON, _ := Marshal(tt.out)
+1372: 				t.Fatalf("%s: Decode:\n\tgot:  %#+v\n\twant: %#+v\n\n\tgotJSON:  %s\n\twantJSON: %s", tt.Where, got, tt.out, gotJSON, wantJSON)
 ```
 
-## G104 in internal/encoding/json/decode_upstream_test.go:1367
+## G104 in internal/encoding/json/decode_upstream_test.go:1370
 
 Best-effort diagnostic serialization inside a branch that already fails the test. Errors cannot turn the test green.
 
-Source SHA-256: `c9e5bf874a2aa1daf49b0ff1253ba34d4c0f77099dc6ef733e271f9117cf565c`
+Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-1366: 			if got := v.Elem().Interface(); !reflect.DeepEqual(got, tt.out) {
-1367: 				gotJSON, _ := Marshal(got)
-1368: 				wantJSON, _ := Marshal(tt.out)
+1369: 			if got := v.Elem().Interface(); !reflect.DeepEqual(got, tt.out) {
+1370: 				gotJSON, _ := Marshal(got)
+1371: 				wantJSON, _ := Marshal(tt.out)
 ```
 
 ## G104 in internal/apiquery/query_test.go:411

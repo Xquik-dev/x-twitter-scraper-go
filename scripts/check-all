@@ -9,6 +9,10 @@ echo "Check reports: $XQUIK_COVERAGE_DIR"
 echo "P99 gap: representative SDK latency distributions and measurement coverage remain unverified."
 go mod verify
 status=0
-bun run --parallel --no-exit-on-error check:lint check:tests report:coverage report:branches check:race check:fuzz check:security check:source-security check:codeql check:licenses check:signing-security || status=$?
+bun run --parallel --no-exit-on-error check:lint check:fuzz check:security check:source-security check:codeql check:licenses check:signing-security || status=$?
+# Each suite compiles the native coverage fixtures. Keep them within one CPU budget.
+for check in check:tests check:race report:coverage report:branches; do
+  bun run "$check" || status=$?
+done
 go run ./cmd/coverage-gain "$XQUIK_COVERAGE_DIR" || status=$?
 exit "$status"
