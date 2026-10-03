@@ -1,9 +1,10 @@
 # Approved source findings
 
-The catalog contains 118 exact reviewed findings.
+The catalog contains 117 exact reviewed findings.
 The owner approved the original 123 findings on 2026-09-12.
 The 2026-10-02 review removed 5 resolved records.
-A separate independent review renewed 5 unchanged diagnostics after the byte-range fix.
+The 2026-10-03 review removed 1 resolved mock-server record.
+Independent reviews renewed 5 diagnostics after the byte-range and runtime tag changes.
 Their source hashes and line references come from the fresh native scan.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
@@ -14,7 +15,7 @@ These records preserve the complete reviewed source excerpts and reasons.
 
 Upstream test-only custom byte marshaler. Callers supply bounded literal fixture values. Not used to validate security-sensitive input or included in library builds. This review does not claim the test helper validates arbitrary integer ranges.
 
-Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
+Source SHA-256: `49d28155b5bdc44a55ef6287e7ce9384df1f9c6915034faed2388fc4e9a40d8c`
 Severity: HIGH. Confidence: MEDIUM.
 Finding: integer overflow conversion int64 -> byte
 
@@ -28,7 +29,7 @@ Finding: integer overflow conversion int64 -> byte
 
 Upstream test-only custom byte marshaler. Callers supply bounded literal fixture values. Not used to validate security-sensitive input or included in library builds. This review does not claim the test helper validates arbitrary integer ranges.
 
-Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
+Source SHA-256: `49d28155b5bdc44a55ef6287e7ce9384df1f9c6915034faed2388fc4e9a40d8c`
 Severity: HIGH. Confidence: MEDIUM.
 Finding: integer overflow conversion int64 -> byte
 
@@ -1130,20 +1131,6 @@ Finding: Errors unhandled
 167: 		if cfg.DefaultBaseURL.String() != wantURL.String() {
 ```
 
-## G104 in mock_server_test.go:18
-
-Local test HTTP handler writes fixture output. Client-side response/result assertions cover delivered bytes; this call is not a production sink.
-
-Source SHA-256: `5bf8e9afeadda478b4c80c8119e6bfb366d9eb82f25a9c39e1bd38f5347b13f3`
-Severity: LOW. Confidence: HIGH.
-Finding: Errors unhandled
-
-```go
-17: 		writer.Header().Set("Content-Type", "application/json")
-18: 		_, _ = writer.Write([]byte("{}"))
-19: 	}))
-```
-
 ## G104 in internal/requestconfig/requestconfig_test.go:427
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
@@ -1442,7 +1429,7 @@ Finding: Errors unhandled
 
 Panic regression: deferred recover assertion or following failure statement rejects ordinary return. An error result is not the asserted behavior.
 
-Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
+Source SHA-256: `49d28155b5bdc44a55ef6287e7ce9384df1f9c6915034faed2388fc4e9a40d8c`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1456,7 +1443,7 @@ Finding: Errors unhandled
 
 Best-effort diagnostic serialization inside a branch that already fails the test. Errors cannot turn the test green.
 
-Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
+Source SHA-256: `49d28155b5bdc44a55ef6287e7ce9384df1f9c6915034faed2388fc4e9a40d8c`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1470,7 +1457,7 @@ Finding: Errors unhandled
 
 Best-effort diagnostic serialization inside a branch that already fails the test. Errors cannot turn the test green.
 
-Source SHA-256: `5f8393ff801f7d90d95623741f8028e08c56dfbc1ba0202c296622aeb8cd9cda`
+Source SHA-256: `49d28155b5bdc44a55ef6287e7ce9384df1f9c6915034faed2388fc4e9a40d8c`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 

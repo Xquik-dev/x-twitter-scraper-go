@@ -88,7 +88,7 @@ It runs complete validation and creates a reproducible source archive.
 After merging, create the matching `vVERSION` tag on that commit.
 Run `bun run release:publish` from an authorized local release runner.
 The local publisher uses locked Sigstore 4.5.0 tooling and GitHub CLI authentication.
-Use uv 0.12.21; the command selects Python 3.14.8 automatically.
+Use uv 0.12.22. The command selects Python 3.14.8 automatically.
 Set `XQUIK_RELEASE_IDENTITY` and `XQUIK_RELEASE_ISSUER` to the authorized signer.
 Signing uses Sigstore authentication and records local build provenance publicly.
 Local attestations identify the signer, not a GitHub Actions workflow.

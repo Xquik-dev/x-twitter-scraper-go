@@ -8,19 +8,18 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
-
-	"github.com/srvgit/gocove/cov"
 )
 
-func TestMain(m *testing.M) {
+func runMockTests(m *testing.M) {
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 		writer.Header().Set("Content-Type", "application/json")
-		_, _ = writer.Write([]byte("{}"))
+		if _, err := writer.Write([]byte("{}")); err != nil {
+			panic(err)
+		}
 	}))
 	defer server.Close()
 	if err := os.Setenv("TEST_API_BASE_URL", server.URL); err != nil {
 		panic(err)
 	}
-	defer cov.Flush()
 	m.Run()
 }

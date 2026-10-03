@@ -7,6 +7,7 @@
 package json
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -58,10 +59,6 @@ type misnamedTag struct {
 	X string `jsom:"Misnamed"`
 }
 
-type badFormatTag struct {
-	Y string `:"BadFormat"`
-}
-
 type badCodeTag struct {
 	Z string `json:" !\"#&'()*+,."`
 }
@@ -75,6 +72,11 @@ type unicodeTag struct {
 }
 
 func TestStructTagObjectKey(t *testing.T) {
+	// Construct the malformed tag as runtime input to the encoder.
+	badFormat := reflect.New(reflect.StructOf([]reflect.StructField{
+		{Name: "Y", Type: reflect.TypeFor[string](), Tag: `:"BadFormat"`},
+	}))
+	badFormat.Elem().FieldByName("Y").SetString("Orfevre")
 	tests := []struct {
 		CaseName
 		raw   any
@@ -91,7 +93,7 @@ func TestStructTagObjectKey(t *testing.T) {
 		{Name(""), dashTag{"foo"}, "foo", "-"},
 		{Name(""), emptyTag{"Pour Moi"}, "Pour Moi", "W"},
 		{Name(""), misnamedTag{"Animal Kingdom"}, "Animal Kingdom", "X"},
-		{Name(""), badFormatTag{"Orfevre"}, "Orfevre", "Y"},
+		{Name(""), badFormat.Interface(), "Orfevre", "Y"},
 		{Name(""), badCodeTag{"Reliable Man"}, "Reliable Man", "Z"},
 		{Name(""), percentSlashTag{"brut"}, "brut", "text/html%"},
 		{Name(""), punctuationTag{"Union Rags"}, "Union Rags", "!#$%&()*+-./:;<=>?@[]^_{|}~ "},
@@ -109,7 +111,11 @@ func TestStructTagObjectKey(t *testing.T) {
 			if err != nil {
 				t.Fatalf("%s: Unmarshal error: %v", tt.Where, err)
 			}
-			for k, v := range f.(map[string]any) {
+			object := f.(map[string]any)
+			if len(object) != 1 {
+				t.Fatalf("%s: Unmarshal(%#q): got %d keys, want 1", tt.Where, b, len(object))
+			}
+			for k, v := range object {
 				if k == tt.key {
 					if s, ok := v.(string); !ok || s != tt.value {
 						t.Fatalf("%s: Unmarshal(%#q) value:\n\tgot:  %q\n\twant: %q", tt.Where, b, s, tt.value)

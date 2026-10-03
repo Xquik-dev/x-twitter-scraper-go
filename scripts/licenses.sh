@@ -2,7 +2,7 @@
 set -euo pipefail
 cd -- "$(dirname -- "$0")/.."
 
-configuration=$(bun -e 'const config = require("./package.json").config; const c = config.comply; process.stdout.write(`${c.version} ${c.sha256} ${c.sourceDateEpoch} ${config.cargoAudit} ${config.rustVersion} ${c.patchURL} ${c.patchSha256}\n`);')
+configuration=$(bun --no-env-file -e 'const config = require("./package.json").config; const c = config.comply; process.stdout.write(`${c.version} ${c.sha256} ${c.sourceDateEpoch} ${config.cargoAudit} ${config.rustVersion} ${c.patchURL} ${c.patchSha256}\n`);')
 read -r version archive_sha source_epoch audit_version rust_version patch_url patch_sha <<<"$configuration"
 tool_id=$(printf '%s\n' "$configuration" "$patch_sha" | shasum -a 256 | cut -d ' ' -f 1)
 tool_root=$(git rev-parse --path-format=absolute --git-path "tools/comply-$version-$tool_id")

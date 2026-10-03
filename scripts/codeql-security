@@ -7,7 +7,10 @@ codeql="${XQUIK_CODEQL_BIN:-$HOME/.cache/xquik-codeql/2.27.1/codeql/codeql}"
 [[ "$("$codeql" version --format=terse)" == 2.27.1 ]]
 report="$(mktemp -d "${TMPDIR:-/tmp}/xquik-codeql.XXXXXX")"
 echo "CodeQL reports: $report"
-"$codeql" database create "$report/database" --language=go --build-mode=autobuild --extractor-option extract_tests=true --source-root="$PWD" --threads=4
+mkdir "$report/test-binaries" "$report/branch-test-binaries"
+"$codeql" database create "$report/database" --language=go --extractor-option extract_tests=true --source-root="$PWD" --threads=4 \
+  --command="go test -a -c -o \"$report/test-binaries/\" ./..." \
+  --command="go test -a -tags=gocove -c -o \"$report/branch-test-binaries/\" ./..."
 "$codeql" database analyze "$report/database" codeql/go-queries@1.6.11:codeql-suites/go-security-extended.qls --format=sarifv2.1.0 --output="$report/report.sarif" --threads=4
 cat "$report/report.sarif"
 go run ./cmd/codeql-security < "$report/report.sarif"

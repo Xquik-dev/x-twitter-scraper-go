@@ -2277,25 +2277,25 @@ func TestUnmarshalSyntax(t *testing.T) {
 
 // Test handling of unexported fields that should be ignored.
 // Issue 4660
-type unexportedFields struct {
-	Name string
-	m    map[string]any `json:"-"`
-	m2   map[string]any `json:"abcd"`
-
-	s []int `json:"-"`
-}
-
 func TestUnmarshalUnexported(t *testing.T) {
+	// Construct the deliberately ineffective tag as runtime input.
+	structType := reflect.StructOf([]reflect.StructField{
+		{Name: "Name", Type: reflect.TypeFor[string]()},
+		{Name: "m", PkgPath: "json", Type: reflect.TypeFor[map[string]any](), Tag: `json:"-"`},
+		{Name: "m2", PkgPath: "json", Type: reflect.TypeFor[map[string]any](), Tag: `json:"abcd"`},
+		{Name: "s", PkgPath: "json", Type: reflect.TypeFor[[]int](), Tag: `json:"-"`},
+	})
 	input := `{"Name": "Bob", "m": {"x": 123}, "m2": {"y": 456}, "abcd": {"z": 789}, "s": [2, 3]}`
-	want := &unexportedFields{Name: "Bob"}
+	want := reflect.New(structType)
+	want.Elem().FieldByName("Name").SetString("Bob")
 
-	out := &unexportedFields{}
-	err := Unmarshal([]byte(input), out)
+	out := reflect.New(structType)
+	err := Unmarshal([]byte(input), out.Interface())
 	if err != nil {
 		t.Errorf("Unmarshal error: %v", err)
 	}
-	if !reflect.DeepEqual(out, want) {
-		t.Errorf("Unmarshal:\n\tgot:  %+v\n\twant: %+v", out, want)
+	if !reflect.DeepEqual(out.Interface(), want.Interface()) {
+		t.Errorf("Unmarshal:\n\tgot:  %+v\n\twant: %+v", out.Interface(), want.Interface())
 	}
 }
 

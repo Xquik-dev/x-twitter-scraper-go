@@ -44,7 +44,7 @@ chmod +x "$branch_workspace/run-test"
 
 echo "==> Collecting branch coverage"
 # Rebuild every package. gocove does not emit catalogs for Go cache hits.
-"$branch_workspace/gocove" test -a -count=1 -covermode=set -coverpkg=./... "-exec=$branch_workspace/run-test" ./...
+"$branch_workspace/gocove" test -tags=gocove -a -count=1 -covermode=set -coverpkg=./... "-exec=$branch_workspace/run-test" ./...
 "$branch_workspace/gocove" \
   report \
   --meta-dir="$branch_meta" \
