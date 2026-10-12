@@ -59,10 +59,20 @@ go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.19.0'
 
 ## Verify a Release
 
-Verify the matching source archive before upgrading:
+Go checks every module download against the public checksum database.
+To see the commit behind a release, run:
 
 ```sh
-release_tag=vVERSION
+go mod download -json github.com/Xquik-dev/x-twitter-scraper-go@vVERSION
+```
+
+`Origin.Hash` names the tagged commit.
+
+Releases through v0.18.1 also attach a source archive signed by the former release workflow.
+Verify one of those archives before upgrading:
+
+```sh
+release_tag=v0.18.1
 archive="x-twitter-scraper-go-$release_tag.zip"
 
 gh release download "$release_tag" \
@@ -76,7 +86,6 @@ gh attestation verify "$archive" \
   --deny-self-hosted-runners
 ```
 
-Require the Xquik-dev repository and release workflow.
 GitHub verifies the digest, signer identity, and transparency proof.
 
 ## Requirements

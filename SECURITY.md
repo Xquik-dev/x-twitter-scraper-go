@@ -43,12 +43,12 @@ Relevant threats include:
 - Credential leakage through logs, URLs, middleware, or debug output.
 - Request redirection through untrusted base URLs.
 - Malformed responses that trigger unsafe parsing or resource exhaustion.
-- Dependency, generator, workflow, and release supply-chain compromise.
+- Dependency, generator, build script, and release supply-chain compromise.
 - Unsafe concurrent access or transport behavior.
 
 Security controls include redaction tests, CodeQL, race detection, and fuzzing.
 
-CI also verifies dependencies, licenses, coverage, and reproducible archives.
+`bin/check-local` also verifies dependencies, licenses, and reproducible archives, and measures coverage.
 
 ## Response Process
 

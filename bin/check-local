@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# Runs the checks that GitHub Actions used to run, in the same order.
+# Stops at the first failure and says what to do next.
+# FUZZ_TIME sets the fuzzing time. The default is 15s; use 2m for a full campaign.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+fuzz_time="${FUZZ_TIME:-15s}"
+
+run() {
+  local name="$1" fix="$2"
+  shift 2
+  printf '==> %s\n' "$name"
+  if ! "$@"; then
+    printf 'check-local: %s failed. %s\n' "$name" "$fix" >&2
+    exit 1
+  fi
+}
+
+reuse_lint() {
+  if command -v reuse >/dev/null 2>&1; then
+    reuse lint
+  else
+    uvx --from reuse==5.1.1 reuse lint
+  fi
+}
+
+run "Module integrity" "Run go clean -modcache, then retry." go mod verify
+run "Lint" "Run scripts/format, then fix the go vet findings above." scripts/lint
+if command -v reuse >/dev/null 2>&1 || command -v uvx >/dev/null 2>&1; then
+  run "REUSE licensing" "Add the missing license data to REUSE.toml." reuse_lint
+else
+  printf '==> Skipping REUSE licensing: install reuse or uv to run it.\n'
+fi
+run "Tests" "Fix the failing tests above." scripts/test
+run "Statement coverage" "Fix the failing tests above." scripts/collect-coverage
+run "Branch coverage" "Fix the failing tests above." scripts/collect-branches
+run "Race detector" "Fix the data race reported above." go test -race ./...
+run "Vulnerability scan" "Upgrade the vulnerable module or Go version above." \
+  go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
+run "Reproducible module archive" "Remove the build input that differs between the archives." \
+  scripts/reproducible-build
+run "CodeQL" "Install CodeQL as CONTRIBUTING.md says, or fix the findings above." \
+  scripts/codeql-security
+run "Fuzzing" "Fix the crash. Go saved its input under internal/apiform/testdata/fuzz." \
+  go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime="$fuzz_time"
+
+printf 'All checks passed.\n'

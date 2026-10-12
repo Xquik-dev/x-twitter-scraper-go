@@ -36,6 +36,12 @@ Place stable examples outside generated directories.
 
 Run focused tests while editing.
 
+Run `bin/check-local` before you push. GitHub Actions does not run here.
+It runs these checks in order and stops at the first failure:
+module integrity, lint, REUSE licensing, tests, statement and branch coverage,
+race detection, govulncheck, reproducible archives, CodeQL, and fuzzing.
+It fuzzes for 15 seconds. Set `FUZZ_TIME=2m` for the full campaign.
+
 Run every gate before requesting review.
 
 ```sh
@@ -69,24 +75,34 @@ Add regression tests for every fixed defect.
 ## Submit changes
 
 Use clear Conventional Commit subjects and sign commits with `git commit --signoff`.
+Follow the shared [review policy][review-policy].
+
+## Release
+
+Maintainers release from their own machine with `bin/release-local`.
+Run it on a clean `main` that matches `origin/main`.
+It reads the version from `.release-please-manifest.json`.
+It refuses when the `vVERSION` tag already exists on GitHub.
+It runs `bin/check-local`, `govulncheck`, and `go build ./...`.
+Next it pushes the annotated tag and asks proxy.golang.org to fetch it.
+pkg.go.dev lists the version once the proxy serves it.
+Last, it creates the GitHub release with notes from `CHANGELOG.md`.
+Go needs no registry credential. GitHub CLI uses its own login.
+
 Verify published modules with `bun run release:verify vVERSION COMMIT_SHA`.
 The command uses a fresh module cache and the public Go checksum database.
 It checks the exact version and source commit, then installs and constructs a client.
 JSON output identifies success or failure. Raw module evidence remains available.
 
-Prepare releases with `bun run release:prepare` from a clean, committed checkout.
-It runs complete validation and creates a reproducible source archive.
-After merging, create the matching `vVERSION` tag on that commit.
-Try the release workflow when Actions is available; otherwise run `bun run release:publish`.
-The local publisher uses locked Sigstore 4.5.0 tooling and GitHub CLI authentication.
+`bin/release-local` attaches no signed source archive.
+To attach one, run `bun run release:publish` on the tagged commit afterwards.
+It uses locked Sigstore 4.5.0 tooling and GitHub CLI authentication.
 Use uv 0.12.13; the command selects Python 3.14.7 automatically.
 Set `XQUIK_RELEASE_IDENTITY` and `XQUIK_RELEASE_ISSUER` to the authorized signer.
 Signing uses Sigstore authentication and records local build provenance publicly.
-Local attestations identify the signer, not a GitHub Actions workflow.
-The publisher verifies signatures before uploading and rejects conflicting existing artifacts.
-It verifies public module installation before publishing the GitHub draft.
+Its attestations identify that signer.
+It verifies signatures before uploading and rejects conflicting existing artifacts.
 Retry the same command after partial publication; matching artifacts are retained.
-Follow the shared [review policy][review-policy].
 
 ## Report Security Issues
 
