@@ -4,21 +4,83 @@
 #
 # Runs the checks that GitHub Actions used to run, in the same order.
 # Stops at the first failure and says what to do next.
+# Posts the xquik-local-checks commit status when HEAD is clean and on GitHub.
+# --no-status skips the commit status.
 # FUZZ_TIME sets the fuzzing time. The default is 15s; use 2m for a full campaign.
 set -euo pipefail
+
+readonly status_repo="Xquik-dev/x-twitter-scraper-go"
+readonly status_context="xquik-local-checks"
+
+post_status=true
+for arg in "$@"; do
+  case "$arg" in
+    --no-status) post_status=false ;;
+    *)
+      printf 'check-local: unknown option %s. Use --no-status or no option.\n' "$arg" >&2
+      exit 2
+      ;;
+  esac
+done
 
 cd "$(dirname "$0")/.."
 
 fuzz_time="${FUZZ_TIME:-15s}"
+sha="$(git rev-parse HEAD)"
+current=""
+checks_passed=0
+reuse_note=""
+
+if [[ "$post_status" == true ]]; then
+  skip_reason=""
+  if ! command -v gh >/dev/null 2>&1; then
+    skip_reason="GitHub CLI is not installed"
+  elif [[ -n "$(git status --porcelain)" ]]; then
+    skip_reason="the working tree has uncommitted changes"
+  elif ! gh api --silent "repos/$status_repo/commits/$sha" >/dev/null 2>&1; then
+    skip_reason="GitHub does not show commit ${sha:0:12}; push it or run gh auth login"
+  fi
+  if [[ -n "$skip_reason" ]]; then
+    printf '==> Not posting the %s status: %s.\n' "$status_context" "$skip_reason"
+    post_status=false
+  fi
+fi
+
+post() {
+  [[ "$post_status" == true ]] || return 0
+  local description="${2:0:139}"
+  gh api --silent "repos/$status_repo/statuses/$sha" \
+    -f state="$1" -f context="$status_context" -f description="$description" >/dev/null 2>&1 ||
+    printf '==> Could not post the %s status. Run gh auth status.\n' "$status_context" >&2
+}
+
+finish() {
+  local code=$?
+  if ((code == 0)); then
+    local go_version
+    go_version="$(go env GOVERSION 2>/dev/null || true)"
+    post success "All $checks_passed checks passed on ${go_version:-Go}: lint, tests, coverage, race, govulncheck, archive, CodeQL & fuzz$reuse_note"
+  elif [[ -n "$current" ]]; then
+    post failure "$current failed after $checks_passed passed checks. Run bin/check-local for details."
+  else
+    post failure "check-local stopped before its first check. Run bin/check-local for details."
+  fi
+  exit "$code"
+}
+trap finish EXIT
+
+post pending "Running module, lint, license, test, coverage, race, audit, archive, CodeQL & fuzz checks"
 
 run() {
   local name="$1" fix="$2"
   shift 2
+  current="$name"
   printf '==> %s\n' "$name"
   if ! "$@"; then
     printf 'check-local: %s failed. %s\n' "$name" "$fix" >&2
     exit 1
   fi
+  checks_passed=$((checks_passed + 1))
 }
 
 reuse_lint() {
@@ -35,6 +97,7 @@ if command -v reuse >/dev/null 2>&1 || command -v uvx >/dev/null 2>&1; then
   run "REUSE licensing" "Add the missing license data to REUSE.toml." reuse_lint
 else
   printf '==> Skipping REUSE licensing: install reuse or uv to run it.\n'
+  reuse_note="; REUSE skipped"
 fi
 run "Tests" "Fix the failing tests above." scripts/test
 run "Statement coverage" "Fix the failing tests above." scripts/collect-coverage
@@ -49,4 +112,5 @@ run "CodeQL" "Install CodeQL as CONTRIBUTING.md says, or fix the findings above.
 run "Fuzzing" "Fix the crash. Go saved its input under internal/apiform/testdata/fuzz." \
   go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime="$fuzz_time"
 
+current=""
 printf 'All checks passed.\n'

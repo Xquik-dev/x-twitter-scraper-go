@@ -36,11 +36,13 @@ Place stable examples outside generated directories.
 
 Run focused tests while editing.
 
-Run `bin/check-local` before you push. GitHub Actions does not run here.
+Run `bin/check-local` on your pushed branch head. GitHub Actions does not run here.
 It runs these checks in order and stops at the first failure:
 module integrity, lint, REUSE licensing, tests, statement and branch coverage,
 race detection, govulncheck, reproducible archives, CodeQL, and fuzzing.
 It fuzzes for 15 seconds. Set `FUZZ_TIME=2m` for the full campaign.
+On a clean HEAD that GitHub already has, it posts the `xquik-local-checks` commit status.
+Pass `--no-status` to skip it.
 
 Run every gate before requesting review.
 
