@@ -52,10 +52,17 @@ fi
 
 post() {
   [[ "$post_status" == true ]] || return 0
-  local description="${2:0:139}"
-  gh api --silent "repos/$status_repo/statuses/$sha" \
-    -f state="$1" -f context="$status_context" -f description="$description" >/dev/null 2>&1 ||
-    printf '==> Could not post the %s status. Run gh auth status.\n' "$status_context" >&2
+  local description="${2:0:139}" error="" attempt
+  for attempt in 1 2 3; do
+    if error="$(gh api --silent "repos/$status_repo/statuses/$sha" \
+      -f state="$1" -f context="$status_context" -f description="$description" 2>&1)"; then
+      return 0
+    fi
+    if ((attempt < 3)); then
+      sleep 5
+    fi
+  done
+  printf '==> Could not post the %s status: %s\n' "$status_context" "${error//$'\n'/ }" >&2
 }
 
 finish() {
