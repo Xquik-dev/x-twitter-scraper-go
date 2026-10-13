@@ -10,7 +10,6 @@ Install Go 1.27.2, Bun, jq and uv.
 
 ```sh
 ./scripts/bootstrap
-bun run install:licenses
 ```
 
 Use a local module replacement when testing another project.
@@ -39,10 +38,13 @@ Run focused tests while editing.
 Run `bin/check-local` on your pushed branch head. GitHub Actions does not run here.
 It runs these checks in order and stops at the first failure.
 They are module integrity, lint, REUSE licensing, tests, statement and branch coverage,
-race detection, the dependency audit, the source scan, reproducible archives, CodeQL, and fuzzing.
+coverage against the parent, race detection, the dependency audit, the signing tool audit,
+the source scan, reproducible archives, CodeQL, and fuzzing.
 REUSE is required. It runs at a pinned version through `uv`, never from another install.
 CodeQL is required. A missing CLI, any finding or any file CodeQL could not read fails the run.
-It fuzzes for 15 seconds. Set `FUZZ_TIME=2m` for the full campaign.
+It fuzzes for 15 seconds. `scripts/fuzz` runs the full 2 minute campaign on its own.
+The parent comparison checks statement, branch, function, and line coverage against the parent commit.
+A parent without a recorded baseline is measured first in a temporary clone, once per parent.
 On a clean HEAD that GitHub already has, it posts the `xquik-local-checks` commit status.
 The status lists only the checks that passed and says success only when all passed.
 Pass `--no-status` to skip it.
@@ -62,11 +64,12 @@ The source scan, `scripts/source-security`, runs gosec over every package and te
 Every finding must match a reviewed record in `security/source-reviews.md` and `security/source-reviews.json`.
 A new finding, or a reviewed one whose code or line moved, fails the run.
 
-Run every gate before requesting review.
+Run `bin/check-local` before requesting review.
+Run `scripts/fuzz` as well when you change `internal/apiform`.
 
 ```sh
-bun run check:all
-bun run build
+bin/check-local
+scripts/fuzz
 ```
 
 SDK commits are exempt from LOC reductions and per-commit coverage gains.

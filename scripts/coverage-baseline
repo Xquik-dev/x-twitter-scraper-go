@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+# Measures the coverage of a revision and keeps it as that revision's
+# verified baseline, which cmd/coverage-gain compares against. It runs the
+# revision's own collectors in a temporary clone that shares this
+# repository's objects, so it leaves the working tree and its worktrees alone.
+# Usage: scripts/coverage-baseline <revision>
+set -euo pipefail
+cd "$(dirname "$0")/.."
+revision="$(git rev-parse --verify "${1:?Run scripts/coverage-baseline <revision>.}^{commit}")"
+workspace="$(mktemp -d "${TMPDIR:-/tmp}/xquik-coverage-baseline.XXXXXX")"
+trap 'rm -rf -- "${workspace:?}"' EXIT
+mkdir "$workspace/reports"
+echo "==> Measuring the coverage of ${revision:0:12} for the baseline"
+git clone --quiet --shared --no-checkout "$PWD" "$workspace/source"
+git -C "$workspace/source" checkout --quiet --detach "$revision"
+(
+  cd "$workspace/source"
+  export XQUIK_COVERAGE_DIR="$workspace/reports"
+  scripts/collect-coverage
+  scripts/collect-branches
+)
+go run ./cmd/coverage-gain -record "$revision" "$workspace/reports"

@@ -134,3 +134,48 @@ func TestRunAgainstGitParent(t *testing.T) {
 		t.Fatalf("clean candidate must compare its parent: %v", err)
 	}
 }
+
+func TestRecordKeepsABaselineThatRunReads(t *testing.T) {
+	t.Chdir(t.TempDir())
+	directory := t.TempDir()
+	const revision = "0123456789abcdef0123456789abcdef01234567"
+	if err := record("../escape", directory); err == nil || !strings.Contains(err.Error(), "not a full commit id") {
+		t.Fatalf("record with a path error = %v", err)
+	}
+	if err := record(revision, directory); err == nil {
+		t.Fatal("record outside Git passed")
+	}
+	if data, err := exec.Command("git", "init", "-q", "--initial-branch=main").CombinedOutput(); err != nil {
+		t.Fatalf("git init: %v\n%s", err, data)
+	}
+	if err := record(revision, directory); err == nil || !strings.Contains(err.Error(), "coverage.out") {
+		t.Fatalf("record without reports error = %v", err)
+	}
+	const xml = `<coverage lines-covered="1" lines-valid="2"><packages><package name="example"><classes><class filename="a.go"><methods><method line-rate="1"/></methods></class></classes></package></packages></coverage>`
+	for name, contents := range map[string]string{
+		"coverage.out":   "mode: set\nexample/a.go:1.1,2.1 1 1\nexample/a.go:3.1,4.1 1 0\n",
+		"coverage.xml":   xml,
+		"branches.json":  `{"packages":[{"import_path":"example","files":[{"name":"a.go","blocks":[{"idx":1,"line":1,"col":1,"end_line":2,"end_col":1}],"branches":[{"block_idx":1}]}]}]}`,
+		"branches.cover": "mode: set\nexample/a.go:1.1,2.1 1 1\n",
+	} {
+		if err := os.WriteFile(filepath.Join(directory, name), []byte(contents), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	if err := record(revision, directory); err != nil {
+		t.Fatal(err)
+	}
+
+	common, err := filepath.Abs(".git")
+	if err != nil {
+		t.Fatal(err)
+	}
+	baseline, err := coveragegate.Baseline(os.DirFS(filepath.Join(common, "coverage-baselines", revision)), revision, runtime.Version()+"/"+runtime.GOOS+"/"+runtime.GOARCH+"/go-packages-v1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := baseline.Total["statements"]; got.Total != 2 || got.Covered != 1 {
+		t.Fatalf("statements = %+v, want 1 of 2", got)
+	}
+}

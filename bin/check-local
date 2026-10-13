@@ -106,7 +106,22 @@ run() {
     printf 'Check failed at %s. %s\n' "$name" "$fix" >&2
     exit 1
   fi
-  passed="${passed:+$passed, }$label"
+  # A step without a label shares the label of a later step.
+  [[ -z "$label" ]] || passed="${passed:+$passed, }$label"
+}
+
+# cmd/coverage-gain compares the reports with the parent's verified coverage.
+# A parent without a baseline gets one first, measured in a temporary clone.
+coverage_against_parent() {
+  local parent common
+  parent="HEAD^"
+  [[ -z "$(git status --porcelain)" ]] || parent="HEAD"
+  parent="$(git rev-parse --verify "$parent")"
+  common="$(git rev-parse --path-format=absolute --git-common-dir)"
+  if [[ ! -f "$common/coverage-baselines/$parent/report.json" ]]; then
+    scripts/coverage-baseline "$parent" || return 1
+  fi
+  go run ./cmd/coverage-gain "$XQUIK_COVERAGE_DIR"
 }
 
 audit() {
@@ -124,16 +139,24 @@ audit_label() {
   esac
 }
 
+# The coverage collectors leave their reports here for the parent comparison.
+export XQUIK_COVERAGE_DIR="$work/coverage"
+mkdir "$XQUIK_COVERAGE_DIR"
+
 run modules "Module integrity" "Run go clean -modcache, then retry." go mod verify
 run lint "Lint" "Run scripts/format, then fix the go vet findings above." scripts/lint
 run REUSE "REUSE licensing" "Add the missing license notice or REUSE.toml entry." \
   uvx --from "reuse==$reuse_version" reuse lint
 run tests "Tests" "Fix the failing tests above." scripts/test
-run coverage "Statement coverage" "Fix the failing tests above." scripts/collect-coverage
-run branches "Branch coverage" "Fix the failing tests above." scripts/collect-branches
+run "" "Statement coverage" "Fix the failing tests above." scripts/collect-coverage
+run "" "Branch coverage" "Fix the failing tests above." scripts/collect-branches
+run "coverage vs parent" "Coverage against the parent" "Add tests so no coverage metric falls below the parent's." \
+  coverage_against_parent
 run race "Race detector" "Fix the data race reported above." go test -race ./...
 run audit "Dependency audit" "Fix each blocked finding above, or review audit-exceptions.json." audit
 passed="${passed%audit}$(audit_label)"
+run "signing audit" "Signing tool audit" "Update the locked dependency in tools/signing, then rerun." \
+  bash scripts/signing-audit
 run "source scan" "Source scan" "Fix each new gosec finding above, or review it into security/source-reviews.md and .json." \
   scripts/source-security
 run archive "Reproducible module archive" "Remove the build input that differs between the archives." \

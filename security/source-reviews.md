@@ -4,6 +4,7 @@ The user approved these 123 exact findings on 2026-09-12.
 On 2026-10-13, `scripts/move_source_reviews.go` moved 68 of them to new line numbers & file hashes.
 It moves a finding only when its code & surrounding lines are unchanged, and it changed no reason.
 3 records name `cmd/reproducible-build/upload_test.go`, which no longer exists, so nothing can match them.
+On 2026-10-14, 2 findings in `cmd/coverage-gain`, the parent baseline recorder, were reviewed and added.
 On 2026-10-13, 5 findings in `internal/scripttest` were reviewed and added. Each runs only in tests, with input the test controls.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
@@ -220,18 +221,18 @@ Finding: Path traversal via taint analysis
 70: 			return err
 ```
 
-## G703 in cmd/coverage-gain/main.go:55
+## G703 in cmd/coverage-gain/main.go:56
 
 Explicit local CLI output paths. No remote path source or claimed confinement boundary.
 
-Source SHA-256: `231c1e43b633c36028f604e68e0894b7ef5e38057d56a5b23091d8a0cda532be`
+Source SHA-256: `6227f5658cd57fa2fa8f20a3fb2eaa644706f825dd60ff55178a3e46c8e256ec`
 Severity: HIGH. Confidence: HIGH.
 Finding: Path traversal via taint analysis
 
 ```go
-54: 	}
-55: 	if err := os.WriteFile(filepath.Join(directory, "summary.json"), data, 0o600); err != nil {
-56: 		return err
+55: 	}
+56: 	if err := os.WriteFile(filepath.Join(directory, "summary.json"), data, 0o600); err != nil {
+57: 		return err
 ```
 
 ## G705 in cmd/reproducible-build/upload_test.go:36
@@ -290,25 +291,25 @@ Finding: Subprocess launched with variable
 25: 		command.Env = append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(directory, "index"), "TZ=UTC")
 ```
 
-## G204 in cmd/coverage-gain/main.go:19
+## G204 in cmd/coverage-gain/main.go:20
 
 Fixed executable and argument array. Build helpers consume local Git arguments; upload test invokes the fixed repository script. No shell interpolation of remote data.
 
-Source SHA-256: `231c1e43b633c36028f604e68e0894b7ef5e38057d56a5b23091d8a0cda532be`
+Source SHA-256: `6227f5658cd57fa2fa8f20a3fb2eaa644706f825dd60ff55178a3e46c8e256ec`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with variable
 
 ```go
-18: func git(args ...string) (string, error) {
-19: 	command := exec.Command("git", args...)
-20: 	command.Env = append(os.Environ(), "LC_ALL=C")
+19: func git(args ...string) (string, error) {
+20: 	command := exec.Command("git", args...)
+21: 	command.Env = append(os.Environ(), "LC_ALL=C")
 ```
 
 ## G204 in cmd/coverage-gain/main_test.go:26
 
 Fixed executable and argument array. Build helpers consume local Git arguments; upload test invokes the fixed repository script. No shell interpolation of remote data.
 
-Source SHA-256: `2fac5356ad419874263c4eea2e6250d9bec9cb121ab89dfc828ef722e1acf1a3`
+Source SHA-256: `7b0450f1f7a349d95033acb7a6bacecb9678dec87342c43998f2fd33032651db`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
@@ -322,7 +323,7 @@ Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 Test reads its own summary artifact within a temporary directory.
 
-Source SHA-256: `2fac5356ad419874263c4eea2e6250d9bec9cb121ab89dfc828ef722e1acf1a3`
+Source SHA-256: `7b0450f1f7a349d95033acb7a6bacecb9678dec87342c43998f2fd33032651db`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Potential file inclusion via variable
 
@@ -1803,4 +1804,32 @@ Finding: Expect WriteFile permissions to be 0600 or less
 53: 	reportPath := filepath.Join(root, "report.sarif")
 54: 	if err := os.WriteFile(codeql, []byte(fakeCodeQL), 0o755); err != nil {
 55: 		t.Fatal(err)
+```
+
+## G703 in cmd/coverage-gain/main.go:114
+
+Local maintainer command. It writes report.json into the coverage-baselines folder that the line above created for a full hexadecimal commit id, which record checks first. No remote path source.
+
+Source SHA-256: `6227f5658cd57fa2fa8f20a3fb2eaa644706f825dd60ff55178a3e46c8e256ec`
+Severity: HIGH. Confidence: HIGH.
+Finding: Path traversal via taint analysis
+
+```go
+113: 	}
+114: 	return os.WriteFile(filepath.Join(target, "report.json"), data, 0o600)
+115: }
+```
+
+## G703 in cmd/coverage-gain/main.go:111
+
+Local maintainer command. bin/check-local passes the parent commit id from git rev-parse, and record refuses any revision that is not a full hexadecimal commit id, so the folder stays inside the repository's coverage-baselines folder. No remote path source.
+
+Source SHA-256: `6227f5658cd57fa2fa8f20a3fb2eaa644706f825dd60ff55178a3e46c8e256ec`
+Severity: HIGH. Confidence: HIGH.
+Finding: Path traversal via taint analysis
+
+```go
+110: 	target := filepath.Join(common, "coverage-baselines", revision)
+111: 	if err := os.MkdirAll(target, 0o750); err != nil {
+112: 		return err
 ```
