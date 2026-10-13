@@ -8,7 +8,7 @@ Install, authenticate, and send your first Xquik request from Go.
 go get github.com/Xquik-dev/x-twitter-scraper-go@latest
 ```
 
-Use Go 1.26.6 or newer.
+Use Go 1.27.2 or newer.
 
 Import the SDK as `xtwitterscraper`:
 

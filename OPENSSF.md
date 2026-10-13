@@ -19,14 +19,14 @@ No OpenSSF-defined ineligibility applies.
 | Contribution process | DCO sign-off and independent review rules |
 | Governance | Public roles, decisions, releases, and continuity policy |
 | Security reporting | Private reporting, response targets, boundaries, and threat model |
-| Tests | Full tests, regression tests, race detection, and weekly fuzzing |
-| Statement coverage | `./scripts/coverage` enforces 90% |
-| Branch coverage | `./scripts/branch-coverage` enforces 80% |
+| Tests | Full tests, regression tests, race detection, and fuzzing |
+| Statement coverage | `scripts/collect-coverage` measures statement coverage |
+| Branch coverage | `scripts/collect-branches` measures branch coverage |
 | Static analysis | `go vet` and CodeQL security-extended queries |
-| Dependency review | Dependabot, `go mod verify`, and `govulncheck` |
-| Licensing gate | Pinned REUSE action checks every repository file |
+| Dependency review | `go mod verify` and `scripts/dependency-audit`, which runs `govulncheck` |
+| Licensing gate | `bin/check-local` runs pinned REUSE lint on every repository file |
 | Reproducibility | 2 normalized module archives must have identical hashes |
-| CI | Pull requests and pushes run pinned, least-privilege workflows |
+| Local checks | `bin/check-local` runs every check, and no GitHub Actions workflow runs |
 | Two-factor authentication | The Xquik-dev organization requires 2FA |
 
 The current Go 1.26.6 statement result is 92.53%.
@@ -51,6 +51,9 @@ Release v0.18.0 includes a reproducible source archive and Sigstore bundle.
 GitHub verification confirms the digest, workflow, tag & hosted runner.
 The archive digest matches its attached SLSA provenance subject.
 
+Releases after v0.18.1 come from `bin/release-local` on a maintainer's machine.
+They carry no GitHub workflow attestation.
+
 ## Outstanding Gold Blockers
 
 Human and organizational evidence remains incomplete.
@@ -69,22 +72,13 @@ Gold eligibility still requires review by a different human.
 
 ## Maintenance
 
-Run these evidence commands before releases:
+Run the evidence checks before releases.
 
 ```sh
-go mod verify
-./scripts/lint
-./scripts/test
-./scripts/coverage
-./scripts/branch-coverage
-go test -race ./...
-go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
-uvx --from reuse==5.1.1 reuse lint
-./scripts/reproducible-build
-gh attestation verify ARCHIVE \
-  --repo Xquik-dev/x-twitter-scraper-go \
-  --signer-workflow Xquik-dev/x-twitter-scraper-go/.github/workflows/release-provenance.yml
+bin/check-local
 ```
+
+`bin/release-local` runs them again before it tags and publishes a release.
 
 Reassess the register before every major release.
 
