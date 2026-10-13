@@ -90,7 +90,7 @@ GitHub verifies the digest, signer identity, and transparency proof.
 
 ## Requirements
 
-Use Go 1.26.6 or newer.
+Use Go 1.27.2 or newer.
 
 ## Usage
 
