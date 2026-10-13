@@ -9,7 +9,8 @@ import (
 )
 
 func TestValidate(t *testing.T) {
-	const valid = `{"version":"2.1.0","runs":[{"results":[],"invocations":[{"executionSuccessful":true,"toolExecutionNotifications":[{"level":"none","descriptor":{"id":"go/diagnostics/successfully-extracted-files"}}]}]}]}`
+	const valid = `{"version":"2.1.0","runs":[{"tool":{"driver":{"notifications":[{"id":"go/diagnostics/extraction-errors"}]}},"results":[],"invocations":[{"executionSuccessful":true,"toolExecutionNotifications":[{"level":"none","descriptor":{"id":"go/diagnostics/successfully-extracted-files"}}]}]}]}`
+	const unread = `{"level":"error","message":{"text":"Extraction failed in lib.go with error undefined: name"},"descriptor":{"id":"go/diagnostics/extraction-errors"}},`
 	for _, test := range []struct {
 		name, report string
 		pass         bool
@@ -26,6 +27,8 @@ func TestValidate(t *testing.T) {
 		{"warning", strings.Replace(valid, `"none"`, `"warning"`, 1), false},
 		{"error", strings.Replace(valid, `"none"`, `"error"`, 1), false},
 		{"no extraction", strings.Replace(valid, "successfully-extracted-files", "other", 1), false},
+		{"unread file", strings.Replace(valid, `[{"level"`, "["+unread+`{"level"`, 1), false},
+		{"no extraction diagnostic", strings.Replace(valid, "extraction-errors", "other", 1), false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			if err := validate([]byte(test.report)); (err == nil) != test.pass {

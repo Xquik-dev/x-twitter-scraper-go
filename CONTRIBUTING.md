@@ -41,7 +41,7 @@ It runs these checks in order and stops at the first failure.
 They are module integrity, lint, REUSE licensing, tests, statement and branch coverage,
 race detection, the dependency audit, reproducible archives, CodeQL, and fuzzing.
 REUSE is required. It runs at a pinned version through `uv`, never from another install.
-CodeQL is required. A missing CLI or any finding fails the run.
+CodeQL is required. A missing CLI, any finding or any file CodeQL could not read fails the run.
 It fuzzes for 15 seconds. Set `FUZZ_TIME=2m` for the full campaign.
 On a clean HEAD that GitHub already has, it posts the `xquik-local-checks` commit status.
 The status lists only the checks that passed and says success only when all passed.
