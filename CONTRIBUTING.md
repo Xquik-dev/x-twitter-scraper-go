@@ -125,7 +125,7 @@ JSON output identifies success or failure. Raw module evidence remains available
 `bin/release-local` attaches no signed source archive.
 To attach one, run `bun run release:publish` on the tagged commit afterwards.
 It uses locked Sigstore 4.5.0 tooling and GitHub CLI authentication.
-Use uv 0.12.13. The command selects Python 3.14.7 automatically.
+Use uv 0.13.0. The command selects Python 3.14.7 automatically.
 Set `XQUIK_RELEASE_IDENTITY` and `XQUIK_RELEASE_ISSUER` to the authorized signer.
 Signing uses Sigstore authentication and records local build provenance publicly.
 Its attestations identify that signer.
