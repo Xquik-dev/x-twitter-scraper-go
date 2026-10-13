@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# Releases the Go module from a maintainer's machine.
+# Go modules need no registry credential, so this script reads no stored secret.
+# Pushing the tag publishes the version, and proxy.golang.org fetches it on the
+# first request. pkg.go.dev reads the proxy.
+# GitHub CLI creates the GitHub release with its own login. On the release
+# machine, that is the owner's gh login, which bin/check-local also uses to
+# post the xquik-local-checks status.
+# Pass --dry-run to run every step except the tag and the GitHub release. It
+# prints the module path, the version and the files of the module zip.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+readonly module="github.com/Xquik-dev/x-twitter-scraper-go"
+readonly repo="${module#github.com/}"
+# The proxy protocol spells each capital letter as "!" plus the lowercase letter.
+readonly proxy="https://proxy.golang.org/github.com/!xquik-dev/x-twitter-scraper-go/@v"
+
+dry_run=false
+for argument in "$@"; do
+  case "$argument" in
+    --dry-run) dry_run=true ;;
+    *)
+      printf 'Unknown option %s. Run bin/release-local or bin/release-local --dry-run.\n' "$argument" >&2
+      exit 2
+      ;;
+  esac
+done
+
+step() { printf '==> %s\n' "$1"; }
+fail() {
+  printf '%s\n' "$1" >&2
+  exit 1
+}
+fetch() { curl --fail --silent --show-error --max-time 30 --proto '=https' "$@"; }
+
+step "Checking the release tools"
+for tool in curl gh git go jq unzip; do
+  command -v "$tool" >/dev/null 2>&1 || fail "$tool is missing. Install it, then run bin/release-local again."
+done
+
+step "Checking that main is clean and matches origin/main"
+[[ -z "$(git status --porcelain)" ]] || fail "Commit or discard your local changes first."
+[[ "$(git branch --show-current)" == main ]] || fail "Run git switch main first."
+git fetch --quiet origin main
+[[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]] ||
+  fail "Run git pull --ff-only so main matches origin/main."
+revision="$(git rev-parse HEAD)"
+
+step "Checking GitHub CLI access"
+gh auth status --hostname github.com >/dev/null 2>&1 || fail "Run gh auth login first."
+
+step "Reading the version from .release-please-manifest.json"
+version="$(jq -er '."."' .release-please-manifest.json)" ||
+  fail "Add the version to .release-please-manifest.json."
+[[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] ||
+  fail "Use a semantic version in .release-please-manifest.json, not $version."
+grep -Fq "PackageVersion = \"$version\"" internal/version.go ||
+  fail "Set PackageVersion in internal/version.go to $version."
+tag="v$version"
+
+step "Checking that $tag is not on origin yet"
+status=0
+git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null || status=$?
+case "$status" in
+  0) fail "Tag $tag already exists on origin. Bump the version first." ;;
+  2) ;;
+  *) fail "Could not read tags from origin. Check your network and GitHub access." ;;
+esac
+local_tag=false
+if git rev-parse --quiet --verify "refs/tags/$tag" >/dev/null; then
+  [[ "$(git cat-file -t "$tag")" == tag && "$(git rev-parse "$tag^{commit}")" == "$revision" ]] ||
+    fail "Local tag $tag is not an annotated tag on HEAD. Run git tag -d $tag first."
+  local_tag=true
+fi
+
+work="$(mktemp -d "${TMPDIR:-/tmp}/release-local.XXXXXX")"
+trap 'rm -rf -- "${work:?}"' EXIT
+
+step "Reading the $version notes from CHANGELOG.md"
+notes="$work/notes.md"
+awk -v version="$version" '
+  $1 == "##" && $2 == version { found = 1; next }
+  found && /^## / { exit }
+  found { print }
+' CHANGELOG.md >"$notes"
+grep -q '[^[:space:]]' "$notes" || fail "Add a ## $version section to CHANGELOG.md."
+
+step "Running bin/check-local"
+bin/check-local
+
+step "Running the dependency audit with govulncheck"
+scripts/dependency-audit ||
+  fail "Fix each blocked finding above, or review audit-exceptions.json."
+
+step "Building the module"
+go build ./... || fail "Fix the build errors above, then retry."
+
+# The proxy runs go mod download against the tagged commit. This step runs the
+# same command against a throwaway clone that carries the tag, so the zip and
+# its checksum match what the proxy will serve. Nothing leaves this machine.
+step "Building the module zip that proxy.golang.org would build"
+go_command="$(go env GOROOT)/bin/go"
+git clone --quiet --bare --no-tags . "$work/origin.git"
+git -C "$work/origin.git" tag "$tag" "$revision"
+mkdir "$work/empty"
+download="$(
+  cd "$work/empty"
+  env GOTOOLCHAIN=local GOWORK=off GOFLAGS=-modcacherw GOPROXY=direct GOSUMDB=off \
+    GOPRIVATE= GONOPROXY= GONOSUMDB= GOINSECURE= GOMODCACHE="$work/modcache" \
+    GIT_CONFIG_COUNT=2 \
+    GIT_CONFIG_KEY_0="url.file://$work/origin.git.insteadOf" GIT_CONFIG_VALUE_0="https://$module" \
+    GIT_CONFIG_KEY_1=protocol.file.allow GIT_CONFIG_VALUE_1=always \
+    "$go_command" mod download -json "$module@$tag"
+)" || fail "Go could not build the module zip. Fix the error above, then retry."
+[[ "$(jq -r '.Origin.Hash' <<<"$download")" == "$revision" ]] ||
+  fail "The module zip came from another commit. Retry from a clean main."
+files="$(unzip -Z1 "$(jq -er '.Zip' <<<"$download")" | LC_ALL=C sort)"
+printf 'Module path  %s\n' "$(jq -er '.Path' <<<"$download")"
+printf 'Version      %s\n' "$(jq -er '.Version' <<<"$download")"
+printf 'Commit       %s\n' "$revision"
+printf 'Checksum     %s\n' "$(jq -er '.Sum' <<<"$download")"
+printf 'Files        %d\n' "$(grep -c . <<<"$files")"
+if [[ "$dry_run" == true ]]; then
+  while IFS= read -r file; do
+    printf '%s\n' "${file#"$module@$tag/"}"
+  done <<<"$files"
+fi
+
+step "Checking whether proxy.golang.org already serves $tag"
+published=false
+versions="$(fetch "$proxy/list")" || fail "Could not reach proxy.golang.org. Retry later."
+if grep -Fxq "$tag" <<<"$versions"; then
+  info="$(fetch "$proxy/$tag.info")" || fail "Could not read $tag from proxy.golang.org. Retry later."
+  [[ "$(jq -r '.Origin.Hash // empty' <<<"$info")" == "$revision" ]] ||
+    fail "proxy.golang.org serves $tag from another commit. Bump the version."
+  published=true
+fi
+
+if [[ "$dry_run" == true ]]; then
+  if [[ "$published" == true ]]; then
+    printf 'proxy.golang.org already serves %s from this commit. A release would skip the upload.\n' "$tag"
+  fi
+  printf 'Dry run finished. Nothing was published, tagged or released.\n'
+  exit 0
+fi
+
+if [[ "$local_tag" == true ]]; then
+  step "Reusing the local annotated tag $tag"
+else
+  step "Creating the annotated tag $tag"
+  git tag --annotate "$tag" --message "$tag"
+fi
+
+step "Pushing $tag to origin"
+git push origin "refs/tags/$tag"
+
+if [[ "$published" == true ]]; then
+  step "proxy.golang.org already serves $tag from this commit. Skipping the upload."
+else
+  step "Asking proxy.golang.org to fetch $tag"
+  fetched=false
+  for _ in 1 2 3 4 5 6; do
+    if fetch --output /dev/null "$proxy/$tag.info" 2>/dev/null; then
+      fetched=true
+      break
+    fi
+    sleep 10
+  done
+  if [[ "$fetched" != true ]]; then
+    printf 'proxy.golang.org has not fetched %s yet. Run curl %s\n' "$tag" "$proxy/$tag.info" >&2
+  fi
+fi
+
+if gh release view "$tag" --repo "$repo" >/dev/null 2>&1; then
+  step "Publishing the existing GitHub release $tag"
+  gh release edit "$tag" --repo "$repo" --draft=false --verify-tag --title "$tag" --notes-file "$notes" ||
+    fail "Tag $tag is pushed. Publish its release with notes from CHANGELOG.md by hand."
+else
+  step "Creating the GitHub release $tag"
+  gh release create "$tag" --repo "$repo" --verify-tag --title "$tag" --notes-file "$notes" ||
+    fail "Tag $tag is pushed. Create its release with notes from CHANGELOG.md by hand."
+fi
+
+printf 'Released %s.\n' "$tag"

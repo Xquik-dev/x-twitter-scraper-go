@@ -15,13 +15,13 @@
 
 # Account
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountGetResponse">AccountGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountSetXUsernameResponse">AccountSetXUsernameResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountUpdateLocaleResponse">AccountUpdateLocaleResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /account">client.Account.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountGetResponse">AccountGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="put /account/x-identity">client.Account.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountService.SetXUsername">SetXUsername</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountSetXUsernameParams">AccountSetXUsernameParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountSetXUsernameResponse">AccountSetXUsernameResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -29,33 +29,33 @@ Methods:
 
 # Subscribe
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SubscribeNewResponse">SubscribeNewResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /subscribe">client.Subscribe.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SubscribeService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SubscribeNewParams">SubscribeNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SubscribeNewResponse">SubscribeNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Compose
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ComposeNewResponseUnion">ComposeNewResponseUnion</a>
 
-Methods:
+Methods
 
 - <code title="post /compose">client.Compose.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ComposeService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ComposeNewParams">ComposeNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ComposeNewResponseUnion">ComposeNewResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Drafts
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#Draft">Draft</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DraftDetail">DraftDetail</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DraftListResponse">DraftListResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /drafts">client.Drafts.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DraftService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DraftNewParams">DraftNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DraftDetail">DraftDetail</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /drafts/{id}">client.Drafts.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DraftService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DraftDetail">DraftDetail</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -64,7 +64,7 @@ Methods:
 
 # Styles
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleProfile">StyleProfile</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleProfileSummary">StyleProfileSummary</a>
@@ -72,7 +72,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleCompareResponse">StyleCompareResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleGetPerformanceResponse">StyleGetPerformanceResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /styles/{id}">client.Styles.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleProfile">StyleProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="put /styles/{id}">client.Styles.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleUpdateParams">StyleUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#StyleProfile">StyleProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -84,25 +84,25 @@ Methods:
 
 # Radar
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#RadarItem">RadarItem</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#RadarGetTrendingTopicsResponse">RadarGetTrendingTopicsResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /radar">client.Radar.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#RadarService.GetTrendingTopics">GetTrendingTopics</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#RadarGetTrendingTopicsParams">RadarGetTrendingTopicsParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#RadarGetTrendingTopicsResponse">RadarGetTrendingTopicsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Monitors
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#Monitor">Monitor</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorNewResponse">MonitorNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorListResponse">MonitorListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorDeactivateResponse">MonitorDeactivateResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /monitors">client.Monitors.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorNewParams">MonitorNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorNewResponse">MonitorNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /monitors/{id}">client.Monitors.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#Monitor">Monitor</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -112,7 +112,7 @@ Methods:
 
 ## Keywords
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordNewResponse">MonitorKeywordNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordGetResponse">MonitorKeywordGetResponse</a>
@@ -120,7 +120,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordListResponse">MonitorKeywordListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordDeactivateResponse">MonitorKeywordDeactivateResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /monitors/keywords">client.Monitors.Keywords.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordNewParams">MonitorKeywordNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordNewResponse">MonitorKeywordNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /monitors/keywords/{id}">client.Monitors.Keywords.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#MonitorKeywordGetResponse">MonitorKeywordGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -130,20 +130,20 @@ Methods:
 
 # Events
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#Event">Event</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#EventDetail">EventDetail</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#EventListResponse">EventListResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /events/{id}">client.Events.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#EventService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#EventDetail">EventDetail</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /events">client.Events.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#EventService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#EventListParams">EventListParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#EventListResponse">EventListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Extractions
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionJob">ExtractionJob</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionGetResponse">ExtractionGetResponse</a>
@@ -152,7 +152,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionEstimateCostResponse">ExtractionEstimateCostResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionRunResponse">ExtractionRunResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /extractions/{id}">client.Extractions.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionGetParams">ExtractionGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionGetResponse">ExtractionGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /extractions">client.Extractions.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionListParams">ExtractionListParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ExtractionListResponse">ExtractionListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -163,7 +163,7 @@ Methods:
 
 # Draws
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawDetail">DrawDetail</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawListItem">DrawListItem</a>
@@ -172,7 +172,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawListResponse">DrawListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawRunResponse">DrawRunResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /draws/{id}">client.Draws.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawGetResponse">DrawGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /draws">client.Draws.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawListParams">DrawListParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#DrawListResponse">DrawListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -181,7 +181,7 @@ Methods:
 
 # Webhooks
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#Delivery">Delivery</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#Webhook">Webhook</a>
@@ -192,7 +192,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#WebhookResumeResponse">WebhookResumeResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#WebhookTestResponse">WebhookTestResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /webhooks">client.Webhooks.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#WebhookService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#WebhookNewParams">WebhookNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#WebhookNewResponse">WebhookNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="patch /webhooks/{id}">client.Webhooks.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#WebhookService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#WebhookUpdateParams">WebhookUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#Webhook">Webhook</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -204,13 +204,13 @@ Methods:
 
 # X
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XGetArticleResponse">XGetArticleResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XGetNotificationsResponse">XGetNotificationsResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XGetTrendsResponse">XGetTrendsResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /x/articles/{tweetId}">client.X.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XService.GetArticle">GetArticle</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, tweetID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XGetArticleResponse">XGetArticleResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/timeline">client.X.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XService.GetHomeTimeline">GetHomeTimeline</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XGetHomeTimelineParams">XGetHomeTimelineParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedTweets">PaginatedTweets</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -219,17 +219,17 @@ Methods:
 
 ## WriteActions
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XWriteActionGetResponse">XWriteActionGetResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /x/write-actions/{id}">client.X.WriteActions.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XWriteActionService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XWriteActionGetResponse">XWriteActionGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Tweets
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#TweetAuthor">TweetAuthor</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#TweetDetail">TweetDetail</a>
@@ -239,7 +239,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetGetRepliesResponse">XTweetGetRepliesResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetSearchResponseUnion">XTweetSearchResponseUnion</a>
 
-Methods:
+Methods
 
 - <code title="post /x/tweets">client.X.Tweets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetNewParams">XTweetNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetNewResponse">XTweetNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/tweets/{id}">client.X.Tweets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetGetResponse">XTweetGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -254,31 +254,31 @@ Methods:
 
 ### Like
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeNewResponse">XTweetLikeNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeDeleteResponse">XTweetLikeDeleteResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/tweets/{id}/like">client.X.Tweets.Like.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeNewParams">XTweetLikeNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeNewResponse">XTweetLikeNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /x/tweets/{id}/like">client.X.Tweets.Like.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeDeleteParams">XTweetLikeDeleteParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetLikeDeleteResponse">XTweetLikeDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Retweet
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetNewResponse">XTweetRetweetNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetDeleteResponse">XTweetRetweetDeleteResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/tweets/{id}/retweet">client.X.Tweets.Retweet.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetNewParams">XTweetRetweetNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetNewResponse">XTweetRetweetNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /x/tweets/{id}/retweet">client.X.Tweets.Retweet.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetDeleteParams">XTweetRetweetDeleteParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XTweetRetweetDeleteResponse">XTweetRetweetDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Users
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserRemoveFollowerResponse">XUserRemoveFollowerResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserGetBatchResponse">XUserGetBatchResponse</a>
@@ -286,7 +286,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserGetFollowingResponseUnion">XUserGetFollowingResponseUnion</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserGetVerifiedFollowersResponseUnion">XUserGetVerifiedFollowersResponseUnion</a>
 
-Methods:
+Methods
 
 - <code title="get /x/users/{id}">client.X.Users.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#UserProfile">UserProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /x/users/{id}/remove-follower">client.X.Users.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserService.RemoveFollower">RemoveFollower</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserRemoveFollowerParams">XUserRemoveFollowerParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserRemoveFollowerResponse">XUserRemoveFollowerResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -304,59 +304,59 @@ Methods:
 
 ### Follow
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowNewResponse">XUserFollowNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowDeleteAllResponse">XUserFollowDeleteAllResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/users/{id}/follow">client.X.Users.Follow.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowNewParams">XUserFollowNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowNewResponse">XUserFollowNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /x/users/{id}/follow">client.X.Users.Follow.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowService.DeleteAll">DeleteAll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowDeleteAllParams">XUserFollowDeleteAllParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XUserFollowDeleteAllResponse">XUserFollowDeleteAllResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Followers
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XFollowerCheckResponse">XFollowerCheckResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /x/followers/check">client.X.Followers.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XFollowerService.Check">Check</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XFollowerCheckParams">XFollowerCheckParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XFollowerCheckResponse">XFollowerCheckResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Dm
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmGetHistoryResponse">XDmGetHistoryResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmSendResponse">XDmSendResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /x/dm/{userId}/history">client.X.Dm.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmService.GetHistory">GetHistory</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, userID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmGetHistoryParams">XDmGetHistoryParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmGetHistoryResponse">XDmGetHistoryResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /x/dm/{userId}">client.X.Dm.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmService.Send">Send</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, userID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmSendParams">XDmSendParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XDmSendResponse">XDmSendResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Media
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaDownloadResponse">XMediaDownloadResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaUploadResponse">XMediaUploadResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/media/download">client.X.Media.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaService.Download">Download</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaDownloadParams">XMediaDownloadParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaDownloadResponse">XMediaDownloadResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /x/media">client.X.Media.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaService.Upload">Upload</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaUploadParams">XMediaUploadParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XMediaUploadResponse">XMediaUploadResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Profile
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileUpdateResponse">XProfileUpdateResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileUpdateAvatarResponse">XProfileUpdateAvatarResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileUpdateBannerResponse">XProfileUpdateBannerResponse</a>
 
-Methods:
+Methods
 
 - <code title="patch /x/profile">client.X.Profile.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileUpdateParams">XProfileUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileUpdateResponse">XProfileUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="patch /x/profile/avatar">client.X.Profile.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileService.UpdateAvatar">UpdateAvatar</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileUpdateAvatarParams">XProfileUpdateAvatarParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XProfileUpdateAvatarResponse">XProfileUpdateAvatarResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -364,13 +364,13 @@ Methods:
 
 ## Communities
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityNewResponse">XCommunityNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityDeleteResponse">XCommunityDeleteResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityGetInfoResponse">XCommunityGetInfoResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/communities">client.X.Communities.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityNewParams">XCommunityNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityNewResponse">XCommunityNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /x/communities/{id}">client.X.Communities.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityDeleteParams">XCommunityDeleteParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityDeleteResponse">XCommunityDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -381,26 +381,26 @@ Methods:
 
 ### Join
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinNewResponse">XCommunityJoinNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinDeleteAllResponse">XCommunityJoinDeleteAllResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/communities/{id}/join">client.X.Communities.Join.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinNewParams">XCommunityJoinNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinNewResponse">XCommunityJoinNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /x/communities/{id}/join">client.X.Communities.Join.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinService.DeleteAll">DeleteAll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinDeleteAllParams">XCommunityJoinDeleteAllParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityJoinDeleteAllResponse">XCommunityJoinDeleteAllResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Tweets
 
-Methods:
+Methods
 
 - <code title="get /x/communities/tweets">client.X.Communities.Tweets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityTweetService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityTweetListParams">XCommunityTweetListParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedTweets">PaginatedTweets</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/communities/{id}/tweets">client.X.Communities.Tweets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityTweetService.ListByCommunity">ListByCommunity</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XCommunityTweetListByCommunityParams">XCommunityTweetListByCommunityParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedTweets">PaginatedTweets</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Accounts
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccount">XAccount</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountDetail">XAccountDetail</a>
@@ -410,7 +410,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountBulkRetryResponse">XAccountBulkRetryResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountReauthResponse">XAccountReauthResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/accounts">client.X.Accounts.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountNewParams">XAccountNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountNewResponseUnion">XAccountNewResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/accounts/{id}">client.X.Accounts.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountDetail">XAccountDetail</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -421,43 +421,43 @@ Methods:
 
 ## AccountConnectionChallenges
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionChallengeSubmitResponse">XAccountConnectionChallengeSubmitResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /x/account-connection-challenges/{id}/submit">client.X.AccountConnectionChallenges.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionChallengeService.Submit">Submit</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionChallengeSubmitParams">XAccountConnectionChallengeSubmitParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionChallengeSubmitResponse">XAccountConnectionChallengeSubmitResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## AccountConnectionAttempts
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionAttemptGetResponseUnion">XAccountConnectionAttemptGetResponseUnion</a>
 
-Methods:
+Methods
 
 - <code title="get /x/account-connection-attempts/{id}">client.X.AccountConnectionAttempts.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionAttemptService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XAccountConnectionAttemptGetResponseUnion">XAccountConnectionAttemptGetResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Bookmarks
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XBookmarkGetFoldersResponse">XBookmarkGetFoldersResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /x/bookmarks">client.X.Bookmarks.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XBookmarkService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XBookmarkListParams">XBookmarkListParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedTweets">PaginatedTweets</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/bookmarks/folders">client.X.Bookmarks.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XBookmarkService.GetFolders">GetFolders</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XBookmarkGetFoldersResponse">XBookmarkGetFoldersResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Lists
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListGetFollowersResponseUnion">XListGetFollowersResponseUnion</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListGetMembersResponseUnion">XListGetMembersResponseUnion</a>
 
-Methods:
+Methods
 
 - <code title="get /x/lists/{id}/followers">client.X.Lists.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListService.GetFollowers">GetFollowers</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListGetFollowersParams">XListGetFollowersParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListGetFollowersResponseUnion">XListGetFollowersResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /x/lists/{id}/members">client.X.Lists.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListService.GetMembers">GetMembers</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListGetMembersParams">XListGetMembersParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#XListGetMembersResponseUnion">XListGetMembersResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -465,11 +465,11 @@ Methods:
 
 # Trends
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#TrendListResponse">TrendListResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /trends">client.Trends.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#TrendService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#TrendListParams">TrendListParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#TrendListResponse">TrendListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
@@ -477,13 +477,13 @@ Methods:
 
 ## Attachments
 
-Methods:
+Methods
 
 - <code title="get /support/attachments/{id}">client.Support.Attachments.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportAttachmentService.Download">Download</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportAttachmentDownloadParams">SupportAttachmentDownloadParams</a>) (\*http.Response, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Tickets
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketNewResponse">SupportTicketNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketGetResponse">SupportTicketGetResponse</a>
@@ -491,7 +491,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketListResponse">SupportTicketListResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketReplyResponse">SupportTicketReplyResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /support/tickets">client.Support.Tickets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketNewParams">SupportTicketNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketNewResponse">SupportTicketNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /support/tickets/{id}">client.Support.Tickets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#SupportTicketGetResponse">SupportTicketGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -501,13 +501,13 @@ Methods:
 
 # Credits
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#CreditGetBalanceResponse">CreditGetBalanceResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#CreditGetTopupStatusResponse">CreditGetTopupStatusResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#CreditTopupBalanceResponse">CreditTopupBalanceResponse</a>
 
-Methods:
+Methods
 
 - <code title="get /credits/topup/redirect">client.Credits.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#CreditService.RedirectTopupCheckout">RedirectTopupCheckout</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#CreditRedirectTopupCheckoutParams">CreditRedirectTopupCheckoutParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="get /credits">client.Credits.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#CreditService.GetBalance">GetBalance</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#CreditGetBalanceResponse">CreditGetBalanceResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
@@ -516,14 +516,14 @@ Methods:
 
 # GuestWallets
 
-Response Types:
+Response Types
 
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletAmount">GuestWalletAmount</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletNewResponse">GuestWalletNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletGetStatusResponse">GuestWalletGetStatusResponse</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletTopupResponse">GuestWalletTopupResponse</a>
 
-Methods:
+Methods
 
 - <code title="post /guest-wallets">client.GuestWallets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletNewParams">GuestWalletNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletNewResponse">GuestWalletNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /guest-wallets/status">client.GuestWallets.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletService.GetStatus">GetStatus</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#GuestWalletGetStatusResponse">GuestWalletGetStatusResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>

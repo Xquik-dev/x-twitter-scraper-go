@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
-
 package xtwitterscraper
 
 import (
@@ -46,7 +44,7 @@ func NewMonitorKeywordService(opts ...option.RequestOption) (r MonitorKeywordSer
 }
 
 // Creates a keyword monitor. Keyword monitors are unlimited. Active monitors check
-// every 1 second and cost 21 credits per hour. Events and webhook deliveries are
+// every 1 second and cost 30 credits per hour. Events and webhook deliveries are
 // included. Creation requires available credits for the first hourly charge.
 func (r *MonitorKeywordService) New(ctx context.Context, body MonitorKeywordNewParams, opts ...option.RequestOption) (res *MonitorKeywordNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)

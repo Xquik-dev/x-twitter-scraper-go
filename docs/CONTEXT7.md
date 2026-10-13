@@ -8,9 +8,9 @@ Install, authenticate, and send your first Xquik request from Go.
 go get github.com/Xquik-dev/x-twitter-scraper-go@latest
 ```
 
-Use Go 1.26.6 or newer.
+Use Go 1.27.2 or newer.
 
-Import the SDK as `xtwitterscraper`:
+Import the SDK as `xtwitterscraper`.
 
 ```go
 import (
@@ -21,13 +21,13 @@ import (
 
 ## Authenticate
 
-Set an API key in the process environment:
+Set an API key in the process environment.
 
 ```sh
 export X_TWITTER_SCRAPER_API_KEY="your-api-key"
 ```
 
-Create a client:
+Create a client.
 
 ```go
 client := xtwitterscraper.NewClient(
@@ -40,7 +40,7 @@ files, logs, examples, issues, or commits.
 
 ## First Request
 
-Search recent tweets with X query operators:
+Search recent tweets with X query operators.
 
 ```go
 paginatedTweets, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{

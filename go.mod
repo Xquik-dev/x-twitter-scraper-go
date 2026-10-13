@@ -1,6 +1,6 @@
 module github.com/Xquik-dev/x-twitter-scraper-go
 
-go 1.27.1
+go 1.27.2
 
 require (
 	github.com/srvgit/gocove v0.0.0-20260427173940-a0dceb9dadca

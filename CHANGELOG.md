@@ -2,12 +2,366 @@
 
 ## 0.19.0 (2026-09-12)
 
-Full Changelog: [v0.18.1...v0.19.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.1...v0.19.0)
+[Full changelog from v0.18.1 to v0.19.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.1...v0.19.0)
 
+- **Breaking.** `X.Accounts.List` returns 1 page, with 50 accounts by default. A caller with more accounts gets fewer rows and no error. Read every page with `HasMore` & `NextCursor`.
+- **Breaking.** Code written for 0.18 can stop compiling. "Upgrading from 0.18" shows each change with old & new code.
 - Add optional retweet timestamp requests and nullable `retweetedAt` response fields.
 - Redact sensitive headers regardless of capitalization without changing the input.
-- Use Go 1.27.1 and native license checks.
+- Use Go 1.27.2 and native license checks.
 - Preserve JSON behavior while replacing obsolete compatibility helpers.
+- Doc comments use the current price. An active monitor costs 30 credits per hour.
+
+### Upgrading from 0.18
+
+`X.Accounts.List` returns 1 page, with 50 accounts by default.
+A caller with more than 50 accounts gets fewer rows and no error.
+Read every page with `HasMore` & `NextCursor`, as the first section shows.
+
+Go's `apidiff` tool reports 79 incompatible changes from v0.18.1 to v0.19.0.
+The sections below cover all 79, and each heading gives its count.
+The Go 1.27.2 minimum comes on top, because `apidiff` compares only Go declarations.
+
+#### `X.Accounts.List` takes params & returns 1 page (1 change)
+
+The method has a new `XAccountListParams` argument.
+A page holds 50 accounts by default, and `Limit` accepts 1 to 100.
+The response has 2 new fields, `HasMore` & `NextCursor`.
+
+This code compiled with 0.18.
+
+```go
+response, err := client.X.Accounts.List(ctx)
+if err != nil {
+	return err
+}
+accounts := response.Accounts
+```
+
+Write this with 0.19. It reads every page.
+
+```go
+params := xtwitterscraper.XAccountListParams{Limit: xtwitterscraper.Int(100)}
+var accounts []xtwitterscraper.XAccount
+for {
+	page, err := client.X.Accounts.List(ctx, params)
+	if err != nil {
+		return err
+	}
+	accounts = append(accounts, page.Accounts...)
+	if !page.HasMore || page.NextCursor == "" {
+		break
+	}
+	params.Cursor = xtwitterscraper.String(page.NextCursor)
+}
+```
+
+#### `X.Lists.GetFollowers` & `X.Lists.GetMembers` return union types (2 changes)
+
+Each method returned `*shared.PaginatedUsers`.
+`GetFollowers` now returns `*XListGetFollowersResponseUnion`, and `GetMembers` returns `*XListGetMembersResponseUnion`.
+`HasNextPage`, `NextCursor` & `Users` keep their names, so only code that names the type changes.
+
+This code compiled with 0.18.
+
+```go
+var followers *shared.PaginatedUsers
+followers, err := client.X.Lists.GetFollowers(ctx, listID, xtwitterscraper.XListGetFollowersParams{})
+if err != nil {
+	return err
+}
+var members *shared.PaginatedUsers
+members, err = client.X.Lists.GetMembers(ctx, listID, xtwitterscraper.XListGetMembersParams{})
+if err != nil {
+	return err
+}
+fmt.Println(len(followers.Users), len(members.Users))
+```
+
+Write this with 0.19.
+
+```go
+var followers *xtwitterscraper.XListGetFollowersResponseUnion
+followers, err := client.X.Lists.GetFollowers(ctx, listID, xtwitterscraper.XListGetFollowersParams{})
+if err != nil {
+	return err
+}
+var members *xtwitterscraper.XListGetMembersResponseUnion
+members, err = client.X.Lists.GetMembers(ctx, listID, xtwitterscraper.XListGetMembersParams{})
+if err != nil {
+	return err
+}
+fmt.Println(len(followers.Users), len(members.Users))
+
+// AsPaginatedUsers returns the type that 0.18 returned.
+var page shared.PaginatedUsers = followers.AsPaginatedUsers()
+fmt.Println(page.HasNextPage)
+```
+
+#### `Entities` is a struct on 6 tweet types (6 changes)
+
+`Entities` was `map[string]any`.
+It is now a struct with `Hashtags`, `Smarttags`, `Symbols`, `Timestamps`, `URLs` & `UserMentions`.
+The 6 types are `TweetDetail`, `TweetDetailNoteTweet`, `shared.EmbeddedTweet`, `shared.EmbeddedTweetNoteTweet`, `shared.SearchTweet` & `shared.SearchTweetNoteTweet`.
+
+This code compiled with 0.18.
+
+```go
+page, err := client.X.Tweets.Search(ctx, xtwitterscraper.XTweetSearchParams{Q: "from:elonmusk"})
+if err != nil {
+	return err
+}
+for _, tweet := range page.Tweets {
+	urls, _ := tweet.Entities["urls"].([]any)
+	for _, item := range urls {
+		link, _ := item.(map[string]any)
+		fmt.Println(link["expanded_url"])
+	}
+}
+```
+
+Write this with 0.19.
+
+```go
+page, err := client.X.Tweets.Search(ctx, xtwitterscraper.XTweetSearchParams{Q: "from:elonmusk"})
+if err != nil {
+	return err
+}
+for _, tweet := range page.Tweets {
+	for _, link := range tweet.Entities.URLs {
+		fmt.Println(link.ExpandedURL)
+	}
+}
+```
+
+#### Quoted & retweeted tweets are structs on `shared.EmbeddedTweet` (2 changes)
+
+`QuotedTweet` & `RetweetedTweet` were `*shared.EmbeddedTweet`.
+They are now the structs `shared.EmbeddedTweetQuotedTweet` & `shared.EmbeddedTweetRetweetedTweet`.
+A nil check no longer compiles, so check presence with the `JSON` metadata.
+
+This code compiled with 0.18.
+
+```go
+embedded := tweet.QuotedTweet
+if embedded.QuotedTweet != nil {
+	fmt.Println(embedded.QuotedTweet.Text)
+}
+if embedded.RetweetedTweet != nil {
+	fmt.Println(embedded.RetweetedTweet.Text)
+}
+```
+
+Write this with 0.19.
+
+```go
+embedded := tweet.QuotedTweet
+if embedded.JSON.QuotedTweet.Valid() {
+	fmt.Println(embedded.QuotedTweet.Text)
+}
+if embedded.JSON.RetweetedTweet.Valid() {
+	fmt.Println(embedded.RetweetedTweet.Text)
+}
+```
+
+#### Extraction jobs, results & sources are typed (3 changes)
+
+`ExtractionGetResponse.Job` was `map[string]any` and is now `ExtractionJob`.
+`ExtractionGetResponse.Results` was `[]map[string]any` and is now `[]ExtractionGetResponseResult`.
+`ExtractionRunResponse.Source` was `string` and is now `ExtractionRunResponseSource`.
+
+This code compiled with 0.18.
+
+```go
+response, err := client.Extractions.Get(ctx, extractionID, xtwitterscraper.ExtractionGetParams{})
+if err != nil {
+	return err
+}
+status, _ := response.Job["status"].(string)
+fmt.Println(status)
+for _, row := range response.Results {
+	fmt.Println(row["tweetText"])
+}
+
+estimate, err := client.Extractions.Run(ctx, params)
+if err != nil {
+	return err
+}
+var source string = estimate.Source
+fmt.Println(source)
+```
+
+Write this with 0.19.
+
+```go
+response, err := client.Extractions.Get(ctx, extractionID, xtwitterscraper.ExtractionGetParams{})
+if err != nil {
+	return err
+}
+status := string(response.Job.Status)
+fmt.Println(status)
+for _, row := range response.Results {
+	fmt.Println(row.TweetText)
+}
+
+estimate, err := client.Extractions.Run(ctx, params)
+if err != nil {
+	return err
+}
+var source string = string(estimate.Source)
+fmt.Println(source)
+```
+
+#### Go 1.27.2 is the minimum (not among the 79)
+
+The module required Go 1.26.6 in 0.18 and requires Go 1.27.2 in 0.19.
+`go get` raises the `go` line in your `go.mod` to match.
+
+Your `go.mod` held this line or an older one with 0.18.
+
+```
+go 1.26.6
+```
+
+It holds this line with 0.19.
+
+```
+go 1.27.2
+```
+
+Go downloads the 1.27.2 toolchain when yours is older.
+It stops with an error instead when `GOTOOLCHAIN=local` is set.
+The module also requires `golang.org/x/tools` v0.50.0, `golang.org/x/mod` v0.41.0 & `golang.org/x/sync` v0.23.0 for its tests & commands.
+A build that uses an older version of 1 of them moves up to that version.
+
+#### `MinFaves` is now `MinLikes` on 9 params types (9 changes)
+
+The field `MinFaves` is gone, and `MinLikes` replaces it.
+The query key changes from `minFaves` to `minLikes`. The API accepts both.
+The 9 types are `XTweetGetQuotesParams`, `XTweetGetRepliesParams`, `XTweetGetThreadParams`, `XTweetSearchParams`, `XUserGetLikesParams`, `XUserGetMediaParams`, `XUserGetMentionsParams`, `XUserGetRepliesParams` & `XUserGetTweetsParams`.
+
+This code compiled with 0.18.
+
+```go
+params := xtwitterscraper.XTweetSearchParams{
+	Q:        "from:elonmusk",
+	MinFaves: xtwitterscraper.Int(100),
+}
+```
+
+Write this with 0.19.
+
+```go
+params := xtwitterscraper.XTweetSearchParams{
+	Q:        "from:elonmusk",
+	MinLikes: xtwitterscraper.Int(100),
+}
+```
+
+#### 3 detail types embed their summary type (19 changes)
+
+`DraftDetail` embeds `Draft`, `DrawDetail` embeds `DrawListItem`, and `StyleProfile` embeds `StyleProfileSummary`.
+`apidiff` counts 16 moved fields & 3 changed `JSON` structs.
+Field reads such as `draft.ID` and struct literals still compile.
+A presence check on a moved field now goes through the embedded type.
+
+- `DraftDetail` moved `ID`, `CreatedAt`, `Text`, `Goal` & `Topic`.
+- `DrawDetail` moved `ID`, `CreatedAt`, `DrawnAt`, `Status`, `TotalEntries`, `TweetURL` & `ValidEntries`.
+- `StyleProfile` moved `FetchedAt`, `IsOwnAccount`, `TweetCount` & `XUsername`.
+
+This code compiled with 0.18.
+
+```go
+draft, err := client.Drafts.Get(ctx, draftID)
+if err != nil {
+	return err
+}
+if draft.JSON.Goal.Valid() {
+	fmt.Println(draft.Goal)
+}
+```
+
+Write this with 0.19.
+
+```go
+draft, err := client.Drafts.Get(ctx, draftID)
+if err != nil {
+	return err
+}
+if draft.Draft.JSON.Goal.Valid() {
+	fmt.Println(draft.Goal)
+}
+```
+
+`draw.JSON.Status` becomes `draw.DrawListItem.JSON.Status` the same way.
+`profile.JSON.TweetCount` becomes `profile.StyleProfileSummary.JSON.TweetCount`.
+
+#### 1 constant & 1 constant type are gone (3 changes)
+
+`ExtractionEstimateCostResponseSourcePosts` is gone.
+`constant.ProductionWeightNotPublishedByX` is gone.
+`ComposeNewResponseComposePrepareResultEngagementMultiplier.Multiplier` now has the type `constant.SourceDefaultProductionValueCanVary`.
+
+This code compiled with 0.18.
+
+```go
+if estimate.Source == xtwitterscraper.ExtractionEstimateCostResponseSourcePosts {
+	fmt.Println("The estimate counts posts.")
+}
+var note constant.ProductionWeightNotPublishedByX = multiplier.Multiplier
+fmt.Println(note)
+```
+
+Write this with 0.19.
+
+```go
+if estimate.Source == "posts" {
+	fmt.Println("The estimate counts posts.")
+}
+var note constant.SourceDefaultProductionValueCanVary = multiplier.Multiplier
+fmt.Println(note)
+```
+
+#### 34 `JSON` metadata structs gained fields (34 changes)
+
+`apidiff` flags a type when its `JSON` struct gains a field.
+No caller code changes for these 34.
+Each `JSON` struct has an unexported field, so code outside the SDK cannot name its type.
+
+- `ExtractionGetResponse`
+- `ExtractionJob`
+- `MonitorDeactivateResponse`
+- `MonitorKeywordDeactivateResponse`
+- `TweetDetail`
+- `TweetDetailArticle`
+- `TweetDetailCard`
+- `TweetDetailCommunityNote`
+- `TweetDetailEdit`
+- `TweetDetailNoteTweet`
+- `XAccountListResponse`
+- `XBookmarkGetFoldersResponseFolder`
+- `XTweetSearchResponseUnion`
+- `XUserGetBatchResponse`
+- `XUserGetFollowersResponseUnion`
+- `XUserGetFollowingResponseUnion`
+- `XUserGetVerifiedFollowersResponseUnion`
+- `shared.EmbeddedTweet`
+- `shared.EmbeddedTweetArticle`
+- `shared.EmbeddedTweetCard`
+- `shared.EmbeddedTweetCommunityNote`
+- `shared.EmbeddedTweetEdit`
+- `shared.EmbeddedTweetNoteTweet`
+- `shared.PaginatedTweets`
+- `shared.PaginatedUsers`
+- `shared.SearchTweet`
+- `shared.SearchTweetArticle`
+- `shared.SearchTweetCard`
+- `shared.SearchTweetCommunityNote`
+- `shared.SearchTweetEdit`
+- `shared.SearchTweetNoteTweet`
+- `shared.TweetMedia`
+- `shared.UserProfile`
+- `shared.UserProfileAffiliatesHighlightedLabel`
 
 ## 0.18.1 (2026-08-21)
 
