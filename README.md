@@ -1,4 +1,4 @@
-# Xquik Go SDK: Twitter Search, Followers & X Automation
+# X API & Twitter API Go SDK by Xquik
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13734/badge)](https://www.bestpractices.dev/projects/13734)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
@@ -10,9 +10,17 @@
 
 <!-- x-release-please-end -->
 
-Use the Xquik Go SDK for Twitter search, profiles, followers & media.
-Manage webhooks, bulk extractions & X automation with typed Go methods.
-The module calls the documented Xquik REST API.
+Use this X API & Twitter API SDK to work with X from Go.
+It works as a Twitter scraper & tweet scraper for search, profiles & followers.
+Scrape Twitter timelines, lists, communities & trends into typed Go structs.
+Manage media, webhooks, monitors & X automation with typed Go methods.
+It provides a Twitter API alternative through documented Xquik REST routes.
+
+Xquik is the world's fastest and cheapest X Twitter scraper service with the most complete X data.
+Xquik charges only for delivered, unique, filter-matching results and never pads rows.
+
+> Xquik is an independent third-party service. Not affiliated with X Corp.
+> "Twitter" and "X" are trademarks of X Corp.
 
 ## Twitter API Alternative
 
@@ -47,7 +55,7 @@ import (
 
 <!-- x-release-please-end -->
 
-Or to pin the version:
+Or pin the version.
 
 <!-- x-release-please-start-version -->
 
@@ -60,7 +68,7 @@ go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.19.0'
 ## Verify a Release
 
 Go checks every module download against the public checksum database.
-To see the commit behind a release, run:
+Run this command to see the commit behind a release.
 
 ```sh
 go mod download -json github.com/Xquik-dev/x-twitter-scraper-go@vVERSION
@@ -69,7 +77,7 @@ go mod download -json github.com/Xquik-dev/x-twitter-scraper-go@vVERSION
 `Origin.Hash` names the tagged commit.
 
 Releases through v0.18.1 also attach a source archive signed by the former release workflow.
-Verify one of those archives before upgrading:
+Verify one of those archives before upgrading.
 
 ```sh
 release_tag=v0.18.1
@@ -313,13 +321,13 @@ See the [full list of request options](https://pkg.go.dev/github.com/Xquik-dev/x
 ### Pagination
 
 `.ListAutoPaging()` iterates across every page.
-`.List()` fetches one page; call `.GetNextPage()` for the next.
+`.List()` fetches 1 page. Call `.GetNextPage()` for the next.
 
 ### Errors
 
 Non-2xx responses return `*xtwitterscraper.Error`.
 It contains the status, request, response & decoded error body.
-Use `errors.As` to inspect those details:
+Use `errors.As` to inspect those details.
 
 ```go
 _, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
@@ -360,7 +368,7 @@ client.X.Tweets.Search(
 ### File Uploads
 
 Multipart file parameters accept `io.Reader`.
-The default filename is `anonymous_file`; the default media type is `application/octet-stream`.
+The default filename is `anonymous_file`, and the default media type is `application/octet-stream`.
 Implement `Name() string` or `ContentType() string` to override either value.
 `os.File` already supplies its disk filename through `Name()`.
 Use `xtwitterscraper.File` to wrap any reader with explicit metadata.
@@ -390,7 +398,7 @@ xtwitterscraper.XMediaUploadParams{
 
 The SDK retries connection errors & HTTP 408, 409, 429, and 5xx responses.
 It uses exponential backoff with 2 retries by default.
-Use `WithMaxRetries` to change or disable retries:
+Use `WithMaxRetries` to change or disable retries.
 
 ```go
 // Set the client default.

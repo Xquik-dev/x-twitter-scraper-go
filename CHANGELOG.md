@@ -6,7 +6,7 @@ Full Changelog: [v0.18.1...v0.19.0](https://github.com/Xquik-dev/x-twitter-scrap
 
 - Add optional retweet timestamp requests and nullable `retweetedAt` response fields.
 - Redact sensitive headers regardless of capitalization without changing the input.
-- Use Go 1.27.1 and native license checks.
+- Use Go 1.27.2 and native license checks.
 - Preserve JSON behavior while replacing obsolete compatibility helpers.
 
 ## 0.18.1 (2026-08-21)
