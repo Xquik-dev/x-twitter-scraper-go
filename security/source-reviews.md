@@ -4,6 +4,7 @@ The user approved these 123 exact findings on 2026-09-12.
 On 2026-10-13, `scripts/move_source_reviews.go` moved 68 of them to new line numbers & file hashes.
 It moves a finding only when its code & surrounding lines are unchanged, and it changed no reason.
 3 records name `cmd/reproducible-build/upload_test.go`, which no longer exists, so nothing can match them.
+On 2026-10-13, 5 findings in `internal/scripttest` were reviewed and added. Each runs only in tests, with input the test controls.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
 Their order is rule, file, line, code, source hash, severity, confidence, details.
@@ -1732,4 +1733,74 @@ Finding: Errors unhandled
 22: 		w.Header().Set("Content-Type", "application/json")
 23: 		_, _ = io.WriteString(w, "{}")
 24: 	}))
+```
+
+## G204 in internal/scripttest/release_local_test.go:141
+
+Test-only Git helper. The tests pass literal Git arguments, and the command runs in a temporary repository that the test created. No input comes from outside the test.
+
+Source SHA-256: `f5a2e37d58b467e1f4629280271f180fb60c9aa11df697f65ac06c06ae6808d6`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Subprocess launched with variable
+
+```go
+140: 	fixture.t.Helper()
+141: 	command := exec.Command("git", args...)
+142: 	command.Dir, command.Env = directory, fixture.env
+```
+
+## G204 in internal/scripttest/dependency_audit_test.go:116
+
+Test-only runner for scripts/dependency-audit. The script path is this repository's file, and root is the test's temporary folder. A fake go command and fixed report files stand in for every outside system.
+
+Source SHA-256: `cfd0b9e20afadea6250ca048362229e94cbb4291ebbac0033be95affb44ed17b`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Subprocess launched with variable
+
+```go
+115: 	write("audit-exceptions.json", encode(exceptions), 0o644)
+116: 	command := exec.Command(script, root)
+117: 	command.Env = append(os.Environ(),
+```
+
+## G204 in internal/scripttest/codeql_security_test.go:60
+
+Test-only runner for scripts/codeql-security. The script path is this repository's file, and a fake CodeQL command that the test wrote stands in for the real CLI.
+
+Source SHA-256: `d297bdf991398be289adf92ac888d1dc7ba258a05bf4b56a04bed4c18b217a3e`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Subprocess launched with variable
+
+```go
+59: 	}
+60: 	command := exec.Command(script)
+61: 	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "TMPDIR="+root)
+```
+
+## G204 in internal/scripttest/release_local_test.go:152
+
+Test-only runner for bin/release-local. The path points at the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake gh and curl commands stand in for GitHub and the module proxy.
+
+Source SHA-256: `f5a2e37d58b467e1f4629280271f180fb60c9aa11df697f65ac06c06ae6808d6`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Subprocess launched with a potential tainted input or cmd arguments
+
+```go
+151: 	fixture.t.Helper()
+152: 	command := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
+153: 	command.Dir, command.Env = fixture.t.TempDir(), fixture.env
+```
+
+## G306 in internal/scripttest/codeql_security_test.go:54
+
+Test-only stand-in for the CodeQL CLI, written into the test's temporary folder. It must be executable, so it needs mode 0o755. Its content is a literal in the test.
+
+Source SHA-256: `d297bdf991398be289adf92ac888d1dc7ba258a05bf4b56a04bed4c18b217a3e`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Expect WriteFile permissions to be 0600 or less
+
+```go
+53: 	reportPath := filepath.Join(root, "report.sarif")
+54: 	if err := os.WriteFile(codeql, []byte(fakeCodeQL), 0o755); err != nil {
+55: 		t.Fatal(err)
 ```

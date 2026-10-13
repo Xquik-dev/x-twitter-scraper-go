@@ -54,7 +54,7 @@ func runCodeQLSecurity(t *testing.T, report string) auditResult {
 	if err := os.WriteFile(codeql, []byte(fakeCodeQL), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(reportPath, []byte(report), 0o644); err != nil {
+	if err := os.WriteFile(reportPath, []byte(report), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	command := exec.Command(script)
