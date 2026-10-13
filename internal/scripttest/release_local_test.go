@@ -99,7 +99,7 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 		"gh-settings/.keep":                  {"", 0o644},
 	} {
 		path := filepath.Join(root, name)
-		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 			t.Fatal(err)
 		}
 		if err := os.WriteFile(path, []byte(file.data), file.mode); err != nil {

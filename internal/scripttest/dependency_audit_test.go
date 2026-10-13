@@ -89,7 +89,7 @@ func runAudit(t *testing.T, goCommand string, findings []finding, exceptions any
 	write := func(name string, data []byte, mode os.FileMode) string {
 		t.Helper()
 		path := filepath.Join(root, name)
-		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 			t.Fatal(err)
 		}
 		if err := os.WriteFile(path, data, mode); err != nil {
