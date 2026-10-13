@@ -5,7 +5,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 report="$(mktemp "${TMPDIR:-/tmp}/xquik-gosec.XXXXXX")"
 status=0
-go run github.com/securego/gosec/v2/cmd/gosec@v2.29.0 -tests -nosec -enable-audit -track-suppressions -fmt=json ./... > "$report" || status=$?
+# gosec 2.29.0 pins a golang.org/x/tools that cannot read Go 1.27 export data.
+# tools/gosec/go.mod builds the same gosec with a newer x/tools. Its folder is a
+# separate module, so the tool stays out of go.mod and the published module.
+go tool -modfile=tools/gosec/go.mod gosec -tests -nosec -enable-audit -track-suppressions -fmt=json ./... > "$report" || status=$?
 cat "$report"
 echo "Raw source scan exit: $status; retained report: $report"
 if [ "$status" -gt 1 ]; then exit "$status"; fi
