@@ -4,7 +4,7 @@ This register tracks the Gold assessment for this repository.
 
 The official entry is [bestpractices.dev project 13734][badge].
 
-Assessment date: 2026-07-23.
+The assessment is dated 2026-07-23.
 
 ## Eligibility
 

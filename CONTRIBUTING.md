@@ -69,15 +69,15 @@ SDK commits are exempt from LOC reductions and per-commit coverage gains.
 
 Preserve coverage and report all four metrics against the verified parent.
 
-SDK checks have no time limit; builds run separately.
+SDK checks have no time limit. Builds run separately.
 
 Full checks run the complete 2-minute fuzz campaign directly.
 SDK elapsed time remains visible and never blocks delivery by itself.
 
 Install official CodeQL CLI 2.27.0 and verify its published archive checksum.
-Set `XQUIK_CODEQL_BIN` to the executable or use its default location:
+Set `XQUIK_CODEQL_BIN` to the executable or use its default location.
 `~/.cache/xquik-codeql/2.27.0/codeql/codeql`.
-Download the pinned query pack before validation:
+Download the pinned query pack before validation.
 
 ```sh
 "$XQUIK_CODEQL_BIN" pack download codeql/go-queries@1.6.10
@@ -118,12 +118,12 @@ JSON output identifies success or failure. Raw module evidence remains available
 `bin/release-local` attaches no signed source archive.
 To attach one, run `bun run release:publish` on the tagged commit afterwards.
 It uses locked Sigstore 4.5.0 tooling and GitHub CLI authentication.
-Use uv 0.12.13; the command selects Python 3.14.7 automatically.
+Use uv 0.12.13. The command selects Python 3.14.7 automatically.
 Set `XQUIK_RELEASE_IDENTITY` and `XQUIK_RELEASE_ISSUER` to the authorized signer.
 Signing uses Sigstore authentication and records local build provenance publicly.
 Its attestations identify that signer.
 It verifies signatures before uploading and rejects conflicting existing artifacts.
-Retry the same command after partial publication; matching artifacts are retained.
+Retry the same command after partial publication. Matching artifacts are retained.
 
 ## Report Security Issues
 
