@@ -23,7 +23,7 @@ No OpenSSF-defined ineligibility applies.
 | Statement coverage | `scripts/collect-coverage` measures statement coverage |
 | Branch coverage | `scripts/collect-branches` measures branch coverage |
 | Static analysis | `go vet` and CodeQL security-extended queries |
-| Dependency review | `go mod verify` and `govulncheck` |
+| Dependency review | `go mod verify` and `scripts/dependency-audit`, which runs `govulncheck` |
 | Licensing gate | `bin/check-local` runs REUSE lint on every repository file |
 | Reproducibility | 2 normalized module archives must have identical hashes |
 | Local checks | `bin/check-local` runs every check; no GitHub Actions workflow runs |

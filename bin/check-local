@@ -4,7 +4,10 @@
 #
 # Runs the checks that GitHub Actions used to run, in the same order.
 # Stops at the first failure and says what to do next.
-# Posts the xquik-local-checks commit status when HEAD is clean and on GitHub.
+# When HEAD is clean and on GitHub, posts the xquik-local-checks commit status
+# through the GitHub CLI login of whoever runs it. On the release machine, that
+# is the owner's gh login. The status lists only the checks that ran and passed,
+# and it says success only after every required check passed.
 # --no-status skips the commit status.
 # FUZZ_TIME sets the fuzzing time. The default is 15s; use 2m for a full campaign.
 set -euo pipefail
@@ -29,7 +32,8 @@ fuzz_time="${FUZZ_TIME:-15s}"
 sha="$(git rev-parse HEAD)"
 current=""
 checks_passed=0
-reuse_note=""
+passed=""
+skipped=""
 
 if [[ "$post_status" == true ]]; then
   skip_reason=""
@@ -57,9 +61,12 @@ post() {
 finish() {
   local code=$?
   if ((code == 0)); then
-    local go_version
+    local go_version list="$passed"
     go_version="$(go env GOVERSION 2>/dev/null || true)"
-    post success "All $checks_passed checks passed on ${go_version:-Go}: lint, tests, coverage, race, govulncheck, archive, CodeQL & fuzz$reuse_note"
+    if [[ "$list" == *", "* ]]; then
+      list="${list%, *} & ${list##*, }"
+    fi
+    post success "Passed on ${go_version:-Go}: $list${skipped:+; skipped $skipped}"
   elif [[ -n "$current" ]]; then
     post failure "$current failed after $checks_passed passed checks. Run bin/check-local for details."
   else
@@ -69,11 +76,11 @@ finish() {
 }
 trap finish EXIT
 
-post pending "Running module, lint, license, test, coverage, race, audit, archive, CodeQL & fuzz checks"
+post pending "bin/check-local is running."
 
 run() {
-  local name="$1" fix="$2"
-  shift 2
+  local label="$1" name="$2" fix="$3"
+  shift 3
   current="$name"
   printf '==> %s\n' "$name"
   if ! "$@"; then
@@ -81,6 +88,7 @@ run() {
     exit 1
   fi
   checks_passed=$((checks_passed + 1))
+  passed="${passed:+$passed, }$label"
 }
 
 reuse_lint() {
@@ -91,25 +99,25 @@ reuse_lint() {
   fi
 }
 
-run "Module integrity" "Run go clean -modcache, then retry." go mod verify
-run "Lint" "Run scripts/format, then fix the go vet findings above." scripts/lint
+run modules "Module integrity" "Run go clean -modcache, then retry." go mod verify
+run lint "Lint" "Run scripts/format, then fix the go vet findings above." scripts/lint
 if command -v reuse >/dev/null 2>&1 || command -v uvx >/dev/null 2>&1; then
-  run "REUSE licensing" "Add the missing license data to REUSE.toml." reuse_lint
+  run REUSE "REUSE licensing" "Add the missing license data to REUSE.toml." reuse_lint
 else
   printf '==> Skipping REUSE licensing: install reuse or uv to run it.\n'
-  reuse_note="; REUSE skipped"
+  skipped="REUSE"
 fi
-run "Tests" "Fix the failing tests above." scripts/test
-run "Statement coverage" "Fix the failing tests above." scripts/collect-coverage
-run "Branch coverage" "Fix the failing tests above." scripts/collect-branches
-run "Race detector" "Fix the data race reported above." go test -race ./...
-run "Vulnerability scan" "Upgrade the vulnerable module or Go version above." \
-  go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
-run "Reproducible module archive" "Remove the build input that differs between the archives." \
+run tests "Tests" "Fix the failing tests above." scripts/test
+run coverage "Statement coverage" "Fix the failing tests above." scripts/collect-coverage
+run branches "Branch coverage" "Fix the failing tests above." scripts/collect-branches
+run race "Race detector" "Fix the data race reported above." go test -race ./...
+run audit "Dependency audit" "Upgrade the module or Go version above, or review audit-exceptions.json." \
+  scripts/dependency-audit
+run archive "Reproducible module archive" "Remove the build input that differs between the archives." \
   scripts/reproducible-build
-run "CodeQL" "Install CodeQL as CONTRIBUTING.md says, or fix the findings above." \
+run CodeQL "CodeQL" "Install CodeQL 2.27.0 as CONTRIBUTING.md says, or fix the findings above." \
   scripts/codeql-security
-run "Fuzzing" "Fix the crash. Go saved its input under internal/apiform/testdata/fuzz." \
+run "fuzz $fuzz_time" "Fuzzing" "Fix the crash. Go saved its input under internal/apiform/testdata/fuzz." \
   go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime="$fuzz_time"
 
 current=""

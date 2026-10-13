@@ -5,7 +5,9 @@
 # Releases the Go module from a maintainer's machine.
 # Go modules need no registry credential. Pushing the tag publishes the version,
 # and proxy.golang.org fetches it on the first request. pkg.go.dev reads the proxy.
-# GitHub CLI creates the GitHub release with its own login.
+# GitHub CLI creates the GitHub release with its own login. On the release
+# machine, that is the owner's gh login, which bin/check-local also uses to
+# post the xquik-local-checks status.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -64,15 +66,9 @@ grep -q '[^[:space:]]' "$notes" || fail "Add a ## $version section to CHANGELOG.
 step "Running bin/check-local"
 bin/check-local
 
-if ! command -v govulncheck >/dev/null 2>&1; then
-  step "Installing govulncheck"
-  go install golang.org/x/vuln/cmd/govulncheck@latest
-  gobin="$(go env GOBIN)"
-  PATH="${gobin:-$(go env GOPATH)/bin}:$PATH"
-fi
-
-step "Scanning dependencies with govulncheck"
-govulncheck ./... || fail "Upgrade the vulnerable modules above, then retry."
+step "Running the dependency audit with govulncheck"
+scripts/dependency-audit ||
+  fail "Upgrade the module or Go version above, or review audit-exceptions.json."
 
 step "Building the module"
 go build ./... || fail "Fix the build errors above, then retry."

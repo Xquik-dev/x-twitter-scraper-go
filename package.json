@@ -6,7 +6,7 @@
     "check:tests": "./scripts/test",
     "check:race": "go test -race ./...",
     "check:fuzz": "go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime=2m",
-    "check:security": "go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...",
+    "check:security": "./scripts/dependency-audit",
     "check:source-security": "./scripts/source-security",
     "check:licenses": "bash scripts/licenses.sh lint",
     "build": "go build ./... && ./scripts/reproducible-build",

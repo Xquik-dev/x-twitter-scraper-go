@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# Runs govulncheck and applies the reviewed exceptions in audit-exceptions.json.
+# A reachable vulnerability blocks unless it has no fix and a valid entry lists it.
+# Each entry holds id, package, reason and recheck. The reason is "build-time only"
+# or "peer dependency provided by the host". The recheck date falls within 30 days,
+# and the entry blocks again on that date.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+report="$(mktemp "${TMPDIR:-/tmp}/xquik-govulncheck.XXXXXX")"
+trap 'rm -f -- "$report"' EXIT
+
+go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 -format json ./... >"$report"
+
+verdicts="$(jq -nr --slurpfile exceptions audit-exceptions.json '
+  (now | strftime("%Y-%m-%d")) as $today
+  | (now + 30 * 86400 | strftime("%Y-%m-%d")) as $limit
+  | ["build-time only", "peer dependency provided by the host"] as $reasons
+  | $exceptions[0] as $listed
+  | if ($listed | type) != "array" then
+      "blocked: audit-exceptions.json must hold a JSON array"
+    else
+      ($listed[]
+        | select((.reason | IN($reasons[]) | not)
+            or ((.recheck // "") | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}$") | not)
+            or .recheck <= $today or .recheck > $limit)
+        | "blocked: exception \(.id) for \(.package) needs an allowed reason and a recheck date within 30 days"),
+      ([inputs | .finding? | select(. != null and (.trace[0].function // "") != "")
+          | {id: .osv, package: .trace[0].package, fixed: (.fixed_version // "")}]
+        | unique[]
+        | . as $f
+        | if $f.fixed != "" then
+            "blocked: \($f.id) in \($f.package) is fixed in \($f.fixed)"
+          elif any($listed[]; .id == $f.id and .package == $f.package) then
+            "allowed: \($f.id) in \($f.package) has a reviewed exception"
+          else
+            "blocked: \($f.id) in \($f.package) is not in audit-exceptions.json"
+          end)
+    end
+' "$report")"
+
+if [[ -n "$verdicts" ]]; then
+  printf '%s\n' "$verdicts"
+fi
+if grep -q '^blocked: ' <<<"$verdicts"; then
+  printf 'Dependency audit blocked. For call traces, run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...\n' >&2
+  exit 1
+fi
+printf 'Dependency audit passed.\n'
