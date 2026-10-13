@@ -220,18 +220,18 @@ Finding: Path traversal via taint analysis
 70: 			return err
 ```
 
-## G703 in cmd/coverage-gain/main.go:55
+## G703 in cmd/coverage-gain/main.go:58
 
 Explicit local CLI output paths. No remote path source or claimed confinement boundary.
 
-Source SHA-256: `231c1e43b633c36028f604e68e0894b7ef5e38057d56a5b23091d8a0cda532be`
+Source SHA-256: `0eae09b979dfabc057b0b1322d7ea53fd2dda62436ae3870e242a02a12b106ce`
 Severity: HIGH. Confidence: HIGH.
 Finding: Path traversal via taint analysis
 
 ```go
-54: 	}
-55: 	if err := os.WriteFile(filepath.Join(directory, "summary.json"), data, 0o600); err != nil {
-56: 		return err
+57: 	}
+58: 	if err := os.WriteFile(filepath.Join(directory, "summary.json"), data, 0o600); err != nil {
+59: 		return err
 ```
 
 ## G705 in cmd/reproducible-build/upload_test.go:36
@@ -290,25 +290,25 @@ Finding: Subprocess launched with variable
 25: 		command.Env = append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(directory, "index"), "TZ=UTC")
 ```
 
-## G204 in cmd/coverage-gain/main.go:19
+## G204 in cmd/coverage-gain/main.go:22
 
 Fixed executable and argument array. Build helpers consume local Git arguments; upload test invokes the fixed repository script. No shell interpolation of remote data.
 
-Source SHA-256: `231c1e43b633c36028f604e68e0894b7ef5e38057d56a5b23091d8a0cda532be`
+Source SHA-256: `0eae09b979dfabc057b0b1322d7ea53fd2dda62436ae3870e242a02a12b106ce`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with variable
 
 ```go
-18: func git(args ...string) (string, error) {
-19: 	command := exec.Command("git", args...)
-20: 	command.Env = append(os.Environ(), "LC_ALL=C")
+21: func git(args ...string) (string, error) {
+22: 	command := exec.Command("git", args...)
+23: 	command.Env = append(os.Environ(), "LC_ALL=C")
 ```
 
 ## G204 in cmd/coverage-gain/main_test.go:26
 
 Fixed executable and argument array. Build helpers consume local Git arguments; upload test invokes the fixed repository script. No shell interpolation of remote data.
 
-Source SHA-256: `2fac5356ad419874263c4eea2e6250d9bec9cb121ab89dfc828ef722e1acf1a3`
+Source SHA-256: `ae4a756fbcd388fe4adb788c43e45e7d74a8c2961938e9e52a9b51156720395d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
@@ -322,7 +322,7 @@ Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 Test reads its own summary artifact within a temporary directory.
 
-Source SHA-256: `2fac5356ad419874263c4eea2e6250d9bec9cb121ab89dfc828ef722e1acf1a3`
+Source SHA-256: `ae4a756fbcd388fe4adb788c43e45e7d74a8c2961938e9e52a9b51156720395d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Potential file inclusion via variable
 

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+# Runs the full fuzz campaign, 2 minutes by default. bin/check-local fuzzes
+# the same target for 15 seconds. Set FUZZ_TIME to change the length.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+echo "==> Fuzzing FuzzMarshalRoundTrip for ${FUZZ_TIME:-2m}"
+go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime="${FUZZ_TIME:-2m}"

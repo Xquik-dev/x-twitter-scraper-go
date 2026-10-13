@@ -15,7 +15,7 @@ artifacts="$PWD/dist/releases/$revision"
 archive="$artifacts/x-twitter-scraper-go-$tag.zip"
 bundle="$artifacts/x-twitter-scraper-go-$tag.sigstore.json"
 if [[ "$mode" != verify ]]; then
-  bun run check:all >&2
+  bin/check-local --no-status >&2
   bun run build >&2
   mkdir -p "$artifacts"
   bash scripts/reproducible-build "$archive" >&2

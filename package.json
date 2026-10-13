@@ -1,33 +1,19 @@
 {
   "private": true,
   "scripts": {
-    "check:all": "./scripts/check-all",
     "check:lint": "./scripts/lint",
     "check:tests": "./scripts/test",
     "check:race": "go test -race ./...",
-    "check:fuzz": "go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime=2m",
+    "check:fuzz": "./scripts/fuzz",
     "check:security": "./scripts/dependency-audit",
     "check:source-security": "./scripts/source-security",
-    "check:licenses": "bash scripts/licenses.sh lint",
     "build": "go build ./... && ./scripts/reproducible-build",
     "report:coverage": "./scripts/collect-coverage",
     "report:branches": "./scripts/collect-branches",
-    "install:licenses": "bash scripts/licenses.sh install",
     "check:codeql": "./scripts/codeql-security",
     "release:verify": "bash scripts/verify-release",
     "release:prepare": "bash scripts/release prepare",
     "release:publish": "bash scripts/release publish",
     "check:signing-security": "bash scripts/signing-audit"
-  },
-  "config": {
-    "cargoAudit": "0.22.2",
-    "comply": {
-      "version": "0.1.1",
-      "sha256": "83dc4f918dc49fc4a66b2f5ec15c2b53e1ba0d44fb3ac1f922bf2b156f7d70db",
-      "sourceDateEpoch": 1785866486,
-      "patchURL": "https://raw.githubusercontent.com/Xquik-dev/xquik-docs/64d29260f8dc053a4bd78c8a91982a0a8085aba4/patches/comply-licensing.patch",
-      "patchSha256": "6e71602a7b292e06be7b97ba75ad54935ba5c24c5ce543928032d0a3cfccb1c7"
-    },
-    "rustVersion": "1.98.1"
   }
 }
