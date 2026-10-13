@@ -10,6 +10,7 @@
 - Redact sensitive headers regardless of capitalization without changing the input.
 - Use Go 1.27.2 and native license checks.
 - Preserve JSON behavior while replacing obsolete compatibility helpers.
+- Doc comments use the current price. An active monitor costs 30 credits per hour.
 
 ### Upgrading from 0.18
 

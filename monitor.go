@@ -47,7 +47,7 @@ func NewMonitorService(opts ...option.RequestOption) (r MonitorService) {
 }
 
 // Creates an account monitor. Monitors are unlimited. Active monitors check every
-// 1 second and cost 21 credits per hour. Events and webhook deliveries are
+// 1 second and cost 30 credits per hour. Events and webhook deliveries are
 // included. Creation requires available credits for the first hourly charge and
 // username lookup.
 func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ...option.RequestOption) (res *MonitorNewResponse, err error) {
