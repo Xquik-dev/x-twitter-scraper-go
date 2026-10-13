@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.19.0 (2026-09-12)
+## 0.19.0 (2026-10-13)
 
 [Full changelog from v0.18.1 to v0.19.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.1...v0.19.0)
 
 - **Breaking.** `X.Accounts.List` returns 1 page, with 50 accounts by default. A caller with more accounts gets fewer rows and no error. Read every page with `HasMore` & `NextCursor`.
 - **Breaking.** Code written for 0.18 can stop compiling. "Upgrading from 0.18" shows each change with old & new code.
+- `MinLikes` is the new name of the like filter on 9 params types. `MinFaves` still works and is deprecated.
 - Add optional retweet timestamp requests and nullable `retweetedAt` response fields.
 - Redact sensitive headers regardless of capitalization without changing the input.
 - Use Go 1.27.2 and native license checks.
@@ -18,8 +19,8 @@
 A caller with more than 50 accounts gets fewer rows and no error.
 Read every page with `HasMore` & `NextCursor`, as the first section shows.
 
-Go's `apidiff` tool reports 79 incompatible changes from v0.18.1 to v0.19.0.
-The sections below cover all 79, and each heading gives its count.
+Go's `apidiff` tool reports 70 incompatible changes from v0.18.1 to v0.19.0.
+The sections below cover all 70, and each heading gives its count.
 The Go 1.27.2 minimum comes on top, because `apidiff` compares only Go declarations.
 
 #### `X.Accounts.List` takes params & returns 1 page (1 change)
@@ -234,13 +235,14 @@ It stops with an error instead when `GOTOOLCHAIN=local` is set.
 The module also requires `golang.org/x/tools` v0.50.0, `golang.org/x/mod` v0.41.0 & `golang.org/x/sync` v0.23.0 for its tests & commands.
 A build that uses an older version of 1 of them moves up to that version.
 
-#### `MinFaves` is now `MinLikes` on 9 params types (9 changes)
+#### `MinFaves` is deprecated on 9 params types
 
-The field `MinFaves` is gone, and `MinLikes` replaces it.
-The query key changes from `minFaves` to `minLikes`. The API accepts both.
+`MinLikes` is the new name of the same filter, and it sends the `minLikes` query key.
+`MinFaves` still compiles and still sends `minFaves`, which the API reads the same way.
 The 9 types are `XTweetGetQuotesParams`, `XTweetGetRepliesParams`, `XTweetGetThreadParams`, `XTweetSearchParams`, `XUserGetLikesParams`, `XUserGetMediaParams`, `XUserGetMentionsParams`, `XUserGetRepliesParams` & `XUserGetTweetsParams`.
+Code written for 0.18 keeps working. Move to `MinLikes` when you next edit it.
 
-This code compiled with 0.18.
+This code compiled with 0.18 and still compiles with 0.19.
 
 ```go
 params := xtwitterscraper.XTweetSearchParams{
@@ -249,7 +251,7 @@ params := xtwitterscraper.XTweetSearchParams{
 }
 ```
 
-Write this with 0.19.
+Prefer this with 0.19.
 
 ```go
 params := xtwitterscraper.XTweetSearchParams{
