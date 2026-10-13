@@ -1,0 +1,114 @@
+// Copyright the Xquik contributors.
+// SPDX-License-Identifier: Apache-2.0
+
+package scripttest
+
+import (
+	"bytes"
+	"errors"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"testing"
+)
+
+// The fake CodeQL CLI is the pinned version. It builds no database, and its
+// analysis writes the report that the test names.
+const fakeCodeQL = `#!/bin/sh
+case "$1 $2" in
+  "version --format=terse") echo 2.27.0 ;;
+  "database create") ;;
+  "database analyze")
+    for argument; do
+      case "$argument" in --output=*) cp "$FAKE_REPORT" "${argument#--output=}" ;; esac
+    done ;;
+  *) echo "unexpected codeql call $*" >&2; exit 97 ;;
+esac
+`
+
+const (
+	extractionDiagnostic = `{"id":"go/diagnostics/extraction-errors"}`
+	extractedFile        = `{"locations":[{"physicalLocation":{"artifactLocation":{"uri":"client.go","uriBaseId":"%SRCROOT%"}}}],"message":{"text":""},"level":"none","descriptor":{"id":"go/diagnostics/successfully-extracted-files"}}`
+	unreadFile           = `{"message":{"text":"Extraction failed in client.go with error undefined: missingName"},"level":"error","descriptor":{"id":"go/diagnostics/extraction-errors"}}`
+)
+
+// codeqlReport is a report in the shape CodeQL 2.27.0 writes for a scan
+// without findings. It lists the diagnostic queries that ran and the
+// notifications they wrote.
+func codeqlReport(diagnostics string, notifications ...string) string {
+	return `{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"CodeQL","notifications":[` + diagnostics +
+		`]}},"invocations":[{"toolExecutionNotifications":[` + strings.Join(notifications, ",") +
+		`],"executionSuccessful":true}],"results":[]}]}`
+}
+
+func runCodeQLSecurity(t *testing.T, report string) auditResult {
+	t.Helper()
+	script, err := filepath.Abs("../../scripts/codeql-security")
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := t.TempDir()
+	codeql := filepath.Join(root, "codeql")
+	reportPath := filepath.Join(root, "report.sarif")
+	if err := os.WriteFile(codeql, []byte(fakeCodeQL), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(reportPath, []byte(report), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	command := exec.Command(script)
+	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "TMPDIR="+root)
+	var stdout, stderr bytes.Buffer
+	command.Stdout, command.Stderr = &stdout, &stderr
+	result := auditResult{}
+	if err := command.Run(); err != nil {
+		var exit *exec.ExitError
+		if !errors.As(err, &exit) {
+			t.Fatal(err)
+		}
+		result.code = exit.ExitCode()
+	}
+	result.stdout, result.stderr = stdout.String(), stderr.String()
+	return result
+}
+
+func TestCodeQLSecurity(t *testing.T) {
+	for _, test := range []struct {
+		name, report string
+		code         int
+		stdout       string
+		stderr       string
+	}{
+		{
+			name:   "a scan that read every file passes",
+			report: codeqlReport(extractionDiagnostic, extractedFile),
+			stdout: "CodeQL completed without findings and extracted 1 files.\n",
+		},
+		{
+			name:   "a file CodeQL could not read fails the scan and is named",
+			report: codeqlReport(extractionDiagnostic, unreadFile, extractedFile),
+			code:   1,
+			stderr: `CodeQL could not read all Go code, so the scan is incomplete. It said "Extraction failed in client.go with error undefined: missingName". Fix that code so Go compiles it, then rerun bin/check-local.` + "\n",
+		},
+		{
+			name:   "a scan without the extraction diagnostic fails",
+			report: codeqlReport(`{"id":"go/diagnostics/successfully-extracted-files"}`, extractedFile),
+			code:   1,
+			stderr: "The CodeQL scan lacks go/diagnostics/extraction-errors, so it cannot show that it read every file. Make the suite in scripts/codeql-security run that diagnostic query.\n",
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result := runCodeQLSecurity(t, test.report)
+			if result.code != test.code {
+				t.Fatalf("exit code %d, want %d\nstderr: %s", result.code, test.code, result.stderr)
+			}
+			if !strings.HasSuffix(result.stdout, test.stdout) {
+				t.Fatalf("stdout %q does not end with %q", result.stdout, test.stdout)
+			}
+			if !strings.Contains(result.stderr, test.stderr) {
+				t.Fatalf("stderr %q does not contain %q", result.stderr, test.stderr)
+			}
+		})
+	}
+}

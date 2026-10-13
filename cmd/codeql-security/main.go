@@ -8,17 +8,29 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
+
+// CodeQL goes on after it fails to read a file and scans only the code it
+// could read. This diagnostic query of the suite names each such file.
+const extractionErrors = "go/diagnostics/extraction-errors"
 
 func validate(data []byte) error {
 	var report struct {
 		Version string
 		Runs    []struct {
+			Tool struct {
+				// SARIF names the scanner itself the driver of the run.
+				Scanner struct {
+					Notifications []struct{ ID string }
+				} `json:"driver"`
+			}
 			Results     []json.RawMessage
 			Invocations []struct {
 				ExecutionSuccessful        bool
 				ToolExecutionNotifications []struct {
 					Level      string
+					Message    struct{ Text string }
 					Descriptor struct{ ID string }
 				}
 			}
@@ -34,26 +46,40 @@ func validate(data []byte) error {
 	if run.Results == nil || len(run.Results) != 0 || len(run.Invocations) == 0 {
 		return fmt.Errorf("CodeQL findings or incomplete analysis prevent release")
 	}
+	// The report lists every diagnostic query that ran, so a suite without
+	// the extraction diagnostic cannot pass.
+	ran := false
+	for _, descriptor := range run.Tool.Scanner.Notifications {
+		ran = ran || descriptor.ID == extractionErrors
+	}
+	if !ran {
+		return fmt.Errorf("The CodeQL scan lacks %s, so it cannot show that it read every file. Make the suite in scripts/codeql-security run that diagnostic query.", extractionErrors)
+	}
 	extracted := 0
+	var unread []string
 	for _, invocation := range run.Invocations {
 		if !invocation.ExecutionSuccessful {
 			return fmt.Errorf("CodeQL invocation failed")
 		}
 		for _, notification := range invocation.ToolExecutionNotifications {
-			switch notification.Level {
-			case "none", "note":
-			default:
-				return fmt.Errorf("CodeQL diagnostic requires review: %s", notification.Descriptor.ID)
+			switch {
+			case notification.Descriptor.ID == extractionErrors:
+				unread = append(unread, fmt.Sprintf("%q", notification.Message.Text))
+			case notification.Level != "none" && notification.Level != "note":
+				return fmt.Errorf("CodeQL diagnostic %s needs review. It said %q. Fix the cause, then rerun bin/check-local.", notification.Descriptor.ID, notification.Message.Text)
 			}
 			if notification.Descriptor.ID == "go/diagnostics/successfully-extracted-files" {
 				extracted++
 			}
 		}
 	}
+	if len(unread) > 0 {
+		return fmt.Errorf("CodeQL could not read all Go code, so the scan is incomplete. It said %s. Fix that code so Go compiles it, then rerun bin/check-local.", strings.Join(unread, " and "))
+	}
 	if extracted == 0 {
 		return fmt.Errorf("CodeQL did not confirm extracted Go files")
 	}
-	fmt.Printf("CodeQL completed without findings; extracted Go files: %d\n", extracted)
+	fmt.Printf("CodeQL completed without findings and extracted %d files.\n", extracted)
 	return nil
 }
 
