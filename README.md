@@ -320,8 +320,27 @@ See the [full list of request options](https://pkg.go.dev/github.com/Xquik-dev/x
 
 ### Pagination
 
-`.ListAutoPaging()` iterates across every page.
-`.List()` fetches 1 page. Call `.GetNextPage()` for the next.
+Each list method returns 1 page.
+Pass the cursor from the last response to read the next page.
+
+```go
+params := xtwitterscraper.XAccountListParams{Limit: xtwitterscraper.Int(100)}
+for {
+	page, err := client.X.Accounts.List(context.TODO(), params)
+	if err != nil {
+		panic(err)
+	}
+	for _, account := range page.Accounts {
+		fmt.Println(account.XUsername)
+	}
+	if !page.HasMore || page.NextCursor == "" {
+		break
+	}
+	params.Cursor = xtwitterscraper.String(page.NextCursor)
+}
+```
+
+Tweet & user lists report `HasNextPage` & `NextCursor` instead of `HasMore`.
 
 ### Errors
 
