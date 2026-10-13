@@ -134,6 +134,8 @@ run branches "Branch coverage" "Fix the failing tests above." scripts/collect-br
 run race "Race detector" "Fix the data race reported above." go test -race ./...
 run audit "Dependency audit" "Fix each blocked finding above, or review audit-exceptions.json." audit
 passed="${passed%audit}$(audit_label)"
+run "source scan" "Source scan" "Fix each new gosec finding above, or review it into security/source-reviews.md and .json." \
+  scripts/source-security
 run archive "Reproducible module archive" "Remove the build input that differs between the archives." \
   scripts/reproducible-build
 run CodeQL "CodeQL" "Install CodeQL 2.27.0 as CONTRIBUTING.md says, or fix the findings above." \
