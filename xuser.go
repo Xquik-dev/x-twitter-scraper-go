@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
-
 package xtwitterscraper
 
 import (
@@ -1241,6 +1239,9 @@ type XUserGetLikesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Deprecated: Use MinLikes. MinFaves sends the minFaves query key, which the
+	// API reads the same way as minLikes.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
 	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
@@ -1395,6 +1396,9 @@ type XUserGetMediaParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Deprecated: Use MinLikes. MinFaves sends the minFaves query key, which the
+	// API reads the same way as minLikes.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
 	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
@@ -1549,6 +1553,9 @@ type XUserGetMentionsParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Deprecated: Use MinLikes. MinFaves sends the minFaves query key, which the
+	// API reads the same way as minLikes.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
 	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
@@ -1710,6 +1717,9 @@ type XUserGetRepliesParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Deprecated: Use MinLikes. MinFaves sends the minFaves query key, which the
+	// API reads the same way as minLikes.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
 	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
@@ -1917,6 +1927,9 @@ type XUserGetTweetsParams struct {
 	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
 	// Minimum bookmark count threshold.
 	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Deprecated: Use MinLikes. MinFaves sends the minFaves query key, which the
+	// API reads the same way as minLikes.
+	MinFaves param.Opt[int64] `query:"minFaves,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
 	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
 	// Minimum quote count threshold.
