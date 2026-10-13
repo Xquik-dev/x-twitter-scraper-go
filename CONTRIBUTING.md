@@ -39,7 +39,7 @@ Run focused tests while editing.
 Run `bin/check-local` on your pushed branch head. GitHub Actions does not run here.
 It runs these checks in order and stops at the first failure.
 They are module integrity, lint, REUSE licensing, tests, statement and branch coverage,
-race detection, the dependency audit, reproducible archives, CodeQL, and fuzzing.
+race detection, the dependency audit, the source scan, reproducible archives, CodeQL, and fuzzing.
 REUSE is required. It runs at a pinned version through `uv`, never from another install.
 CodeQL is required. A missing CLI, any finding or any file CodeQL could not read fails the run.
 It fuzzes for 15 seconds. Set `FUZZ_TIME=2m` for the full campaign.
@@ -57,6 +57,10 @@ Each entry names the advisory `id`, the `module`, a `reason`, and a `recheck` da
 The reason is `build-time only` or `peer dependency provided by the host`.
 The recheck date falls within 30 days. The entry blocks again on that date.
 The list is empty today.
+
+The source scan, `scripts/source-security`, runs gosec over every package and test.
+Every finding must match a reviewed record in `security/source-reviews.md` and `security/source-reviews.json`.
+A new finding, or a reviewed one whose code or line moved, fails the run.
 
 Run every gate before requesting review.
 
