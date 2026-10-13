@@ -5,7 +5,9 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -63,23 +65,35 @@ func run(directory string) error {
 }
 
 func main() {
-	switch {
-	case len(os.Args) == 4 && os.Args[1] == "-record":
-		if err := record(os.Args[2], os.Args[3]); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-		fmt.Printf("Recorded the verified coverage of %s.\n", os.Args[2])
-	case len(os.Args) == 2:
-		if err := run(os.Args[1]); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-		fmt.Println("All four Go coverage metrics preserve parent coverage. SDK LOC changes are advisory.")
-	default:
-		fmt.Fprintln(os.Stderr, "usage: coverage-gain REPORT_DIRECTORY, or coverage-gain -record REVISION REPORT_DIRECTORY")
-		os.Exit(1)
+	os.Exit(cli(os.Args[1:], os.Stdout, os.Stderr))
+}
+
+const usage = "usage: coverage-gain REPORT_DIRECTORY, or coverage-gain -record REVISION REPORT_DIRECTORY"
+
+// cli runs the command and returns its exit code.
+func cli(args []string, stdout, stderr io.Writer) int {
+	flags := flag.NewFlagSet("coverage-gain", flag.ContinueOnError)
+	flags.SetOutput(io.Discard)
+	revision := flags.String("record", "", "keep REPORT_DIRECTORY as the verified coverage of this commit")
+	if err := flags.Parse(args); err != nil || flags.NArg() != 1 {
+		fmt.Fprintln(stderr, usage)
+		return 1
 	}
+	directory := flags.Arg(0)
+	if *revision != "" {
+		if err := record(*revision, directory); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 1
+		}
+		fmt.Fprintf(stdout, "Recorded the verified coverage of %s.\n", *revision)
+		return 0
+	}
+	if err := run(directory); err != nil {
+		fmt.Fprintln(stderr, err)
+		return 1
+	}
+	fmt.Fprintln(stdout, "All four Go coverage metrics preserve parent coverage. SDK LOC changes are advisory.")
+	return 0
 }
 
 func instrumentationScope() string {
