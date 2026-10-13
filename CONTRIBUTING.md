@@ -6,7 +6,7 @@ Follow the shared [Xquik contribution policy][contribution-policy].
 
 ## Set Up
 
-Install Go 1.27.2 and Bun.
+Install Go 1.27.2, Bun, jq and uv.
 
 ```sh
 ./scripts/bootstrap
@@ -37,18 +37,23 @@ Place stable examples outside generated directories.
 Run focused tests while editing.
 
 Run `bin/check-local` on your pushed branch head. GitHub Actions does not run here.
-It runs these checks in order and stops at the first failure:
-module integrity, lint, REUSE licensing, tests, statement and branch coverage,
+It runs these checks in order and stops at the first failure.
+They are module integrity, lint, REUSE licensing, tests, statement and branch coverage,
 race detection, the dependency audit, reproducible archives, CodeQL, and fuzzing.
+REUSE is required. It runs at a pinned version through `uv`, never from another install.
 CodeQL is required. A missing CLI or any finding fails the run.
 It fuzzes for 15 seconds. Set `FUZZ_TIME=2m` for the full campaign.
 On a clean HEAD that GitHub already has, it posts the `xquik-local-checks` commit status.
 The status lists only the checks that passed and says success only when all passed.
 Pass `--no-status` to skip it.
 
-The dependency audit, `scripts/dependency-audit`, runs govulncheck.
-A reachable vulnerability blocks unless it has no fix and `audit-exceptions.json` lists it.
-Each entry names the advisory `id`, the vulnerable `package`, a `reason`, and a `recheck` date.
+The dependency audit, `scripts/dependency-audit`, runs govulncheck over every package and test.
+Every finding counts, whether govulncheck traced a call to it or not.
+A finding in a module that ships to callers always blocks, with or without a fix.
+A module ships when a package that callers can import depends on it.
+A finding in a module that only commands or tests use blocks when a fix exists.
+Without a fix, it passes only while `audit-exceptions.json` lists it.
+Each entry names the advisory `id`, the `module`, a `reason`, and a `recheck` date.
 The reason is `build-time only` or `peer dependency provided by the host`.
 The recheck date falls within 30 days. The entry blocks again on that date.
 The list is empty today.
@@ -94,11 +99,16 @@ Maintainers release from their own machine with `bin/release-local`.
 Run it on a clean `main` that matches `origin/main`.
 It reads the version from `.release-please-manifest.json`.
 It refuses when the `vVERSION` tag already exists on GitHub.
-It runs `bin/check-local`, `govulncheck`, and `go build ./...`.
+It runs `bin/check-local`, the dependency audit, and `go build ./...`.
+It builds the module zip as proxy.golang.org would and prints its checksum.
 Next it pushes the annotated tag and asks proxy.golang.org to fetch it.
 pkg.go.dev lists the version once the proxy serves it.
 Last, it creates the GitHub release with notes from `CHANGELOG.md`.
 Go needs no registry credential. GitHub CLI uses its own login.
+
+Run `bin/release-local --dry-run` to see what a release would publish.
+It runs every step except the tag and the GitHub release.
+It prints the module path, the version, the checksum, and every file in the module zip.
 
 Verify published modules with `bun run release:verify vVERSION COMMIT_SHA`.
 The command uses a fresh module cache and the public Go checksum database.

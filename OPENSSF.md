@@ -24,9 +24,9 @@ No OpenSSF-defined ineligibility applies.
 | Branch coverage | `scripts/collect-branches` measures branch coverage |
 | Static analysis | `go vet` and CodeQL security-extended queries |
 | Dependency review | `go mod verify` and `scripts/dependency-audit`, which runs `govulncheck` |
-| Licensing gate | `bin/check-local` runs REUSE lint on every repository file |
+| Licensing gate | `bin/check-local` runs pinned REUSE lint on every repository file |
 | Reproducibility | 2 normalized module archives must have identical hashes |
-| Local checks | `bin/check-local` runs every check; no GitHub Actions workflow runs |
+| Local checks | `bin/check-local` runs every check, and no GitHub Actions workflow runs |
 | Two-factor authentication | The Xquik-dev organization requires 2FA |
 
 The current Go 1.26.6 statement result is 92.53%.
@@ -72,7 +72,7 @@ Gold eligibility still requires review by a different human.
 
 ## Maintenance
 
-Run the evidence checks before releases:
+Run the evidence checks before releases.
 
 ```sh
 bin/check-local

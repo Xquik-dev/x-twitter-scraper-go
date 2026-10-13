@@ -4,23 +4,25 @@
 #
 # Runs the checks that GitHub Actions used to run, in the same order.
 # Stops at the first failure and says what to do next.
+# REUSE and CodeQL are required. REUSE runs at a pinned version through uv.
 # When HEAD is clean and on GitHub, posts the xquik-local-checks commit status
 # through the GitHub CLI login of whoever runs it. On the release machine, that
 # is the owner's gh login. The status lists only the checks that ran and passed,
 # and it says success only after every required check passed.
 # --no-status skips the commit status.
-# FUZZ_TIME sets the fuzzing time. The default is 15s; use 2m for a full campaign.
+# FUZZ_TIME sets the fuzzing time. The default is 15s. Use 2m for a full campaign.
 set -euo pipefail
 
 readonly status_repo="Xquik-dev/x-twitter-scraper-go"
 readonly status_context="xquik-local-checks"
+readonly reuse_version="6.2.0"
 
 post_status=true
 for arg in "$@"; do
   case "$arg" in
     --no-status) post_status=false ;;
     *)
-      printf 'check-local: unknown option %s. Use --no-status or no option.\n' "$arg" >&2
+      printf 'Unknown option %s. Run bin/check-local or bin/check-local --no-status.\n' "$arg" >&2
       exit 2
       ;;
   esac
@@ -31,9 +33,7 @@ cd "$(dirname "$0")/.."
 fuzz_time="${FUZZ_TIME:-15s}"
 sha="$(git rev-parse HEAD)"
 current=""
-checks_passed=0
 passed=""
-skipped=""
 
 if [[ "$post_status" == true ]]; then
   skip_reason=""
@@ -42,10 +42,10 @@ if [[ "$post_status" == true ]]; then
   elif [[ -n "$(git status --porcelain)" ]]; then
     skip_reason="the working tree has uncommitted changes"
   elif ! gh api --silent "repos/$status_repo/commits/$sha" >/dev/null 2>&1; then
-    skip_reason="GitHub does not show commit ${sha:0:12}; push it or run gh auth login"
+    skip_reason="GitHub does not show commit ${sha:0:12}. Push it, or run gh auth login"
   fi
   if [[ -n "$skip_reason" ]]; then
-    printf '==> Not posting the %s status: %s.\n' "$status_context" "$skip_reason"
+    printf '==> Not posting the %s status because %s.\n' "$status_context" "$skip_reason"
     post_status=false
   fi
 fi
@@ -62,22 +62,25 @@ post() {
       sleep 5
     fi
   done
-  printf '==> Could not post the %s status: %s\n' "$status_context" "${error//$'\n'/ }" >&2
+  printf '==> Could not post the %s status. GitHub CLI said %s\n' "$status_context" "${error//$'\n'/ }" >&2
 }
+
+work="$(mktemp -d "${TMPDIR:-/tmp}/xquik-check-local.XXXXXX")"
 
 finish() {
   local code=$?
+  rm -rf -- "${work:?}"
   if ((code == 0)); then
     local go_version list="$passed"
     go_version="$(go env GOVERSION 2>/dev/null || true)"
     if [[ "$list" == *", "* ]]; then
       list="${list%, *} & ${list##*, }"
     fi
-    post success "Passed on ${go_version:-Go}: $list${skipped:+; skipped $skipped}"
+    post success "Passed $list on ${go_version:-Go}."
   elif [[ -n "$current" ]]; then
-    post failure "$current failed after $checks_passed passed checks. Run bin/check-local for details."
+    post failure "Failed at $current. Run bin/check-local for details."
   else
-    post failure "check-local stopped before its first check. Run bin/check-local for details."
+    post failure "Stopped before the first check. Run bin/check-local for details."
   fi
   exit "$code"
 }
@@ -85,41 +88,52 @@ trap finish EXIT
 
 post pending "bin/check-local is running."
 
+current="Find tools"
+for tool in go jq uv; do
+  if ! command -v "$tool" >/dev/null 2>&1; then
+    printf 'Check failed because %s is missing. Install it with brew install %s, then run bin/check-local again.\n' \
+      "$tool" "$tool" >&2
+    exit 1
+  fi
+done
+
 run() {
   local label="$1" name="$2" fix="$3"
   shift 3
   current="$name"
   printf '==> %s\n' "$name"
   if ! "$@"; then
-    printf 'check-local: %s failed. %s\n' "$name" "$fix" >&2
+    printf 'Check failed at %s. %s\n' "$name" "$fix" >&2
     exit 1
   fi
-  checks_passed=$((checks_passed + 1))
   passed="${passed:+$passed, }$label"
 }
 
-reuse_lint() {
-  if command -v reuse >/dev/null 2>&1; then
-    reuse lint
-  else
-    uvx --from reuse==5.1.1 reuse lint
-  fi
+audit() {
+  scripts/dependency-audit | tee "$work/audit.log"
+}
+
+# The status names the reviewed exceptions that the audit accepted, if any.
+audit_label() {
+  local exceptions
+  exceptions="$(sed -nE 's/^Dependency audit passed with ([0-9]+) reviewed exceptions?\.$/\1/p' "$work/audit.log")"
+  case "$exceptions" in
+    "") printf 'audit' ;;
+    1) printf 'audit with 1 reviewed exception' ;;
+    *) printf 'audit with %s reviewed exceptions' "$exceptions" ;;
+  esac
 }
 
 run modules "Module integrity" "Run go clean -modcache, then retry." go mod verify
 run lint "Lint" "Run scripts/format, then fix the go vet findings above." scripts/lint
-if command -v reuse >/dev/null 2>&1 || command -v uvx >/dev/null 2>&1; then
-  run REUSE "REUSE licensing" "Add the missing license data to REUSE.toml." reuse_lint
-else
-  printf '==> Skipping REUSE licensing: install reuse or uv to run it.\n'
-  skipped="REUSE"
-fi
+run REUSE "REUSE licensing" "Add the missing license notice or REUSE.toml entry." \
+  uvx --from "reuse==$reuse_version" reuse lint
 run tests "Tests" "Fix the failing tests above." scripts/test
 run coverage "Statement coverage" "Fix the failing tests above." scripts/collect-coverage
 run branches "Branch coverage" "Fix the failing tests above." scripts/collect-branches
 run race "Race detector" "Fix the data race reported above." go test -race ./...
-run audit "Dependency audit" "Upgrade the module or Go version above, or review audit-exceptions.json." \
-  scripts/dependency-audit
+run audit "Dependency audit" "Fix each blocked finding above, or review audit-exceptions.json." audit
+passed="${passed%audit}$(audit_label)"
 run archive "Reproducible module archive" "Remove the build input that differs between the archives." \
   scripts/reproducible-build
 run CodeQL "CodeQL" "Install CodeQL 2.27.0 as CONTRIBUTING.md says, or fix the findings above." \
