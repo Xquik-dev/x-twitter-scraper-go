@@ -22,16 +22,16 @@ Xquik charges only for delivered, unique, filter-matching results and never pads
 > Xquik is an independent third-party service. Not affiliated with X Corp.
 > "Twitter" and "X" are trademarks of X Corp.
 
-## Twitter API Alternative
+## Twitter API alternative
 
 This package does not call or emulate the official X API.
 Use it when the official X API does not fit your workflow.
 
-[Go Reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API Docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI Spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [OAuth-First MCP Guide](https://docs.xquik.com/mcp/overview)
+[Go reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [OAuth-first MCP guide](https://docs.xquik.com/mcp/overview)
 
-## Common Twitter & X Tasks
+## Common Twitter & X tasks
 
-| Task | REST Route | Workflow Note |
+| Task | REST route | Workflow note |
 | --- | --- | --- |
 | Search tweets without the X API | `GET /x/tweets/search` | Use keyword or advanced operator queries. |
 | Read an X profile timeline | `GET /x/users/{id}/tweets` | Paginate bounded results. |
@@ -65,7 +65,7 @@ go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.19.0'
 
 <!-- x-release-please-end -->
 
-## Verify a Release
+## Verify a release
 
 Go checks every module download against the public checksum database.
 Run this command to see the commit behind a release.
@@ -132,7 +132,7 @@ func main() {
 
 ```
 
-### Request Fields
+### Request fields
 
 Request structs follow Go's [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson) semantics.
 Fields tagged <code>\`api:"required"\`</code> serialize even when their value is zero.
@@ -180,10 +180,10 @@ p.SetExtraFields(map[string]any{
 custom := param.Override[xtwitterscraper.FooParams](12)
 ```
 
-### Request Unions
+### Request unions
 
 Each union variant uses an `Of`-prefixed field. Set only one field.
-The nonzero field is serialized. Getter methods return mutable pointers when present.
+The SDK serializes the nonzero field. Getter methods return mutable pointers when the field is present.
 
 ```go
 // Set only one variant.
@@ -207,7 +207,7 @@ if address := animal.GetOwner().GetAddress(); address != nil {
 }
 ```
 
-### Response Objects
+### Response objects
 
 Response fields use value types. The `JSON` field records decoding metadata.
 
@@ -258,7 +258,7 @@ res.JSON.Age.Raw() == respjson.Omitted // true
 body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
 ```
 
-### Response Unions
+### Response unions
 
 Response unions flatten fields from every object variant.
 Use `.AsFooVariant()` or `.AsAny()` to select a variant.
@@ -367,7 +367,7 @@ Other errors remain unwrapped. Transport failures may return `*url.Error` wrappi
 ### Timeouts
 
 Requests have no default timeout. Use a context for the full request lifecycle.
-Retries share that context deadline. Use `option.WithRequestTimeout()` for each attempt.
+Retries share that context deadline. Use `option.WithRequestTimeout()` to limit each attempt.
 
 ```go
 // Set one deadline across all attempts.
@@ -384,7 +384,7 @@ client.X.Tweets.Search(
 )
 ```
 
-### File Uploads
+### File uploads
 
 Multipart file parameters accept `io.Reader`.
 The default filename is `anonymous_file`, and the default media type is `application/octet-stream`.
@@ -436,7 +436,7 @@ client.X.Tweets.Search(
 )
 ```
 
-### Raw Response Data
+### Raw response data
 
 Use `option.WithResponseInto()` to inspect response headers and status codes.
 
@@ -459,7 +459,7 @@ fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
 ```
 
-### Custom Requests
+### Custom requests
 
 Use `client.Get`, `client.Post`, or another verb for undocumented endpoints.
 These methods retain client options such as retries.
@@ -521,7 +521,7 @@ Middleware runs left to right. Client middleware runs before request middleware.
 Use `option.WithHTTPClient(client)` to replace the current HTTP client.
 The replacement receives requests after middleware runs.
 
-## Semantic Versioning
+## Semantic versioning
 
 This package follows [SemVer](https://semver.org/spec/v2.0.0.html).
 Before v1.0, minor releases may change undocumented internals.
@@ -531,7 +531,7 @@ Open an [issue](https://github.com/Xquik-dev/x-twitter-scraper-go/issues) before
 
 Read the [contribution guide](CONTRIBUTING.md).
 
-## Security & Project Health
+## Security & project health
 
 - [Security policy](SECURITY.md)
 - [Governance](GOVERNANCE.md)
