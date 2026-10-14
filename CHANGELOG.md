@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.19.2 (2026-10-14)
+
+[Full changelog from v0.19.1 to v0.19.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.1...v0.19.2)
+
+The API is the same as in 0.19.1.
+
+- A program on Windows sends `Windows` in the `X-Stainless-OS` header. It sent `Other:windows` before.
+- The README links the other Xquik repositories by name.
+- The source has no code comments, and CodeQL fails on a new one.
+
 ## 0.19.1 (2026-10-14)
 
 [Full changelog from v0.19.0 to v0.19.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.0...v0.19.1)
