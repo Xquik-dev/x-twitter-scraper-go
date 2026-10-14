@@ -14,6 +14,13 @@ tag="v$version"
 artifacts="$PWD/dist/releases/$revision"
 archive="$artifacts/x-twitter-scraper-go-$tag.zip"
 bundle="$artifacts/x-twitter-scraper-go-$tag.sigstore.json"
+if [[ "$mode" == publish ]]; then
+  git fetch origin main >&2
+  git merge-base --is-ancestor "$revision" origin/main || { echo 'Merge the release into main first.' >&2; exit 1; }
+  [[ "$(git rev-parse --verify --quiet "$tag^{commit}")" == "$revision" ]] || { echo 'Create the matching immutable release tag first.' >&2; exit 1; }
+  : "${XQUIK_RELEASE_IDENTITY:?Set the authorized signing identity.}"
+  : "${XQUIK_RELEASE_ISSUER:?Set its OpenID Connect issuer.}"
+fi
 if [[ "$mode" != verify ]]; then
   bin/check-local --no-status >&2
   bun run build >&2
@@ -22,12 +29,7 @@ if [[ "$mode" != verify ]]; then
 fi
 [[ "$(git rev-parse HEAD)" == "$revision" && -z "$(git status --porcelain)" ]] || { echo 'Sources changed during release preparation.' >&2; exit 1; }
 if [[ "$mode" == publish ]]; then
-  git fetch origin main >&2
-  git merge-base --is-ancestor "$revision" origin/main || { echo 'Merge the release into main first.' >&2; exit 1; }
-  [[ "$(git rev-parse "$tag^{commit}")" == "$revision" ]] || { echo 'Create the matching immutable release tag first.' >&2; exit 1; }
-  : "${XQUIK_RELEASE_IDENTITY:?Set the authorized signing identity.}"
-  : "${XQUIK_RELEASE_ISSUER:?Set its OpenID Connect issuer.}"
-  signer=(uv run --python 3.14.7 --locked --project "$PWD/tools/signing" sigstore)
+  signer=(uv run --python 3.14.8 --locked --project "$PWD/tools/signing" sigstore)
   jq -n --arg revision "$revision" --arg tag "$tag" \
     '{buildDefinition:{buildType:"https://github.com/Xquik-dev/x-twitter-scraper-go/blob/main/scripts/reproducible-build",externalParameters:{tag:$tag},resolvedDependencies:[{uri:"git+https://github.com/Xquik-dev/x-twitter-scraper-go",digest:{gitCommit:$revision}}]},runDetails:{builder:{id:"https://github.com/Xquik-dev/x-twitter-scraper-go/blob/main/scripts/release"}}}' > "$artifacts/provenance.json"
   if [[ ! -f "$bundle" ]]; then

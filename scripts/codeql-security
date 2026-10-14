@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
 cd "$(dirname "$0")/.."
-readonly pinned=2.27.0
+readonly pinned=2.27.2
 codeql="${XQUIK_CODEQL_BIN:-$HOME/.cache/xquik-codeql/$pinned/codeql/codeql}"
 if [[ ! -x "$codeql" ]]; then
   codeql="$(command -v codeql || true)"
@@ -21,6 +21,6 @@ report="$(mktemp -d "${TMPDIR:-/tmp}/xquik-codeql.XXXXXX")"
 echo "CodeQL writes its reports to $report"
 "$codeql" pack install codeql/no-code-comments
 "$codeql" database create "$report/database" --language=go --build-mode=autobuild --source-root="$PWD" --threads=4
-"$codeql" database analyze "$report/database" codeql/go-queries@1.6.10:codeql-suites/go-security-extended.qls codeql/no-code-comments --format=sarifv2.1.0 --output="$report/report.sarif" --threads=4
+"$codeql" database analyze "$report/database" codeql/go-queries@1.6.12:codeql-suites/go-security-extended.qls codeql/no-code-comments --format=sarifv2.1.0 --output="$report/report.sarif" --threads=4
 cat "$report/report.sarif"
 go run ./cmd/codeql-security < "$report/report.sarif"
