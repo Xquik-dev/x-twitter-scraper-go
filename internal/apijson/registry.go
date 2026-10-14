@@ -44,8 +44,6 @@ func RegisterUnion[T any](discriminator string, variants ...UnionVariant) {
 	}
 }
 
-// Useful to wrap a union type to force it to use [apijson.UnmarshalJSON] since you cannot define an
-// UnmarshalJSON function on the interface itself.
 type UnionUnmarshaler[T any] struct {
 	Value T
 }

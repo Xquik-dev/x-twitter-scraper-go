@@ -25,8 +25,6 @@ type Primitives struct {
 	F []int   `form:"f"`
 }
 
-// These aliases are necessary to bypass the cache.
-// This only relevant during testing.
 type int_ int
 type PrimitivesBrackets struct {
 	F []int_ `form:"f"`
@@ -144,7 +142,6 @@ type MultipartMarshalerMiddle struct {
 	Child int `form:"child"`
 }
 
-// expectedForm supplies literal MIME framing without using the encoder under test.
 func expectedForm(fields ...[2]string) string {
 	var body strings.Builder
 	for _, field := range fields {

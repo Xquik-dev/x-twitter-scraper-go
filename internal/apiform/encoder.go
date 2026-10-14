@@ -20,7 +20,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
-var encoders sync.Map // map[encoderEntry]encoderFunc
+var encoders sync.Map
 
 func Marshal(value any, writer *multipart.Writer) error {
 	e := &encoder{
@@ -90,10 +90,6 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return fi.(encoderFunc)
 	}
 
-	// To deal with recursive types, populate the map with an
-	// indirect func before we build it. This type waits on the
-	// real func (f) to be ready and then calls it. This indirect
-	// func is only used for recursive types.
 	var (
 		wg sync.WaitGroup
 		f  encoderFunc
@@ -107,7 +103,6 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return fi.(encoderFunc)
 	}
 
-	// Compute the real encoder and replace the indirect func with it.
 	f = e.newTypeEncoder(t)
 	wg.Done()
 	encoders.Store(entry, f)
@@ -148,8 +143,6 @@ func (e *encoder) newTypeEncoder(t reflect.Type) encoderFunc {
 
 func (e *encoder) newPrimitiveTypeEncoder(t reflect.Type) encoderFunc {
 	switch t.Kind() {
-	// Note that we could use `gjson` to encode these types but it would complicate our
-	// code more and this current code shouldn't cause any issues
 	case reflect.String:
 		return func(key string, v reflect.Value, writer *multipart.Writer) error {
 			return writer.WriteField(key, v.String())
@@ -221,9 +214,6 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 	encoderFields := []encoderField{}
 	extraEncoder := (*encoderField)(nil)
 
-	// This helper allows us to recursively collect field encoders into a flat
-	// array. The parameter `index` keeps track of the access patterns necessary
-	// to get to some field.
 	var collectEncoderFields func(r reflect.Type, index []int)
 	collectEncoderFields = func(r reflect.Type, index []int) {
 		for i := 0; i < r.NumField(); i++ {
@@ -232,21 +222,14 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 			if !field.IsExported() {
 				continue
 			}
-			// If this is an embedded struct, traverse one level deeper to extract
-			// the field and get their encoders as well.
 			if field.Anonymous {
 				collectEncoderFields(field.Type, idx)
 				continue
 			}
-			// If json tag is not present, then we skip, which is intentionally
-			// different behavior from the stdlib.
 			ptag, ok := parseFormStructTag(field)
 			if !ok {
 				continue
 			}
-			// We only want to support unexported field if they're tagged with
-			// `extras` because that field shouldn't be part of the public API. We
-			// also want to only keep the top level extras
 			if ptag.extras && len(index) == 0 {
 				extraEncoder = &encoderField{ptag, e.typeEncoder(field.Type.Elem()), idx}
 				continue
@@ -292,7 +275,6 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 	}
 	collectEncoderFields(t, []int{})
 
-	// Ensure deterministic output by sorting by lexicographic order
 	sort.Slice(encoderFields, func(i, j int) bool {
 		return encoderFields[i].tag.name < encoderFields[j].tag.name
 	})
@@ -384,7 +366,6 @@ func (e *encoder) newReaderTypeEncoder() encoderFunc {
 			contentType = typed.ContentType()
 		}
 
-		// Below is taken almost 1-for-1 from [multipart.CreateFormFile]
 		h := make(textproto.MIMEHeader)
 		h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, escapeQuotes(key), escapeQuotes(filename)))
 		h.Set("Content-Type", contentType)
@@ -434,8 +415,6 @@ func (e encoder) objKeyEncoder(parent string) func(string) string {
 	}
 }
 
-// Given a []byte of json (may either be an empty object or an object that already contains entries)
-// encode all of the entries in the map to the json byte array.
 func (e *encoder) encodeMapEntries(key string, v reflect.Value, writer *multipart.Writer) error {
 	type mapPair struct {
 		key   string
@@ -453,7 +432,6 @@ func (e *encoder) encodeMapEntries(key string, v reflect.Value, writer *multipar
 		}
 	}
 
-	// Ensure deterministic output
 	sort.Slice(pairs, func(i, j int) bool {
 		return pairs[i].key < pairs[j].key
 	})

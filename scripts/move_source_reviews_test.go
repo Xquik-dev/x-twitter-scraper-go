@@ -3,9 +3,6 @@
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
-// Run these tests from the repository root with
-// go test -tags sourcereviews ./scripts/move_source_reviews.go ./scripts/move_source_reviews_test.go
-
 package main
 
 import (
@@ -29,7 +26,6 @@ func recordFor(line string, code string) record {
 }
 
 func TestMapLine(t *testing.T) {
-	// Lines 1 and 2 removed, 1 line added after old line 6, old line 9 replaced by 2 lines.
 	hunks := parseHunks("@@ -1,2 +0,0 @@\n-a\n-b\n@@ -6,0 +5 @@\n+c\n@@ -9 +8,2 @@\n-d\n+e\n+f\n")
 	cases := []struct {
 		old, new int
@@ -247,7 +243,6 @@ func TestRunRefusesARecordThatTheIndexLacks(t *testing.T) {
 }
 
 func TestTheRealRecordsMatchTheRealIndex(t *testing.T) {
-	// go test runs a list of files in their own folder, scripts.
 	markdown, err := os.ReadFile("../" + recordsPath)
 	if err != nil {
 		t.Fatal(err)

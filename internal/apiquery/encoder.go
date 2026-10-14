@@ -16,7 +16,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
-var encoders sync.Map // map[reflect.Type]encoderFunc
+var encoders sync.Map
 
 type encoder struct {
 	dateFormat string
@@ -56,10 +56,6 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return fi.(encoderFunc)
 	}
 
-	// To deal with recursive types, populate the map with an
-	// indirect func before we build it. This type waits on the
-	// real func (f) to be ready and then calls it. This indirect
-	// func is only used for recursive types.
 	var (
 		wg sync.WaitGroup
 		f  encoderFunc
@@ -73,7 +69,6 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return fi.(encoderFunc)
 	}
 
-	// Compute the real encoder and replace the indirect func with it.
 	f = e.newTypeEncoder(t)
 	wg.Done()
 	encoders.Store(entry, f)
@@ -139,9 +134,6 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 
 	encoderFields := []encoderField{}
 
-	// This helper allows us to recursively collect field encoders into a flat
-	// array. The parameter `index` keeps track of the access patterns necessary
-	// to get to some field.
 	var collectEncoderFields func(r reflect.Type, index []int)
 	collectEncoderFields = func(r reflect.Type, index []int) {
 		for i := 0; i < r.NumField(); i++ {
@@ -150,14 +142,10 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 			if !field.IsExported() {
 				continue
 			}
-			// If this is an embedded struct, traverse one level deeper to extract
-			// the field and get their encoders as well.
 			if field.Anonymous {
 				collectEncoderFields(field.Type, idx)
 				continue
 			}
-			// If query tag is not present, then we skip, which is intentionally
-			// different behavior from the stdlib.
 			ptag, ok := parseQueryStructTag(field)
 			if !ok {
 				continue

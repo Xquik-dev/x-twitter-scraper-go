@@ -13,11 +13,10 @@ import (
 	"testing"
 )
 
-// The fake CodeQL CLI is the pinned version. It builds no database, and its
-// analysis writes the report that the test names.
 const fakeCodeQL = `#!/bin/sh
 case "$1 $2" in
   "version --format=terse") echo 2.27.0 ;;
+  "pack install") ;;
   "database create") ;;
   "database analyze")
     for argument; do
@@ -33,9 +32,6 @@ const (
 	unreadFile           = `{"message":{"text":"Extraction failed in client.go with error undefined: missingName"},"level":"error","descriptor":{"id":"go/diagnostics/extraction-errors"}}`
 )
 
-// codeqlReport is a report in the shape CodeQL 2.27.0 writes for a scan
-// without findings. It lists the diagnostic queries that ran and the
-// notifications they wrote.
 func codeqlReport(diagnostics string, notifications ...string) string {
 	return `{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"CodeQL","notifications":[` + diagnostics +
 		`]}},"invocations":[{"toolExecutionNotifications":[` + strings.Join(notifications, ",") +

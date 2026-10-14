@@ -2,10 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-// The deserialization algorithm from apijson may be subject to improvements
-// between minor versions, particularly with respect to calling [json.Unmarshal]
-// into param unions.
-
 package apijson
 
 import (
@@ -21,56 +17,34 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// decoders is a synchronized map with roughly the following type:
-// map[reflect.Type]decoderFunc
 var decoders sync.Map
 
-// Unmarshal is similar to [encoding/json.Unmarshal] and parses the JSON-encoded
-// data and stores it in the given pointer.
 func Unmarshal(raw []byte, to any) error {
 	d := &decoderBuilder{dateFormat: time.RFC3339}
 	return d.unmarshal(raw, to)
 }
 
-// UnmarshalRoot is like Unmarshal, but doesn't try to call MarshalJSON on the
-// root element. Useful if a struct's UnmarshalJSON is overrode to use the
-// behavior of this encoder versus the standard library.
 func UnmarshalRoot(raw []byte, to any) error {
 	d := &decoderBuilder{dateFormat: time.RFC3339, root: true}
 	return d.unmarshal(raw, to)
 }
 
-// decoderBuilder contains the 'compile-time' state of the decoder.
 type decoderBuilder struct {
-	// Whether or not this is the first element and called by [UnmarshalRoot], see
-	// the documentation there to see why this is necessary.
-	root bool
-	// The dateFormat (a format string for [time.Format]) which is chosen by the
-	// last struct tag that was seen.
+	root       bool
 	dateFormat string
 }
 
-// decoderState contains the 'run-time' state of the decoder.
 type decoderState struct {
 	strict    bool
 	exactness exactness
 	validator *validationEntry
 }
 
-// Exactness refers to how close to the type the result was if deserialization
-// was successful. This is useful in deserializing unions, where you want to try
-// each entry, first with strict, then with looser validation, without actually
-// having to do a lot of redundant work by marshalling twice (or maybe even more
-// times).
 type exactness int8
 
 const (
-	// Some values had to fudged a bit, for example by converting a string to an
-	// int, or an enum with extra values.
 	loose exactness = iota
-	// There are some extra arguments, but other wise it matches the union.
 	extras
-	// Exactly right.
 	exact
 )
 
@@ -98,7 +72,6 @@ func (d *decoderBuilder) unmarshal(raw []byte, to any) error {
 	return d.typeDecoder(value.Type())(result, value, &decoderState{strict: false, exactness: exact})
 }
 
-// unmarshalWithExactness is used for internal testing purposes.
 func (d *decoderBuilder) unmarshalWithExactness(raw []byte, to any) (exactness, error) {
 	value := reflect.ValueOf(to).Elem()
 	result := gjson.ParseBytes(raw)
@@ -121,10 +94,6 @@ func (d *decoderBuilder) typeDecoder(t reflect.Type) decoderFunc {
 		return fi.(decoderFunc)
 	}
 
-	// To deal with recursive types, populate the map with an
-	// indirect func before we build it. This type waits on the
-	// real func (f) to be ready and then calls it. This indirect
-	// func is only used for recursive types.
 	var (
 		wg sync.WaitGroup
 		f  decoderFunc
@@ -138,23 +107,18 @@ func (d *decoderBuilder) typeDecoder(t reflect.Type) decoderFunc {
 		return fi.(decoderFunc)
 	}
 
-	// Compute the real decoder and replace the indirect func with it.
 	f = d.newTypeDecoder(t)
 	wg.Done()
 	decoders.Store(entry, f)
 	return f
 }
 
-// validatedTypeDecoder wraps the type decoder with a validator. This is helpful
-// for ensuring that enum fields are correct.
 func (d *decoderBuilder) validatedTypeDecoder(t reflect.Type, entry *validationEntry) decoderFunc {
 	dec := d.typeDecoder(t)
 	if entry == nil {
 		return dec
 	}
 
-	// Thread the current validation entry through the decoder,
-	// but clean up in time for the next field.
 	return func(node gjson.Result, v reflect.Value, state *decoderState) error {
 		state.validator = entry
 		err := dec(node, v, state)
@@ -254,8 +218,6 @@ func (d *decoderBuilder) newMapDecoder(t reflect.Type) decoderFunc {
 		mapValue := reflect.MakeMapWithSize(t, len(node.Map()))
 
 		node.ForEach(func(key, value gjson.Result) bool {
-			// It's fine for us to just use `ValueOf` here because the key types will
-			// always be primitive types so we don't need to decode it using the standard pattern
 			keyValue := reflect.ValueOf(key.Value())
 			if !keyValue.IsValid() {
 				if err == nil {
@@ -315,7 +277,6 @@ func (d *decoderBuilder) newArrayTypeDecoder(t reflect.Type) decoderFunc {
 }
 
 func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
-	// map of json field name to struct field decoders
 	decoderFields := map[string]decoderField{}
 	anonymousDecoders := []decoderField{}
 	extraDecoder := (*decoderField)(nil)
@@ -338,8 +299,6 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 			}
 		}
 
-		// If this is an embedded struct, traverse one level deeper to extract
-		// the fields and get their encoders as well.
 		if field.Anonymous {
 			anonymousDecoders = append(anonymousDecoders, decoderField{
 				fn:  d.typeDecoder(field.Type),
@@ -347,14 +306,10 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 			})
 			continue
 		}
-		// If json tag is not present, then we skip, which is intentionally
-		// different behavior from the stdlib.
 		ptag, ok := parseJSONStructTag(field)
 		if !ok {
 			continue
 		}
-		// We only want to support unexported fields if they're tagged with
-		// `extras` because that field shouldn't be part of the public API.
 		if ptag.extras {
 			extraDecoder = &decoderField{ptag, d.typeDecoder(field.Type.Elem()), idx, field.Name}
 			continue
@@ -396,7 +351,6 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 		}
 
 		for _, decoder := range anonymousDecoders {
-			// ignore errors
 			_ = decoder.fn(node, value.FieldByIndex(decoder.idx), state)
 		}
 
@@ -418,7 +372,6 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 					status: null,
 				}
 			} else if !isValid {
-				// If an inline decoder fails, unset the field and move on.
 				if dest.IsValid() {
 					dest.SetZero()
 				}
@@ -464,7 +417,6 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 				}
 			}
 
-			// Handle null [param.Opt]
 			if itemNode.Type == gjson.Null && dest.IsValid() && dest.Type().Implements(reflect.TypeOf((*param.Optional)(nil)).Elem()) {
 				_ = dest.Addr().Interface().(json.Unmarshaler).UnmarshalJSON([]byte(itemNode.Raw))
 				continue
@@ -502,7 +454,6 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 			value.FieldByIndex(extraDecoder.idx).Set(typedExtraFields)
 		}
 
-		// Set exactness to 'extras' if there are untyped, extra fields.
 		if len(untypedExtraFields) > 0 && state.exactness > extras {
 			state.exactness = extras
 		}
@@ -522,7 +473,6 @@ func (d *decoderBuilder) newPrimitiveTypeDecoder(t reflect.Type) decoderFunc {
 			if guardStrict(state, n.Type != gjson.String) {
 				return fmt.Errorf("apijson: failed to parse string strictly")
 			}
-			// Everything that is not an object can be loosely stringified.
 			if n.Type == gjson.JSON {
 				return fmt.Errorf("apijson: failed to parse string")
 			}
@@ -540,8 +490,6 @@ func (d *decoderBuilder) newPrimitiveTypeDecoder(t reflect.Type) decoderFunc {
 			if guardStrict(state, n.Type != gjson.True && n.Type != gjson.False) {
 				return fmt.Errorf("apijson: failed to parse bool strictly")
 			}
-			// Numbers and strings that are either 'true' or 'false' can be loosely
-			// deserialized as bool.
 			if n.Type == gjson.String && (n.Raw != "true" && n.Raw != "false") || n.Type == gjson.JSON {
 				return fmt.Errorf("apijson: failed to parse bool")
 			}
@@ -559,8 +507,6 @@ func (d *decoderBuilder) newPrimitiveTypeDecoder(t reflect.Type) decoderFunc {
 			if guardStrict(state, n.Type != gjson.Number || n.Num != float64(int(n.Num))) {
 				return fmt.Errorf("apijson: failed to parse int strictly")
 			}
-			// Numbers, booleans, and strings that maybe look like numbers can be
-			// loosely deserialized as numbers.
 			if n.Type == gjson.JSON || (n.Type == gjson.String && !canParseAsNumber(n.Str)) {
 				return fmt.Errorf("apijson: failed to parse int")
 			}
@@ -578,8 +524,6 @@ func (d *decoderBuilder) newPrimitiveTypeDecoder(t reflect.Type) decoderFunc {
 			if guardStrict(state, n.Type != gjson.Number || n.Num != float64(int(n.Num)) || n.Num < 0) {
 				return fmt.Errorf("apijson: failed to parse uint strictly")
 			}
-			// Numbers, booleans, and strings that maybe look like numbers can be
-			// loosely deserialized as uint.
 			if n.Type == gjson.JSON || (n.Type == gjson.String && !canParseAsNumber(n.Str)) {
 				return fmt.Errorf("apijson: failed to parse uint")
 			}
@@ -594,8 +538,6 @@ func (d *decoderBuilder) newPrimitiveTypeDecoder(t reflect.Type) decoderFunc {
 			if guardStrict(state, n.Type != gjson.Number) {
 				return fmt.Errorf("apijson: failed to parse float strictly")
 			}
-			// Numbers, booleans, and strings that maybe look like numbers can be
-			// loosely deserialized as floats.
 			if n.Type == gjson.JSON || (n.Type == gjson.String && !canParseAsNumber(n.Str)) {
 				return fmt.Errorf("apijson: failed to parse float")
 			}

@@ -4,11 +4,7 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
 [![Skills.sh x-twitter-scraper Skill](https://skills.sh/b/xquik-dev/x-twitter-scraper)](https://skills.sh/xquik-dev/x-twitter-scraper)
 
-<!-- x-release-please-start-version -->
-
 <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/Xquik-dev/x-twitter-scraper-go.svg" alt="Go Reference"></a>
-
-<!-- x-release-please-end -->
 
 Use this X API & Twitter API SDK to work with X from Go.
 It works as a Twitter scraper & tweet scraper for search, profiles & followers.
@@ -45,15 +41,11 @@ Use it when the official X API does not fit your workflow.
 
 ## Installation
 
-<!-- x-release-please-start-version -->
-
 ```go
 import (
 	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
 )
 ```
-
-<!-- x-release-please-end -->
 
 Or pin the version.
 

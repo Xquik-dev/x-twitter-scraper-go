@@ -53,7 +53,7 @@ type HTTPClient interface {
 }
 
 // WithHTTPClient returns a RequestOption that changes the underlying http client used to make this
-// request, which by default is [http.DefaultClient].
+// request.
 //
 // For custom uses cases, it is recommended to provide an [*http.Client] with a custom
 // [http.RoundTripper] as its transport, rather than directly implementing [HTTPClient].
@@ -64,7 +64,6 @@ func WithHTTPClient(client HTTPClient) RequestOption {
 		}
 
 		if c, ok := client.(*http.Client); ok {
-			// Prefer the native client if possible.
 			r.HTTPClient = c
 			r.CustomHTTPDoer = nil
 		} else {

@@ -13,7 +13,6 @@ type Metadata struct {
 	CreatedAt string `json:"created_at"`
 }
 
-// Card is the "combined" type of CardVisa and CardMastercard
 type Card struct {
 	Processor CardProcessor `json:"processor"`
 	Data      any           `json:"data"`
@@ -40,7 +39,6 @@ func (r cardJSON) RawJSON() string { return r.raw }
 
 type CardProcessor string
 
-// CardVisa
 type CardVisa struct {
 	Processor CardVisaProcessor `json:"processor"`
 	Data      CardVisaData      `json:"data"`
@@ -69,7 +67,6 @@ type CardVisaData struct {
 	Foo string `json:"foo"`
 }
 
-// CardMastercard
 type CardMastercard struct {
 	Processor CardMastercardProcessor `json:"processor"`
 	Data      CardMastercardData      `json:"data"`

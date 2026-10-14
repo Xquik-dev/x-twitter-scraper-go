@@ -197,7 +197,6 @@ func TestRecordReportsAFolderItCannotWrite(t *testing.T) {
 		}
 	}
 	const revision = "89abcdef0123456789abcdef0123456789abcdef"
-	// A file where the baselines folder belongs stops the folder.
 	if err := os.WriteFile(filepath.Join(".git", "coverage-baselines"), nil, 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -207,7 +206,6 @@ func TestRecordReportsAFolderItCannotWrite(t *testing.T) {
 	if err := os.Remove(filepath.Join(".git", "coverage-baselines")); err != nil {
 		t.Fatal(err)
 	}
-	// A folder where report.json belongs stops the file.
 	if err := os.MkdirAll(filepath.Join(".git", "coverage-baselines", revision, "report.json"), 0o700); err != nil {
 		t.Fatal(err)
 	}

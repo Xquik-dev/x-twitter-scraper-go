@@ -1,16 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-FileCopyrightText: 2026 Xquik contributors
 # SPDX-License-Identifier: Apache-2.0
-#
-# Runs the checks that GitHub Actions used to run, in the same order.
-# Stops at the first failure and says what to do next.
-# REUSE and CodeQL are required. REUSE runs at a pinned version through uv.
-# When HEAD is clean and on GitHub, posts the xquik-local-checks commit status
-# through the GitHub CLI login of whoever runs it. On the release machine, that
-# is the owner's gh login. The status lists only the checks that ran and passed,
-# and it says success only after every required check passed.
-# --no-status skips the commit status.
-# FUZZ_TIME sets the fuzzing time. The default is 15s. Use 2m for a full campaign.
 set -euo pipefail
 
 readonly status_repo="Xquik-dev/x-twitter-scraper-go"
@@ -106,12 +96,9 @@ run() {
     printf 'Check failed at %s. %s\n' "$name" "$fix" >&2
     exit 1
   fi
-  # A step without a label shares the label of a later step.
   [[ -z "$label" ]] || passed="${passed:+$passed, }$label"
 }
 
-# cmd/coverage-gain compares the reports with the parent's verified coverage.
-# A parent without a baseline gets one first, measured in a temporary clone.
 coverage_against_parent() {
   local parent common
   parent="HEAD^"
@@ -128,7 +115,6 @@ audit() {
   scripts/dependency-audit | tee "$work/audit.log"
 }
 
-# The status names the reviewed exceptions that the audit accepted, if any.
 audit_label() {
   local exceptions
   exceptions="$(sed -nE 's/^Dependency audit passed with ([0-9]+) reviewed exceptions?\.$/\1/p' "$work/audit.log")"
@@ -139,7 +125,6 @@ audit_label() {
   esac
 }
 
-# The coverage collectors leave their reports here for the parent comparison.
 export XQUIK_COVERAGE_DIR="$work/coverage"
 mkdir "$XQUIK_COVERAGE_DIR"
 

@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-// EDIT(begin): custom time marshaler
 package json
 
 import (
@@ -32,7 +31,6 @@ func timeEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	stringEncoder(e, reflect.ValueOf(formatted), opts)
 }
 
-// Uses continuation passing style, to add the timefmt option to k
 func continueWithTimeFmt(timefmt string, k encoderFunc) encoderFunc {
 	return func(e *encodeState, v reflect.Value, opts encOpts) {
 		opts.timefmt = timefmt
@@ -48,5 +46,3 @@ func marshalWithTimeLayout(m Marshaler, layout string) ([]byte, error) {
 	}
 	return m.MarshalJSON()
 }
-
-// EDIT(end)

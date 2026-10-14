@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-// CodeQL goes on after it fails to read a file and scans only the code it
-// could read. This diagnostic query of the suite names each such file.
 const extractionErrors = "go/diagnostics/extraction-errors"
 
 func validate(data []byte) error {
@@ -20,7 +18,6 @@ func validate(data []byte) error {
 		Version string
 		Runs    []struct {
 			Tool struct {
-				// SARIF names the scanner itself the driver of the run.
 				Scanner struct {
 					Notifications []struct{ ID string }
 				} `json:"driver"`
@@ -46,8 +43,6 @@ func validate(data []byte) error {
 	if run.Results == nil || len(run.Results) != 0 || len(run.Invocations) == 0 {
 		return fmt.Errorf("CodeQL findings or incomplete analysis prevent release")
 	}
-	// The report lists every diagnostic query that ran, so a suite without
-	// the extraction diagnostic cannot pass.
 	ran := false
 	for _, descriptor := range run.Tool.Scanner.Notifications {
 		ran = ran || descriptor.ID == extractionErrors

@@ -19,7 +19,6 @@
     "CONTRIBUTING.md",
     "go.sum",
     "LICENSE",
-    "release-please-config.json",
     "SECURITY.md",
     "*_test.go"
   ],

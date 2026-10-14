@@ -31,7 +31,6 @@ export GOCOVE_META_DIR="$branch_meta"
 export GOCACHE="$branch_cache"
 
 echo "==> Collecting branch coverage"
-# Rebuild every package. gocove does not emit catalogs for Go cache hits.
 go run "github.com/srvgit/gocove/cmd/gocove@${gocove_version}" test -a ./...
 go run "github.com/srvgit/gocove/cmd/gocove@${gocove_version}" \
   report \

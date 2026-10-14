@@ -26,9 +26,8 @@ import (
 // XCommunityJoinService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
 //
-// Note, unlike clients, this service does not read variables from the environment
-// automatically. You should not instantiate this service directly, and instead use
-// the [NewXCommunityJoinService] method instead.
+// You should not instantiate this service directly, and instead use the
+// [NewXCommunityJoinService] method instead.
 type XCommunityJoinService struct {
 	options []option.RequestOption
 }

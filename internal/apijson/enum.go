@@ -12,17 +12,12 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-/********************/
-/* Validating Enums */
-/********************/
-
 type validationEntry struct {
 	field       reflect.StructField
 	legalValues struct {
 		strings []string
-		// 1 represents true, 0 represents false, -1 represents either
-		bools int
-		ints  []int64
+		bools   int
+		ints    []int64
 	}
 }
 
@@ -36,8 +31,6 @@ func RegisterFieldValidator[T any, V string | bool | int | float64](fieldName st
 		validationRegistry[parentType] = []validationEntry{}
 	}
 
-	// The following checks run at initialization time,
-	// it is impossible for them to panic if any tests pass.
 	if parentType.Kind() != reflect.Struct {
 		panic(fmt.Sprintf("apijson: cannot initialize validator for non-struct %s", parentType.String()))
 	}
@@ -58,7 +51,7 @@ func RegisterFieldValidator[T any, V string | bool | int | float64](fieldName st
 	}
 
 	newEntry := validationEntry{field: field}
-	newEntry.legalValues.bools = -1 // default to either
+	newEntry.legalValues.bools = -1
 
 	switch values := any(values).(type) {
 	case []string:
@@ -75,15 +68,13 @@ func RegisterFieldValidator[T any, V string | bool | int | float64](fieldName st
 				next = 1
 			}
 			if i > 0 && newEntry.legalValues.bools != next {
-				newEntry.legalValues.bools = -1 // accept either
+				newEntry.legalValues.bools = -1
 				break
 			}
 			newEntry.legalValues.bools = next
 		}
 	}
 
-	// Store the information necessary to create a validator, so that we can use it
-	// lazily create the validator function when did.
 	validationRegistry[parentType] = append(validationRegistry[parentType], newEntry)
 }
 

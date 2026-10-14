@@ -16,14 +16,12 @@ import (
 	"golang.org/x/tools/cover"
 )
 
-// Report binds measured counts to their revision and instrumentation scope.
 type Report struct {
 	Revision string
 	Scope    string
 	Total    map[string]Metric
 }
 
-// Baseline rejects missing, malformed, or mismatched baseline evidence.
 func Baseline(files fs.FS, revision, scope string) (Report, error) {
 	var report Report
 	data, err := fs.ReadFile(files, "report.json")
@@ -39,7 +37,6 @@ func Baseline(files fs.FS, revision, scope string) (Report, error) {
 	return report, nil
 }
 
-// Measure reads native Go, Cobertura, and branch instrumentation reports.
 func Measure(files fs.FS) (map[string]Metric, error) {
 	inputs := make(map[string][]byte)
 	for _, name := range []string{"coverage.out", "coverage.xml", "branches.json", "branches.cover"} {

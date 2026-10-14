@@ -1,19 +1,16 @@
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package coveragegate validates coverage against verified parent measurements.
 package coveragegate
 
 import (
 	"fmt"
 )
 
-// Metric contains measured counts, never rounded percentages.
 type Metric struct {
 	Total, Covered, Skipped int64
 }
 
-// Compare rejects invalid measurements and coverage regressions.
 func Compare(parent, current map[string]Metric) error {
 	for _, name := range []string{"statements", "branches", "functions", "lines"} {
 		percentages := [2]float64{}

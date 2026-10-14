@@ -1,16 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-FileCopyrightText: 2026 Xquik contributors
 # SPDX-License-Identifier: Apache-2.0
-#
-# Releases the Go module from a maintainer's machine.
-# Go modules need no registry credential, so this script reads no stored secret.
-# Pushing the tag publishes the version, and proxy.golang.org fetches it on the
-# first request. pkg.go.dev reads the proxy.
-# GitHub CLI creates the GitHub release with its own login. On the release
-# machine, that is the owner's gh login, which bin/check-local also uses to
-# post the xquik-local-checks status.
-# Pass --dry-run to run every step except the tag and the GitHub release. It
-# prints the module path, the version and the files of the module zip.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -18,6 +8,7 @@ cd "$(dirname "$0")/.."
 readonly module="github.com/Xquik-dev/x-twitter-scraper-go"
 readonly repo="${module#github.com/}"
 # The proxy protocol spells each capital letter as "!" plus the lowercase letter.
+# https://go.dev/ref/mod#goproxy-protocol
 readonly proxy="https://proxy.golang.org/github.com/!xquik-dev/x-twitter-scraper-go/@v"
 
 dry_run=false
@@ -100,9 +91,6 @@ scripts/dependency-audit ||
 step "Building the module"
 go build ./... || fail "Fix the build errors above, then retry."
 
-# The proxy runs go mod download against the tagged commit. This step runs the
-# same command against a throwaway clone that carries the tag, so the zip and
-# its checksum match what the proxy will serve. Nothing leaves this machine.
 step "Building the module zip that proxy.golang.org would build"
 go_command="$(go env GOROOT)/bin/go"
 git clone --quiet --bare --no-tags . "$work/origin.git"

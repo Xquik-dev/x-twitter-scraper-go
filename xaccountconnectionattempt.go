@@ -22,9 +22,8 @@ import (
 // XAccountConnectionAttemptService contains methods and other services that help
 // with interacting with the x-twitter-scraper API.
 //
-// Note, unlike clients, this service does not read variables from the environment
-// automatically. You should not instantiate this service directly, and instead use
-// the [NewXAccountConnectionAttemptService] method instead.
+// You should not instantiate this service directly, and instead use the
+// [NewXAccountConnectionAttemptService] method instead.
 type XAccountConnectionAttemptService struct {
 	options []option.RequestOption
 }
@@ -97,9 +96,6 @@ type XAccountConnectionAttemptGetResponseUnion struct {
 	} `json:"-"`
 }
 
-// anyXAccountConnectionAttemptGetResponse is implemented by each variant of
-// [XAccountConnectionAttemptGetResponseUnion] to add type safety for the return
-// type of [XAccountConnectionAttemptGetResponseUnion.AsAny]
 type anyXAccountConnectionAttemptGetResponse interface {
 	implXAccountConnectionAttemptGetResponseUnion()
 }

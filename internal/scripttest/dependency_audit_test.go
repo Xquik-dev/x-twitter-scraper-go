@@ -15,9 +15,6 @@ import (
 	"time"
 )
 
-// The fake go command answers the 3 calls scripts/dependency-audit makes.
-// It lists the packages callers can import, lists the modules those packages
-// need, and prints a govulncheck report. Any other call fails the audit.
 const fakeGo = `#!/bin/sh
 case "$1 $2" in
   "list -deps") cat "$FAKE_SHIPPED_MODULES" ;;
@@ -57,12 +54,10 @@ func day(offset int) string {
 	return time.Now().UTC().AddDate(0, 0, offset).Format("2006-01-02")
 }
 
-// required is a finding in a module the build needs, with no call to it.
 func required(id, module, fixed string) finding {
 	return finding{OSV: id, FixedVersion: fixed, Trace: []frame{{Module: module, Version: "v1.0.0"}}}
 }
 
-// called is a finding that govulncheck traced to a call.
 func called(id, module, fixed string) finding {
 	return finding{OSV: id, FixedVersion: fixed, Trace: []frame{
 		{Module: module, Version: "v1.0.0", Package: module + "/parse", Function: "Parse"},
@@ -105,7 +100,6 @@ func runAudit(t *testing.T, goCommand string, findings []finding, exceptions any
 		}
 		return data
 	}
-	// govulncheck writes a stream of messages. Only finding messages carry a verdict.
 	report := []byte(`{"config":{"scanner_name":"govulncheck","scan_level":"symbol"}}` + "\n" + `{"progress":{"message":"Scanning your code"}}` + "\n")
 	for _, item := range findings {
 		report = append(report, encode(map[string]finding{"finding": item})...)

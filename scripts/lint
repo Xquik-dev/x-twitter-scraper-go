@@ -24,10 +24,8 @@ while IFS= read -r package; do
 done < <(go list ./...)
 go vet "${packages[@]}"
 
-# Upstream fixtures contain malformed tags; keep every other test analyzer enabled.
 go vet -structtag=false ./internal/encoding/json
 
-# Production retains the struct-tag analyzer.
 json_sources=()
 while IFS= read -r source; do
   json_sources+=("$source")

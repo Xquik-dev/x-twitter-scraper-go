@@ -9,7 +9,6 @@ import (
 	"reflect"
 )
 
-// Port copies over values from one struct to another struct.
 func Port(from any, to any) error {
 	toVal := reflect.ValueOf(to)
 	fromVal := reflect.ValueOf(from)
@@ -38,14 +37,10 @@ func Port(from any, to any) error {
 	fromJSON := fromVal.FieldByName("JSON")
 	toJSON := toVal.FieldByName("JSON")
 
-	// Iterate through the fields of v and load all the "normal" fields in the struct to the map of
-	// string to reflect.Value, as well as their raw .JSON.Foo counterpart indicated by j.
 	var getFields func(t reflect.Type, v reflect.Value)
 	getFields = func(t reflect.Type, v reflect.Value) {
 		j := v.FieldByName("JSON")
 
-		// Recurse into anonymous fields first, since the fields on the object should win over the fields in the
-		// embedded object.
 		for i := 0; i < t.NumField(); i++ {
 			field := t.Field(i)
 			if field.Anonymous {
@@ -68,7 +63,6 @@ func Port(from any, to any) error {
 	}
 	getFields(fromType, fromVal)
 
-	// Use the values from the previous step to populate the 'to' struct.
 	for i := 0; i < toType.NumField(); i++ {
 		field := toType.Field(i)
 		ptag, ok := parseJSONStructTag(field)
@@ -107,7 +101,6 @@ func Port(from any, to any) error {
 		}
 	}
 
-	// Finally, copy over the .JSON.raw and .JSON.ExtraFields
 	if toJSON.IsValid() {
 		if raw := toJSON.FieldByName("raw"); raw.IsValid() {
 			setUnexportedField(raw, fromJSON.Interface().(interface{ RawJSON() string }).RawJSON())

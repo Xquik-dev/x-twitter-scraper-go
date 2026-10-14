@@ -46,7 +46,6 @@ func parseJSONStructTag(field reflect.StructField) (tag parsedStructTag, ok bool
 		}
 	}
 
-	// the `api` struct tag is only used alongside `json` for custom behaviour
 	parseApiStructTag(field, &tag)
 	parseDefaultStructTag(field, &tag)
 	return tag, ok
@@ -54,7 +53,6 @@ func parseJSONStructTag(field reflect.StructField) (tag parsedStructTag, ok bool
 
 func parseDefaultStructTag(field reflect.StructField, tag *parsedStructTag) {
 	if field.Type.Kind() != reflect.String {
-		// Only strings are currently supported
 		return
 	}
 
