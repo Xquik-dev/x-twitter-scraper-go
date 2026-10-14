@@ -146,7 +146,7 @@ run "source scan" "Source scan" "Fix each new gosec finding above, or review it 
   scripts/source-security
 run archive "Reproducible module archive" "Remove the build input that differs between the archives." \
   scripts/reproducible-build
-run CodeQL "CodeQL" "Install CodeQL 2.27.0 as CONTRIBUTING.md says, or fix the findings above." \
+run CodeQL "CodeQL" "Install CodeQL 2.27.2 as CONTRIBUTING.md says, or fix the findings above." \
   scripts/codeql-security
 run "fuzz $fuzz_time" "Fuzzing" "Fix the crash. Go saved its input under internal/apiform/testdata/fuzz." \
   go test ./internal/apiform -run '^$' -fuzz '^FuzzMarshalRoundTrip$' -fuzztime="$fuzz_time"

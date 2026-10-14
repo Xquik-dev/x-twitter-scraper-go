@@ -6,6 +6,7 @@ It moves a finding only when its code & surrounding lines are unchanged, and it 
 On 2026-10-14, the comment sweep moved 80 more the same way. It also re-pinned the anonymous field decoder finding in `internal/apijson/decoder.go` by hand, because only its `// ignore errors` comment left the excerpt. Its reason is unchanged.
 3 records name `cmd/reproducible-build/upload_test.go`, which no longer exists, so nothing can match them.
 On 2026-10-13, 5 findings in `internal/scripttest` were reviewed and added. Each runs only in tests, with input the test controls.
+On 2026-10-15, the CodeQL 2.27.2 update changed 1 line in `internal/scripttest/codeql_security_test.go`. The same script moved its 2 findings to the new file hash. Their code & reasons are unchanged.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
 Their order is rule, file, line, code, source hash, severity, confidence, details.
@@ -1768,7 +1769,7 @@ Finding: Subprocess launched with variable
 
 Test-only runner for scripts/codeql-security. The script path is this repository's file, and a fake CodeQL command that the test wrote stands in for the real CLI.
 
-Source SHA-256: `d82ebb5321a6cb60025606d2205f41953afccd46f2a742758f7a0688ed0ea681`
+Source SHA-256: `f92d985ed9da1a10e51f03597feb569a22e373f92987f8c88f09f93c5f5ded08`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with variable
 
@@ -1796,7 +1797,7 @@ Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 Test-only stand-in for the CodeQL CLI, written into the test's temporary folder. It must be executable, so it needs mode 0o755. Its content is a literal in the test.
 
-Source SHA-256: `d82ebb5321a6cb60025606d2205f41953afccd46f2a742758f7a0688ed0ea681`
+Source SHA-256: `f92d985ed9da1a10e51f03597feb569a22e373f92987f8c88f09f93c5f5ded08`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Expect WriteFile permissions to be 0600 or less
 

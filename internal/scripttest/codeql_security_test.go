@@ -15,7 +15,7 @@ import (
 
 const fakeCodeQL = `#!/bin/sh
 case "$1 $2" in
-  "version --format=terse") echo 2.27.0 ;;
+  "version --format=terse") echo 2.27.2 ;;
   "pack install") ;;
   "database create") ;;
   "database analyze")
