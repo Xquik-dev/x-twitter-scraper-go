@@ -57,13 +57,9 @@ import (
 
 Or pin the version.
 
-<!-- x-release-please-start-version -->
-
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.19.0'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.19.1'
 ```
-
-<!-- x-release-please-end -->
 
 ## Verify a release
 

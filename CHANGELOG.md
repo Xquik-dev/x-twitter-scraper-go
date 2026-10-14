@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.19.1 (2026-10-14)
+
+[Full changelog from v0.19.0 to v0.19.1](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.0...v0.19.1)
+
+The API and its behavior are the same as in 0.19.0.
+
+- The README uses sentence case headings, active voice and whole sentences. Its facts, links and legal lines stay the same.
+
 ## 0.19.0 (2026-10-13)
 
 [Full changelog from v0.18.1 to v0.19.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.18.1...v0.19.0)
