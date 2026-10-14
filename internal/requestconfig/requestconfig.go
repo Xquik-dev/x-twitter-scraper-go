@@ -151,8 +151,6 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 		hasSerializationFunc = true
 	}
 
-	// Fallback to json serialization if none of the serialization functions that we expect
-	// to see is present.
 	if body != nil && !hasSerializationFunc {
 		buf := new(bytes.Buffer)
 		enc := json.NewEncoder(buf)
@@ -198,12 +196,8 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 		return nil, err
 	}
 
-	// This must run after `cfg.Apply(...)` above so we know which specific security scheme to add
 	ApplySecurity(cfg)
 
-	// This must run after `cfg.Apply(...)` above in case the request timeout gets modified. We also only
-	// apply our own logic for it if it's still "0" from above. If it's not, then it was deleted or modified
-	// by the user and we should respect that.
 	if req.Header.Get("X-Stainless-Timeout") == "0" {
 		if cfg.RequestTimeout == time.Duration(0) {
 			req.Header.Del("X-Stainless-Timeout")
@@ -215,48 +209,30 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 	return &cfg, nil
 }
 
-// This interface is primarily used to describe an [*http.Client], but also
-// supports custom HTTP implementations.
 type HTTPDoer interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-// RequestConfig represents all the state related to one request.
-//
-// Editing the variables inside RequestConfig directly is unstable api. Prefer
-// composing the RequestOption instead if possible.
 type RequestConfig struct {
-	MaxRetries     int
-	RequestTimeout time.Duration
-	Context        context.Context
-	Request        *http.Request
-	BaseURL        *url.URL
-	// DefaultBaseURL will be used if BaseURL is not explicitly overridden using
-	// WithBaseURL.
-	DefaultBaseURL *url.URL
-	CustomHTTPDoer HTTPDoer
-	HTTPClient     *http.Client
-	Middlewares    []middleware
-	APIKey         string
-	BearerToken    string
-	// Configure which security scheme(s) should be enabled for this request
-	Security Security
-	// If ResponseBodyInto not nil, then we will attempt to deserialize into
-	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
-	// is.
+	MaxRetries       int
+	RequestTimeout   time.Duration
+	Context          context.Context
+	Request          *http.Request
+	BaseURL          *url.URL
+	DefaultBaseURL   *url.URL
+	CustomHTTPDoer   HTTPDoer
+	HTTPClient       *http.Client
+	Middlewares      []middleware
+	APIKey           string
+	BearerToken      string
+	Security         Security
 	ResponseBodyInto any
-	// ResponseInto copies the \*http.Response of the corresponding request into the
-	// given address
-	ResponseInto **http.Response
-	Body         io.Reader
+	ResponseInto     **http.Response
+	Body             io.Reader
 }
 
-// middleware is exactly the same type as the Middleware type found in the [option] package,
-// but it is redeclared here for circular dependency issues.
 type middleware = func(*http.Request, middlewareNext) (*http.Response, error)
 
-// middlewareNext is exactly the same type as the MiddlewareNext type found in the [option] package,
-// but it is redeclared here for circular dependency issues.
 type middlewareNext = func(*http.Request) (*http.Response, error)
 
 func applyMiddleware(middleware middleware, next middlewareNext) middlewareNext {
@@ -266,19 +242,14 @@ func applyMiddleware(middleware middleware, next middlewareNext) middlewareNext 
 }
 
 func shouldRetry(req *http.Request, res *http.Response) bool {
-	// If there is no way to recover the Body, then we shouldn't retry.
 	if req.Body != nil && req.GetBody == nil {
 		return false
 	}
 
-	// If there is no response, that indicates that there is a connection error
-	// so we retry the request.
 	if res == nil {
 		return true
 	}
 
-	// If the header explicitly wants a retry behavior, respect that over the
-	// http status code.
 	if res.Header.Get("x-should-retry") == "true" {
 		return true
 	}
@@ -310,18 +281,13 @@ func parseRetryAfterHeader(resp *http.Response) (time.Duration, bool) {
 	return time.Until(date), true
 }
 
-// isBeforeContextDeadline reports whether the non-zero Time t is
-// before ctx's deadline. If ctx does not have a deadline, it
-// always reports true (the deadline is considered infinite).
 func isBeforeContextDeadline(t time.Time, ctx context.Context) bool {
 	d, ok := ctx.Deadline()
 	return !ok || t.Before(d)
 }
 
-// bodyWithTimeout is an io.ReadCloser which can observe a context's cancel func
-// to handle timeouts etc. It wraps an existing io.ReadCloser.
 type bodyWithTimeout struct {
-	stop func() // stops the time.Timer waiting to cancel the request
+	stop func()
 	rc   io.ReadCloser
 }
 
@@ -336,7 +302,6 @@ func (b *bodyWithTimeout) Close() error {
 }
 
 func retryDelay(res *http.Response, retryCount int) time.Duration {
-	// If the backend tells us to wait a certain amount of time, use that value
 	if retryAfterDelay, ok := parseRetryAfterHeader(res); ok {
 		return max(0, retryAfterDelay)
 	}
@@ -379,7 +344,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 		handler = applyMiddleware(cfg.Middlewares[i], handler)
 	}
 
-	// Don't send the current retry count in the headers if the caller modified the header defaults.
 	shouldSendRetryCount := cfg.Request.Header.Get("X-Stainless-Retry-Count") == "0"
 
 	var res *http.Response
@@ -389,7 +353,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 		if cfg.RequestTimeout != time.Duration(0) && isBeforeContextDeadline(time.Now().Add(cfg.RequestTimeout), ctx) {
 			ctx, cancel = context.WithTimeout(ctx, cfg.RequestTimeout)
 			defer func() {
-				// The cancel function is nil if it was handed off to be handled in a different scope.
 				if cancel != nil {
 					cancel()
 				}
@@ -409,7 +372,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 			break
 		}
 
-		// Prepare next request and wait for the retry delay
 		if cfg.Request.GetBody != nil {
 			cfg.Request.Body, err = cfg.Request.GetBody()
 			if err != nil {
@@ -417,12 +379,10 @@ func (cfg *RequestConfig) Execute() (err error) {
 			}
 		}
 
-		// Can't actually refresh the body, so we don't attempt to retry here
 		if cfg.Request.GetBody == nil && cfg.Request.Body != nil {
 			break
 		}
 
-		// Close the response body before retrying to prevent connection leaks
 		if res != nil && res.Body != nil {
 			_ = res.Body.Close()
 		}
@@ -434,9 +394,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 		}
 	}
 
-	// Save *http.Response if it is requested to, even if there was an error making the request. This is
-	// useful in cases where you might want to debug by inspecting the response. Note that if err != nil,
-	// the response should be generally be empty, but there are edge cases.
 	if cfg.ResponseInto != nil {
 		*cfg.ResponseInto = res
 	}
@@ -444,8 +401,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 		*responseBodyInto = res
 	}
 
-	// If there was a connection error in the final request or any other transport error,
-	// return that early without trying to coerce into an APIError.
 	if err != nil {
 		return err
 	}
@@ -457,11 +412,8 @@ func (cfg *RequestConfig) Execute() (err error) {
 			return err
 		}
 
-		// If there is an APIError, re-populate the response body so that debugging
-		// utilities can conveniently dump the response without issue.
 		res.Body = io.NopCloser(bytes.NewBuffer(contents))
 
-		// Load the contents into the error format if it is provided.
 		aerr := apierror.Error{Request: cfg.Request, Response: res, StatusCode: res.StatusCode}
 		err = aerr.UnmarshalJSON(contents)
 		if err != nil {
@@ -472,9 +424,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 
 	_, intoCustomResponseBody := cfg.ResponseBodyInto.(**http.Response)
 	if cfg.ResponseBodyInto == nil || intoCustomResponseBody {
-		// We aren't reading the response body in this scope, but whoever is will need the
-		// cancel func from the context to observe request timeouts.
-		// Put the cancel function in the response body so it can be handled elsewhere.
 		if cancel != nil {
 			res.Body = &bodyWithTimeout{rc: res.Body, stop: cancel}
 			cancel = nil
@@ -488,7 +437,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 		return fmt.Errorf("error reading response body: %w", err)
 	}
 
-	// If we are not json, return plaintext
 	contentType := res.Header.Get("content-type")
 	mediaType, _, _ := mime.ParseMediaType(contentType)
 	isJSON := strings.Contains(mediaType, "application/json") || strings.HasSuffix(mediaType, "+json")
@@ -508,7 +456,6 @@ func (cfg *RequestConfig) Execute() (err error) {
 	}
 
 	switch dst := cfg.ResponseBodyInto.(type) {
-	// If the response happens to be a byte array, deserialize the body as-is.
 	case *[]byte:
 		*dst = contents
 	default:
@@ -566,12 +513,6 @@ func (cfg *RequestConfig) Apply(opts ...RequestOption) error {
 	return nil
 }
 
-// PreRequestOptions is used to collect all the options which need to be known before
-// a call to [RequestConfig.ExecuteNewRequest], such as path parameters
-// or global defaults.
-// PreRequestOptions will return a [RequestConfig] with the options applied.
-//
-// Only request option functions of type [PreRequestOptionFunc] are applied.
 func PreRequestOptions(opts ...RequestOption) (RequestConfig, error) {
 	cfg := RequestConfig{}
 	for _, opt := range opts {
@@ -585,9 +526,6 @@ func PreRequestOptions(opts ...RequestOption) (RequestConfig, error) {
 	return cfg, nil
 }
 
-// WithDefaultBaseURL returns a RequestOption that sets the client's default Base URL.
-// This is always overridden by setting a base URL with WithBaseURL.
-// WithBaseURL should be used instead of WithDefaultBaseURL except in internal code.
 func WithDefaultBaseURL(baseURL string) RequestOption {
 	u, err := url.Parse(baseURL)
 	return RequestOptionFunc(func(r *RequestConfig) error {
@@ -611,8 +549,6 @@ func WithSecurity(security Security) RequestOption {
 	})
 }
 
-// WithAPIKeySecurity() should only be used within a method, not provided to at the
-// client-level.
 func WithAPIKeySecurity() RequestOption {
 	return RequestOptionFunc(func(r *RequestConfig) error {
 		r.Security = Security{
@@ -623,8 +559,6 @@ func WithAPIKeySecurity() RequestOption {
 	})
 }
 
-// WithOAuthBearerSecurity() should only be used within a method, not provided to
-// at the client-level.
 func WithOAuthBearerSecurity() RequestOption {
 	return RequestOptionFunc(func(r *RequestConfig) error {
 		r.Security = Security{

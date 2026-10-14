@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-FileCopyrightText: 2026 Xquik contributors
 # SPDX-License-Identifier: Apache-2.0
-# Measures the coverage of a revision and keeps it as that revision's
-# verified baseline, which cmd/coverage-gain compares against. It runs the
-# revision's own collectors in a temporary clone that shares this
-# repository's objects, so it leaves the working tree and its worktrees alone.
-# Usage: scripts/coverage-baseline <revision>
 set -euo pipefail
 cd "$(dirname "$0")/.."
 revision="$(git rev-parse --verify "${1:?Run scripts/coverage-baseline <revision>.}^{commit}")"

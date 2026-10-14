@@ -26,9 +26,6 @@ func (r Struct) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// Note that the order of fields affects the JSON
-// key order. Changing the order of the fields in this struct
-// will fail tests unnecessarily.
 type FieldStruct struct {
 	A param.Opt[string]    `json:"a,omitzero"`
 	B param.Opt[int64]     `json:"b,omitzero"`
@@ -184,11 +181,7 @@ func TestExtraFields(t *testing.T) {
 }
 
 func TestExtraFieldsForceOmitted(t *testing.T) {
-	v := Struct{
-		// Testing with the zero value.
-		// A: "",
-		// B: 0,
-	}
+	v := Struct{}
 	v.SetExtraFields(map[string]any{
 		"b": param.Omit,
 	})
@@ -270,8 +263,6 @@ func TestOverride(t *testing.T) {
 	}
 }
 
-// Despite implementing the interface, this struct is not an param.Optional
-// since it was defined in a different package.
 type almostOpt struct{}
 
 func (almostOpt) Valid() bool  { return true }
@@ -291,7 +282,7 @@ func TestOptionalInterfaceAssignability(t *testing.T) {
 		t.Fatalf("unexpected successful assignment")
 	}
 
-	notOpt.implOpt() // silence the warning
+	notOpt.implOpt()
 }
 
 type PrimitiveUnion struct {
@@ -331,10 +322,6 @@ func TestNullStructUnion(t *testing.T) {
 
 	assertJSON(t, nullUnion, "null")
 }
-
-//
-// Compaction optimization
-//
 
 type NonCompactedDoubleParent struct {
 	Prop   string             `json:"prop"`
@@ -398,24 +385,12 @@ func TestAppendCompactBroken(t *testing.T) {
 	}
 }
 
-// TestAppendCompact validates an optimization for internal SDK types to
-// avoid O(keys^2) iteration over each JSON object.
-//
-// It's possible to intentionally trigger this behavior as both a user and
-// SDK developer. However, the edge case is quite pathological and requires
-// calling [json.Marshaler.MarshalJSON] rather than [json.Marshal].
 func TestAppendCompact(t *testing.T) {
 
 	tests := map[string]struct {
 		value    json.Marshaler
 		expected string
 	}{
-		//
-		// Non-compacted cases
-		//
-		// Note this is how to exploit the compacter to fail, you must call [json.Marshaler.MarshalJSON] rather than [json.Marshal].
-		// The type must also embed [param.APIObject] and return non-compacted JSON.
-		//
 
 		"no-compact/fails-compaction": {
 			NonCompacted{Raw: nonCompactedRaw},
@@ -433,10 +408,6 @@ func TestAppendCompact(t *testing.T) {
 			}}},
 			`{"prop":"1","parent":{"bad_child":` + nonCompactedRaw + `}}`,
 		},
-
-		//
-		// Compacted cases
-		//
 
 		"override/spaces-within": {
 			param.Override[NonCompactedDoubleParent](json.RawMessage(`{"com": "pact"}`)),

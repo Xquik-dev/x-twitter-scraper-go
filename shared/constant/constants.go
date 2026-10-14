@@ -12,34 +12,34 @@ type Constant[T any] interface {
 	Default() T
 }
 
-// ValueOf gives the default value of a constant from its type. It's helpful when
-// constructing constants as variants in a one-of. Note that empty structs are
-// marshalled by default. Usage: constant.ValueOf[constant.Foo]()
+// ValueOf gives the default value of a constant from its type.
+//
+//	constant.ValueOf[constant.Foo]()
 func ValueOf[T Constant[T]]() T {
 	var t T
 	return t.Default()
 }
 
-type APIV1GuestWalletsTopups string                                                                   // Always "/api/v1/guest-wallets/topups"
-type Active string                                                                                    // Always "active"
-type Canceled string                                                                                  // Always "canceled"
-type Compose string                                                                                   // Always "compose"
-type Deleting string                                                                                  // Always "deleting"
-type Failed string                                                                                    // Always "failed"
-type HTTPSXquikComAPIV1GuestWalletsStatus string                                                      // Always "https://xquik.com/api/v1/guest-wallets/status"
-type PaidReads string                                                                                 // Always "paid_reads"
-type Pending string                                                                                   // Always "pending"
-type Post string                                                                                      // Always "POST"
-type Refine string                                                                                    // Always "refine"
-type RequiresEmailCode string                                                                         // Always "requires_email_code"
-type Score string                                                                                     // Always "score"
-type SourceDefaultProductionValueCanVary string                                                       // Always "Source default; production value can vary"
-type StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable string // Always "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
-type Success string                                                                                   // Always "success"
-type Usd string                                                                                       // Always "usd"
-type XAccountConnectionAttempt string                                                                 // Always "x_account_connection_attempt"
-type XAccountConnectionChallenge string                                                               // Always "x_account_connection_challenge"
-type XWriteAction string                                                                              // Always "x_write_action"
+type APIV1GuestWalletsTopups string
+type Active string
+type Canceled string
+type Compose string
+type Deleting string
+type Failed string
+type HTTPSXquikComAPIV1GuestWalletsStatus string
+type PaidReads string
+type Pending string
+type Post string
+type Refine string
+type RequiresEmailCode string
+type Score string
+type SourceDefaultProductionValueCanVary string
+type StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable string
+type Success string
+type Usd string
+type XAccountConnectionAttempt string
+type XAccountConnectionChallenge string
+type XWriteAction string
 
 func (c APIV1GuestWalletsTopups) Default() APIV1GuestWalletsTopups {
 	return "/api/v1/guest-wallets/topups"

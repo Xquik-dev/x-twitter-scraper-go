@@ -3,22 +3,6 @@
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
-// move_source_reviews moves reviewed source findings to new line numbers and
-// file hashes after a change that leaves their code alone. The sourcereviews
-// build tag keeps it out of the module, so the source scan and coverage skip
-// it.
-//
-// Each record in security/source-reviews.md names a finding's file, line,
-// code excerpt and file hash, and security/source-reviews.json holds the
-// fingerprint that cmd/source-security checks. Run it from the repository
-// root and pass the commit the records were made for.
-//
-//	go run -tags sourcereviews ./scripts/move_source_reviews.go <base commit>
-//
-// A finding moves only when every line of its excerpt is an unchanged line in
-// git diff between the base commit and the working tree. A finding whose code
-// or surrounding lines changed keeps its old pin, so cmd/source-security
-// rejects it until someone reviews it again. The command then exits 1.
 package main
 
 import (
@@ -59,6 +43,7 @@ var (
 
 // The records file shows an empty source line as "12:", while gosec writes
 // "12: " with a trailing space. The fingerprint uses gosec's form.
+// https://github.com/securego/gosec/blob/v2.29.0/issue/issue.go#L204
 func scannerCode(shown string) string { return emptyPattern.ReplaceAllString(shown, "$1: ") }
 
 func shownCode(scanner string) string { return blankPattern.ReplaceAllString(scanner, "$1:") }
@@ -68,7 +53,6 @@ func (r record) fingerprint() string {
 	return fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%q", item))))
 }
 
-// parseRecords splits the records file into its preamble and its records.
 func parseRecords(markdown string) (string, []record, error) {
 	starts := headingPattern.FindAllStringIndex(markdown, -1)
 	if len(starts) == 0 {
@@ -99,7 +83,6 @@ func parseRecords(markdown string) (string, []record, error) {
 
 type hunk struct{ oldStart, oldCount, newCount int }
 
-// parseHunks reads the hunk headers of a git diff with no context lines.
 func parseHunks(diff string) []hunk {
 	var hunks []hunk
 	for _, match := range hunkPattern.FindAllStringSubmatch(diff, -1) {
@@ -116,8 +99,6 @@ func parseHunks(diff string) []hunk {
 	return hunks
 }
 
-// mapLine returns the new number of an old line, or false when the diff
-// removed or replaced that line.
 func mapLine(hunks []hunk, line int) (int, bool) {
 	shift := 0
 	for _, h := range hunks {
@@ -134,8 +115,6 @@ func mapLine(hunks []hunk, line int) (int, bool) {
 	return line + shift, true
 }
 
-// mapLineField maps a finding's line, which gosec writes as 1 number or as a
-// range such as 107-110. Callers have already checked every excerpt line.
 func mapLineField(hunks []hunk, field string) string {
 	parts := strings.Split(field, "-")
 	for i, part := range parts {
@@ -153,8 +132,6 @@ type outcome struct {
 	reason  string
 }
 
-// move pins a record to its finding's place in the current file. It returns
-// the record unchanged with a reason when the finding cannot move.
 func move(r record, base, current []byte, diff string) (record, outcome) {
 	if fmt.Sprintf("%x", sha256.Sum256(base)) != r.Hash {
 		return r, outcome{record: r, reason: "its file at the base commit has another hash"}
@@ -242,8 +219,6 @@ func run(repo repository, out io.Writer) error {
 		current, currentErr := repo.currentFile(r.File)
 		switch {
 		case baseErr != nil:
-			// Nothing in the tree can match a record whose file was already
-			// gone, so it neither moves nor fails the run.
 			orphaned = append(orphaned, fmt.Sprintf("orphaned %s %s:%s because its file is not in the base commit", r.Rule, r.File, r.Line))
 			index[slot] = r.fingerprint()
 			text.WriteString(r.text)

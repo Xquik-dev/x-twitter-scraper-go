@@ -1,7 +1,6 @@
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
-// reproducible-build verifies the source archive used by this Go library.
 package main
 
 import (

@@ -31,8 +31,7 @@ const (
 // Opt represents an optional parameter of type T. Use
 // the [Opt.Valid] method to confirm.
 type Opt[T comparable] struct {
-	Value T
-	// indicates whether the field should be omitted, null, or valid
+	Value  T
 	status status
 	opt
 }
@@ -85,10 +84,7 @@ func (o *Opt[T]) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSONWithTimeLayout is necessary to bypass the internal caching performed
-// by [json.Marshal]. Prefer to use [Opt.MarshalJSON] instead.
-//
-// This function requires that the generic type parameter of [Opt] is not [time.Time].
+// Prefer to use [Opt.MarshalJSON] instead.
 func (o Opt[T]) MarshalJSONWithTimeLayout(format string) []byte {
 	t, ok := any(o.Value).(time.Time)
 	if !ok || o.null() {
@@ -105,12 +101,10 @@ func (o Opt[T]) MarshalJSONWithTimeLayout(format string) []byte {
 func (o Opt[T]) null() bool   { return o.status == null }
 func (o Opt[T]) isZero() bool { return o == Opt[T]{} }
 
-// opt helps limit the [Optional] interface to only types in this package
 type opt struct{}
 
 func (opt) implOpt() {}
 
-// This interface is useful for internal purposes.
 type Optional interface {
 	Valid() bool
 	null() bool

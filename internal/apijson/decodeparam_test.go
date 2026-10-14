@@ -76,8 +76,7 @@ func (o *BasicObject) UnmarshalJSON(data []byte) error { return apijson.Unmarsha
 func TestBasicObjectWithNull(t *testing.T) {
 	raw := `{"opt_int":null,"opt_string":null,"opt_bool":null}`
 	target := BasicObject{
-		OptInt: param.Null[int64](),
-		// OptFloat:  param.Opt[float64]{},
+		OptInt:    param.Null[int64](),
 		OptString: param.Null[string](),
 		OptBool:   param.Null[bool](),
 	}

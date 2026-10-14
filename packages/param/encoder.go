@@ -34,8 +34,6 @@ func (m EncodedAsDate) MarshalJSON() ([]byte, error) {
 	return underlying.MarshalJSON()
 }
 
-// MarshalObject uses a shimmed 'encoding/json' from Go 1.24, to support the 'omitzero' tag
-//
 // Stability for the API of MarshalObject is not guaranteed.
 func MarshalObject[T ParamStruct](f T, underlying any) ([]byte, error) {
 	return MarshalWithExtras(f, underlying, f.extraFields())
@@ -55,7 +53,6 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 		for k, v := range extras {
 			var a any = v
 			if a == Omit {
-				// Errors when handling ForceOmitted are ignored.
 				if b, e := sjson.DeleteBytes(bytes, k); e == nil {
 					bytes = b
 				}
@@ -74,8 +71,6 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 	}
 }
 
-// MarshalUnion uses a shimmed 'encoding/json' from Go 1.24, to support the 'omitzero' tag
-//
 // Stability for the API of MarshalUnion is not guaranteed.
 func MarshalUnion[T ParamStruct](metadata T, variants ...any) ([]byte, error) {
 	nPresent := 0
@@ -103,11 +98,10 @@ func MarshalUnion[T ParamStruct](metadata T, variants ...any) ([]byte, error) {
 	return shimjson.Marshal(variants[presentIdx], shimjson.WithSkipCompaction(true))
 }
 
-// typeFor is shimmed from Go 1.23 "reflect" package
 func typeFor[T any]() reflect.Type {
 	var v T
 	if t := reflect.TypeOf(v); t != nil {
-		return t // optimize for T being a non-interface kind
+		return t
 	}
-	return reflect.TypeOf((*T)(nil)).Elem() // only for an interface kind
+	return reflect.TypeOf((*T)(nil)).Elem()
 }

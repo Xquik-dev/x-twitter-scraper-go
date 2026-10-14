@@ -1,7 +1,6 @@
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
-// Package coveragebranch joins gocove branch targets with native Go coverage.
 package coveragebranch
 
 import (
@@ -55,11 +54,6 @@ var profileLine = regexp.MustCompile(
 	`^(.*):([0-9]+)\.([0-9]+),([0-9]+)\.([0-9]+)[[:space:]]+[0-9]+[[:space:]]+([0-9]+)$`,
 )
 
-// Measure reports covered and total branch targets.
-//
-// The pinned gocove beta can associate a nested branch with an outer block.
-// Measure instead checks each target against positive native profile ranges.
-// Strict overlap rejects ranges that only touch a target boundary.
 func Measure(reportJSON []byte, profile io.Reader) (int, int, error) {
 	var report coverageReport
 	if err := json.Unmarshal(reportJSON, &report); err != nil {

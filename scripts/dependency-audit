@@ -1,24 +1,12 @@
 #!/usr/bin/env bash
 # SPDX-FileCopyrightText: 2026 Xquik contributors
 # SPDX-License-Identifier: Apache-2.0
-#
-# Runs govulncheck over every package and test, then judges each finding.
-# Every finding counts, whether govulncheck traced a call to it or not.
-# A finding in a module that ships to callers always blocks. A module ships
-# when a package that callers can import depends on it. The standard library ships.
-# A finding in a module that only commands or tests use blocks when a fix exists.
-# Without a fix, it passes only while audit-exceptions.json lists it.
-# Each entry holds id, module, reason and recheck. The reason is "build-time only"
-# or "peer dependency provided by the host". The recheck date falls within 30 days,
-# and the entry blocks again on that date.
-# Pass a directory to audit it instead of this repository.
 set -euo pipefail
 
 cd "${1:-$(dirname "$0")/..}"
 
 readonly govulncheck="golang.org/x/vuln/cmd/govulncheck@v1.9.0"
 
-# Callers can import every package outside cmd and internal.
 packages="$(go list -f '{{if and (ne .Name "main") .GoFiles}}{{.ImportPath}}{{end}}' ./...)"
 importable=()
 while IFS= read -r package; do

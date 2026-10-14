@@ -70,7 +70,6 @@ func main() {
 
 const usage = "usage: coverage-gain REPORT_DIRECTORY, or coverage-gain -record REVISION REPORT_DIRECTORY"
 
-// cli runs the command and returns its exit code.
 func cli(args []string, stdout, stderr io.Writer) int {
 	flags := flag.NewFlagSet("coverage-gain", flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
@@ -100,11 +99,8 @@ func instrumentationScope() string {
 	return runtime.Version() + "/" + runtime.GOOS + "/" + runtime.GOARCH + "/go-packages-v1"
 }
 
-// A full SHA-1 or SHA-256 commit id, so a revision cannot name a path.
 var commitID = regexp.MustCompile(`^[0-9a-f]{40}(?:[0-9a-f]{24})?$`)
 
-// record measures the reports that the collectors wrote for revision and
-// keeps them as that revision's verified baseline, where run reads it.
 func record(revision, directory string) error {
 	if !commitID.MatchString(revision) {
 		return fmt.Errorf("revision %q is not a full commit id", revision)

@@ -41,9 +41,6 @@ func WithDebugLog(logger *log.Logger) RequestOption {
 	})
 }
 
-// dumpRedactedRequest dumps req with sensitive headers replaced. The
-// original headers are restored via defer so a panic in DumpRequest cannot
-// leak the placeholder map into the live request sent downstream.
 func dumpRedactedRequest(req *http.Request) ([]byte, error) {
 	origHeaders := req.Header
 	req.Header = redactDebugHeaders(origHeaders)

@@ -20,10 +20,8 @@ import (
 	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
 )
 
-var encoders sync.Map // map[encoderEntry]encoderFunc
+var encoders sync.Map
 
-// If we want to set a literal key value into JSON using sjson, we need to make sure it doesn't have
-// special characters that sjson interprets as a path.
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
 func Marshal(value any) ([]byte, error) {
@@ -76,10 +74,6 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return fi.(encoderFunc)
 	}
 
-	// To deal with recursive types, populate the map with an
-	// indirect func before we build it. This type waits on the
-	// real func (f) to be ready and then calls it. This indirect
-	// func is only used for recursive types.
 	var (
 		wg sync.WaitGroup
 		f  encoderFunc
@@ -93,7 +87,6 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return fi.(encoderFunc)
 	}
 
-	// Compute the real encoder and replace the indirect func with it.
 	f = e.newTypeEncoder(t)
 	wg.Done()
 	encoders.Store(entry, f)
@@ -147,8 +140,6 @@ func (e *encoder) newTypeEncoder(t reflect.Type) encoderFunc {
 
 func (e *encoder) newPrimitiveTypeEncoder(t reflect.Type) encoderFunc {
 	switch t.Kind() {
-	// Note that we could use `gjson` to encode these types but it would complicate our
-	// code more and this current code shouldn't cause any issues
 	case reflect.String:
 		return func(v reflect.Value) ([]byte, error) {
 			return json.Marshal(v.Interface())
@@ -194,8 +185,6 @@ func (e *encoder) newArrayTypeEncoder(t reflect.Type) encoderFunc {
 				return nil, err
 			}
 			if value == nil {
-				// Assume that empty items should be inserted as `null` so that the output array
-				// will be the same length as the input array
 				value = []byte("null")
 			}
 
@@ -213,9 +202,6 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 	encoderFields := []encoderField{}
 	extraEncoder := (*encoderField)(nil)
 
-	// This helper allows us to recursively collect field encoders into a flat
-	// array. The parameter `index` keeps track of the access patterns necessary
-	// to get to some field.
 	var collectEncoderFields func(r reflect.Type, index []int)
 	collectEncoderFields = func(r reflect.Type, index []int) {
 		for i := 0; i < r.NumField(); i++ {
@@ -224,21 +210,14 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 			if !field.IsExported() {
 				continue
 			}
-			// If this is an embedded struct, traverse one level deeper to extract
-			// the field and get their encoders as well.
 			if field.Anonymous {
 				collectEncoderFields(field.Type, idx)
 				continue
 			}
-			// If json tag is not present, then we skip, which is intentionally
-			// different behavior from the stdlib.
 			ptag, ok := parseJSONStructTag(field)
 			if !ok {
 				continue
 			}
-			// We only want to support unexported field if they're tagged with
-			// `extras` because that field shouldn't be part of the public API. We
-			// also want to only keep the top level extras
 			if ptag.extras && len(index) == 0 {
 				extraEncoder = &encoderField{ptag, e.typeEncoder(field.Type.Elem()), idx}
 				continue
@@ -263,7 +242,6 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 	}
 	collectEncoderFields(t, []int{})
 
-	// Ensure deterministic output by sorting by lexicographic order
 	sort.Slice(encoderFields, func(i, j int) bool {
 		return encoderFields[i].tag.name < encoderFields[j].tag.name
 	})
@@ -319,8 +297,6 @@ func (e encoder) newInterfaceEncoder() encoderFunc {
 	}
 }
 
-// Given a []byte of json (may either be an empty object or an object that already contains entries)
-// encode all of the entries in the map to the json byte array.
 func (e *encoder) encodeMapEntries(json []byte, v reflect.Value) ([]byte, error) {
 	type mapPair struct {
 		key   []byte
@@ -347,7 +323,6 @@ func (e *encoder) encodeMapEntries(json []byte, v reflect.Value) ([]byte, error)
 		pairs = append(pairs, mapPair{key: encodedKey, value: iter.Value()})
 	}
 
-	// Ensure deterministic output
 	sort.Slice(pairs, func(i, j int) bool {
 		return bytes.Compare(pairs[i].key, pairs[j].key) < 0
 	})

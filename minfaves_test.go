@@ -11,9 +11,6 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 )
 
-// Code written for 0.18 sets MinFaves on these 9 params types. It must still
-// compile and still send the minFaves query key, which the API reads as
-// minLikes.
 func TestMinFavesFromVersion018StillSendsMinFaves(t *testing.T) {
 	cases := map[string]interface{ URLQuery() (url.Values, error) }{
 		"XTweetGetQuotesParams":  xtwitterscraper.XTweetGetQuotesParams{MinFaves: xtwitterscraper.Int(100)},

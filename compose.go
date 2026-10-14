@@ -23,9 +23,8 @@ import (
 // ComposeService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
 //
-// Note, unlike clients, this service does not read variables from the environment
-// automatically. You should not instantiate this service directly, and instead use
-// the [NewComposeService] method instead.
+// You should not instantiate this service directly, and instead use the
+// [NewComposeService] method instead.
 type ComposeService struct {
 	options []option.RequestOption
 }
@@ -408,10 +407,6 @@ func (r *ComposeNewResponseComposeScoreResultChecklist) UnmarshalJSON(data []byt
 }
 
 type ComposeNewParams struct {
-
-	//
-	// Request body variants
-	//
 
 	// This field is a request body variant, only one variant field can be set. Inputs
 	// for preparing source-backed post guidance.

@@ -13,8 +13,6 @@ import (
 	"testing"
 )
 
-// The fake GitHub CLI is signed in, knows no release, and records each call.
-// It saves the notes of a created release so a test can read them.
 const fakeGH = `#!/bin/sh
 echo "gh $*" >>"$FAKE_CALLS"
 case "$1 $2" in
@@ -29,7 +27,6 @@ case "$1 $2" in
 esac
 `
 
-// The fake curl answers as the module proxy does before and after a release.
 const fakeCurl = `#!/bin/sh
 for url; do :; done
 echo "curl $url" >>"$FAKE_CALLS"
@@ -60,9 +57,6 @@ type releaseFixture struct {
 	env                 []string
 }
 
-// newReleaseFixture builds a repository whose main matches a local origin. It
-// holds a copy of bin/release-local, stand-ins for the 2 check scripts, and
-// fake gh and curl commands. Git and Go are real, and nothing leaves the folder.
 func newReleaseFixture(t *testing.T) *releaseFixture {
 	t.Helper()
 	script, err := os.ReadFile("../../bin/release-local")
@@ -114,7 +108,6 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 			fixture.env = append(fixture.env, variable)
 		}
 	}
-	// The fixture ignores this machine's Git settings and GitHub login.
 	fixture.env = append(fixture.env,
 		"PATH="+tools+string(os.PathListSeparator)+os.Getenv("PATH"),
 		"FAKE_CALLS="+fixture.calls,

@@ -16,11 +16,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Error represents an error that originates from the API, i.e. when a request is
-// made and the API returns a response with a HTTP status code. Other errors are
-// not wrapped by this SDK.
 type Error struct {
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -30,14 +26,12 @@ type Error struct {
 	Response   *http.Response
 }
 
-// Returns the unmodified JSON received from the API
 func (r Error) RawJSON() string { return r.JSON.raw }
 func (r *Error) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func (r *Error) Error() string {
-	// Keep URL passwords out of diagnostic strings.
 	return fmt.Sprintf("%s %q: %d %s %s", r.Request.Method, r.Request.URL.Redacted(), r.Response.StatusCode, http.StatusText(r.Response.StatusCode), r.JSON.raw)
 }
 

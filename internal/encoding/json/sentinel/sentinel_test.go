@@ -70,7 +70,6 @@ func TestNullMap(t *testing.T) {
 }
 
 func TestIsNullRepeated(t *testing.T) {
-	// Test for slices
 	nullSlice1 := param.NullSlice[[]int]()
 	nullSlice2 := param.NullSlice[[]int]()
 	if !sentinel.IsNull(nullSlice1) {
@@ -83,7 +82,6 @@ func TestIsNullRepeated(t *testing.T) {
 		t.Errorf("IsNull should return true for all NullSlice instances")
 	}
 
-	// Test for maps
 	nullMap1 := param.NullMap[map[string]int]()
 	nullMap2 := param.NullMap[map[string]int]()
 	if !sentinel.IsNull(nullMap1) {

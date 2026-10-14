@@ -15,11 +15,11 @@ type cacheEntry struct {
 	kind reflect.Kind
 }
 
-var nullCache sync.Map // map[reflect.Type]cacheEntry
+var nullCache sync.Map
 
 func NewNullSentinel[T any](mk func() T) T {
 	t := reflect.TypeFor[T]()
-	entry, loaded := nullCache.Load(t) // avoid premature allocation
+	entry, loaded := nullCache.Load(t)
 	if !loaded {
 		x := mk()
 		ptr := reflect.ValueOf(x).Pointer()
@@ -28,7 +28,6 @@ func NewNullSentinel[T any](mk func() T) T {
 	return entry.(cacheEntry).x.(T)
 }
 
-// for internal use only
 func IsValueNull(v reflect.Value) bool {
 	switch v.Kind() {
 	case reflect.Map, reflect.Slice:

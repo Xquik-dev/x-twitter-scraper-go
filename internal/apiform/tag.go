@@ -54,7 +54,6 @@ func parseFormStructTag(field reflect.StructField) (tag parsedStructTag, ok bool
 
 func parseDefaultStructTag(field reflect.StructField, tag *parsedStructTag) {
 	if field.Type.Kind() != reflect.String {
-		// Only strings are currently supported
 		return
 	}
 

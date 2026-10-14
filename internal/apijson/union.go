@@ -68,7 +68,6 @@ func (d *decoderBuilder) newStructUnionDecoder(t reflect.Type) decoderFunc {
 	discriminatedDecoders := []discriminatedDecoder{}
 	unionEntry, discriminated := unionRegistry[t]
 	for _, variant := range unionEntry.variants {
-		// For each union variant, find a matching decoder and save it
 		for _, decoder := range decoders {
 			if decoder.field.Type.Elem() == variant.Type {
 				discriminatedDecoders = append(discriminatedDecoders, discriminatedDecoder{
@@ -92,11 +91,9 @@ func (d *decoderBuilder) newStructUnionDecoder(t reflect.Type) decoderFunc {
 			return errors.New("apijson: was not able to find discriminated union variant")
 		}
 
-		// Set bestExactness to worse than loose
 		bestExactness := loose - 1
 		bestVariant := -1
 		for i, decoder := range decoders {
-			// Pointers are used to discern JSON object variants from value variants
 			if n.Type != gjson.JSON && decoder.field.Type.Kind() == reflect.Ptr {
 				continue
 			}
@@ -137,16 +134,6 @@ func (d *decoderBuilder) newStructUnionDecoder(t reflect.Type) decoderFunc {
 	}
 }
 
-// newUnionDecoder returns a decoderFunc that deserializes into a union using an
-// algorithm roughly similar to Pydantic's [smart algorithm].
-//
-// Conceptually this is equivalent to choosing the best schema based on how 'exact'
-// the deserialization is for each of the schemas.
-//
-// If there is a tie in the level of exactness, then the tie is broken
-// left-to-right.
-//
-// [smart algorithm]: https://docs.pydantic.dev/latest/concepts/unions/#smart-mode
 func (d *decoderBuilder) newUnionDecoder(t reflect.Type) decoderFunc {
 	unionEntry, ok := unionRegistry[t]
 	if !ok {
@@ -158,7 +145,6 @@ func (d *decoderBuilder) newUnionDecoder(t reflect.Type) decoderFunc {
 		decoders = append(decoders, decoder)
 	}
 	return func(n gjson.Result, v reflect.Value, state *decoderState) error {
-		// If there is a discriminator match, circumvent the exactness logic entirely
 		for idx, variant := range unionEntry.variants {
 			decoder := decoders[idx]
 			if variant.TypeFilter != n.Type {
@@ -176,7 +162,6 @@ func (d *decoderBuilder) newUnionDecoder(t reflect.Type) decoderFunc {
 			}
 		}
 
-		// Set bestExactness to worse than loose
 		bestExactness := loose - 1
 		for idx, variant := range unionEntry.variants {
 			decoder := decoders[idx]

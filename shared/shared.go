@@ -13,10 +13,8 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// aliased to make [param.APIUnion] private when embedding
 type paramUnion = param.APIUnion
 
-// aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
 // Content disclosure metadata shown by X when a tweet is labeled as paid

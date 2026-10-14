@@ -31,8 +31,6 @@ func NullStruct[T ParamStruct, PtrT InferPtr[T]]() T {
 // Only the first type parameter should be provided,
 // the type PtrT will be inferred.
 //
-// It's often useful for providing raw JSON
-//
 //	param.Override[MyStruct](json.RawMessage(`{"foo": "bar"}`))
 //
 // The public fields of the returned struct T will be unset.
@@ -108,7 +106,6 @@ type ParamStruct interface {
 	extraFields() map[string]any
 }
 
-// A pointer to ParamStruct
 type anyParamStruct interface {
 	setMetadata(any)
 }
@@ -143,8 +140,7 @@ func (m metadata) ExtraFields() map[string]any {
 }
 
 // Omit can be used with [metadata.SetExtraFields] to ensure that a
-// required field is omitted. This is useful as an escape hatch for
-// when a required is unwanted for some unexpected reason.
+// required field is omitted.
 const Omit forceOmit = -1
 
 // SetExtraFields adds extra fields to the JSON object.
@@ -162,7 +158,6 @@ func (m *metadata) SetExtraFields(extraFields map[string]any) {
 	m.any = metadataExtraFields(extraFields)
 }
 
-// extraFields aliases [metadata.ExtraFields] to avoid name collisions.
 func (m metadata) extraFields() map[string]any { return m.ExtraFields() }
 
 func (m metadata) null() bool {
