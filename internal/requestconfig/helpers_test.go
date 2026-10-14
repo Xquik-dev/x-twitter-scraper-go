@@ -200,7 +200,7 @@ func TestPlatformNormalization(t *testing.T) {
 		"ios":     "iOS",
 		"android": "Android",
 		"darwin":  "MacOS",
-		"window":  "Windows",
+		"windows": "Windows",
 		"freebsd": "FreeBSD",
 		"openbsd": "OpenBSD",
 		"linux":   "Linux",

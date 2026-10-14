@@ -57,7 +57,7 @@ Finding: integer overflow conversion int -> uint8
 
 Bounded retry jitter, not a credential, key, authentication value, or security token. The arithmetic overflow was repaired and verified on ARM64 and AMD64. Cryptographic unpredictability is not a requirement for jitter.
 
-Source SHA-256: `e3ee867b71ba6451d05492bf4e21467ff9d825d55685d27ec9ae8a43c1f46d39`
+Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
 Severity: HIGH. Confidence: MEDIUM.
 Finding: Use of weak random number generator (math/rand or math/rand/v2 instead of crypto/rand)
 
@@ -1345,7 +1345,7 @@ Finding: Errors unhandled
 
 Media type classification intentionally ignores parameter parse errors. A valid media type remains usable when parameters fail; invalid types fall through to typed plaintext handling rather than accepting arbitrary structured data.
 
-Source SHA-256: `e3ee867b71ba6451d05492bf4e21467ff9d825d55685d27ec9ae8a43c1f46d39`
+Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1359,7 +1359,7 @@ Finding: Errors unhandled
 
 Response cleanup after read or before retry. Read/request errors are handled separately; cleanup error does not replace the primary request result. Close is still invoked, and raw-response ownership is transferred explicitly elsewhere.
 
-Source SHA-256: `e3ee867b71ba6451d05492bf4e21467ff9d825d55685d27ec9ae8a43c1f46d39`
+Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1373,7 +1373,7 @@ Finding: Errors unhandled
 
 Response cleanup after read or before retry. Read/request errors are handled separately; cleanup error does not replace the primary request result. Close is still invoked, and raw-response ownership is transferred explicitly elsewhere.
 
-Source SHA-256: `e3ee867b71ba6451d05492bf4e21467ff9d825d55685d27ec9ae8a43c1f46d39`
+Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1387,7 +1387,7 @@ Finding: Errors unhandled
 
 Response cleanup after read or before retry. Read/request errors are handled separately; cleanup error does not replace the primary request result. Close is still invoked, and raw-response ownership is transferred explicitly elsewhere.
 
-Source SHA-256: `e3ee867b71ba6451d05492bf4e21467ff9d825d55685d27ec9ae8a43c1f46d39`
+Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1401,7 +1401,7 @@ Finding: Errors unhandled
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `b4e56cfbb6f81a9e2008a023c83b676cb9858d9eefbd75aecb4c571b7aed5c9a`
+Source SHA-256: `f372ebd46b342159af8dae468782aae0a565da7fa7cd592d122ceb4e6dd3bc21`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1415,7 +1415,7 @@ Finding: Errors unhandled
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `b4e56cfbb6f81a9e2008a023c83b676cb9858d9eefbd75aecb4c571b7aed5c9a`
+Source SHA-256: `f372ebd46b342159af8dae468782aae0a565da7fa7cd592d122ceb4e6dd3bc21`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1429,7 +1429,7 @@ Finding: Errors unhandled
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `b4e56cfbb6f81a9e2008a023c83b676cb9858d9eefbd75aecb4c571b7aed5c9a`
+Source SHA-256: `f372ebd46b342159af8dae468782aae0a565da7fa7cd592d122ceb4e6dd3bc21`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1443,7 +1443,7 @@ Finding: Errors unhandled
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `b4e56cfbb6f81a9e2008a023c83b676cb9858d9eefbd75aecb4c571b7aed5c9a`
+Source SHA-256: `f372ebd46b342159af8dae468782aae0a565da7fa7cd592d122ceb4e6dd3bc21`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
