@@ -88,7 +88,7 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 	}{
 		"repo/go.mod":                        {"module github.com/Xquik-dev/x-twitter-scraper-go\n\ngo 1.24\n", 0o644},
 		"repo/lib.go":                        {"package xtwitterscraper\n", 0o644},
-		"repo/internal/version.go":           {"package internal\n\nconst PackageVersion = \"1.2.3\" // x-release-please-version\n", 0o644},
+		"repo/internal/version.go":           {"package internal\n\nconst PackageVersion = \"1.2.3\"\n", 0o644},
 		"repo/.release-please-manifest.json": {"{\n  \".\": \"1.2.3\"\n}\n", 0o644},
 		"repo/CHANGELOG.md":                  {fixtureChangelog, 0o644},
 		"repo/bin/release-local":             {string(script), 0o755},
