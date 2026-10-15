@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `shared.UserProfile` gains the 24 fields the API returns and the SDK dropped, such as `ListedCount`, `Email`, `ContactInfo` and `VerificationReason`.
+- `shared.SearchTweet` and `TweetDetail` gain the 17 tweet fields the SDK dropped, such as `IsPinned`, `IsRetweet`, `ParentTweet`, `Interstitial` and `Geo`. Their entities, conversation control, note tweets, sports context and tombstones gain their missing fields too.
+- `shared.PaginatedTweets` gains `ReadBackTo`, `SearchContext`, `SearchedQuery` and `WindowComplete`, and `shared.TweetMedia` gains `GrokImageAnnotation` and `SourceUser`.
+- The params of 28 read methods gain `Fields` and `Omit`. `X.GetArticle`, `X.Communities.GetInfo`, `X.Tweets.Get` and `X.Users.Get` keep their signatures and take both through `option.WithQuery`.
+- Enum types gain the values the API added, such as `delete_dm` for write actions, 2 monitor pause reasons and the `likeCount` estimate source.
 - `X.Communities` gains `Find`, `ListPopular`, `ListSuggested`, `ListTopics` and `SearchMembers`, and the new `X.Communities.Media` service lists a Community's media posts.
 - `X.Lists` gains `Get` and `GetSearch`, and `X.Dm` gains `DeleteMessage`.
 - `X` gains `AutocompleteSearch`, `GetHashflags`, `GetNewsStoryVersions`, `GetTrendLocations`, `GetTrendsHistory` and `SearchPlaces`.

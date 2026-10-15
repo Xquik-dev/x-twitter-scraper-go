@@ -28,6 +28,7 @@ func TestConstantsMarshalDefaults(t *testing.T) {
 			`"Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."`,
 		},
 		{"currency", Usd(""), `"usd"`},
+		{"point", Point(""), `"Point"`},
 		{"write action", XWriteAction(""), `"x_write_action"`},
 	}
 

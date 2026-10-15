@@ -79,7 +79,7 @@ type XCommunityJoinNewResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityJoinNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityJoinNewResponseAction `json:"action" api:"required"`
@@ -233,6 +233,7 @@ const (
 	XCommunityJoinNewResponseActionUnfollow        XCommunityJoinNewResponseAction = "unfollow"
 	XCommunityJoinNewResponseActionRemoveFollower  XCommunityJoinNewResponseAction = "remove_follower"
 	XCommunityJoinNewResponseActionSendDm          XCommunityJoinNewResponseAction = "send_dm"
+	XCommunityJoinNewResponseActionDeleteDm        XCommunityJoinNewResponseAction = "delete_dm"
 	XCommunityJoinNewResponseActionUploadMedia     XCommunityJoinNewResponseAction = "upload_media"
 	XCommunityJoinNewResponseActionUpdateProfile   XCommunityJoinNewResponseAction = "update_profile"
 	XCommunityJoinNewResponseActionUpdateAvatar    XCommunityJoinNewResponseAction = "update_avatar"
@@ -374,7 +375,7 @@ type XCommunityJoinDeleteAllResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityJoinDeleteAllResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityJoinDeleteAllResponseAction `json:"action" api:"required"`
@@ -528,6 +529,7 @@ const (
 	XCommunityJoinDeleteAllResponseActionUnfollow        XCommunityJoinDeleteAllResponseAction = "unfollow"
 	XCommunityJoinDeleteAllResponseActionRemoveFollower  XCommunityJoinDeleteAllResponseAction = "remove_follower"
 	XCommunityJoinDeleteAllResponseActionSendDm          XCommunityJoinDeleteAllResponseAction = "send_dm"
+	XCommunityJoinDeleteAllResponseActionDeleteDm        XCommunityJoinDeleteAllResponseAction = "delete_dm"
 	XCommunityJoinDeleteAllResponseActionUploadMedia     XCommunityJoinDeleteAllResponseAction = "upload_media"
 	XCommunityJoinDeleteAllResponseActionUpdateProfile   XCommunityJoinDeleteAllResponseAction = "update_profile"
 	XCommunityJoinDeleteAllResponseActionUpdateAvatar    XCommunityJoinDeleteAllResponseAction = "update_avatar"

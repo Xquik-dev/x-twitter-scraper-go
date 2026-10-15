@@ -79,7 +79,7 @@ type XUserFollowNewResponse struct {
 	// Connected account selected for the write.
 	Account XUserFollowNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XUserFollowNewResponseAction `json:"action" api:"required"`
@@ -233,6 +233,7 @@ const (
 	XUserFollowNewResponseActionUnfollow        XUserFollowNewResponseAction = "unfollow"
 	XUserFollowNewResponseActionRemoveFollower  XUserFollowNewResponseAction = "remove_follower"
 	XUserFollowNewResponseActionSendDm          XUserFollowNewResponseAction = "send_dm"
+	XUserFollowNewResponseActionDeleteDm        XUserFollowNewResponseAction = "delete_dm"
 	XUserFollowNewResponseActionUploadMedia     XUserFollowNewResponseAction = "upload_media"
 	XUserFollowNewResponseActionUpdateProfile   XUserFollowNewResponseAction = "update_profile"
 	XUserFollowNewResponseActionUpdateAvatar    XUserFollowNewResponseAction = "update_avatar"
@@ -374,7 +375,7 @@ type XUserFollowDeleteAllResponse struct {
 	// Connected account selected for the write.
 	Account XUserFollowDeleteAllResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XUserFollowDeleteAllResponseAction `json:"action" api:"required"`
@@ -528,6 +529,7 @@ const (
 	XUserFollowDeleteAllResponseActionUnfollow        XUserFollowDeleteAllResponseAction = "unfollow"
 	XUserFollowDeleteAllResponseActionRemoveFollower  XUserFollowDeleteAllResponseAction = "remove_follower"
 	XUserFollowDeleteAllResponseActionSendDm          XUserFollowDeleteAllResponseAction = "send_dm"
+	XUserFollowDeleteAllResponseActionDeleteDm        XUserFollowDeleteAllResponseAction = "delete_dm"
 	XUserFollowDeleteAllResponseActionUploadMedia     XUserFollowDeleteAllResponseAction = "upload_media"
 	XUserFollowDeleteAllResponseActionUpdateProfile   XUserFollowDeleteAllResponseAction = "update_profile"
 	XUserFollowDeleteAllResponseActionUpdateAvatar    XUserFollowDeleteAllResponseAction = "update_avatar"

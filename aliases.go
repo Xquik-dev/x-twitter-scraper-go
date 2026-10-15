@@ -2163,6 +2163,13 @@ const EventTypeProfileUnavailableChanged = shared.EventTypeProfileUnavailableCha
 // legacy.
 type PaginatedTweets = shared.PaginatedTweets
 
+// What X shows beside a search's posts that is the same for every reader. Present
+// on a search for a cashtag X has a card for, such as $BTC.
+type PaginatedTweetsSearchContext = shared.PaginatedTweetsSearchContext
+
+// X's card for the cashtag the search names.
+type PaginatedTweetsSearchContextSmartTag = shared.PaginatedTweetsSearchContextSmartTag
+
 // Profile coverage preserves shape, billing, aliases, and filters. Follow
 // next_cursor while the response reports more pages. Unprefixed cursors remain
 // legacy.
@@ -2171,6 +2178,47 @@ type PaginatedUsers = shared.PaginatedUsers
 // Tweet returned from search results with inline author info. A zero metric can
 // mean X did not report the count.
 type SearchTweet = shared.SearchTweet
+
+// The notice x.com covers the post with until the reader views it, such as X's
+// public interest notice on a post that broke its rules but stays up.
+type SearchTweetInterstitial = shared.SearchTweetInterstitial
+
+type SearchTweetInterstitialText = shared.SearchTweetInterstitialText
+
+type SearchTweetInterstitialTextEntity = shared.SearchTweetInterstitialTextEntity
+
+type SearchTweetInterstitialTextEntityRef = shared.SearchTweetInterstitialTextEntityRef
+
+// The Subscriber badge X shows on a reply. The reply's author subscribes to the
+// creator who started the conversation. Omitted on a post without the badge.
+type SearchTweetSubscriberBadge = shared.SearchTweetSubscriberBadge
+
+// Author-published point, with latitude before longitude.
+type SearchTweetGeo = shared.SearchTweetGeo
+
+// Author-published point, with longitude before latitude.
+type SearchTweetCoordinates = shared.SearchTweetCoordinates
+
+// Marks a subscriber-only post with the creator whose subscription unlocks it.
+// Non-subscribers get the preview text & the subscribe link. Omitted on public
+// posts.
+type SearchTweetExclusiveContent = shared.SearchTweetExclusiveContent
+
+type SearchTweetCashtagAttachment = shared.SearchTweetCashtagAttachment
+
+// Why the tweet has no author. X serves a suspended or deleted account as an
+// unavailable user with a reason such as Suspended or NotFound. Omitted when the
+// author is available.
+type SearchTweetAuthorUnavailable = shared.SearchTweetAuthorUnavailable
+
+type SearchTweetTextHighlight = shared.SearchTweetTextHighlight
+
+// Why X shows no quoted post. Omitted when X names no reason, as its legacy
+// answers never do.
+type SearchTweetQuotedTweetUnavailable = shared.SearchTweetQuotedTweetUnavailable
+
+// The quoted post's link, kept when X withholds that post.
+type SearchTweetQuotedTweetPermalink = shared.SearchTweetQuotedTweetPermalink
 
 // Describes an X Article preview and its lifecycle metadata.
 type SearchTweetArticle = shared.SearchTweetArticle
@@ -2194,6 +2242,14 @@ type SearchTweetEntities = shared.SearchTweetEntities
 
 // Provides hashtag text and source offsets within a tweet.
 type SearchTweetEntitiesHashtag = shared.SearchTweetEntitiesHashtag
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type SearchTweetEntitiesHashtagTag = shared.SearchTweetEntitiesHashtagTag
+
+type SearchTweetEntitiesHashtagTagInfo = shared.SearchTweetEntitiesHashtagTagInfo
+
+type SearchTweetEntitiesHashtagTagInfoInfo = shared.SearchTweetEntitiesHashtagTagInfoInfo
 
 // Indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetEntitiesSmarttag = shared.SearchTweetEntitiesSmarttag
@@ -2240,6 +2296,14 @@ type SearchTweetNoteTweetEntities = shared.SearchTweetNoteTweetEntities
 
 // Provides hashtag text and source offsets within a tweet.
 type SearchTweetNoteTweetEntitiesHashtag = shared.SearchTweetNoteTweetEntitiesHashtag
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type SearchTweetNoteTweetEntitiesHashtagTag = shared.SearchTweetNoteTweetEntitiesHashtagTag
+
+type SearchTweetNoteTweetEntitiesHashtagTagInfo = shared.SearchTweetNoteTweetEntitiesHashtagTagInfo
+
+type SearchTweetNoteTweetEntitiesHashtagTagInfoInfo = shared.SearchTweetNoteTweetEntitiesHashtagTagInfoInfo
 
 // Indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetNoteTweetEntitiesSmarttag = shared.SearchTweetNoteTweetEntitiesSmarttag
@@ -2307,6 +2371,9 @@ type SearchTweetTombstoneTextEntityRef = shared.SearchTweetTombstoneTextEntityRe
 // Tweet media.
 type TweetMedia = shared.TweetMedia
 
+// Prompt a Grok image came from. Absent on other media & when X sends no prompt.
+type TweetMediaGrokImageAnnotation = shared.TweetMediaGrokImageAnnotation
+
 type TweetMediaType = shared.TweetMediaType
 
 // Equals "photo"
@@ -2330,6 +2397,63 @@ type TweetMediaVideoVariant = shared.TweetMediaVideoVariant
 
 // Public X profile.
 type UserProfile = shared.UserProfile
+
+// X's text on why the profile is verified, with its links.
+type UserProfileVerificationReason = shared.UserProfileVerificationReason
+
+type UserProfileVerificationReasonEntity = shared.UserProfileVerificationReasonEntity
+
+// The parts of the birthday the account made public.
+type UserProfileBirthdate = shared.UserProfileBirthdate
+
+// How often the account changed its username.
+type UserProfileUsernameChanges = shared.UserProfileUsernameChanges
+
+// Emails, phone numbers & links the account publishes on its own profile. Omitted
+// when it publishes none.
+type UserProfileContactInfo = shared.UserProfileContactInfo
+
+type UserProfileContactInfoEmail = shared.UserProfileContactInfoEmail
+
+// Profile field that holds the email.
+type UserProfileContactInfoEmailSource = shared.UserProfileContactInfoEmailSource
+
+// Equals "bio"
+const UserProfileContactInfoEmailSourceBio = shared.UserProfileContactInfoEmailSourceBio
+
+// Equals "name"
+const UserProfileContactInfoEmailSourceName = shared.UserProfileContactInfoEmailSourceName
+
+// Equals "location"
+const UserProfileContactInfoEmailSourceLocation = shared.UserProfileContactInfoEmailSourceLocation
+
+type UserProfileContactInfoLink = shared.UserProfileContactInfoLink
+
+// `url` for the website field, `bio` for a bio link.
+type UserProfileContactInfoLinkSource = shared.UserProfileContactInfoLinkSource
+
+// Equals "url"
+const UserProfileContactInfoLinkSourceURL = shared.UserProfileContactInfoLinkSourceURL
+
+// Equals "bio"
+const UserProfileContactInfoLinkSourceBio = shared.UserProfileContactInfoLinkSourceBio
+
+type UserProfileContactInfoPhone = shared.UserProfileContactInfoPhone
+
+// Profile field that holds the number.
+type UserProfileContactInfoPhoneSource = shared.UserProfileContactInfoPhoneSource
+
+// Equals "bio"
+const UserProfileContactInfoPhoneSourceBio = shared.UserProfileContactInfoPhoneSourceBio
+
+// Equals "name"
+const UserProfileContactInfoPhoneSourceName = shared.UserProfileContactInfoPhoneSourceName
+
+// Equals "location"
+const UserProfileContactInfoPhoneSourceLocation = shared.UserProfileContactInfoPhoneSourceLocation
+
+// Equals "url"
+const UserProfileContactInfoPhoneSourceURL = shared.UserProfileContactInfoPhoneSourceURL
 
 // X's best-effort public label inferred from aggregated account-access IP
 // addresses. It does not state nationality, residence, identity, registration,

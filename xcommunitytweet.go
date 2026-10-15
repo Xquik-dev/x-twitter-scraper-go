@@ -67,6 +67,13 @@ type XCommunityTweetListParams struct {
 	Q string `query:"q" api:"required" json:"-"`
 	// Pagination cursor for community search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
@@ -77,6 +84,9 @@ type XCommunityTweetListParams struct {
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
 	// Minimum view count threshold.
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.
@@ -130,6 +140,13 @@ const (
 type XCommunityTweetListByCommunityParams struct {
 	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
@@ -140,6 +157,9 @@ type XCommunityTweetListByCommunityParams struct {
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
 	// Minimum view count threshold.
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.

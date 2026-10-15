@@ -381,7 +381,7 @@ type XUserRemoveFollowerResponse struct {
 	// Connected account selected for the write.
 	Account XUserRemoveFollowerResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XUserRemoveFollowerResponseAction `json:"action" api:"required"`
@@ -535,6 +535,7 @@ const (
 	XUserRemoveFollowerResponseActionUnfollow        XUserRemoveFollowerResponseAction = "unfollow"
 	XUserRemoveFollowerResponseActionRemoveFollower  XUserRemoveFollowerResponseAction = "remove_follower"
 	XUserRemoveFollowerResponseActionSendDm          XUserRemoveFollowerResponseAction = "send_dm"
+	XUserRemoveFollowerResponseActionDeleteDm        XUserRemoveFollowerResponseAction = "delete_dm"
 	XUserRemoveFollowerResponseActionUploadMedia     XUserRemoveFollowerResponseAction = "upload_media"
 	XUserRemoveFollowerResponseActionUpdateProfile   XUserRemoveFollowerResponseAction = "update_profile"
 	XUserRemoveFollowerResponseActionUpdateAvatar    XUserRemoveFollowerResponseAction = "update_avatar"
@@ -2592,12 +2593,22 @@ type XUserGetBatchParams struct {
 	// Comma-separated numeric user IDs (1-100 values). Duplicate IDs are ignored while
 	// preserving first-seen order.
 	IDs string `query:"ids" api:"required" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
 	// Minimum account age in whole days.
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Only return verified profiles.
 	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
 	paramObj
@@ -2619,6 +2630,13 @@ type XUserGetFollowersParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -2641,6 +2659,9 @@ type XUserGetFollowersParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
 	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
@@ -2681,6 +2702,13 @@ type XUserGetFollowersYouKnowParams struct {
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
 	// Pagination cursor for followers-you-know
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -2701,6 +2729,9 @@ type XUserGetFollowersYouKnowParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum user profiles requested from this page (1-200, default 200). Source,
 	// filters, or credits can return fewer profiles. Follow next_cursor while the
 	// response reports more pages. Deprecated aliases remain accepted.
@@ -2731,6 +2762,13 @@ type XUserGetFollowingParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -2754,6 +2792,9 @@ type XUserGetFollowingParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
 	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
@@ -2809,6 +2850,13 @@ type XUserGetLikesParams struct {
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by author username.
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
 	// Match latitude, longitude, and radius.
@@ -2852,6 +2900,9 @@ type XUserGetLikesParams struct {
 	Near param.Opt[string] `query:"near,omitzero" json:"-"`
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.
@@ -2966,6 +3017,13 @@ type XUserGetMediaParams struct {
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by author username.
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
 	// Match latitude, longitude, and radius.
@@ -3009,6 +3067,9 @@ type XUserGetMediaParams struct {
 	Near param.Opt[string] `query:"near,omitzero" json:"-"`
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.
@@ -3123,6 +3184,13 @@ type XUserGetMentionsParams struct {
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by author username.
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
 	// Match latitude, longitude, and radius.
@@ -3166,6 +3234,9 @@ type XUserGetMentionsParams struct {
 	Near param.Opt[string] `query:"near,omitzero" json:"-"`
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.
@@ -3285,6 +3356,13 @@ type XUserGetRepliesParams struct {
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by author username.
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
 	// Match latitude, longitude, and radius.
@@ -3330,6 +3408,9 @@ type XUserGetRepliesParams struct {
 	Near param.Opt[string] `query:"near,omitzero" json:"-"`
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Automatic pages accept 1-300 Tweets. Standard pages keep 1-100. Default 20.
 	// Follow next_cursor while the response reports more pages. Deprecated aliases
 	// remain accepted.
@@ -3431,6 +3512,13 @@ type XUserGetSearchParams struct {
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
 	// Pagination cursor for user search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -3451,6 +3539,9 @@ type XUserGetSearchParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.
@@ -3493,6 +3584,13 @@ type XUserGetTweetsParams struct {
 	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by author username.
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
 	// Match latitude, longitude, and radius.
@@ -3540,6 +3638,9 @@ type XUserGetTweetsParams struct {
 	Near param.Opt[string] `query:"near,omitzero" json:"-"`
 	// Only return news results.
 	News param.Opt[bool] `query:"news,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Automatic pages accept 1-300 Tweets. Standard pages keep 1-100. Default 20.
 	// Follow next_cursor while the response reports more pages. Deprecated aliases
 	// remain accepted.
@@ -3642,6 +3743,13 @@ type XUserGetVerifiedFollowersParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -3665,6 +3773,9 @@ type XUserGetVerifiedFollowersParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
 	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`

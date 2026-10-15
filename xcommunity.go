@@ -183,7 +183,7 @@ type XCommunityNewResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityNewResponseAction `json:"action" api:"required"`
@@ -337,6 +337,7 @@ const (
 	XCommunityNewResponseActionUnfollow        XCommunityNewResponseAction = "unfollow"
 	XCommunityNewResponseActionRemoveFollower  XCommunityNewResponseAction = "remove_follower"
 	XCommunityNewResponseActionSendDm          XCommunityNewResponseAction = "send_dm"
+	XCommunityNewResponseActionDeleteDm        XCommunityNewResponseAction = "delete_dm"
 	XCommunityNewResponseActionUploadMedia     XCommunityNewResponseAction = "upload_media"
 	XCommunityNewResponseActionUpdateProfile   XCommunityNewResponseAction = "update_profile"
 	XCommunityNewResponseActionUpdateAvatar    XCommunityNewResponseAction = "update_avatar"
@@ -478,7 +479,7 @@ type XCommunityDeleteResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityDeleteResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityDeleteResponseAction `json:"action" api:"required"`
@@ -632,6 +633,7 @@ const (
 	XCommunityDeleteResponseActionUnfollow        XCommunityDeleteResponseAction = "unfollow"
 	XCommunityDeleteResponseActionRemoveFollower  XCommunityDeleteResponseAction = "remove_follower"
 	XCommunityDeleteResponseActionSendDm          XCommunityDeleteResponseAction = "send_dm"
+	XCommunityDeleteResponseActionDeleteDm        XCommunityDeleteResponseAction = "delete_dm"
 	XCommunityDeleteResponseActionUploadMedia     XCommunityDeleteResponseAction = "upload_media"
 	XCommunityDeleteResponseActionUpdateProfile   XCommunityDeleteResponseAction = "update_profile"
 	XCommunityDeleteResponseActionUpdateAvatar    XCommunityDeleteResponseAction = "update_avatar"
@@ -983,6 +985,13 @@ type XCommunityGetMembersParams struct {
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
 	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -1003,6 +1012,9 @@ type XCommunityGetMembersParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum user profiles per page (1-200, default 20).
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
@@ -1028,6 +1040,13 @@ type XCommunityGetModeratorsParams struct {
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
 	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -1048,6 +1067,9 @@ type XCommunityGetModeratorsParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
 	// Only return verified profiles.
@@ -1073,6 +1095,13 @@ type XCommunityGetSearchParams struct {
 	Q string `query:"q" api:"required" json:"-"`
 	// Pagination cursor for community search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
@@ -1083,6 +1112,9 @@ type XCommunityGetSearchParams struct {
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
 	// Minimum view count threshold.
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum page items (1-100, default 20). Source, filters, or credits can reduce
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.

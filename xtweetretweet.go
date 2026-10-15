@@ -79,7 +79,7 @@ type XTweetRetweetNewResponse struct {
 	// Connected account selected for the write.
 	Account XTweetRetweetNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetRetweetNewResponseAction `json:"action" api:"required"`
@@ -233,6 +233,7 @@ const (
 	XTweetRetweetNewResponseActionUnfollow        XTweetRetweetNewResponseAction = "unfollow"
 	XTweetRetweetNewResponseActionRemoveFollower  XTweetRetweetNewResponseAction = "remove_follower"
 	XTweetRetweetNewResponseActionSendDm          XTweetRetweetNewResponseAction = "send_dm"
+	XTweetRetweetNewResponseActionDeleteDm        XTweetRetweetNewResponseAction = "delete_dm"
 	XTweetRetweetNewResponseActionUploadMedia     XTweetRetweetNewResponseAction = "upload_media"
 	XTweetRetweetNewResponseActionUpdateProfile   XTweetRetweetNewResponseAction = "update_profile"
 	XTweetRetweetNewResponseActionUpdateAvatar    XTweetRetweetNewResponseAction = "update_avatar"
@@ -374,7 +375,7 @@ type XTweetRetweetDeleteResponse struct {
 	// Connected account selected for the write.
 	Account XTweetRetweetDeleteResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetRetweetDeleteResponseAction `json:"action" api:"required"`
@@ -528,6 +529,7 @@ const (
 	XTweetRetweetDeleteResponseActionUnfollow        XTweetRetweetDeleteResponseAction = "unfollow"
 	XTweetRetweetDeleteResponseActionRemoveFollower  XTweetRetweetDeleteResponseAction = "remove_follower"
 	XTweetRetweetDeleteResponseActionSendDm          XTweetRetweetDeleteResponseAction = "send_dm"
+	XTweetRetweetDeleteResponseActionDeleteDm        XTweetRetweetDeleteResponseAction = "delete_dm"
 	XTweetRetweetDeleteResponseActionUploadMedia     XTweetRetweetDeleteResponseAction = "upload_media"
 	XTweetRetweetDeleteResponseActionUpdateProfile   XTweetRetweetDeleteResponseAction = "update_profile"
 	XTweetRetweetDeleteResponseActionUpdateAvatar    XTweetRetweetDeleteResponseAction = "update_avatar"

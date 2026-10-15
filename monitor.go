@@ -116,7 +116,7 @@ type Monitor struct {
 	PausedAt time.Time `json:"pausedAt" format:"date-time"`
 	// Why Xquik automatically paused this monitor.
 	//
-	// Any of "x_user_not_found".
+	// Any of "insufficient_credits", "x_account_protected", "x_user_not_found".
 	PausedReason MonitorPausedReason `json:"pausedReason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -144,7 +144,9 @@ func (r *Monitor) UnmarshalJSON(data []byte) error {
 type MonitorPausedReason string
 
 const (
-	MonitorPausedReasonXUserNotFound MonitorPausedReason = "x_user_not_found"
+	MonitorPausedReasonInsufficientCredits MonitorPausedReason = "insufficient_credits"
+	MonitorPausedReasonXAccountProtected   MonitorPausedReason = "x_account_protected"
+	MonitorPausedReasonXUserNotFound       MonitorPausedReason = "x_user_not_found"
 )
 
 type MonitorNewResponse struct {

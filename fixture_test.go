@@ -19,7 +19,6 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
 //go:embed testdata/fixtures
@@ -81,8 +80,6 @@ func (r *capturedRequest) expectBody(t *testing.T, want string) {
 	}
 }
 
-var olderSharedModels = reflect.TypeFor[shared.UserProfile]().PkgPath()
-
 func expectDecoded(t *testing.T, response any) {
 	t.Helper()
 	var problems []string
@@ -108,7 +105,7 @@ func walkDecoded(value reflect.Value, path string, problems *[]string) {
 		}
 	case reflect.Struct:
 		kind := value.Type()
-		if strings.HasSuffix(kind.Name(), "Union") || kind.PkgPath() == olderSharedModels && !strings.HasPrefix(kind.Name(), "Community") {
+		if strings.HasSuffix(kind.Name(), "Union") {
 			return
 		}
 		if metadata := value.FieldByName("JSON"); metadata.IsValid() {

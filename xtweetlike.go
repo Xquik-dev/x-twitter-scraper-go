@@ -79,7 +79,7 @@ type XTweetLikeNewResponse struct {
 	// Connected account selected for the write.
 	Account XTweetLikeNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetLikeNewResponseAction `json:"action" api:"required"`
@@ -233,6 +233,7 @@ const (
 	XTweetLikeNewResponseActionUnfollow        XTweetLikeNewResponseAction = "unfollow"
 	XTweetLikeNewResponseActionRemoveFollower  XTweetLikeNewResponseAction = "remove_follower"
 	XTweetLikeNewResponseActionSendDm          XTweetLikeNewResponseAction = "send_dm"
+	XTweetLikeNewResponseActionDeleteDm        XTweetLikeNewResponseAction = "delete_dm"
 	XTweetLikeNewResponseActionUploadMedia     XTweetLikeNewResponseAction = "upload_media"
 	XTweetLikeNewResponseActionUpdateProfile   XTweetLikeNewResponseAction = "update_profile"
 	XTweetLikeNewResponseActionUpdateAvatar    XTweetLikeNewResponseAction = "update_avatar"
@@ -374,7 +375,7 @@ type XTweetLikeDeleteResponse struct {
 	// Connected account selected for the write.
 	Account XTweetLikeDeleteResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetLikeDeleteResponseAction `json:"action" api:"required"`
@@ -528,6 +529,7 @@ const (
 	XTweetLikeDeleteResponseActionUnfollow        XTweetLikeDeleteResponseAction = "unfollow"
 	XTweetLikeDeleteResponseActionRemoveFollower  XTweetLikeDeleteResponseAction = "remove_follower"
 	XTweetLikeDeleteResponseActionSendDm          XTweetLikeDeleteResponseAction = "send_dm"
+	XTweetLikeDeleteResponseActionDeleteDm        XTweetLikeDeleteResponseAction = "delete_dm"
 	XTweetLikeDeleteResponseActionUploadMedia     XTweetLikeDeleteResponseAction = "upload_media"
 	XTweetLikeDeleteResponseActionUpdateProfile   XTweetLikeDeleteResponseAction = "update_profile"
 	XTweetLikeDeleteResponseActionUpdateAvatar    XTweetLikeDeleteResponseAction = "update_avatar"

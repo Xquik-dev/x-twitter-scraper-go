@@ -144,7 +144,7 @@ type XDmSendResponse struct {
 	// Connected account selected for the write.
 	Account XDmSendResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XDmSendResponseAction `json:"action" api:"required"`
@@ -298,6 +298,7 @@ const (
 	XDmSendResponseActionUnfollow        XDmSendResponseAction = "unfollow"
 	XDmSendResponseActionRemoveFollower  XDmSendResponseAction = "remove_follower"
 	XDmSendResponseActionSendDm          XDmSendResponseAction = "send_dm"
+	XDmSendResponseActionDeleteDm        XDmSendResponseAction = "delete_dm"
 	XDmSendResponseActionUploadMedia     XDmSendResponseAction = "upload_media"
 	XDmSendResponseActionUpdateProfile   XDmSendResponseAction = "update_profile"
 	XDmSendResponseActionUpdateAvatar    XDmSendResponseAction = "update_avatar"

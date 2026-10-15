@@ -11,6 +11,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
 type paramUnion = param.APIUnion
@@ -280,7 +281,55 @@ type CommunityCreatorUnion struct {
 	WithheldInCountries []string `json:"withheldInCountries"`
 	// This field is from variant [UserProfile].
 	WithheldScope string `json:"withheldScope"`
-	JSON          struct {
+	// This field is from variant [UserProfile].
+	AccountBasedInAccurate bool `json:"accountBasedInAccurate"`
+	// This field is from variant [UserProfile].
+	AccountBasedInUnavailable bool `json:"accountBasedInUnavailable"`
+	// This field is from variant [UserProfile].
+	AdvertiserAccountServiceLevels []string `json:"advertiserAccountServiceLevels"`
+	// This field is from variant [UserProfile].
+	AdvertiserAccountType string `json:"advertiserAccountType"`
+	// This field is from variant [UserProfile].
+	AffiliateUsername string `json:"affiliateUsername"`
+	// This field is from variant [UserProfile].
+	Birthdate UserProfileBirthdate `json:"birthdate"`
+	// This field is from variant [UserProfile].
+	BusinessProfileState string `json:"businessProfileState"`
+	// This field is from variant [UserProfile].
+	ConnectedVia string `json:"connectedVia"`
+	// This field is from variant [UserProfile].
+	ConnectedViaAccurate bool `json:"connectedViaAccurate"`
+	// This field is from variant [UserProfile].
+	ContactInfo UserProfileContactInfo `json:"contactInfo"`
+	// This field is from variant [UserProfile].
+	DefaultProfile bool `json:"defaultProfile"`
+	// This field is from variant [UserProfile].
+	DefaultProfileImage bool `json:"defaultProfileImage"`
+	// This field is from variant [UserProfile].
+	Email string `json:"email"`
+	// This field is from variant [UserProfile].
+	FastFollowersCount int64 `json:"fastFollowersCount"`
+	// This field is from variant [UserProfile].
+	GeoEnabled bool `json:"geoEnabled"`
+	// This field is from variant [UserProfile].
+	HasExtendedProfile bool `json:"hasExtendedProfile"`
+	// This field is from variant [UserProfile].
+	IsTranslationEnabled bool `json:"isTranslationEnabled"`
+	// This field is from variant [UserProfile].
+	ListedCount int64 `json:"listedCount"`
+	// This field is from variant [UserProfile].
+	NormalFollowersCount int64 `json:"normalFollowersCount"`
+	// This field is from variant [UserProfile].
+	ProfilePictureOriginal string `json:"profilePictureOriginal"`
+	// This field is from variant [UserProfile].
+	RedirectsToUsername string `json:"redirectsToUsername"`
+	// This field is from variant [UserProfile].
+	SubscribersCount int64 `json:"subscribersCount"`
+	// This field is from variant [UserProfile].
+	UsernameChanges UserProfileUsernameChanges `json:"usernameChanges"`
+	// This field is from variant [UserProfile].
+	VerificationReason UserProfileVerificationReason `json:"verificationReason"`
+	JSON               struct {
 		ID                              respjson.Field
 		Name                            respjson.Field
 		Username                        respjson.Field
@@ -334,6 +383,30 @@ type CommunityCreatorUnion struct {
 		VerifiedType                    respjson.Field
 		WithheldInCountries             respjson.Field
 		WithheldScope                   respjson.Field
+		AccountBasedInAccurate          respjson.Field
+		AccountBasedInUnavailable       respjson.Field
+		AdvertiserAccountServiceLevels  respjson.Field
+		AdvertiserAccountType           respjson.Field
+		AffiliateUsername               respjson.Field
+		Birthdate                       respjson.Field
+		BusinessProfileState            respjson.Field
+		ConnectedVia                    respjson.Field
+		ConnectedViaAccurate            respjson.Field
+		ContactInfo                     respjson.Field
+		DefaultProfile                  respjson.Field
+		DefaultProfileImage             respjson.Field
+		Email                           respjson.Field
+		FastFollowersCount              respjson.Field
+		GeoEnabled                      respjson.Field
+		HasExtendedProfile              respjson.Field
+		IsTranslationEnabled            respjson.Field
+		ListedCount                     respjson.Field
+		NormalFollowersCount            respjson.Field
+		ProfilePictureOriginal          respjson.Field
+		RedirectsToUsername             respjson.Field
+		SubscribersCount                respjson.Field
+		UsernameChanges                 respjson.Field
+		VerificationReason              respjson.Field
 		raw                             string
 	} `json:"-"`
 }
@@ -486,10 +559,55 @@ type CommunityMembersFacepileUnion struct {
 	// This field is from variant [UserProfile].
 	WithheldInCountries []string `json:"withheldInCountries"`
 	// This field is from variant [UserProfile].
-	WithheldScope string `json:"withheldScope"`
-	// This field is from variant [CommunityMembersFacepileCommunityMemberPreview].
+	WithheldScope          string `json:"withheldScope"`
 	ProfilePictureOriginal string `json:"profilePictureOriginal"`
-	JSON                   struct {
+	// This field is from variant [UserProfile].
+	AccountBasedInAccurate bool `json:"accountBasedInAccurate"`
+	// This field is from variant [UserProfile].
+	AccountBasedInUnavailable bool `json:"accountBasedInUnavailable"`
+	// This field is from variant [UserProfile].
+	AdvertiserAccountServiceLevels []string `json:"advertiserAccountServiceLevels"`
+	// This field is from variant [UserProfile].
+	AdvertiserAccountType string `json:"advertiserAccountType"`
+	// This field is from variant [UserProfile].
+	AffiliateUsername string `json:"affiliateUsername"`
+	// This field is from variant [UserProfile].
+	Birthdate UserProfileBirthdate `json:"birthdate"`
+	// This field is from variant [UserProfile].
+	BusinessProfileState string `json:"businessProfileState"`
+	// This field is from variant [UserProfile].
+	ConnectedVia string `json:"connectedVia"`
+	// This field is from variant [UserProfile].
+	ConnectedViaAccurate bool `json:"connectedViaAccurate"`
+	// This field is from variant [UserProfile].
+	ContactInfo UserProfileContactInfo `json:"contactInfo"`
+	// This field is from variant [UserProfile].
+	DefaultProfile bool `json:"defaultProfile"`
+	// This field is from variant [UserProfile].
+	DefaultProfileImage bool `json:"defaultProfileImage"`
+	// This field is from variant [UserProfile].
+	Email string `json:"email"`
+	// This field is from variant [UserProfile].
+	FastFollowersCount int64 `json:"fastFollowersCount"`
+	// This field is from variant [UserProfile].
+	GeoEnabled bool `json:"geoEnabled"`
+	// This field is from variant [UserProfile].
+	HasExtendedProfile bool `json:"hasExtendedProfile"`
+	// This field is from variant [UserProfile].
+	IsTranslationEnabled bool `json:"isTranslationEnabled"`
+	// This field is from variant [UserProfile].
+	ListedCount int64 `json:"listedCount"`
+	// This field is from variant [UserProfile].
+	NormalFollowersCount int64 `json:"normalFollowersCount"`
+	// This field is from variant [UserProfile].
+	RedirectsToUsername string `json:"redirectsToUsername"`
+	// This field is from variant [UserProfile].
+	SubscribersCount int64 `json:"subscribersCount"`
+	// This field is from variant [UserProfile].
+	UsernameChanges UserProfileUsernameChanges `json:"usernameChanges"`
+	// This field is from variant [UserProfile].
+	VerificationReason UserProfileVerificationReason `json:"verificationReason"`
+	JSON               struct {
 		ID                              respjson.Field
 		Name                            respjson.Field
 		Username                        respjson.Field
@@ -544,6 +662,29 @@ type CommunityMembersFacepileUnion struct {
 		WithheldInCountries             respjson.Field
 		WithheldScope                   respjson.Field
 		ProfilePictureOriginal          respjson.Field
+		AccountBasedInAccurate          respjson.Field
+		AccountBasedInUnavailable       respjson.Field
+		AdvertiserAccountServiceLevels  respjson.Field
+		AdvertiserAccountType           respjson.Field
+		AffiliateUsername               respjson.Field
+		Birthdate                       respjson.Field
+		BusinessProfileState            respjson.Field
+		ConnectedVia                    respjson.Field
+		ConnectedViaAccurate            respjson.Field
+		ContactInfo                     respjson.Field
+		DefaultProfile                  respjson.Field
+		DefaultProfileImage             respjson.Field
+		Email                           respjson.Field
+		FastFollowersCount              respjson.Field
+		GeoEnabled                      respjson.Field
+		HasExtendedProfile              respjson.Field
+		IsTranslationEnabled            respjson.Field
+		ListedCount                     respjson.Field
+		NormalFollowersCount            respjson.Field
+		RedirectsToUsername             respjson.Field
+		SubscribersCount                respjson.Field
+		UsernameChanges                 respjson.Field
+		VerificationReason              respjson.Field
 		raw                             string
 	} `json:"-"`
 }
@@ -21289,20 +21430,79 @@ type PaginatedTweets struct {
 	NextCursor    string        `json:"next_cursor" api:"required"`
 	Tweets        []SearchTweet `json:"tweets" api:"required"`
 	FilteredCount int64         `json:"filtered_count"`
+	// How far back a filtered Latest search has read, in UTC. Xquik checked every
+	// newer post, so an empty page still moves this time back.
+	ReadBackTo time.Time `json:"readBackTo" format:"date-time"`
+	// What X shows beside a search's posts that is the same for every reader. Present
+	// on a search for a cashtag X has a card for, such as $BTC.
+	SearchContext PaginatedTweetsSearchContext `json:"searchContext"`
+	// Search q as X ran it, when Xquik fixed it.
+	SearchedQuery string `json:"searchedQuery"`
+	// Present on a last page whose sources all read past its start time.
+	//
+	// Any of true.
+	WindowComplete bool `json:"windowComplete"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		HasNextPage   respjson.Field
-		NextCursor    respjson.Field
-		Tweets        respjson.Field
-		FilteredCount respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		HasNextPage    respjson.Field
+		NextCursor     respjson.Field
+		Tweets         respjson.Field
+		FilteredCount  respjson.Field
+		ReadBackTo     respjson.Field
+		SearchContext  respjson.Field
+		SearchedQuery  respjson.Field
+		WindowComplete respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r PaginatedTweets) RawJSON() string { return r.JSON.raw }
 func (r *PaginatedTweets) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// What X shows beside a search's posts that is the same for every reader. Present
+// on a search for a cashtag X has a card for, such as $BTC.
+type PaginatedTweetsSearchContext struct {
+	// X's card for the cashtag the search names.
+	SmartTag PaginatedTweetsSearchContextSmartTag `json:"smartTag" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SmartTag    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaginatedTweetsSearchContext) RawJSON() string { return r.JSON.raw }
+func (r *PaginatedTweetsSearchContext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's card for the cashtag the search names.
+type PaginatedTweetsSearchContextSmartTag struct {
+	// The ticker X matched.
+	ID string `json:"id" api:"required"`
+	// Whether X lists the ticker as active.
+	Active bool `json:"active"`
+	// Whether X charts the ticker with open, high, low & close prices.
+	SupportsOhlc bool `json:"supportsOhlc"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Active       respjson.Field
+		SupportsOhlc respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaginatedTweetsSearchContextSmartTag) RawJSON() string { return r.JSON.raw }
+func (r *PaginatedTweetsSearchContextSmartTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -21346,10 +21546,19 @@ type SearchTweet struct {
 	Article SearchTweetArticle `json:"article"`
 	// Public X profile.
 	Author UserProfile `json:"author"`
+	// Why the tweet has no author. X serves a suspended or deleted account as an
+	// unavailable user with a reason such as Suspended or NotFound. Omitted when the
+	// author is available.
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
 	Card SearchTweetCard `json:"card"`
+	// Price charts the author attached under the post, 1 per cashtag. Absent when the
+	// post has none. X may send a cashtag without a chart window.
+	CashtagAttachments []SearchTweetCashtagAttachment `json:"cashtagAttachments"`
 	// Community ID.
 	CommunityID string `json:"communityId"`
+	// Community name. Present when X sends it with the post.
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote SearchTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -21358,22 +21567,39 @@ type SearchTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl SearchTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                         `json:"conversationId"`
-	CreatedAt           string                         `json:"createdAt"`
-	DisplayTextRange    []int64                        `json:"displayTextRange"`
+	// Author-published point, with longitude before latitude.
+	Coordinates      SearchTweetCoordinates `json:"coordinates"`
+	CreatedAt        string                 `json:"createdAt"`
+	DisplayTextRange []int64                `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit SearchTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
 	Entities SearchTweetEntities `json:"entities"`
+	// Marks a subscriber-only post with the creator whose subscription unlocks it.
+	// Non-subscribers get the preview text & the subscribe link. Omitted on public
+	// posts.
+	ExclusiveContent SearchTweetExclusiveContent `json:"exclusiveContent"`
+	// Author-published point, with latitude before longitude.
+	Geo SearchTweetGeo `json:"geo"`
 	// Public metadata whose fields are defined by X.
 	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	// Grok's translation of the post, as X shows it.
+	GrokTranslatedPost map[string]any `json:"grokTranslatedPost"`
+	// Whether X holds Community Notes on the post, shown or not.
+	HasCommunityNotes bool   `json:"hasCommunityNotes"`
+	InReplyToID       string `json:"inReplyToId"`
+	InReplyToUserID   string `json:"inReplyToUserId"`
+	InReplyToUsername string `json:"inReplyToUsername"`
+	// The notice x.com covers the post with until the reader views it, such as X's
+	// public interest notice on a post that broke its rules but stays up.
+	Interstitial   SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply bool                    `json:"isLimitedReply"`
+	IsNoteTweet    bool                    `json:"isNoteTweet"`
+	IsPinned       bool                    `json:"isPinned"`
+	IsQuoteStatus  bool                    `json:"isQuoteStatus"`
+	IsReply        bool                    `json:"isReply"`
+	IsRetweet      bool                    `json:"isRetweet"`
+	IsTranslatable bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -21383,6 +21609,9 @@ type SearchTweet struct {
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
 	NoteTweet SearchTweetNoteTweet `json:"noteTweet"`
+	// A parent, quoted or retweeted tweet. It has the TweetPublicData fields and an
+	// author. Nesting stops after 4 levels.
+	ParentTweet EmbeddedTweet `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             SearchTweetPlace `json:"place"`
 	PossiblySensitive bool             `json:"possiblySensitive"`
@@ -21394,6 +21623,11 @@ type SearchTweet struct {
 	QuotedTweet EmbeddedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
 	QuotedTweetID string `json:"quotedTweetId"`
+	// The quoted post's link, kept when X withholds that post.
+	QuotedTweetPermalink SearchTweetQuotedTweetPermalink `json:"quotedTweetPermalink"`
+	// Why X shows no quoted post. Omitted when X names no reason, as its legacy
+	// answers never do.
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext SearchTweetReactionContext `json:"reactionContext"`
 	// Quoted or retweeted tweet context.
@@ -21405,74 +21639,386 @@ type SearchTweet struct {
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext SearchTweetSportsContext `json:"sportsContext"`
+	// The Subscriber badge X shows on a reply. The reply's author subscribes to the
+	// creator who started the conversation. Omitted on a post without the badge.
+	SubscriberBadge SearchTweetSubscriberBadge `json:"subscriberBadge"`
+	// Where `text` matches the search, on each row a search read. Offsets count code
+	// points of `text`, as `displayTextRange` does. Empty when X marks nothing in the
+	// post. X marks matches only in a post's first 280 characters.
+	TextHighlights []SearchTweetTextHighlight `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
 	Tombstone SearchTweetTombstone `json:"tombstone"`
 	Type      string               `json:"type"`
+	// The author's ID when X withholds the author's profile.
+	UnavailableAuthorID string `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r SearchTweet) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The quoted post's link, kept when X withholds that post.
+type SearchTweetQuotedTweetPermalink struct {
+	DisplayURL  string `json:"displayUrl"`
+	ExpandedURL string `json:"expandedUrl"`
+	URL         string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayURL  respjson.Field
+		ExpandedURL respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetQuotedTweetPermalink) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetQuotedTweetPermalink) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Why X shows no quoted post. Omitted when X names no reason, as its legacy
+// answers never do.
+type SearchTweetQuotedTweetUnavailable struct {
+	// X's reason, such as `Suspended` for a suspended author or `Protected` for an
+	// author who protects their posts.
+	Reason string `json:"reason" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetQuotedTweetUnavailable) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetQuotedTweetUnavailable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetTextHighlight struct {
+	// The first code point after the match.
+	EndIndex int64 `json:"endIndex" api:"required"`
+	// The first code point of the match.
+	StartIndex int64 `json:"startIndex" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndIndex    respjson.Field
+		StartIndex  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetTextHighlight) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetTextHighlight) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Why the tweet has no author. X serves a suspended or deleted account as an
+// unavailable user with a reason such as Suspended or NotFound. Omitted when the
+// author is available.
+type SearchTweetAuthorUnavailable struct {
+	// X's reason code.
+	Reason string `json:"reason" api:"required"`
+	// X's notice text for the reason.
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetAuthorUnavailable) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetAuthorUnavailable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetCashtagAttachment struct {
+	// The cashtag with its `$`.
+	Cashtag string `json:"cashtag" api:"required"`
+	// Span of each candle.
+	CandleSize string `json:"candleSize"`
+	// Time of the chart's last price.
+	EndTime time.Time `json:"endTime" format:"date-time"`
+	// X's size for the chart.
+	SizeVariant int64 `json:"sizeVariant"`
+	// Time of the chart's first candle.
+	StartTime time.Time `json:"startTime" format:"date-time"`
+	// Span the chart covers.
+	Timeframe string `json:"timeframe"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cashtag     respjson.Field
+		CandleSize  respjson.Field
+		EndTime     respjson.Field
+		SizeVariant respjson.Field
+		StartTime   respjson.Field
+		Timeframe   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetCashtagAttachment) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetCashtagAttachment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Marks a subscriber-only post with the creator whose subscription unlocks it.
+// Non-subscribers get the preview text & the subscribe link. Omitted on public
+// posts.
+type SearchTweetExclusiveContent struct {
+	// Username of the creator whose subscription unlocks the post.
+	CreatorUserName string `json:"creatorUserName" api:"required"`
+	// Subscribe link X shows non-subscribers. Omitted when X serves the full post.
+	SubscribeURL string `json:"subscribeUrl"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatorUserName respjson.Field
+		SubscribeURL    respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetExclusiveContent) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetExclusiveContent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Author-published point, with longitude before latitude.
+type SearchTweetCoordinates struct {
+	Coordinates []float64      `json:"coordinates" api:"required"`
+	Type        constant.Point `json:"type" default:"Point"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coordinates respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetCoordinates) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetCoordinates) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Author-published point, with latitude before longitude.
+type SearchTweetGeo struct {
+	Coordinates []float64      `json:"coordinates" api:"required"`
+	Type        constant.Point `json:"type" default:"Point"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coordinates respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetGeo) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetGeo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The Subscriber badge X shows on a reply. The reply's author subscribes to the
+// creator who started the conversation. Omitted on a post without the badge.
+type SearchTweetSubscriberBadge struct {
+	// Account ID of the creator the author subscribes to.
+	CreatorID string `json:"creatorId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatorID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetSubscriberBadge) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetSubscriberBadge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The notice x.com covers the post with until the reader views it, such as X's
+// public interest notice on a post that broke its rules but stays up.
+type SearchTweetInterstitial struct {
+	// How x.com shows the notice. `NonCompliant` marks a post that broke X's rules.
+	DisplayType string                      `json:"displayType"`
+	Text        SearchTweetInterstitialText `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayType respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetInterstitial) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetInterstitial) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetInterstitialText struct {
+	// Links inside the notice, by character range.
+	Entities []SearchTweetInterstitialTextEntity `json:"entities"`
+	// Whether X writes it right to left.
+	Rtl bool `json:"rtl"`
+	// The notice's text.
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Rtl         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetInterstitialText) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetInterstitialText) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetInterstitialTextEntity struct {
+	// Whole number from 0.
+	FromIndex int64                                `json:"fromIndex"`
+	Ref       SearchTweetInterstitialTextEntityRef `json:"ref"`
+	// Whole number from 0.
+	ToIndex int64 `json:"toIndex"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FromIndex   respjson.Field
+		Ref         respjson.Field
+		ToIndex     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetInterstitialTextEntity) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetInterstitialTextEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetInterstitialTextEntityRef struct {
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
+		Type        respjson.Field
+		URL         respjson.Field
+		URLType     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetInterstitialTextEntityRef) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetInterstitialTextEntityRef) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -21596,16 +22142,27 @@ func (r *SearchTweetCommunityNote) UnmarshalJSON(data []byte) error {
 
 // Public reply policy and conversation owner.
 type SearchTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	// Regions whose accounts may reply, as country codes. Sent with the
+	// `country_of_origin` mode.
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	// Reply policy from X's newer field, such as `my_network`, `premium` or
+	// `country_of_origin`. Omitted when X sends none.
+	Mode string `json:"mode"`
+	// The conversation owner's account ID.
+	OwnerID       string `json:"ownerId"`
+	OwnerUsername string `json:"ownerUsername"`
+	Policy        string `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -21667,10 +22224,14 @@ func (r *SearchTweetEntities) UnmarshalJSON(data []byte) error {
 type SearchTweetEntitiesHashtag struct {
 	Text    string  `json:"text" api:"required"`
 	Indices []int64 `json:"indices"`
+	// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+	// platforms, which differ by reader.
+	Tag SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -21679,6 +22240,64 @@ type SearchTweetEntitiesHashtag struct {
 // Returns the unmodified JSON received from the API
 func (r SearchTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type SearchTweetEntitiesHashtagTag struct {
+	// X's ID for the SmartTag.
+	ID   string                            `json:"id"`
+	Info SearchTweetEntitiesHashtagTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetEntitiesHashtagTag) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetEntitiesHashtagTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetEntitiesHashtagTagInfo struct {
+	Info SearchTweetEntitiesHashtagTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetEntitiesHashtagTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetEntitiesHashtagTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetEntitiesHashtagTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Active      respjson.Field
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetEntitiesHashtagTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetEntitiesHashtagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -21706,9 +22325,12 @@ func (r *SearchTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetEntitiesSmarttagTag struct {
+	// X's ID for the SmartTag.
+	ID   string                             `json:"id"`
 	Info SearchTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -21738,10 +22360,13 @@ func (r *SearchTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetEntitiesSmarttagTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -21779,9 +22404,12 @@ func (r *SearchTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetEntitiesSymbolTag struct {
+	// X's ID for the SmartTag.
+	ID   string                           `json:"id"`
 	Info SearchTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -21811,10 +22439,13 @@ func (r *SearchTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetEntitiesSymbolTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -21852,9 +22483,12 @@ func (r *SearchTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetEntitiesTimestampTag struct {
+	// X's ID for the SmartTag.
+	ID   string                              `json:"id"`
 	Info SearchTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -21884,10 +22518,13 @@ func (r *SearchTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetEntitiesTimestampTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -21997,6 +22634,8 @@ type SearchTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []SearchTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                              `json:"isExpandable"`
+	// The Note's own ID, apart from the post's.
+	NoteID       string                            `json:"noteId"`
 	RichtextTags []SearchTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -22005,6 +22644,7 @@ type SearchTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -22048,10 +22688,14 @@ func (r *SearchTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 type SearchTweetNoteTweetEntitiesHashtag struct {
 	Text    string  `json:"text" api:"required"`
 	Indices []int64 `json:"indices"`
+	// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+	// platforms, which differ by reader.
+	Tag SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -22060,6 +22704,64 @@ type SearchTweetNoteTweetEntitiesHashtag struct {
 // Returns the unmodified JSON received from the API
 func (r SearchTweetNoteTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type SearchTweetNoteTweetEntitiesHashtagTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                     `json:"id"`
+	Info SearchTweetNoteTweetEntitiesHashtagTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetNoteTweetEntitiesHashtagTag) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetNoteTweetEntitiesHashtagTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetNoteTweetEntitiesHashtagTagInfo struct {
+	Info SearchTweetNoteTweetEntitiesHashtagTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetNoteTweetEntitiesHashtagTagInfo) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetNoteTweetEntitiesHashtagTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SearchTweetNoteTweetEntitiesHashtagTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Active      respjson.Field
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SearchTweetNoteTweetEntitiesHashtagTagInfoInfo) RawJSON() string { return r.JSON.raw }
+func (r *SearchTweetNoteTweetEntitiesHashtagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -22087,9 +22789,12 @@ func (r *SearchTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error 
 }
 
 type SearchTweetNoteTweetEntitiesSmarttagTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                      `json:"id"`
 	Info SearchTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -22119,10 +22824,13 @@ func (r *SearchTweetNoteTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte)
 }
 
 type SearchTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -22160,9 +22868,12 @@ func (r *SearchTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetNoteTweetEntitiesSymbolTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                    `json:"id"`
 	Info SearchTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -22192,10 +22903,13 @@ func (r *SearchTweetNoteTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) e
 }
 
 type SearchTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -22233,9 +22947,12 @@ func (r *SearchTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error
 }
 
 type SearchTweetNoteTweetEntitiesTimestampTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                       `json:"id"`
 	Info SearchTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -22265,10 +22982,13 @@ func (r *SearchTweetNoteTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte
 }
 
 type SearchTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -22450,6 +23170,8 @@ type SearchTweetSportsContext struct {
 	Competitors []SearchTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	// League ID.
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs SearchTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -22464,6 +23186,7 @@ type SearchTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -22483,8 +23206,14 @@ func (r *SearchTweetSportsContext) UnmarshalJSON(data []byte) error {
 type SearchTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	// Team display color.
+	Color string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	// Active competitor.
+	IsActive bool `json:"isActive"`
+	// Winning competitor.
+	IsWinner bool `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -22496,7 +23225,10 @@ type SearchTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -22611,11 +23343,15 @@ func (r *SearchTweetTombstoneTextEntity) UnmarshalJSON(data []byte) error {
 }
 
 type SearchTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -22668,6 +23404,8 @@ type TweetMedia struct {
 	FocusRects []TweetMediaFocusRect `json:"focusRects"`
 	// Graphic-violence warning.
 	GraphicViolence bool `json:"graphicViolence"`
+	// Prompt a Grok image came from. Absent on other media & when X sends no prompt.
+	GrokImageAnnotation TweetMediaGrokImageAnnotation `json:"grokImageAnnotation"`
 	// Grok post ID associated with the media.
 	GrokPostID string `json:"grokPostId"`
 	// Original height.
@@ -22683,6 +23421,9 @@ type TweetMedia struct {
 	Sizes map[string]TweetMediaSize `json:"sizes"`
 	// Source tweet ID for copied media.
 	SourceStatusID string `json:"sourceStatusId"`
+	// The account that first posted the media. Some reads carry only its name, picture
+	// & badges.
+	SourceUser UserProfile `json:"sourceUser"`
 	// Source profile ID for copied media.
 	SourceUserID string `json:"sourceUserId"`
 	// Public profiles tagged in the media.
@@ -22717,6 +23458,7 @@ type TweetMedia struct {
 		FaceRects             respjson.Field
 		FocusRects            respjson.Field
 		GraphicViolence       respjson.Field
+		GrokImageAnnotation   respjson.Field
 		GrokPostID            respjson.Field
 		Height                respjson.Field
 		Indices               respjson.Field
@@ -22725,6 +23467,7 @@ type TweetMedia struct {
 		OtherSensitiveContent respjson.Field
 		Sizes                 respjson.Field
 		SourceStatusID        respjson.Field
+		SourceUser            respjson.Field
 		SourceUserID          respjson.Field
 		Tags                  respjson.Field
 		Title                 respjson.Field
@@ -22740,6 +23483,27 @@ type TweetMedia struct {
 // Returns the unmodified JSON received from the API
 func (r TweetMedia) RawJSON() string { return r.JSON.raw }
 func (r *TweetMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Prompt a Grok image came from. Absent on other media & when X sends no prompt.
+type TweetMediaGrokImageAnnotation struct {
+	// Prompt the image came from.
+	Prompt string `json:"prompt"`
+	// Grok's longer rewrite of the prompt.
+	UpsampledPrompt string `json:"upsampledPrompt"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Prompt          respjson.Field
+		UpsampledPrompt respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TweetMediaGrokImageAnnotation) RawJSON() string { return r.JSON.raw }
+func (r *TweetMediaGrokImageAnnotation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -22866,24 +23630,62 @@ type UserProfile struct {
 	// addresses. It does not state nationality, residence, identity, registration,
 	// post location, or exact location.
 	AccountBasedIn UserProfileAccountBasedIn `json:"accountBasedIn" api:"nullable"`
+	// False when X notes accountBasedIn may be inaccurate.
+	AccountBasedInAccurate bool `json:"accountBasedInAccurate"`
+	// True when X withheld accountBasedIn from this read. Retry later.
+	AccountBasedInUnavailable bool `json:"accountBasedInUnavailable"`
+	// X Ads services the account uses, such as `analytics`, `media_studio` or `smb`.
+	// Empty for an account without ads.
+	AdvertiserAccountServiceLevels []string `json:"advertiserAccountServiceLevels"`
+	// The account's X Ads type. `none` for an account without ads, or
+	// `promotable_user` for one that may run them.
+	AdvertiserAccountType string `json:"advertiserAccountType"`
 	// Organization affiliation label shown on an X profile.
-	AffiliatesHighlightedLabel     UserProfileAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
-	AutomatedBy                    string                                `json:"automatedBy"`
-	BusinessAccountAffiliatesCount int64                                 `json:"businessAccountAffiliatesCount"`
+	AffiliatesHighlightedLabel UserProfileAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
+	// Handle of the organization X shows the account is affiliated with, from its
+	// About page.
+	AffiliateUsername string `json:"affiliateUsername"`
+	AutomatedBy       string `json:"automatedBy"`
+	// The parts of the birthday the account made public.
+	Birthdate                      UserProfileBirthdate `json:"birthdate"`
+	BusinessAccountAffiliatesCount int64                `json:"businessAccountAffiliatesCount"`
+	// Whether X treats the profile as a business profile. `none` or `enabled`.
+	BusinessProfileState string `json:"businessProfileState"`
 	// Community role when returned by community member reads
-	CommunityRole             string `json:"communityRole"`
-	CoverPicture              string `json:"coverPicture"`
-	CreatedAt                 string `json:"createdAt"`
-	CreatorSubscriptionsCount int64  `json:"creatorSubscriptionsCount"`
-	Description               string `json:"description"`
-	FavouritesCount           int64  `json:"favouritesCount"`
-	Followers                 int64  `json:"followers"`
-	Following                 int64  `json:"following"`
+	CommunityRole string `json:"communityRole"`
+	// How the account first connected to X.
+	ConnectedVia string `json:"connectedVia"`
+	// False when X notes that country may be inaccurate.
+	ConnectedViaAccurate bool `json:"connectedViaAccurate"`
+	// Emails, phone numbers & links the account publishes on its own profile. Omitted
+	// when it publishes none.
+	ContactInfo               UserProfileContactInfo `json:"contactInfo"`
+	CoverPicture              string                 `json:"coverPicture"`
+	CreatedAt                 string                 `json:"createdAt"`
+	CreatorSubscriptionsCount int64                  `json:"creatorSubscriptionsCount"`
+	// Whether the profile keeps X's default theme.
+	DefaultProfile bool `json:"defaultProfile"`
+	// Whether the profile keeps X's default avatar.
+	DefaultProfileImage bool   `json:"defaultProfileImage"`
+	Description         string `json:"description"`
+	// First email the account publishes on its profile, lowercased. Omitted when it
+	// publishes none.
+	Email string `json:"email"`
+	// Followers X counts as fast followers.
+	FastFollowersCount int64 `json:"fastFollowersCount"`
+	FavouritesCount    int64 `json:"favouritesCount"`
+	Followers          int64 `json:"followers"`
+	Following          int64 `json:"following"`
+	// Whether the profile may add a location to posts.
+	GeoEnabled bool `json:"geoEnabled"`
 	// Public profile bio translation returned by X
-	GrokTranslatedBio               map[string]any `json:"grokTranslatedBio"`
-	HasCustomTimelines              bool           `json:"hasCustomTimelines"`
-	HasGraduatedAccess              bool           `json:"hasGraduatedAccess"`
-	HasHiddenSubscriptionsOnProfile bool           `json:"hasHiddenSubscriptionsOnProfile"`
+	GrokTranslatedBio  map[string]any `json:"grokTranslatedBio"`
+	HasCustomTimelines bool           `json:"hasCustomTimelines"`
+	// Whether the profile filled X's extended fields, such as a birth date. True or
+	// false.
+	HasExtendedProfile              bool `json:"hasExtendedProfile"`
+	HasGraduatedAccess              bool `json:"hasGraduatedAccess"`
+	HasHiddenSubscriptionsOnProfile bool `json:"hasHiddenSubscriptionsOnProfile"`
 	// Profile highlight availability and count metadata.
 	HighlightsInfo UserProfileHighlightsInfo `json:"highlightsInfo"`
 	// Identity verification metadata displayed by X.
@@ -22892,12 +23694,18 @@ type UserProfile struct {
 	// Whether X shows a blue verification badge
 	IsBlueVerified        bool `json:"isBlueVerified"`
 	IsProfileTranslatable bool `json:"isProfileTranslatable"`
-	IsTranslator          bool `json:"isTranslator"`
+	// Whether the account turned on X's translation of its posts. True or false.
+	IsTranslationEnabled bool `json:"isTranslationEnabled"`
+	IsTranslator         bool `json:"isTranslator"`
 	// Whether X marks the profile as verified
 	IsVerified bool `json:"isVerified"`
+	// Public lists that include the profile.
+	ListedCount int64 `json:"listedCount"`
 	// Account owner's public profile location text
-	Location                 string   `json:"location"`
-	MediaCount               int64    `json:"mediaCount"`
+	Location   string `json:"location"`
+	MediaCount int64  `json:"mediaCount"`
+	// Followers minus fast followers.
+	NormalFollowersCount     int64    `json:"normalFollowersCount"`
 	ParodyCommentaryFanLabel string   `json:"parodyCommentaryFanLabel"`
 	PinnedTweetIDs           []string `json:"pinnedTweetIds"`
 	PossiblySensitive        bool     `json:"possiblySensitive"`
@@ -22911,25 +23719,38 @@ type UserProfile struct {
 	ProfileImageShape          string `json:"profileImageShape"`
 	ProfileInterstitialType    string `json:"profileInterstitialType"`
 	ProfilePicture             string `json:"profilePicture"`
-	ProfileSortEnabled         bool   `json:"profileSortEnabled"`
-	ProfileTranslatorType      string `json:"profileTranslatorType"`
+	// The same profile picture at full size, as the account uploaded it. Download this
+	// one for the image.
+	ProfilePictureOriginal string `json:"profilePictureOriginal"`
+	ProfileSortEnabled     bool   `json:"profileSortEnabled"`
+	ProfileTranslatorType  string `json:"profileTranslatorType"`
 	// Whether the profile protects its posts
 	Protected bool `json:"protected"`
+	// Handle x.com sends this profile's visitors to, such as the new handle of a
+	// renamed account whose old handle now holds a placeholder. Missing when x.com
+	// shows the profile itself.
+	RedirectsToUsername string `json:"redirectsToUsername"`
 	// UTC repost time with includeRetweetTimestamp. Null if the newest profile page
 	// has no match or lookup failed; otherwise omitted.
-	RetweetedAt         time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
-	StatusesCount       int64     `json:"statusesCount"`
-	SuperFollowEligible bool      `json:"superFollowEligible"`
+	RetweetedAt   time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
+	StatusesCount int64     `json:"statusesCount"`
+	// Accounts subscribed to the profile's paid Subscriptions. 0 when it has none.
+	SubscribersCount    int64 `json:"subscribersCount"`
+	SuperFollowEligible bool  `json:"superFollowEligible"`
 	// Whether X marks the subscription profile as active.
 	SuperFollowsUserProfileActive bool `json:"superFollowsUserProfileActive"`
 	// Public payment and creator-support handles shown on X.
-	TipJar              UserProfileTipJar `json:"tipJar"`
-	Unavailable         bool              `json:"unavailable"`
-	UnavailableReason   string            `json:"unavailableReason"`
-	URL                 string            `json:"url"`
-	Verified            bool              `json:"verified"`
-	VerifiedType        string            `json:"verifiedType"`
-	WithheldInCountries []string          `json:"withheldInCountries"`
+	TipJar            UserProfileTipJar `json:"tipJar"`
+	Unavailable       bool              `json:"unavailable"`
+	UnavailableReason string            `json:"unavailableReason"`
+	URL               string            `json:"url"`
+	// How often the account changed its username.
+	UsernameChanges UserProfileUsernameChanges `json:"usernameChanges"`
+	// X's text on why the profile is verified, with its links.
+	VerificationReason  UserProfileVerificationReason `json:"verificationReason"`
+	Verified            bool                          `json:"verified"`
+	VerifiedType        string                        `json:"verifiedType"`
+	WithheldInCountries []string                      `json:"withheldInCountries"`
 	// Whether X withholds a post or user
 	WithheldScope string `json:"withheldScope"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -22938,19 +23759,35 @@ type UserProfile struct {
 		Name                            respjson.Field
 		Username                        respjson.Field
 		AccountBasedIn                  respjson.Field
+		AccountBasedInAccurate          respjson.Field
+		AccountBasedInUnavailable       respjson.Field
+		AdvertiserAccountServiceLevels  respjson.Field
+		AdvertiserAccountType           respjson.Field
 		AffiliatesHighlightedLabel      respjson.Field
+		AffiliateUsername               respjson.Field
 		AutomatedBy                     respjson.Field
+		Birthdate                       respjson.Field
 		BusinessAccountAffiliatesCount  respjson.Field
+		BusinessProfileState            respjson.Field
 		CommunityRole                   respjson.Field
+		ConnectedVia                    respjson.Field
+		ConnectedViaAccurate            respjson.Field
+		ContactInfo                     respjson.Field
 		CoverPicture                    respjson.Field
 		CreatedAt                       respjson.Field
 		CreatorSubscriptionsCount       respjson.Field
+		DefaultProfile                  respjson.Field
+		DefaultProfileImage             respjson.Field
 		Description                     respjson.Field
+		Email                           respjson.Field
+		FastFollowersCount              respjson.Field
 		FavouritesCount                 respjson.Field
 		Followers                       respjson.Field
 		Following                       respjson.Field
+		GeoEnabled                      respjson.Field
 		GrokTranslatedBio               respjson.Field
 		HasCustomTimelines              respjson.Field
+		HasExtendedProfile              respjson.Field
 		HasGraduatedAccess              respjson.Field
 		HasHiddenSubscriptionsOnProfile respjson.Field
 		HighlightsInfo                  respjson.Field
@@ -22958,10 +23795,13 @@ type UserProfile struct {
 		IsAutomated                     respjson.Field
 		IsBlueVerified                  respjson.Field
 		IsProfileTranslatable           respjson.Field
+		IsTranslationEnabled            respjson.Field
 		IsTranslator                    respjson.Field
 		IsVerified                      respjson.Field
+		ListedCount                     respjson.Field
 		Location                        respjson.Field
 		MediaCount                      respjson.Field
+		NormalFollowersCount            respjson.Field
 		ParodyCommentaryFanLabel        respjson.Field
 		PinnedTweetIDs                  respjson.Field
 		PossiblySensitive               respjson.Field
@@ -22972,17 +23812,22 @@ type UserProfile struct {
 		ProfileImageShape               respjson.Field
 		ProfileInterstitialType         respjson.Field
 		ProfilePicture                  respjson.Field
+		ProfilePictureOriginal          respjson.Field
 		ProfileSortEnabled              respjson.Field
 		ProfileTranslatorType           respjson.Field
 		Protected                       respjson.Field
+		RedirectsToUsername             respjson.Field
 		RetweetedAt                     respjson.Field
 		StatusesCount                   respjson.Field
+		SubscribersCount                respjson.Field
 		SuperFollowEligible             respjson.Field
 		SuperFollowsUserProfileActive   respjson.Field
 		TipJar                          respjson.Field
 		Unavailable                     respjson.Field
 		UnavailableReason               respjson.Field
 		URL                             respjson.Field
+		UsernameChanges                 respjson.Field
+		VerificationReason              respjson.Field
 		Verified                        respjson.Field
 		VerifiedType                    respjson.Field
 		WithheldInCountries             respjson.Field
@@ -22995,6 +23840,223 @@ type UserProfile struct {
 // Returns the unmodified JSON received from the API
 func (r UserProfile) RawJSON() string { return r.JSON.raw }
 func (r *UserProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Emails, phone numbers & links the account publishes on its own profile. Omitted
+// when it publishes none.
+type UserProfileContactInfo struct {
+	// Emails in the bio, name or location, lowercased.
+	Emails []UserProfileContactInfoEmail `json:"emails"`
+	// The profile's website & the links in its bio.
+	Links []UserProfileContactInfoLink `json:"links"`
+	// Phone numbers on the profile. Only a spelling that can be nothing else counts.
+	Phones []UserProfileContactInfoPhone `json:"phones"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Emails      respjson.Field
+		Links       respjson.Field
+		Phones      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileContactInfo) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileContactInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UserProfileContactInfoEmail struct {
+	// The part after the @ sign.
+	Domain string `json:"domain" api:"required"`
+	// Profile field that holds the email.
+	//
+	// Any of "bio", "name", "location".
+	Source UserProfileContactInfoEmailSource `json:"source" api:"required"`
+	// The email address.
+	Value string `json:"value" api:"required"`
+	// The account's own spelling, sent when it spelled the email out.
+	WrittenAs string `json:"writtenAs"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Domain      respjson.Field
+		Source      respjson.Field
+		Value       respjson.Field
+		WrittenAs   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileContactInfoEmail) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileContactInfoEmail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Profile field that holds the email.
+type UserProfileContactInfoEmailSource string
+
+const (
+	UserProfileContactInfoEmailSourceBio      UserProfileContactInfoEmailSource = "bio"
+	UserProfileContactInfoEmailSourceName     UserProfileContactInfoEmailSource = "name"
+	UserProfileContactInfoEmailSourceLocation UserProfileContactInfoEmailSource = "location"
+)
+
+type UserProfileContactInfoLink struct {
+	// Site the link belongs to, such as `linkedin`, `github` or `telegram`. Any other
+	// site is `website`.
+	Network string `json:"network" api:"required"`
+	// `url` for the website field, `bio` for a bio link.
+	//
+	// Any of "url", "bio".
+	Source UserProfileContactInfoLinkSource `json:"source" api:"required"`
+	// The link, as X expands it.
+	URL string `json:"url" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Network     respjson.Field
+		Source      respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileContactInfoLink) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileContactInfoLink) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// `url` for the website field, `bio` for a bio link.
+type UserProfileContactInfoLinkSource string
+
+const (
+	UserProfileContactInfoLinkSourceURL UserProfileContactInfoLinkSource = "url"
+	UserProfileContactInfoLinkSourceBio UserProfileContactInfoLinkSource = "bio"
+)
+
+type UserProfileContactInfoPhone struct {
+	// Profile field that holds the number.
+	//
+	// Any of "bio", "name", "location", "url".
+	Source UserProfileContactInfoPhoneSource `json:"source" api:"required"`
+	// The digits, with a leading + when the account wrote a country code.
+	Value string `json:"value" api:"required"`
+	// The account's own spelling of the number.
+	WrittenAs string `json:"writtenAs"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Source      respjson.Field
+		Value       respjson.Field
+		WrittenAs   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileContactInfoPhone) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileContactInfoPhone) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Profile field that holds the number.
+type UserProfileContactInfoPhoneSource string
+
+const (
+	UserProfileContactInfoPhoneSourceBio      UserProfileContactInfoPhoneSource = "bio"
+	UserProfileContactInfoPhoneSourceName     UserProfileContactInfoPhoneSource = "name"
+	UserProfileContactInfoPhoneSourceLocation UserProfileContactInfoPhoneSource = "location"
+	UserProfileContactInfoPhoneSourceURL      UserProfileContactInfoPhoneSource = "url"
+)
+
+// How often the account changed its username.
+type UserProfileUsernameChanges struct {
+	// Whole number from 0.
+	Count int64 `json:"count" api:"required"`
+	// Time of the latest change, omitted when there is none.
+	LastChangedAt time.Time `json:"lastChangedAt" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count         respjson.Field
+		LastChangedAt respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileUsernameChanges) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileUsernameChanges) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The parts of the birthday the account made public.
+type UserProfileBirthdate struct {
+	Day   int64 `json:"day"`
+	Month int64 `json:"month"`
+	Year  int64 `json:"year"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Day         respjson.Field
+		Month       respjson.Field
+		Year        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileBirthdate) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileBirthdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's text on why the profile is verified, with its links.
+type UserProfileVerificationReason struct {
+	// Links inside the text, by character range.
+	Entities []UserProfileVerificationReasonEntity `json:"entities"`
+	Text     string                                `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileVerificationReason) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileVerificationReason) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UserProfileVerificationReasonEntity struct {
+	// Whole number from 0.
+	FromIndex int64 `json:"fromIndex"`
+	// Whole number from 0.
+	ToIndex int64  `json:"toIndex"`
+	URL     string `json:"url"`
+	URLType string `json:"urlType"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FromIndex   respjson.Field
+		ToIndex     respjson.Field
+		URL         respjson.Field
+		URLType     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileVerificationReasonEntity) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileVerificationReasonEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

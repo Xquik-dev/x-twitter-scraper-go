@@ -60,7 +60,7 @@ type XWriteActionGetResponse struct {
 	// Connected account selected for the write.
 	Account XWriteActionGetResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XWriteActionGetResponseAction `json:"action" api:"required"`
@@ -214,6 +214,7 @@ const (
 	XWriteActionGetResponseActionUnfollow        XWriteActionGetResponseAction = "unfollow"
 	XWriteActionGetResponseActionRemoveFollower  XWriteActionGetResponseAction = "remove_follower"
 	XWriteActionGetResponseActionSendDm          XWriteActionGetResponseAction = "send_dm"
+	XWriteActionGetResponseActionDeleteDm        XWriteActionGetResponseAction = "delete_dm"
 	XWriteActionGetResponseActionUploadMedia     XWriteActionGetResponseAction = "upload_media"
 	XWriteActionGetResponseActionUpdateProfile   XWriteActionGetResponseAction = "update_profile"
 	XWriteActionGetResponseActionUpdateAvatar    XWriteActionGetResponseAction = "update_avatar"

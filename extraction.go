@@ -348,8 +348,8 @@ type ExtractionEstimateCostResponse struct {
 	CreditsRequired  string `json:"creditsRequired" api:"required"`
 	// Credit calculation row count, not source availability.
 	EstimatedResults int64 `json:"estimatedResults" api:"required"`
-	// Any of "followers", "following", "collection", "paginationCap", "quoteCount",
-	// "replyCount", "resultsLimit", "retweetCount", "unknown".
+	// Any of "followers", "following", "collection", "likeCount", "paginationCap",
+	// "quoteCount", "replyCount", "resultsLimit", "retweetCount", "unknown".
 	Source ExtractionEstimateCostResponseSource `json:"source" api:"required"`
 	// Resolved X user ID from count-based profile estimates.
 	ResolvedXUserID string `json:"resolvedXUserId"`
@@ -378,6 +378,7 @@ const (
 	ExtractionEstimateCostResponseSourceFollowers     ExtractionEstimateCostResponseSource = "followers"
 	ExtractionEstimateCostResponseSourceFollowing     ExtractionEstimateCostResponseSource = "following"
 	ExtractionEstimateCostResponseSourceCollection    ExtractionEstimateCostResponseSource = "collection"
+	ExtractionEstimateCostResponseSourceLikeCount     ExtractionEstimateCostResponseSource = "likeCount"
 	ExtractionEstimateCostResponseSourcePaginationCap ExtractionEstimateCostResponseSource = "paginationCap"
 	ExtractionEstimateCostResponseSourceQuoteCount    ExtractionEstimateCostResponseSource = "quoteCount"
 	ExtractionEstimateCostResponseSourceReplyCount    ExtractionEstimateCostResponseSource = "replyCount"
@@ -395,8 +396,8 @@ type ExtractionRunResponse struct {
 	CreditsRequired  string `json:"creditsRequired" api:"required"`
 	// Credit calculation row count, not source availability.
 	EstimatedResults int64 `json:"estimatedResults" api:"required"`
-	// Any of "followers", "following", "collection", "paginationCap", "quoteCount",
-	// "replyCount", "resultsLimit", "retweetCount", "unknown".
+	// Any of "followers", "following", "collection", "likeCount", "paginationCap",
+	// "quoteCount", "replyCount", "resultsLimit", "retweetCount", "unknown".
 	Source ExtractionRunResponseSource `json:"source" api:"required"`
 	// Resolved X user ID from count-based profile estimates.
 	ResolvedXUserID string `json:"resolvedXUserId"`
@@ -425,6 +426,7 @@ const (
 	ExtractionRunResponseSourceFollowers     ExtractionRunResponseSource = "followers"
 	ExtractionRunResponseSourceFollowing     ExtractionRunResponseSource = "following"
 	ExtractionRunResponseSourceCollection    ExtractionRunResponseSource = "collection"
+	ExtractionRunResponseSourceLikeCount     ExtractionRunResponseSource = "likeCount"
 	ExtractionRunResponseSourcePaginationCap ExtractionRunResponseSource = "paginationCap"
 	ExtractionRunResponseSourceQuoteCount    ExtractionRunResponseSource = "quoteCount"
 	ExtractionRunResponseSourceReplyCount    ExtractionRunResponseSource = "replyCount"
