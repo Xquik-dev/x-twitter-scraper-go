@@ -16,6 +16,48 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// Public X Community, as every Community read returns it.
+type Community = shared.Community
+
+// The banner X shows for a community, with its size & colors.
+type CommunityBanner = shared.CommunityBanner
+
+type CommunityBannerColor = shared.CommunityBannerColor
+
+// Area X keeps in view when it crops the banner, in pixels from the top left
+type CommunityBannerFocus = shared.CommunityBannerFocus
+
+// CommunityCreatorUnion contains all possible properties and values from
+// [UserProfile], [CommunityCreatorObject].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type CommunityCreatorUnion = shared.CommunityCreatorUnion
+
+type CommunityCreatorObject = shared.CommunityCreatorObject
+
+// CommunityMembersFacepileUnion contains all possible properties and values from
+// [UserProfile], [CommunityMembersFacepileCommunityMemberPreview].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type CommunityMembersFacepileUnion = shared.CommunityMembersFacepileUnion
+
+// A member X previews by ID & profile picture only.
+type CommunityMembersFacepileCommunityMemberPreview = shared.CommunityMembersFacepileCommunityMemberPreview
+
+// Primary topic. Its id is absent when X lists the community in a keyword or topic
+// result.
+type CommunityPrimaryTopic = shared.CommunityPrimaryTopic
+
+type CommunityRule = shared.CommunityRule
+
+// 1 page of X Communities, in X's order.
+type CommunityPage = shared.CommunityPage
+
+// A topic X groups communities under, with its subtopics.
+type CommunityTopic = shared.CommunityTopic
+
+type CommunityTopicSubtopic = shared.CommunityTopicSubtopic
+
 // Content disclosure metadata shown by X when a tweet is labeled as paid
 // partnership content or AI-generated media.
 type ContentDisclosure = shared.ContentDisclosure

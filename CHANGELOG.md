@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `X.Communities` gains `Find`, `ListPopular`, `ListSuggested`, `ListTopics` and `SearchMembers`, and the new `X.Communities.Media` service lists a Community's media posts.
+- `X.Lists` gains `Get` and `GetSearch`, and `X.Dm` gains `DeleteMessage`.
+- `X` gains `AutocompleteSearch`, `GetHashflags`, `GetNewsStoryVersions`, `GetTrendLocations`, `GetTrendsHistory` and `SearchPlaces`.
+- `X.GetTrends` takes `At`, `Country`, `Location`, `Fields` and `Omit`, and its response gains `CapturedAt`, `RequestedAt` and `Location`. `At` reads the trends of a past time.
+- The shared package gains `Community`, `CommunityPage` and `CommunityTopic`.
 - `X.Users` gains `GetAffiliates`, `GetArticles`, `GetBatchTweets`, `GetFollowerIDs`, `GetFollowingIDs`, `GetHighlights`, `GetInsights`, `GetListMemberships`, `GetLists`, `GetLive`, `GetSimilar`, `GetSubscriptions` and `TranslateBio`.
 - `X.Tweets` gains `CheckRepost`, `Embed`, `GetHiddenReplies`, `GetInsights`, `GetRetweeterIDs`, `GetSubtitles`, `ListTop`, `ResolveLinks` and `Translate`.
 - `bin/check-local` starts with an API coverage check. It fails when the API has an operation that the SDK neither implements nor lists in `excluded-operations.json`. CONTRIBUTING.md explains the check and the file.

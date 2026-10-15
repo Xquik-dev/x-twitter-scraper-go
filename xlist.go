@@ -43,6 +43,20 @@ func NewXListService(opts ...option.RequestOption) (r XListService) {
 	return
 }
 
+// Returns 1 public X List as its page on X shows it. Accepts the List ID or the
+// URL-encoded List URL, such as x.com/i/lists/4143408. A private List answers 404
+// list_not_found.
+func (r *XListService) Get(ctx context.Context, id string, query XListGetParams, opts ...option.RequestOption) (res *XListGetResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/lists/%s", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Returns List followers with resumable or standard pagination.
 func (r *XListService) GetFollowers(ctx context.Context, id string, query XListGetFollowersParams, opts ...option.RequestOption) (res *XListGetFollowersResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -63,6 +77,16 @@ func (r *XListService) GetMembers(ctx context.Context, id string, query XListGet
 		return nil, err
 	}
 	path := fmt.Sprintf("x/lists/%s/members", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns 1 page of public Lists with member counts, banners & owner profiles. X
+// may rank the Lists differently per request. Pass next_cursor as cursor for the
+// next page.
+func (r *XListService) GetSearch(ctx context.Context, query XListGetSearchParams, opts ...option.RequestOption) (res *XListGetSearchResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/lists/search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -370,6 +394,576 @@ func (r *XListGetMembersResponseUserListCoverageResponseDiagnosticStrategy) Unma
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type XListGetResponse struct {
+	// Public X List with its owner's public profile. Leaves out what X tells the
+	// reading account, such as whether it follows the List.
+	List XListGetResponseList `json:"list" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		List        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public X List with its owner's public profile. Leaves out what X tells the
+// reading account, such as whether it follows the List.
+type XListGetResponseList struct {
+	// Numeric ID of the List.
+	ID string `json:"id" api:"required"`
+	// Name the owner gave the List.
+	Name string `json:"name" api:"required"`
+	// URL of the banner the owner uploaded. Absent when the owner uploaded none.
+	BannerURL string `json:"bannerUrl"`
+	// When the owner made the List.
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	// Banner the owner uploaded.
+	CustomBanner XListGetResponseListCustomBanner `json:"customBanner"`
+	// Banner X shows when the owner uploaded none. X picks it per reading account, so
+	// 2 calls can return different ones.
+	DefaultBanner XListGetResponseListDefaultBanner `json:"defaultBanner"`
+	// About text of the List. Empty when the owner wrote none.
+	Description string `json:"description"`
+	// Avatar URLs of a few List members, which X may pick per request.
+	FacepileURLs []string `json:"facepileUrls"`
+	// Accounts on the List.
+	MemberCount int64 `json:"memberCount"`
+	// Member count as X words it, such as 35 members.
+	MembersContext string `json:"membersContext"`
+	// Public profile of the account that owns the List.
+	Owner shared.UserProfile `json:"owner"`
+	// Accounts that follow the List, which X calls followers.
+	SubscriberCount int64 `json:"subscriberCount"`
+	// List page on x.com.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Name            respjson.Field
+		BannerURL       respjson.Field
+		CreatedAt       respjson.Field
+		CustomBanner    respjson.Field
+		DefaultBanner   respjson.Field
+		Description     respjson.Field
+		FacepileURLs    respjson.Field
+		MemberCount     respjson.Field
+		MembersContext  respjson.Field
+		Owner           respjson.Field
+		SubscriberCount respjson.Field
+		URL             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseList) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner the owner uploaded.
+type XListGetResponseListCustomBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XListGetResponseListCustomBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XListGetResponseListCustomBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListCustomBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XListGetResponseListCustomBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XListGetResponseListCustomBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XListGetResponseListCustomBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListCustomBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XListGetResponseListCustomBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListCustomBannerSalientRect) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// 2 calls can return different ones.
+type XListGetResponseListDefaultBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XListGetResponseListDefaultBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XListGetResponseListDefaultBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XListGetResponseListDefaultBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XListGetResponseListDefaultBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XListGetResponseListDefaultBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListDefaultBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XListGetResponseListDefaultBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetResponseListDefaultBannerSalientRect) RawJSON() string { return r.JSON.raw }
+func (r *XListGetResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// 1 page of public X Lists. Follow next_cursor while the response reports more
+// pages. Each returned List costs 1 credit.
+type XListGetSearchResponse struct {
+	HasNextPage bool                         `json:"has_next_page" api:"required"`
+	Lists       []XListGetSearchResponseList `json:"lists" api:"required"`
+	NextCursor  string                       `json:"next_cursor" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		Lists       respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponse) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public X List with its owner's public profile. Leaves out what X tells the
+// reading account, such as whether it follows the List.
+type XListGetSearchResponseList struct {
+	// Numeric ID of the List.
+	ID string `json:"id" api:"required"`
+	// Name the owner gave the List.
+	Name string `json:"name" api:"required"`
+	// URL of the banner the owner uploaded. Absent when the owner uploaded none.
+	BannerURL string `json:"bannerUrl"`
+	// When the owner made the List.
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	// Banner the owner uploaded.
+	CustomBanner XListGetSearchResponseListCustomBanner `json:"customBanner"`
+	// Banner X shows when the owner uploaded none. X picks it per reading account, so
+	// 2 calls can return different ones.
+	DefaultBanner XListGetSearchResponseListDefaultBanner `json:"defaultBanner"`
+	// About text of the List. Empty when the owner wrote none.
+	Description string `json:"description"`
+	// Avatar URLs of a few List members, which X may pick per request.
+	FacepileURLs []string `json:"facepileUrls"`
+	// Accounts on the List.
+	MemberCount int64 `json:"memberCount"`
+	// Member count as X words it, such as 35 members.
+	MembersContext string `json:"membersContext"`
+	// Public profile of the account that owns the List.
+	Owner shared.UserProfile `json:"owner"`
+	// Accounts that follow the List, which X calls followers.
+	SubscriberCount int64 `json:"subscriberCount"`
+	// List page on x.com.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Name            respjson.Field
+		BannerURL       respjson.Field
+		CreatedAt       respjson.Field
+		CustomBanner    respjson.Field
+		DefaultBanner   respjson.Field
+		Description     respjson.Field
+		FacepileURLs    respjson.Field
+		MemberCount     respjson.Field
+		MembersContext  respjson.Field
+		Owner           respjson.Field
+		SubscriberCount respjson.Field
+		URL             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseList) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner the owner uploaded.
+type XListGetSearchResponseListCustomBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XListGetSearchResponseListCustomBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XListGetSearchResponseListCustomBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListCustomBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XListGetSearchResponseListCustomBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XListGetSearchResponseListCustomBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XListGetSearchResponseListCustomBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListCustomBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XListGetSearchResponseListCustomBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListCustomBannerSalientRect) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// 2 calls can return different ones.
+type XListGetSearchResponseListDefaultBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XListGetSearchResponseListDefaultBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XListGetSearchResponseListDefaultBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XListGetSearchResponseListDefaultBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XListGetSearchResponseListDefaultBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XListGetSearchResponseListDefaultBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListDefaultBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XListGetSearchResponseListDefaultBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetSearchResponseListDefaultBannerSalientRect) RawJSON() string { return r.JSON.raw }
+func (r *XListGetSearchResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type XListGetFollowersParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
@@ -620,3 +1214,56 @@ const (
 	XListGetTweetsParamsRetweetsExclude XListGetTweetsParamsRetweets = "exclude"
 	XListGetTweetsParamsRetweetsOnly    XListGetTweetsParamsRetweets = "only"
 )
+
+type XListGetParams struct {
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XListGetParams]'s query parameters as `url.Values`.
+func (r XListGetParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XListGetSearchParams struct {
+	// Keywords to find Lists by, such as a topic. Alias query.
+	Q string `query:"q" api:"required" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XListGetSearchParams]'s query parameters as `url.Values`.
+func (r XListGetSearchParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

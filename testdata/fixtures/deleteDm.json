@@ -1,0 +1,43 @@
+{
+  "object": "x_write_action",
+  "id": "12345",
+  "writeActionId": "12345",
+  "action": "like",
+  "status": "success",
+  "terminal": true,
+  "retryable": false,
+  "safeToRetry": false,
+  "statusUrl": "/api/v1/x/write-actions/12345",
+  "pollAfterMs": null,
+  "charged": true,
+  "chargedCredits": "10",
+  "billing": {
+    "status": "charged",
+    "charged": true,
+    "plannedCredits": "10",
+    "chargedCredits": "10"
+  },
+  "request": {
+    "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "payload": {
+      "tweet_id": "9876543210"
+    }
+  },
+  "account": {
+    "id": "42",
+    "username": "example"
+  },
+  "target": {
+    "type": "tweet",
+    "id": "9876543210"
+  },
+  "targetId": "9876543210",
+  "result": {
+    "type": "state_change",
+    "id": "9876543210",
+    "state": "liked"
+  },
+  "nextAction": null,
+  "sendDispatched": true,
+  "success": true
+}

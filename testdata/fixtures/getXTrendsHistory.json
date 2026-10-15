@@ -1,0 +1,25 @@
+{
+  "fromTime": "2026-10-13T00:00:00.000Z",
+  "toTime": "2026-10-14T00:00:00.000Z",
+  "snapshots": [
+    {
+      "capturedAt": "2026-10-13T14:00:26.000Z",
+      "count": 1,
+      "trends": [
+        {
+          "name": "#AI",
+          "description": "Artificial intelligence discussions",
+          "promotedContent": null,
+          "query": "%23AI",
+          "rank": 1,
+          "tweetVolume": 250000,
+          "url": "https://x.com/search?q=%23AI"
+        }
+      ]
+    }
+  ],
+  "count": 1,
+  "woeid": 1,
+  "has_next_page": false,
+  "next_cursor": ""
+}

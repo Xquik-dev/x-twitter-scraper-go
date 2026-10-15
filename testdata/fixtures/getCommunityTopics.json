@@ -1,0 +1,19 @@
+{
+  "topics": [
+    {
+      "id": "301",
+      "name": "Technology",
+      "subtopics": [
+        {
+          "id": "302",
+          "name": "Artificial Intelligence"
+        },
+        {
+          "id": "303",
+          "name": "Software"
+        }
+      ]
+    }
+  ],
+  "count": 1
+}
