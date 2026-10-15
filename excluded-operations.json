@@ -1,0 +1,78 @@
+[
+  {
+    "reason": "Searches the Xquik docs at https://xquik.com/ask, outside the SDK base URL https://xquik.com/api/v1.",
+    "operations": [
+      "GET /ask",
+      "POST /ask"
+    ]
+  },
+  {
+    "reason": "Needs a dashboard sign-in cookie, which API keys and bearer tokens cannot use.",
+    "operations": [
+      "GET /api/v1/api-keys",
+      "POST /api/v1/api-keys",
+      "DELETE /api/v1/api-keys/{id}",
+      "POST /api/v1/credits/quick-topup"
+    ]
+  },
+  {
+    "reason": "Not ported yet. https://github.com/Xquik-dev/x-twitter-scraper-go/issues/82 tracks the port.",
+    "operations": [
+      "GET /api/v1/x/tweets/top",
+      "GET /api/v1/x/tweets/{id}/embed",
+      "GET /api/v1/x/tweets/{id}/hidden-replies",
+      "GET /api/v1/x/tweets/{id}/insights",
+      "GET /api/v1/x/tweets/{id}/retweeter-ids",
+      "GET /api/v1/x/tweets/{id}/retweeters/check",
+      "GET /api/v1/x/tweets/{id}/subtitles",
+      "GET /api/v1/x/tweets/{id}/translation",
+      "GET /api/v1/x/links/resolve",
+      "GET /api/v1/x/users/batch/tweets",
+      "GET /api/v1/x/users/{id}/affiliates",
+      "GET /api/v1/x/users/{id}/articles",
+      "GET /api/v1/x/users/{id}/follower-ids",
+      "GET /api/v1/x/users/{id}/following-ids",
+      "GET /api/v1/x/users/{id}/highlights",
+      "GET /api/v1/x/users/{id}/insights",
+      "GET /api/v1/x/users/{id}/list-memberships",
+      "GET /api/v1/x/users/{id}/lists",
+      "GET /api/v1/x/users/{id}/live",
+      "GET /api/v1/x/users/{id}/similar",
+      "GET /api/v1/x/users/{id}/subscriptions",
+      "GET /api/v1/x/users/{id}/translation",
+      "GET /api/v1/x/communities/find",
+      "GET /api/v1/x/communities/popular",
+      "GET /api/v1/x/communities/suggested",
+      "GET /api/v1/x/communities/topics",
+      "GET /api/v1/x/communities/{id}/members/search",
+      "GET /api/v1/x/communities/{id}/media",
+      "GET /api/v1/x/lists/{id}",
+      "GET /api/v1/x/lists/search",
+      "DELETE /api/v1/x/dm/{userId}/messages/{messageId}",
+      "GET /api/v1/x/search/autocomplete",
+      "GET /api/v1/x/hashflags",
+      "GET /api/v1/x/places/search",
+      "GET /api/v1/x/trends/locations",
+      "GET /api/v1/x/trends/history",
+      "GET /api/v1/x/news/{id}/versions",
+      "GET /api/v1/x/jobs/{id}",
+      "GET /api/v1/x/jobs/locations",
+      "GET /api/v1/x/jobs/search",
+      "GET /api/v1/x/spaces/{id}",
+      "GET /api/v1/x/spaces/{id}/replay",
+      "GET /api/v1/x/spaces/search",
+      "GET /api/v1/x/broadcasts/{id}",
+      "GET /api/v1/x/community-notes/contributors/{alias}",
+      "GET /api/v1/x/community-notes/contributors/{alias}/notes",
+      "GET /api/v1/x/community-notes/contributors/{alias}/deleted-notes",
+      "POST /api/v1/x/analysis/sentiment",
+      "POST /api/v1/x/analysis/viral-score",
+      "POST /api/v1/x/analysis/brand",
+      "POST /api/v1/x/analysis/news",
+      "POST /api/v1/x/analysis/market-signals",
+      "POST /api/v1/x/analysis/classify",
+      "GET /api/v1/events/stream",
+      "POST /api/v1/webhooks/telegram"
+    ]
+  }
+]
