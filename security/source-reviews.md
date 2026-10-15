@@ -7,6 +7,7 @@ On 2026-10-14, the comment sweep moved 80 more the same way. It also re-pinned t
 3 records name `cmd/reproducible-build/upload_test.go`, which no longer exists, so nothing can match them.
 On 2026-10-13, 5 findings in `internal/scripttest` were reviewed and added. Each runs only in tests, with input the test controls.
 On 2026-10-15, the CodeQL 2.27.2 update changed 1 line in `internal/scripttest/codeql_security_test.go`. The same script moved its 2 findings to the new file hash. Their code & reasons are unchanged.
+On 2026-10-15, 4 findings in `cmd/api-coverage/main.go` were reviewed and added. The API coverage check reads the spec file or URL that its runner chooses.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
 Their order is rule, file, line, code, source hash, severity, confidence, details.
@@ -1805,4 +1806,60 @@ Finding: Expect WriteFile permissions to be 0600 or less
 49: 	reportPath := filepath.Join(root, "report.sarif")
 50: 	if err := os.WriteFile(codeql, []byte(fakeCodeQL), 0o755); err != nil {
 51: 		t.Fatal(err)
+```
+
+## G704 in cmd/api-coverage/main.go:134
+
+The API coverage check fetches the spec URL that the developer running bin/check-local chooses with XQUIK_OPENAPI_SPEC, or https://xquik.com/openapi.json by default. No remote caller supplies it. The check runs only on a maintainer machine, reads the JSON answer and sends no credentials.
+
+Source SHA-256: `fe30cc708a4e0af62916addd347d5fb061e24802fe925a56bb86b649f57c3664`
+Severity: HIGH. Confidence: HIGH.
+Finding: SSRF via taint analysis
+
+```go
+133: 	}
+134: 	response, err := client.Do(request)
+135: 	if err != nil {
+```
+
+## G704 in cmd/api-coverage/main.go:130
+
+The API coverage check fetches the spec URL that the developer running bin/check-local chooses with XQUIK_OPENAPI_SPEC, or https://xquik.com/openapi.json by default. No remote caller supplies it. The check runs only on a maintainer machine, reads the JSON answer and sends no credentials.
+
+Source SHA-256: `fe30cc708a4e0af62916addd347d5fb061e24802fe925a56bb86b649f57c3664`
+Severity: HIGH. Confidence: HIGH.
+Finding: SSRF via taint analysis
+
+```go
+129: 	defer cancel()
+130: 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, source, nil)
+131: 	if err != nil {
+```
+
+## G703 in cmd/api-coverage/main.go:126
+
+The API coverage check reads the spec file that the developer running bin/check-local names in XQUIK_OPENAPI_SPEC. No remote caller supplies the path, and the check only parses the file as JSON.
+
+Source SHA-256: `fe30cc708a4e0af62916addd347d5fb061e24802fe925a56bb86b649f57c3664`
+Severity: HIGH. Confidence: HIGH.
+Finding: Path traversal via taint analysis
+
+```go
+125: 	if !strings.HasPrefix(source, "https://") && !strings.HasPrefix(source, "http://") {
+126: 		return os.ReadFile(source)
+127: 	}
+```
+
+## G304 in cmd/api-coverage/main.go:126
+
+The API coverage check reads the spec file that the developer running bin/check-local names in XQUIK_OPENAPI_SPEC. No remote caller supplies the path, and the check only parses the file as JSON.
+
+Source SHA-256: `fe30cc708a4e0af62916addd347d5fb061e24802fe925a56bb86b649f57c3664`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Potential file inclusion via variable
+
+```go
+125: 	if !strings.HasPrefix(source, "https://") && !strings.HasPrefix(source, "http://") {
+126: 		return os.ReadFile(source)
+127: 	}
 ```

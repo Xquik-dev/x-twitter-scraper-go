@@ -37,7 +37,7 @@ Run focused tests while editing.
 
 Run `bin/check-local` on your pushed branch head. GitHub Actions does not run here.
 It runs these checks in order and stops at the first failure.
-They are module integrity, lint, REUSE licensing, tests, statement and branch coverage,
+They are API coverage, module integrity, lint, REUSE licensing, tests, statement and branch coverage,
 coverage against the parent, race detection, the dependency audit, the signing tool audit,
 the source scan, reproducible archives, CodeQL, and fuzzing.
 REUSE is required. It runs at a pinned version through `uv`, never from another install.
@@ -95,6 +95,42 @@ Findings, extraction errors, and incomplete results block release.
 
 Add regression tests for every fixed defect.
 
+## API coverage
+
+`bin/check-local` starts with `go run ./cmd/api-coverage`.
+It compares the operations in the public API spec with the requests the SDK sends.
+It fails when the API has an operation that the SDK neither implements nor lists in `excluded-operations.json`.
+An operation that the SDK has and the spec lacks is fine.
+
+The check reads the spec from https://xquik.com/openapi.json.
+Set `XQUIK_OPENAPI_SPEC` to a local file path or another URL to read another copy. The spec must be JSON.
+
+It reads the SDK operations from the SDK source.
+Each method of a `Service` type in the root package sends its request through `requestconfig.ExecuteNewRequest`.
+The request names an `http.Method` constant and a path string or `fmt.Sprintf` format.
+The check puts the path of the default base URL from `option.WithEnvironmentProduction` before each path.
+It fails on a request it cannot read and names its file and line.
+Path parameter names do not matter, so `{id}` matches `{tweetId}`.
+
+Fix a failure by adding each missing operation to the SDK.
+An operation that the SDK should not have goes in `excluded-operations.json` with a reason.
+Remove an entry when the API drops its operation or the SDK implements it. The check fails on a stale entry.
+
+`excluded-operations.json` is a list of groups.
+Each group has a non-empty `reason` and at least 1 operation.
+Write an operation as an upper case method, a space and the absolute path from the spec. List each operation once.
+
+```json
+[
+  {
+    "reason": "Searches the Xquik docs at https://xquik.com/ask, outside the SDK base URL https://xquik.com/api/v1.",
+    "operations": ["GET /ask", "POST /ask"]
+  }
+]
+```
+
+The group whose reason says "Not ported yet" lists the operations that [issue 82](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/82) ports. Each port removes its entries, and the last one removes the group.
+
 ## Submit changes
 
 Use clear Conventional Commit subjects and sign commits with `git commit --signoff`.
@@ -125,7 +161,7 @@ JSON output identifies success or failure. Raw module evidence remains available
 `bin/release-local` attaches no signed source archive.
 To attach one, run `bun run release:publish` on the tagged commit afterwards.
 It uses locked Sigstore 4.5.0 tooling and GitHub CLI authentication.
-Use uv 0.13.0. The command selects Python 3.14.8 automatically.
+Use uv 0.13.1. The command selects Python 3.14.8 automatically.
 Set `XQUIK_RELEASE_IDENTITY` and `XQUIK_RELEASE_ISSUER` to the authorized signer.
 Signing uses Sigstore authentication and records local build provenance publicly.
 Its attestations identify that signer.

@@ -61,12 +61,11 @@ finish() {
   local code=$?
   rm -rf -- "${work:?}"
   if ((code == 0)); then
-    local go_version list="$passed"
-    go_version="$(go env GOVERSION 2>/dev/null || true)"
+    local list="$passed"
     if [[ "$list" == *", "* ]]; then
       list="${list%, *} & ${list##*, }"
     fi
-    post success "Passed $list on ${go_version:-Go}."
+    post success "Passed $list."
   elif [[ -n "$current" ]]; then
     post failure "Failed at $current. Run bin/check-local for details."
   else
@@ -128,6 +127,7 @@ audit_label() {
 export XQUIK_COVERAGE_DIR="$work/coverage"
 mkdir "$XQUIK_COVERAGE_DIR"
 
+run "API coverage" "API coverage" "Follow the lines above, then run bin/check-local again." go run ./cmd/api-coverage
 run modules "Module integrity" "Run go clean -modcache, then retry." go mod verify
 run lint "Lint" "Run scripts/format, then fix the go vet findings above." scripts/lint
 run REUSE "REUSE licensing" "Add the missing license notice or REUSE.toml entry." \

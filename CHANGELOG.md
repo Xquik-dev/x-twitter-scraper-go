@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `bin/check-local` starts with an API coverage check. It fails when the API has an operation that the SDK neither implements nor lists in `excluded-operations.json`. CONTRIBUTING.md explains the check and the file.
+
 ## 0.19.2 (2026-10-14)
 
 [Full changelog from v0.19.1 to v0.19.2](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.1...v0.19.2)
