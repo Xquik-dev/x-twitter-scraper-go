@@ -1,0 +1,75 @@
+{
+  "lists": [
+    {
+      "id": "4143408",
+      "name": "NASA Centers",
+      "description": "NASA has 10 centers http://www.nasa.gov/about/sites",
+      "memberCount": 11,
+      "subscriberCount": 859,
+      "owner": {
+        "id": "11348282",
+        "username": "NASA",
+        "name": "NASA",
+        "followers": 92379503,
+        "following": 115,
+        "verified": true,
+        "isBlueVerified": true,
+        "isVerified": true,
+        "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+        "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+        "profileBannerUrl": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+        "description": "Making the seemingly impossible, possible. ✨",
+        "location": "Pale Blue Dot",
+        "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+        "statusesCount": 74372,
+        "mediaCount": 28176,
+        "protected": false,
+        "url": "http://www.nasa.gov/",
+        "favouritesCount": 17012,
+        "possiblySensitive": false,
+        "verifiedType": "Government",
+        "profile_bio": {
+          "description": "Making the seemingly impossible, possible. ✨",
+          "entities": {
+            "description": {},
+            "url": {
+              "urls": [
+                {
+                  "display_url": "nasa.gov",
+                  "expanded_url": "http://www.nasa.gov/",
+                  "indices": [
+                    0,
+                    23
+                  ],
+                  "url": "https://t.co/9NkQJKAnuU"
+                }
+              ]
+            }
+          }
+        },
+        "hasGraduatedAccess": true,
+        "parodyCommentaryFanLabel": "None",
+        "profileDescriptionLanguage": "en",
+        "profileImageShape": "Square",
+        "profileTranslatorType": "regular",
+        "superFollowEligible": false
+      },
+      "url": "https://x.com/i/lists/4143408",
+      "createdAt": "2009-12-02T22:41:02.000Z",
+      "defaultBanner": {
+        "height": 375,
+        "salientRect": {
+          "height": 1,
+          "left": 562,
+          "top": 187,
+          "width": 1
+        },
+        "url": "https://pbs.twimg.com/media/GkIOx3HW4AAHAs6.png",
+        "width": 1125
+      },
+      "membersContext": "11 members"
+    }
+  ],
+  "has_next_page": true,
+  "next_cursor": "DAACCgACGRElMJcAAA"
+}

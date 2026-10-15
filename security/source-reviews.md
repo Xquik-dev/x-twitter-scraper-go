@@ -433,88 +433,88 @@ Finding: Use of unsafe calls should be audited
 604: }
 ```
 
-## G104 in xuser.go:865
+## G104 in xuser.go:1038
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `22fd4764214a7ad503080e3b7584c8062d8b36a2a5acd6661ec9d4af34aac348`
+Source SHA-256: `9a4ca384472a6e1e2fa9037616a6c5b2a4ec476ce6b2ebb40f6a4c5aa3634203`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-864: func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse) {
-865: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-866: 	return
+1037: func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse) {
+1038: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+1039: 	return
 ```
 
-## G104 in xuser.go:860
+## G104 in xuser.go:1033
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `22fd4764214a7ad503080e3b7584c8062d8b36a2a5acd6661ec9d4af34aac348`
+Source SHA-256: `9a4ca384472a6e1e2fa9037616a6c5b2a4ec476ce6b2ebb40f6a4c5aa3634203`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-859: func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-860: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-861: 	return
+1032: func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+1033: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+1034: 	return
 ```
 
-## G104 in xuser.go:718
+## G104 in xuser.go:891
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `22fd4764214a7ad503080e3b7584c8062d8b36a2a5acd6661ec9d4af34aac348`
+Source SHA-256: `9a4ca384472a6e1e2fa9037616a6c5b2a4ec476ce6b2ebb40f6a4c5aa3634203`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-717: func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse) {
-718: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-719: 	return
+890: func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse) {
+891: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+892: 	return
 ```
 
-## G104 in xuser.go:713
+## G104 in xuser.go:886
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `22fd4764214a7ad503080e3b7584c8062d8b36a2a5acd6661ec9d4af34aac348`
+Source SHA-256: `9a4ca384472a6e1e2fa9037616a6c5b2a4ec476ce6b2ebb40f6a4c5aa3634203`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-712: func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-713: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-714: 	return
+885: func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+886: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+887: 	return
 ```
 
-## G104 in xuser.go:573
+## G104 in xuser.go:746
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `22fd4764214a7ad503080e3b7584c8062d8b36a2a5acd6661ec9d4af34aac348`
+Source SHA-256: `9a4ca384472a6e1e2fa9037616a6c5b2a4ec476ce6b2ebb40f6a4c5aa3634203`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-572: func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse) {
-573: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-574: 	return
+745: func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse) {
+746: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+747: 	return
 ```
 
-## G104 in xuser.go:568
+## G104 in xuser.go:741
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `22fd4764214a7ad503080e3b7584c8062d8b36a2a5acd6661ec9d4af34aac348`
+Source SHA-256: `9a4ca384472a6e1e2fa9037616a6c5b2a4ec476ce6b2ebb40f6a4c5aa3634203`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-567: func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-568: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-569: 	return
+740: func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+741: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+742: 	return
 ```
 
 ## G104 in xtweet.go:2426

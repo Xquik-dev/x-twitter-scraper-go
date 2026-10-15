@@ -1,0 +1,27 @@
+{
+  "tweets": [
+    {
+      "id": "1234567890",
+      "text": "Just launched our new feature!",
+      "createdAt": "2025-01-15T12:00:00Z",
+      "likeCount": 42,
+      "retweetCount": 5,
+      "replyCount": 3,
+      "quoteCount": 1,
+      "viewCount": 1500,
+      "bookmarkCount": 2,
+      "author": {
+        "id": "9876543210",
+        "username": "elonmusk",
+        "name": "Elon Musk",
+        "verified": true
+      }
+    }
+  ],
+  "has_next_page": false,
+  "next_cursor": "",
+  "unavailable_ids": [
+    "1234567890"
+  ],
+  "unprocessed_ids": []
+}

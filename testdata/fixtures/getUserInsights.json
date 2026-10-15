@@ -1,0 +1,30 @@
+{
+  "insights": {
+    "userId": "11348282",
+    "userName": "NASA",
+    "followers": 92376187,
+    "following": 115,
+    "posts": 74336,
+    "accountAgeDays": 6858,
+    "postsPrivate": false,
+    "sample": {
+      "posts": 10,
+      "oldestAt": "2026-09-23T13:15:28.000Z",
+      "newestAt": "2026-09-28T22:12:05.000Z"
+    },
+    "averages": {
+      "likes": 3684.2,
+      "replies": 142.7,
+      "reposts": 459.8,
+      "quotes": 45,
+      "bookmarks": 209.7,
+      "views": 785247.8,
+      "engagements": 4331.7
+    },
+    "engagementRate": 0.0047,
+    "engagementPerView": 0.5516,
+    "postsPerDay": 1.6814,
+    "topPostId": "2102761519985332442"
+  },
+  "message": "This account's posts are private, so the report has its counts only."
+}
