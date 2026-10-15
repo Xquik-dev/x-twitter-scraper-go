@@ -1,0 +1,160 @@
+{
+  "results": [
+    {
+      "tweet": {
+        "id": "1893456789012345678",
+        "text": "The new headphones sound great. The app keeps crashing.",
+        "retweetCount": 4,
+        "replyCount": 2,
+        "likeCount": 31,
+        "quoteCount": 0,
+        "viewCount": 2140,
+        "bookmarkCount": 1
+      },
+      "analysis": {
+        "status": "succeeded",
+        "answers": [
+          {
+            "questionId": "sentiment",
+            "questionVersion": "sentiment:2",
+            "type": "choice",
+            "value": "mixed",
+            "confidence": 0.88,
+            "probabilities": {
+              "positive": 0.06,
+              "negative": 0.04,
+              "mixed": 0.88,
+              "neutral": 0.01,
+              "unclear": 0.01
+            }
+          },
+          {
+            "questionId": "intensity",
+            "questionVersion": "sentiment:2",
+            "type": "score",
+            "value": 1,
+            "confidence": 0.81,
+            "probabilities": {
+              "0": 0.05,
+              "1": 0.81,
+              "2": 0.14
+            },
+            "levels": [
+              "No attitude or a passing mention.",
+              "A clear but measured attitude.",
+              "An emphatic or emotional attitude with strong wording."
+            ]
+          },
+          {
+            "questionId": "sarcasm",
+            "questionVersion": "sentiment:2",
+            "type": "probability",
+            "probability": 0.03
+          }
+        ],
+        "questions": [
+          {
+            "id": "sentiment",
+            "version": "sentiment:2"
+          },
+          {
+            "id": "intensity",
+            "version": "sentiment:2"
+          },
+          {
+            "id": "sarcasm",
+            "version": "sentiment:2"
+          }
+        ],
+        "contextBytes": 612,
+        "contextAvailability": {
+          "quote": "not_applicable",
+          "reply": "not_applicable",
+          "author": "available",
+          "media": "not_supplied",
+          "article": "not_supplied",
+          "postText": "full"
+        }
+      },
+      "answers": {
+        "sentiment": "mixed",
+        "intensity": 1,
+        "sarcasm": 0.03
+      },
+      "sourceDomains": [],
+      "cashtags": [],
+      "monitor": {
+        "configurationFingerprint": "9f2c4e1b7a5d3c8e6f0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f6a",
+        "baselineDatasetId": null,
+        "status": "changed",
+        "changedQuestionIds": [
+          "sentiment"
+        ],
+        "changes": [
+          {
+            "questionId": "sentiment",
+            "previous": "positive",
+            "current": "mixed"
+          }
+        ]
+      }
+    }
+  ],
+  "unanalyzed": [
+    {
+      "id": "1893456789012345679",
+      "status": "skipped",
+      "reason": "post_unavailable"
+    }
+  ],
+  "analysisSummary": {
+    "schemaVersion": 1,
+    "rows": {
+      "analyzed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "engagement": 37,
+    "questions": {
+      "sentiment": {
+        "type": "choice",
+        "counts": {
+          "positive": 0,
+          "negative": 0,
+          "mixed": 1,
+          "neutral": 0,
+          "unclear": 0
+        },
+        "shares": {
+          "positive": 0,
+          "negative": 0,
+          "mixed": 1,
+          "neutral": 0,
+          "unclear": 0
+        }
+      }
+    },
+    "targets": [],
+    "cashtags": [],
+    "sourceDomains": [],
+    "monitor": {
+      "statuses": {
+        "changed": 1
+      },
+      "changedRows": [
+        {
+          "tweetId": "1893456789012345678",
+          "changes": [
+            {
+              "questionId": "sentiment",
+              "previous": "positive",
+              "current": "mixed"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "has_next_page": false,
+  "next_cursor": ""
+}

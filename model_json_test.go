@@ -21,7 +21,16 @@ type rawJSONModel interface {
 	RawJSON() string
 }
 
+type paramModel interface {
+	MarshalJSON() ([]byte, error)
+	UnmarshalJSON([]byte) error
+}
+
 func rawJSONModelTypes() []reflect.Type {
+	return reachableModelTypes(reflect.TypeFor[rawJSONModel]())
+}
+
+func reachableModelTypes(contract reflect.Type) []reflect.Type {
 	module := reflect.TypeFor[Client]().PkgPath()
 	visited := make(map[reflect.Type]bool)
 	var models []reflect.Type
@@ -42,7 +51,7 @@ func rawJSONModelTypes() []reflect.Type {
 		switch modelType.Kind() {
 		case reflect.Struct:
 			pointer := reflect.PointerTo(modelType)
-			if ast.IsExported(modelType.Name()) && pointer.Implements(reflect.TypeFor[rawJSONModel]()) {
+			if ast.IsExported(modelType.Name()) && pointer.Implements(contract) {
 				models = append(models, modelType)
 			}
 			inspect(pointer)
@@ -91,6 +100,28 @@ func TestGeneratedModelsPreserveRawJSON(t *testing.T) {
 	discovered := rawJSONReceiverNames(t)
 	if !maps.Equal(registered, discovered) {
 		t.Fatalf("generated model inventories differ: registered=%v, discovered=%v", registered, discovered)
+	}
+}
+
+func TestParamModelsDecodeTheirOwnJSON(t *testing.T) {
+	for _, modelType := range reachableModelTypes(reflect.TypeFor[paramModel]()) {
+		if reflect.PointerTo(modelType).Implements(reflect.TypeFor[rawJSONModel]()) {
+			continue
+		}
+		t.Run(modelType.Name(), func(t *testing.T) {
+			encoded, err := reflect.New(modelType).Interface().(paramModel).MarshalJSON()
+			if err != nil {
+				t.Fatalf("MarshalJSON() error = %v", err)
+			}
+			decoded := reflect.New(modelType).Interface().(paramModel)
+			if err := decoded.UnmarshalJSON(encoded); err != nil {
+				t.Fatalf("UnmarshalJSON(%s) error = %v", encoded, err)
+			}
+			again, err := decoded.MarshalJSON()
+			if err != nil || string(again) != string(encoded) {
+				t.Fatalf("MarshalJSON() after a round trip = %s, %v, want %s", again, err, encoded)
+			}
+		})
 	}
 }
 

@@ -1,7 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.20.0 (2026-10-15)
 
+[Full changelog from v0.19.2 to v0.20.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.2...v0.20.0)
+
+The SDK catches up with the API. It adds the 55 operations it lacked, and every change is additive. It now covers 180 of the 186 API operations, and `excluded-operations.json` says why the other 6 stay out.
+
+- The new `X.Analysis` service has `Brand`, `Classify`, `MarketSignals`, `News`, `Sentiment` and `ViralScore`.
+- `Events.StreamStreaming` streams monitor events as server-sent events. The new `packages/ssestream` package reads them and skips keep-alive comments.
+- `Webhooks.NewTelegramLink` returns a link that connects a Telegram chat to monitor events.
+- `constant.Succeeded` joins the shared constants.
 - `X` gains 4 services. `X.Jobs` has `Get`, `ListLocations` and `Search`. `X.Spaces` has `Get`, `GetReplay` and `Search`. `X.Broadcasts` has `Get`. `X.CommunityNotes` has `GetContributor`, `ListContributorNotes` and `ListContributorDeletedNotes`.
 - `shared.UserProfile` gains the 24 fields the API returns and the SDK dropped, such as `ListedCount`, `Email`, `ContactInfo` and `VerificationReason`.
 - `shared.SearchTweet` and `TweetDetail` gain the 17 tweet fields the SDK dropped, such as `IsPinned`, `IsRetweet`, `ParentTweet`, `Interstitial` and `Geo`. Their entities, conversation control, note tweets, sports context and tombstones gain their missing fields too.

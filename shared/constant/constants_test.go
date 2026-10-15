@@ -22,6 +22,7 @@ func TestConstantsMarshalDefaults(t *testing.T) {
 		{"source multiplier", SourceDefaultProductionValueCanVary(""), `"Source default; production value can vary"`},
 		{"refine", Refine(""), `"refine"`},
 		{"score", Score(""), `"score"`},
+		{"succeeded", Succeeded(""), `"succeeded"`},
 		{
 			"store credentials",
 			StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable(""),
