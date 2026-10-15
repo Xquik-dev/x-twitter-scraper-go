@@ -1,0 +1,24 @@
+{
+  "spaces": [
+    {
+      "id": "1OGwblLjnQMKB",
+      "title": "Extending the Network to the Edge",
+      "state": "Ended",
+      "startedAt": "2026-03-11T17:00:26.227Z",
+      "endedAt": "2026-03-11T17:49:29.190Z",
+      "totalLiveListeners": 841,
+      "totalReplayWatched": 609,
+      "admins": [
+        {
+          "id": "951329744804392960",
+          "username": "solana",
+          "name": "Solana"
+        }
+      ],
+      "speakers": [],
+      "listeners": []
+    }
+  ],
+  "has_next_page": true,
+  "next_cursor": "DAACCgACGRElMJcAAA"
+}

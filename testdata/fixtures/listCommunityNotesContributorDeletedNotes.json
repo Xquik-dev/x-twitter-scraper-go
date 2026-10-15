@@ -1,0 +1,25 @@
+{
+  "notes": [
+    {
+      "id": "2078950499982696756",
+      "createdAt": "2026-07-19T21:09:58.885Z",
+      "ratingStatus": "CurrentlyRatedNotHelpful",
+      "notHelpfulTags": [
+        "MissingKeyPoints",
+        "Incorrect"
+      ],
+      "decidedBy": "CoreModel (v1.1)",
+      "fullyVisibleModel": true,
+      "abovePcrhThreshold": false,
+      "appealStatus": "NotAppealed",
+      "deleted": true,
+      "tombstone": "This note has been deleted",
+      "isApiAuthor": false,
+      "isMediaNote": false,
+      "mediaNoteMatchCount": 0,
+      "isUrlNote": false
+    }
+  ],
+  "has_next_page": false,
+  "next_cursor": ""
+}

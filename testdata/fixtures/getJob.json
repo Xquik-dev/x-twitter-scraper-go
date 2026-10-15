@@ -1,0 +1,28 @@
+{
+  "job": {
+    "id": "1899202395210649861",
+    "title": "Engineer",
+    "url": "https://x.com/i/jobs/1899202395210649861",
+    "applyUrl": "https://xquik.com/example",
+    "location": "United States",
+    "locationType": "remote",
+    "employmentType": "full_time",
+    "seniorityLevel": "lead",
+    "jobFunction": "software_engineering",
+    "formattedSalary": "Starting at $225K",
+    "salaryMin": 225000,
+    "salaryCurrencyCode": "USD",
+    "salaryInterval": "annually",
+    "featured": true,
+    "shortDescription": "Commonware is hiring founding engineers.",
+    "description": "What is Commonware? We build open primitives.",
+    "descriptionMarkdown": "# What is Commonware?",
+    "account": {
+      "id": "1812126202804711425",
+      "username": "commonwarexyz",
+      "name": "commonware",
+      "verified": true,
+      "verifiedType": "Business"
+    }
+  }
+}

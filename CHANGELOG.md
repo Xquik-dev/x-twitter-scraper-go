@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `X` gains 4 services. `X.Jobs` has `Get`, `ListLocations` and `Search`. `X.Spaces` has `Get`, `GetReplay` and `Search`. `X.Broadcasts` has `Get`. `X.CommunityNotes` has `GetContributor`, `ListContributorNotes` and `ListContributorDeletedNotes`.
 - `shared.UserProfile` gains the 24 fields the API returns and the SDK dropped, such as `ListedCount`, `Email`, `ContactInfo` and `VerificationReason`.
 - `shared.SearchTweet` and `TweetDetail` gain the 17 tweet fields the SDK dropped, such as `IsPinned`, `IsRetweet`, `ParentTweet`, `Interstitial` and `Geo`. Their entities, conversation control, note tweets, sports context and tombstones gain their missing fields too.
 - `shared.PaginatedTweets` gains `ReadBackTo`, `SearchContext`, `SearchedQuery` and `WindowComplete`, and `shared.TweetMedia` gains `GrokImageAnnotation` and `SourceUser`.
