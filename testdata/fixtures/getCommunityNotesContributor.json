@@ -1,0 +1,28 @@
+{
+  "contributor": {
+    "alias": "ardent-beach-friarbird",
+    "deletedNotesCount": 0,
+    "isApiContributor": false,
+    "isTopWriter": false,
+    "notesCount": {
+      "awaitingMoreRatings": 18,
+      "currentlyRatedHelpful": 1,
+      "currentlyRatedNotHelpful": 2,
+      "updatedAt": "2026-10-12T22:18:40.096Z"
+    },
+    "ratingsCount": {
+      "awaitingMoreRatings": 703,
+      "ratedAfterDecision": 154,
+      "successful": {
+        "helpfulCount": 27,
+        "notHelpfulCount": 22,
+        "total": 49
+      },
+      "unsuccessful": {
+        "helpfulCount": 15,
+        "notHelpfulCount": 4
+      },
+      "updatedAt": "2026-10-12T22:50:13.228Z"
+    }
+  }
+}

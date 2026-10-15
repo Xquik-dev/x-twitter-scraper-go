@@ -1,0 +1,24 @@
+{
+  "jobs": [
+    {
+      "id": "1899202395210649861",
+      "title": "Engineer",
+      "url": "https://x.com/i/jobs/1899202395210649861",
+      "applyUrl": "https://xquik.com/example",
+      "location": "United States",
+      "formattedSalary": "Starting at $225K",
+      "salaryMin": 225000,
+      "salaryCurrencyCode": "USD",
+      "salaryInterval": "annually",
+      "account": {
+        "id": "1812126202804711425",
+        "username": "commonwarexyz",
+        "name": "commonware",
+        "verified": true,
+        "verifiedType": "Business"
+      }
+    }
+  ],
+  "has_next_page": true,
+  "next_cursor": "DAACCgACGRElMJcAAA"
+}

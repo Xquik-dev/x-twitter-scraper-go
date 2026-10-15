@@ -35,8 +35,10 @@ type XService struct {
 	Users        XUserService
 	// Look up, search, and explore user profiles and relationships
 	Followers XFollowerService
-	Dm        XDmService
-	Media     XMediaService
+	// Public X job listings, search and details
+	Jobs  XJobService
+	Dm    XDmService
+	Media XMediaService
 	// X write actions (tweets, likes, follows, DMs)
 	Profile     XProfileService
 	Communities XCommunityService
@@ -50,6 +52,12 @@ type XService struct {
 	Bookmarks XBookmarkService
 	// X List followers, members, and tweets
 	Lists XListService
+	// X live video details, watch counts, and broadcaster
+	Broadcasts XBroadcastService
+	// Community Notes contributors, their notes, ratings & deleted notes
+	CommunityNotes XCommunityNoteService
+	// X Space details, host, and speakers
+	Spaces XSpaceService
 }
 
 // NewXService generates a new service that applies the given options to each
@@ -62,6 +70,7 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 	r.Tweets = NewXTweetService(opts...)
 	r.Users = NewXUserService(opts...)
 	r.Followers = NewXFollowerService(opts...)
+	r.Jobs = NewXJobService(opts...)
 	r.Dm = NewXDmService(opts...)
 	r.Media = NewXMediaService(opts...)
 	r.Profile = NewXProfileService(opts...)
@@ -71,6 +80,9 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 	r.AccountConnectionAttempts = NewXAccountConnectionAttemptService(opts...)
 	r.Bookmarks = NewXBookmarkService(opts...)
 	r.Lists = NewXListService(opts...)
+	r.Broadcasts = NewXBroadcastService(opts...)
+	r.CommunityNotes = NewXCommunityNoteService(opts...)
+	r.Spaces = NewXSpaceService(opts...)
 	return
 }
 
