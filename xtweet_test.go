@@ -517,3 +517,316 @@ func TestXTweetSearchWithOptionalParams(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
+
+func TestXTweetCheckRepostWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.CheckRepost(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XTweetCheckRepostParams{
+			User:   "nasa",
+			Fields: xtwitterscraper.String("id,text,author.username"),
+			Omit:   xtwitterscraper.String("entities,media"),
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetEmbedWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.Embed(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XTweetEmbedParams{
+			Fields:     xtwitterscraper.String("id,text,author.username"),
+			HideMedia:  xtwitterscraper.Bool(true),
+			HideThread: xtwitterscraper.Bool(true),
+			Omit:       xtwitterscraper.String("entities,media"),
+			OmitScript: xtwitterscraper.Bool(true),
+			Theme:      xtwitterscraper.XTweetEmbedParamsThemeLight,
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetGetHiddenRepliesWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.GetHiddenReplies(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XTweetGetHiddenRepliesParams{
+			AnyWords:          xtwitterscraper.String("anyWords"),
+			BlueVerifiedOnly:  xtwitterscraper.Bool(true),
+			Cashtags:          xtwitterscraper.String("cashtags"),
+			ConversationID:    xtwitterscraper.String("conversationId"),
+			Cursor:            xtwitterscraper.String("cursor"),
+			ExactPhrase:       xtwitterscraper.String("exactPhrase"),
+			ExcludeWords:      xtwitterscraper.String("excludeWords"),
+			Fields:            xtwitterscraper.String("id,text,author.username"),
+			FromUser:          xtwitterscraper.String("fromUser"),
+			Hashtags:          xtwitterscraper.String("hashtags"),
+			InReplyToTweetID:  xtwitterscraper.String("inReplyToTweetId"),
+			Language:          xtwitterscraper.String("language"),
+			MaxFaves:          xtwitterscraper.Int(0),
+			MaxID:             xtwitterscraper.String("maxId"),
+			MaxQuotes:         xtwitterscraper.Int(0),
+			MaxReplies:        xtwitterscraper.Int(0),
+			MaxRetweets:       xtwitterscraper.Int(0),
+			MediaType:         xtwitterscraper.XTweetGetHiddenRepliesParamsMediaTypeImages,
+			Mentioning:        xtwitterscraper.String("mentioning"),
+			MinBookmarks:      xtwitterscraper.Int(0),
+			MinLikes:          xtwitterscraper.Int(0),
+			MinQuotes:         xtwitterscraper.Int(0),
+			MinReplies:        xtwitterscraper.Int(0),
+			MinRetweets:       xtwitterscraper.Int(0),
+			MinViews:          xtwitterscraper.Int(0),
+			NativeRetweets:    xtwitterscraper.Bool(true),
+			Omit:              xtwitterscraper.String("entities,media"),
+			PageSize:          xtwitterscraper.Int(1),
+			Quotes:            xtwitterscraper.XTweetGetHiddenRepliesParamsQuotesInclude,
+			QuotesOfTweetID:   xtwitterscraper.String("quotesOfTweetId"),
+			Replies:           xtwitterscraper.XTweetGetHiddenRepliesParamsRepliesInclude,
+			Retweets:          xtwitterscraper.XTweetGetHiddenRepliesParamsRetweetsInclude,
+			RetweetsOfTweetID: xtwitterscraper.String("retweetsOfTweetId"),
+			SinceDate:         xtwitterscraper.Time(time.Now()),
+			SinceID:           xtwitterscraper.String("sinceId"),
+			ToUser:            xtwitterscraper.String("toUser"),
+			UntilDate:         xtwitterscraper.Time(time.Now()),
+			URL:               xtwitterscraper.String("url"),
+			VerifiedOnly:      xtwitterscraper.Bool(true),
+			WithinTime:        xtwitterscraper.String("7d"),
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetGetInsightsWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.GetInsights(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XTweetGetInsightsParams{
+			Fields: xtwitterscraper.String("id,text,author.username"),
+			Omit:   xtwitterscraper.String("entities,media"),
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetGetRetweeterIDsWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.GetRetweeterIDs(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XTweetGetRetweeterIDsParams{
+			Cursor:   xtwitterscraper.String("cursor"),
+			PageSize: xtwitterscraper.Int(1),
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetGetSubtitlesWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.GetSubtitles(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XTweetGetSubtitlesParams{
+			Fields: xtwitterscraper.String("id,text,author.username"),
+			Omit:   xtwitterscraper.String("entities,media"),
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetListTopWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.ListTop(context.TODO(), xtwitterscraper.XTweetListTopParams{
+		Country:  xtwitterscraper.String("US"),
+		Cursor:   xtwitterscraper.String("cursor"),
+		Fields:   xtwitterscraper.String("id,text,author.username"),
+		Language: xtwitterscraper.String("en"),
+		Metric:   xtwitterscraper.XTweetListTopParamsMetricLikes,
+		Omit:     xtwitterscraper.String("entities,media"),
+		PageSize: xtwitterscraper.Int(1),
+		Window:   xtwitterscraper.XTweetListTopParamsWindowDay,
+	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetResolveLinksWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.ResolveLinks(context.TODO(), xtwitterscraper.XTweetResolveLinksParams{
+		URLs:   "https://t.co/Xe1nm2pkSX",
+		Fields: xtwitterscraper.String("id,text,author.username"),
+		Omit:   xtwitterscraper.String("entities,media"),
+	})
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXTweetTranslateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := xtwitterscraper.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.X.Tweets.Translate(
+		context.TODO(),
+		"id",
+		xtwitterscraper.XTweetTranslateParams{
+			Language: "tr",
+			Fields:   xtwitterscraper.String("id,text,author.username"),
+			Omit:     xtwitterscraper.String("entities,media"),
+		},
+	)
+	if err != nil {
+		var apierr *xtwitterscraper.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}

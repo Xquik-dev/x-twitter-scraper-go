@@ -1,0 +1,23 @@
+{
+  "insights": {
+    "tweetId": "2102882545427714266",
+    "authorId": "11348282",
+    "authorUserName": "NASA",
+    "createdAt": "2026-09-23T22:07:23.000Z",
+    "ageHours": 133.88,
+    "metrics": {
+      "likes": 9043,
+      "replies": 207,
+      "reposts": 772,
+      "quotes": 100,
+      "bookmarks": 661,
+      "views": 1291231
+    },
+    "engagements": 10122,
+    "engagementsPerHour": 75.605,
+    "engagementPerView": 0.7839,
+    "engagementRate": 0.011,
+    "amplification": 0.0964,
+    "conversation": 0.0229
+  }
+}

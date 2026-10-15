@@ -18,15 +18,6 @@
   {
     "reason": "Not ported yet. https://github.com/Xquik-dev/x-twitter-scraper-go/issues/82 tracks the port.",
     "operations": [
-      "GET /api/v1/x/tweets/top",
-      "GET /api/v1/x/tweets/{id}/embed",
-      "GET /api/v1/x/tweets/{id}/hidden-replies",
-      "GET /api/v1/x/tweets/{id}/insights",
-      "GET /api/v1/x/tweets/{id}/retweeter-ids",
-      "GET /api/v1/x/tweets/{id}/retweeters/check",
-      "GET /api/v1/x/tweets/{id}/subtitles",
-      "GET /api/v1/x/tweets/{id}/translation",
-      "GET /api/v1/x/links/resolve",
       "GET /api/v1/x/users/batch/tweets",
       "GET /api/v1/x/users/{id}/affiliates",
       "GET /api/v1/x/users/{id}/articles",
