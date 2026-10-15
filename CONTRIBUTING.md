@@ -72,6 +72,10 @@ bin/check-local
 scripts/fuzz
 ```
 
+When `git config checklocal.runner` names a command, `bin/check-local` runs that command with the checkout path and its own arguments instead.
+A maintainer can use it to run the checks on another machine.
+Set `CHECK_LOCAL_HERE=1` to run them here anyway.
+
 SDK commits are exempt from LOC reductions and per-commit coverage gains.
 
 Preserve coverage and report all four metrics against the verified parent.

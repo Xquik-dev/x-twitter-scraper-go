@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `bin/check-local` hands its run to the command that `git config checklocal.runner` names. `CHECK_LOCAL_HERE=1` runs the checks here anyway.
+
 ## 0.20.0 (2026-10-16)
 
 [Full changelog from v0.19.2 to v0.20.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.2...v0.20.0)
