@@ -57,6 +57,165 @@ func (r *XUserService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
+// Returns the accounts an organization lists as its affiliates, in X's order. An
+// account without affiliates returns an empty list.
+func (r *XUserService) GetAffiliates(ctx context.Context, id string, query XUserGetAffiliatesParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/affiliates", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the posts on the user's Articles tab, newest first. Each post's
+// `article` holds the Article's ID, title, preview, cover & dates. Read the full
+// text with GET /x/articles/{tweetId}.
+func (r *XUserService) GetArticles(ctx context.Context, id string, query XUserGetArticlesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/articles", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the newest posts of up to 20 users, named by user ID, username or
+// profile link, in the order named. Send ids or usernames, not both. Each post
+// costs 1 credit. A user in unavailable_ids or unprocessed_ids costs nothing.
+func (r *XUserService) GetBatchTweets(ctx context.Context, query XUserGetBatchTweetsParams, opts ...option.RequestOption) (res *XUserGetBatchTweetsResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/users/batch/tweets"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the user IDs of the selected user's followers, newest first, up to 5,000
+// a page. Use it when you need IDs only. Each ID costs 1 credit.
+func (r *XUserService) GetFollowerIDs(ctx context.Context, id string, query XUserGetFollowerIDsParams, opts ...option.RequestOption) (res *XUserGetFollowerIDsResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/follower-ids", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the user IDs of the accounts the selected user follows, newest first, up
+// to 5,000 a page. Use it when you need IDs only. Each ID costs 1 credit.
+func (r *XUserService) GetFollowingIDs(ctx context.Context, id string, query XUserGetFollowingIDsParams, opts ...option.RequestOption) (res *XUserGetFollowingIDsResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/following-ids", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the posts on the user's Highlights tab, in X's order. An account without
+// highlights returns an empty list.
+func (r *XUserService) GetHighlights(ctx context.Context, id string, query XUserGetHighlightsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/highlights", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns engagement insights for 1 profile. They are engagement rate, averages
+// per post and posting rate, from its counts and its last 20 posts. Reposts and
+// the pinned post stay out of the averages. Each report costs 1 credit, whatever
+// it reads.
+func (r *XUserService) GetInsights(ctx context.Context, id string, query XUserGetInsightsParams, opts ...option.RequestOption) (res *XUserGetInsightsResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/insights", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the public X Lists that include the selected user, as the profile's List
+// memberships page shows them. Each List costs 1 credit. A protected account
+// answers 403.
+func (r *XUserService) GetListMemberships(ctx context.Context, id string, query XUserGetListMembershipsParams, opts ...option.RequestOption) (res *XUserGetListMembershipsResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/list-memberships", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the public X Lists the selected user created, in X's order, as the
+// profile's Lists tab shows them. Each List costs 1 credit. A protected account
+// answers 403.
+func (r *XUserService) GetLists(ctx context.Context, id string, query XUserGetListsParams, opts ...option.RequestOption) (res *XUserGetListsResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/lists", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Says whether 1 user is broadcasting live video on X right now, with their latest
+// broadcast, live or ended. Each check costs 1 credit.
+func (r *XUserService) GetLive(ctx context.Context, id string, query XUserGetLiveParams, opts ...option.RequestOption) (res *XUserGetLiveResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/live", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the public accounts X lists as similar to the selected user, in X's
+// order. X can list slightly different accounts on each call. Each account costs 1
+// credit.
+func (r *XUserService) GetSimilar(ctx context.Context, id string, query XUserGetSimilarParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/similar", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the creators the selected user subscribes to, in X's order. An account
+// that hides its subscriptions returns an empty list.
+func (r *XUserService) GetSubscriptions(ctx context.Context, id string, query XUserGetSubscriptionsParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/subscriptions", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Removes a follower from a connected X account.
 func (r *XUserService) RemoveFollower(ctx context.Context, id string, params XUserRemoveFollowerParams, opts ...option.RequestOption) (res *XUserRemoveFollowerResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
@@ -196,6 +355,20 @@ func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, quer
 		return nil, err
 	}
 	path := fmt.Sprintf("x/users/%s/verified-followers", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns X's own translation of 1 profile's bio into the language you pick, with
+// the links, mentions, and tags X places in the translated text. A profile without
+// a bio returns translation null & a message, free of charge.
+func (r *XUserService) TranslateBio(ctx context.Context, id string, query XUserTranslateBioParams, opts ...option.RequestOption) (res *XUserTranslateBioResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/translation", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -975,6 +1148,1428 @@ func (r XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrat
 	return r.JSON.raw
 }
 func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Each user's newest posts, in the order the users were named, with the pinned
+// post first. The ID lists name the requested IDs or usernames. They name a
+// profile link by its username.
+type XUserGetBatchTweetsResponse struct {
+	// Always false. The answer holds every post in 1 page.
+	//
+	// Any of false.
+	HasNextPage bool `json:"has_next_page" api:"required"`
+	// Always empty. The answer holds every post in 1 page.
+	NextCursor string               `json:"next_cursor" api:"required"`
+	Tweets     []shared.SearchTweet `json:"tweets" api:"required"`
+	// Users with no account on X or with protected posts, in first-seen request order.
+	// They cost nothing.
+	UnavailableIDs []string `json:"unavailable_ids" api:"required"`
+	// Users the call did not read, in first-seen request order. Their read failed, the
+	// call ran out of time or credits ran out. They cost nothing. Send them again.
+	UnprocessedIDs []string `json:"unprocessed_ids" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage    respjson.Field
+		NextCursor     respjson.Field
+		Tweets         respjson.Field
+		UnavailableIDs respjson.Field
+		UnprocessedIDs respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetBatchTweetsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetBatchTweetsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A page of user IDs without profiles. Follow next_cursor while the response
+// reports more pages.
+type XUserGetFollowerIDsResponse struct {
+	HasNextPage bool `json:"has_next_page" api:"required"`
+	// X user IDs, newest relationship first.
+	IDs        []string `json:"ids" api:"required"`
+	NextCursor string   `json:"next_cursor" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		IDs         respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetFollowerIDsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetFollowerIDsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A page of user IDs without profiles. Follow next_cursor while the response
+// reports more pages.
+type XUserGetFollowingIDsResponse struct {
+	HasNextPage bool `json:"has_next_page" api:"required"`
+	// X user IDs, newest relationship first.
+	IDs        []string `json:"ids" api:"required"`
+	NextCursor string   `json:"next_cursor" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		IDs         respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetFollowingIDsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetFollowingIDsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserGetInsightsResponse struct {
+	// Engagement insights of 1 profile. Engagements are likes, replies, reposts and
+	// quotes. A rate is null when nothing divides it, such as a profile without posts
+	// of its own.
+	Insights XUserGetInsightsResponseInsights `json:"insights" api:"required"`
+	// Says why the report has counts only.
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Insights    respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetInsightsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetInsightsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Engagement insights of 1 profile. Engagements are likes, replies, reposts and
+// quotes. A rate is null when nothing divides it, such as a profile without posts
+// of its own.
+type XUserGetInsightsResponseInsights struct {
+	// Whole days since the account joined X.
+	AccountAgeDays float64 `json:"accountAgeDays" api:"required"`
+	// Each count per post of the sample. Null without posts.
+	Averages XUserGetInsightsResponseInsightsAverages `json:"averages" api:"required"`
+	// Engagements as a percent of views across the sample.
+	EngagementPerView float64 `json:"engagementPerView" api:"required"`
+	// Average engagements per post, as a percent of followers.
+	EngagementRate float64 `json:"engagementRate" api:"required"`
+	// Followers.
+	Followers float64 `json:"followers" api:"required"`
+	// Accounts the user follows.
+	Following float64 `json:"following" api:"required"`
+	// Posts the user has made.
+	Posts float64 `json:"posts" api:"required"`
+	// Sampled posts per day, from the oldest one until now.
+	PostsPerDay float64 `json:"postsPerDay" api:"required"`
+	// True when only the account's followers see its posts. The report then has its
+	// counts only.
+	PostsPrivate bool `json:"postsPrivate" api:"required"`
+	// The recent posts the averages read.
+	Sample XUserGetInsightsResponseInsightsSample `json:"sample" api:"required"`
+	// The sampled post with the most engagements.
+	TopPostID string `json:"topPostId" api:"required"`
+	// ID of the profile the insights describe.
+	UserID string `json:"userId" api:"required"`
+	// Username of that profile.
+	UserName string `json:"userName" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AccountAgeDays    respjson.Field
+		Averages          respjson.Field
+		EngagementPerView respjson.Field
+		EngagementRate    respjson.Field
+		Followers         respjson.Field
+		Following         respjson.Field
+		Posts             respjson.Field
+		PostsPerDay       respjson.Field
+		PostsPrivate      respjson.Field
+		Sample            respjson.Field
+		TopPostID         respjson.Field
+		UserID            respjson.Field
+		UserName          respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetInsightsResponseInsights) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetInsightsResponseInsights) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Each count per post of the sample. Null without posts.
+type XUserGetInsightsResponseInsightsAverages struct {
+	// Bookmarks.
+	Bookmarks float64 `json:"bookmarks" api:"required"`
+	// Likes, replies, reposts and quotes per post.
+	Engagements float64 `json:"engagements" api:"required"`
+	// Likes.
+	Likes float64 `json:"likes" api:"required"`
+	// Quotes.
+	Quotes float64 `json:"quotes" api:"required"`
+	// Replies.
+	Replies float64 `json:"replies" api:"required"`
+	// Reposts.
+	Reposts float64 `json:"reposts" api:"required"`
+	// Views.
+	Views float64 `json:"views" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bookmarks   respjson.Field
+		Engagements respjson.Field
+		Likes       respjson.Field
+		Quotes      respjson.Field
+		Replies     respjson.Field
+		Reposts     respjson.Field
+		Views       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetInsightsResponseInsightsAverages) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetInsightsResponseInsightsAverages) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The recent posts the averages read.
+type XUserGetInsightsResponseInsightsSample struct {
+	// When the newest of them went up.
+	NewestAt time.Time `json:"newestAt" api:"required" format:"date-time"`
+	// When the oldest of them went up.
+	OldestAt time.Time `json:"oldestAt" api:"required" format:"date-time"`
+	// Posts read.
+	Posts float64 `json:"posts" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NewestAt    respjson.Field
+		OldestAt    respjson.Field
+		Posts       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetInsightsResponseInsightsSample) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetInsightsResponseInsightsSample) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// 1 page of public X Lists. Follow next_cursor while the response reports more
+// pages. Each returned List costs 1 credit.
+type XUserGetListMembershipsResponse struct {
+	HasNextPage bool                                  `json:"has_next_page" api:"required"`
+	Lists       []XUserGetListMembershipsResponseList `json:"lists" api:"required"`
+	NextCursor  string                                `json:"next_cursor" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		Lists       respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListMembershipsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public X List with its owner's public profile. Leaves out what X tells the
+// reading account, such as whether it follows the List.
+type XUserGetListMembershipsResponseList struct {
+	// Numeric ID of the List.
+	ID string `json:"id" api:"required"`
+	// Name the owner gave the List.
+	Name string `json:"name" api:"required"`
+	// URL of the banner the owner uploaded. Absent when the owner uploaded none.
+	BannerURL string `json:"bannerUrl"`
+	// When the owner made the List.
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	// Banner the owner uploaded.
+	CustomBanner XUserGetListMembershipsResponseListCustomBanner `json:"customBanner"`
+	// Banner X shows when the owner uploaded none. X picks it per reading account, so
+	// 2 calls can return different ones.
+	DefaultBanner XUserGetListMembershipsResponseListDefaultBanner `json:"defaultBanner"`
+	// About text of the List. Empty when the owner wrote none.
+	Description string `json:"description"`
+	// Avatar URLs of a few List members, which X may pick per request.
+	FacepileURLs []string `json:"facepileUrls"`
+	// Accounts on the List.
+	MemberCount int64 `json:"memberCount"`
+	// Member count as X words it, such as 35 members.
+	MembersContext string `json:"membersContext"`
+	// Public profile of the account that owns the List.
+	Owner shared.UserProfile `json:"owner"`
+	// Accounts that follow the List, which X calls followers.
+	SubscriberCount int64 `json:"subscriberCount"`
+	// List page on x.com.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Name            respjson.Field
+		BannerURL       respjson.Field
+		CreatedAt       respjson.Field
+		CustomBanner    respjson.Field
+		DefaultBanner   respjson.Field
+		Description     respjson.Field
+		FacepileURLs    respjson.Field
+		MemberCount     respjson.Field
+		MembersContext  respjson.Field
+		Owner           respjson.Field
+		SubscriberCount respjson.Field
+		URL             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseList) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListMembershipsResponseList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner the owner uploaded.
+type XUserGetListMembershipsResponseListCustomBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XUserGetListMembershipsResponseListCustomBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XUserGetListMembershipsResponseListCustomBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListMembershipsResponseListCustomBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserGetListMembershipsResponseListCustomBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XUserGetListMembershipsResponseListCustomBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListMembershipsResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XUserGetListMembershipsResponseListCustomBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListCustomBannerPaletteRgb) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserGetListMembershipsResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XUserGetListMembershipsResponseListCustomBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListCustomBannerSalientRect) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserGetListMembershipsResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// 2 calls can return different ones.
+type XUserGetListMembershipsResponseListDefaultBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XUserGetListMembershipsResponseListDefaultBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XUserGetListMembershipsResponseListDefaultBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListMembershipsResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserGetListMembershipsResponseListDefaultBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XUserGetListMembershipsResponseListDefaultBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListMembershipsResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XUserGetListMembershipsResponseListDefaultBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListDefaultBannerPaletteRgb) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserGetListMembershipsResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XUserGetListMembershipsResponseListDefaultBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListMembershipsResponseListDefaultBannerSalientRect) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserGetListMembershipsResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// 1 page of public X Lists. Follow next_cursor while the response reports more
+// pages. Each returned List costs 1 credit.
+type XUserGetListsResponse struct {
+	HasNextPage bool                        `json:"has_next_page" api:"required"`
+	Lists       []XUserGetListsResponseList `json:"lists" api:"required"`
+	NextCursor  string                      `json:"next_cursor" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasNextPage respjson.Field
+		Lists       respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public X List with its owner's public profile. Leaves out what X tells the
+// reading account, such as whether it follows the List.
+type XUserGetListsResponseList struct {
+	// Numeric ID of the List.
+	ID string `json:"id" api:"required"`
+	// Name the owner gave the List.
+	Name string `json:"name" api:"required"`
+	// URL of the banner the owner uploaded. Absent when the owner uploaded none.
+	BannerURL string `json:"bannerUrl"`
+	// When the owner made the List.
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	// Banner the owner uploaded.
+	CustomBanner XUserGetListsResponseListCustomBanner `json:"customBanner"`
+	// Banner X shows when the owner uploaded none. X picks it per reading account, so
+	// 2 calls can return different ones.
+	DefaultBanner XUserGetListsResponseListDefaultBanner `json:"defaultBanner"`
+	// About text of the List. Empty when the owner wrote none.
+	Description string `json:"description"`
+	// Avatar URLs of a few List members, which X may pick per request.
+	FacepileURLs []string `json:"facepileUrls"`
+	// Accounts on the List.
+	MemberCount int64 `json:"memberCount"`
+	// Member count as X words it, such as 35 members.
+	MembersContext string `json:"membersContext"`
+	// Public profile of the account that owns the List.
+	Owner shared.UserProfile `json:"owner"`
+	// Accounts that follow the List, which X calls followers.
+	SubscriberCount int64 `json:"subscriberCount"`
+	// List page on x.com.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Name            respjson.Field
+		BannerURL       respjson.Field
+		CreatedAt       respjson.Field
+		CustomBanner    respjson.Field
+		DefaultBanner   respjson.Field
+		Description     respjson.Field
+		FacepileURLs    respjson.Field
+		MemberCount     respjson.Field
+		MembersContext  respjson.Field
+		Owner           respjson.Field
+		SubscriberCount respjson.Field
+		URL             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseList) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner the owner uploaded.
+type XUserGetListsResponseListCustomBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XUserGetListsResponseListCustomBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XUserGetListsResponseListCustomBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListCustomBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserGetListsResponseListCustomBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XUserGetListsResponseListCustomBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XUserGetListsResponseListCustomBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListCustomBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XUserGetListsResponseListCustomBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListCustomBannerSalientRect) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// 2 calls can return different ones.
+type XUserGetListsResponseListDefaultBanner struct {
+	// Banner image URL.
+	URL string `json:"url" api:"required"`
+	// Banner height in pixels.
+	Height int64 `json:"height"`
+	// Media ID of an uploaded banner.
+	MediaID string `json:"mediaId"`
+	// Stable media key of an uploaded banner.
+	MediaKey string `json:"mediaKey"`
+	// Dominant colors of an uploaded banner and their shares.
+	Palette []XUserGetListsResponseListDefaultBannerPalette `json:"palette"`
+	// Area X marks as the subject of the banner, in pixels.
+	SalientRect XUserGetListsResponseListDefaultBannerSalientRect `json:"salientRect"`
+	// Banner width in pixels.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Height      respjson.Field
+		MediaID     respjson.Field
+		MediaKey    respjson.Field
+		Palette     respjson.Field
+		SalientRect respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserGetListsResponseListDefaultBannerPalette struct {
+	// Share of the banner
+	Percentage float64 `json:"percentage"`
+	// The color's red, green and blue values.
+	Rgb XUserGetListsResponseListDefaultBannerPaletteRgb `json:"rgb"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percentage  respjson.Field
+		Rgb         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The color's red, green and blue values.
+type XUserGetListsResponseListDefaultBannerPaletteRgb struct {
+	Blue  int64 `json:"blue"`
+	Green int64 `json:"green"`
+	Red   int64 `json:"red"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListDefaultBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X marks as the subject of the banner, in pixels.
+type XUserGetListsResponseListDefaultBannerSalientRect struct {
+	// Height of the marked area.
+	Height int64 `json:"height"`
+	// Pixels from the banner's left.
+	Left int64 `json:"left"`
+	// Pixels from the banner's top.
+	Top int64 `json:"top"`
+	// Width of the marked area.
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetListsResponseListDefaultBannerSalientRect) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetListsResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Says whether a user broadcasts live video on X now. `broadcast` is their latest
+// broadcast, live or ended, and null when X shows none.
+type XUserGetLiveResponse struct {
+	// Latest broadcast, live or ended. Null when X shows none.
+	Broadcast XUserGetLiveResponseBroadcast `json:"broadcast" api:"required"`
+	// True while the user's latest broadcast is running.
+	Live bool `json:"live" api:"required"`
+	// ID of the user.
+	UserID string `json:"userId" api:"required"`
+	// Username of the user.
+	UserName string `json:"userName" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Broadcast   respjson.Field
+		Live        respjson.Field
+		UserID      respjson.Field
+		UserName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetLiveResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetLiveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Latest broadcast, live or ended. Null when X shows none.
+type XUserGetLiveResponseBroadcast struct {
+	// Broadcast ID
+	ID string `json:"id" api:"required"`
+	// Camera rotation in degrees
+	CameraRotation int64 `json:"cameraRotation"`
+	// X's code for who may chat
+	ChatOption int64 `json:"chatOption"`
+	// Public X profile.
+	Creator shared.UserProfile `json:"creator"`
+	// When the broadcast ended
+	EndedAt time.Time `json:"endedAt" format:"date-time"`
+	// Video height in pixels
+	Height int64 `json:"height"`
+	// Whether X offers a recording of the broadcast
+	IsAvailableForReplay bool `json:"isAvailableForReplay"`
+	// Whether the video stream runs in high-latency mode
+	IsHighLatency bool `json:"isHighLatency"`
+	// Whether X marks the chat private
+	IsPrivateChat bool `json:"isPrivateChat"`
+	// Whether the broadcaster edited the title of the replay
+	IsTitleEdited bool `json:"isTitleEdited"`
+	// When the video stream last reached X
+	LastPingAt time.Time `json:"lastPingAt" format:"date-time"`
+	// X's media key for the video
+	MediaKey string `json:"mediaKey"`
+	// Broadcaster, as X's live video service names the account
+	PeriscopeUser XUserGetLiveResponseBroadcastPeriscopeUser `json:"periscopeUser"`
+	// Image X shows before the broadcast starts
+	PreLiveSlateURL string `json:"preLiveSlateUrl" format:"uri"`
+	// When the broadcast was set to start
+	ScheduledStart time.Time `json:"scheduledStart" format:"date-time"`
+	// What produced the video stream, as X names it
+	Source string `json:"source"`
+	// When the broadcast went live
+	StartedAt time.Time `json:"startedAt" format:"date-time"`
+	// State, such as NotStarted, Running or Ended, as X names it
+	State string `json:"state"`
+	// Broadcast title
+	Title string `json:"title"`
+	// Accounts that watched, live or after
+	TotalWatched int64 `json:"totalWatched"`
+	// Accounts watching, as X counts them
+	TotalWatching int64 `json:"totalWatching"`
+	// Search tweet with author. Zero metrics may mean X omitted counts.
+	Tweet shared.SearchTweet `json:"tweet"`
+	// ID of the post that announces the broadcast
+	TweetID string `json:"tweetId"`
+	// X's revision number of the broadcast
+	Version int64 `json:"version"`
+	// Video width in pixels
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                   respjson.Field
+		CameraRotation       respjson.Field
+		ChatOption           respjson.Field
+		Creator              respjson.Field
+		EndedAt              respjson.Field
+		Height               respjson.Field
+		IsAvailableForReplay respjson.Field
+		IsHighLatency        respjson.Field
+		IsPrivateChat        respjson.Field
+		IsTitleEdited        respjson.Field
+		LastPingAt           respjson.Field
+		MediaKey             respjson.Field
+		PeriscopeUser        respjson.Field
+		PreLiveSlateURL      respjson.Field
+		ScheduledStart       respjson.Field
+		Source               respjson.Field
+		StartedAt            respjson.Field
+		State                respjson.Field
+		Title                respjson.Field
+		TotalWatched         respjson.Field
+		TotalWatching        respjson.Field
+		Tweet                respjson.Field
+		TweetID              respjson.Field
+		Version              respjson.Field
+		Width                respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetLiveResponseBroadcast) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetLiveResponseBroadcast) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Broadcaster, as X's live video service names the account
+type XUserGetLiveResponseBroadcastPeriscopeUser struct {
+	// Live video account ID
+	ID string `json:"id"`
+	// Live video display name
+	DisplayName string `json:"displayName"`
+	// Live video avatar URL
+	ProfilePicture string `json:"profilePicture" format:"uri"`
+	// The broadcaster's avatar at full size
+	ProfilePictureOriginal string `json:"profilePictureOriginal" format:"uri"`
+	// Live video username
+	Username string `json:"username"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		DisplayName            respjson.Field
+		ProfilePicture         respjson.Field
+		ProfilePictureOriginal respjson.Field
+		Username               respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetLiveResponseBroadcastPeriscopeUser) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetLiveResponseBroadcastPeriscopeUser) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponse struct {
+	// Null when the profile has no bio.
+	Translation XUserTranslateBioResponseTranslation `json:"translation" api:"required"`
+	// Says why translation is null.
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Translation respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Null when the profile has no bio.
+type XUserTranslateBioResponseTranslation struct {
+	// Lists hashtags, symbols, links, and mentions from tweet text.
+	Entities XUserTranslateBioResponseTranslationEntities `json:"entities" api:"required"`
+	// Language code of the translated bio, in lower case.
+	Language string `json:"language" api:"required"`
+	// Translated bio.
+	Text string `json:"text" api:"required"`
+	// ID of the account whose bio X translated.
+	UserID string `json:"userId" api:"required"`
+	// Username of that account.
+	UserName string `json:"userName" api:"required"`
+	// Language code X detects in the bio, when it names one.
+	SourceLanguage string `json:"sourceLanguage"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities       respjson.Field
+		Language       respjson.Field
+		Text           respjson.Field
+		UserID         respjson.Field
+		UserName       respjson.Field
+		SourceLanguage respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslation) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Lists hashtags, symbols, links, and mentions from tweet text.
+type XUserTranslateBioResponseTranslationEntities struct {
+	Hashtags     []XUserTranslateBioResponseTranslationEntitiesHashtag     `json:"hashtags"`
+	Smarttags    []XUserTranslateBioResponseTranslationEntitiesSmarttag    `json:"smarttags"`
+	Symbols      []XUserTranslateBioResponseTranslationEntitiesSymbol      `json:"symbols"`
+	Timestamps   []XUserTranslateBioResponseTranslationEntitiesTimestamp   `json:"timestamps"`
+	URLs         []XUserTranslateBioResponseTranslationEntitiesURL         `json:"urls"`
+	UserMentions []XUserTranslateBioResponseTranslationEntitiesUserMention `json:"user_mentions"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hashtags     respjson.Field
+		Smarttags    respjson.Field
+		Symbols      respjson.Field
+		Timestamps   respjson.Field
+		URLs         respjson.Field
+		UserMentions respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntities) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntities) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Hashtag text and its source offsets in a tweet.
+type XUserTranslateBioResponseTranslationEntitiesHashtag struct {
+	Text    string  `json:"text" api:"required"`
+	Indices []int64 `json:"indices"`
+	// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+	// platforms, which differ by reader.
+	Tag XUserTranslateBioResponseTranslationEntitiesHashtagTag `json:"tag"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Indices     respjson.Field
+		Tag         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesHashtag) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesHashtag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type XUserTranslateBioResponseTranslationEntitiesHashtagTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                                     `json:"id"`
+	Info XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesHashtagTag) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo struct {
+	Info XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Active      respjson.Field
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type XUserTranslateBioResponseTranslationEntitiesSmarttag struct {
+	Indices []int64 `json:"indices"`
+	Seconds float64 `json:"seconds"`
+	// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+	// platforms, which differ by reader.
+	Tag  XUserTranslateBioResponseTranslationEntitiesSmarttagTag `json:"tag"`
+	Text string                                                  `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesSmarttag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type XUserTranslateBioResponseTranslationEntitiesSmarttagTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                                      `json:"id"`
+	Info XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo struct {
+	Info XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Active      respjson.Field
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type XUserTranslateBioResponseTranslationEntitiesSymbol struct {
+	Indices []int64 `json:"indices"`
+	Seconds float64 `json:"seconds"`
+	// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+	// platforms, which differ by reader.
+	Tag  XUserTranslateBioResponseTranslationEntitiesSymbolTag `json:"tag"`
+	Text string                                                `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSymbol) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesSymbol) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type XUserTranslateBioResponseTranslationEntitiesSymbolTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                                    `json:"id"`
+	Info XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo struct {
+	Info XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Active      respjson.Field
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indexed smart-tag, cashtag, or video timestamp metadata.
+type XUserTranslateBioResponseTranslationEntitiesTimestamp struct {
+	Indices []int64 `json:"indices"`
+	Seconds float64 `json:"seconds"`
+	// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+	// platforms, which differ by reader.
+	Tag  XUserTranslateBioResponseTranslationEntitiesTimestampTag `json:"tag"`
+	Text string                                                   `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Indices     respjson.Field
+		Seconds     respjson.Field
+		Tag         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesTimestamp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// platforms, which differ by reader.
+type XUserTranslateBioResponseTranslationEntitiesTimestampTag struct {
+	// X's ID for the SmartTag.
+	ID   string                                                       `json:"id"`
+	Info XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo struct {
+	Info XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo `json:"info"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Info        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo struct {
+	// Whether X marks the SmartTag active.
+	Active bool   `json:"active"`
+	Name   string `json:"name"`
+	Ticker string `json:"ticker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Active      respjson.Field
+		Name        respjson.Field
+		Ticker      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Shortened, display, and expanded URLs from tweet text.
+type XUserTranslateBioResponseTranslationEntitiesURL struct {
+	DisplayURL  string  `json:"display_url"`
+	ExpandedURL string  `json:"expanded_url"`
+	Indices     []int64 `json:"indices"`
+	URL         string  `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayURL  respjson.Field
+		ExpandedURL respjson.Field
+		Indices     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesURL) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Profile identity and source offsets of a mention.
+type XUserTranslateBioResponseTranslationEntitiesUserMention struct {
+	ScreenName string  `json:"screen_name" api:"required"`
+	IDStr      string  `json:"id_str"`
+	Indices    []int64 `json:"indices"`
+	Name       string  `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ScreenName  respjson.Field
+		IDStr       respjson.Field
+		Indices     respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserTranslateBioResponseTranslationEntitiesUserMention) RawJSON() string { return r.JSON.raw }
+func (r *XUserTranslateBioResponseTranslationEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2104,3 +3699,701 @@ const (
 	XUserGetVerifiedFollowersParamsModeStandard XUserGetVerifiedFollowersParamsMode = "standard"
 	XUserGetVerifiedFollowersParamsModeCoverage XUserGetVerifiedFollowersParamsMode = "coverage"
 )
+
+type XUserGetAffiliatesParams struct {
+	// Match any comma-separated or line-separated bio term, ignoring case.
+	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
+	// Only return profiles with a location.
+	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
+	// Only return profiles with a website.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Match a location substring, ignoring case.
+	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
+	// Maximum follower count. A profile without a count passes.
+	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Profiles may follow at most this many accounts.
+	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Maximum post count. maxPosts is also accepted.
+	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
+	// Minimum account age in whole days.
+	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
+	// Minimum follower count. Profiles the filter drops cost nothing.
+	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Profiles must follow at least this many accounts.
+	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
+	// Minimum post count. minPosts is also accepted.
+	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Profiles to request from this page (1-200, default 200). Source, filters or
+	// credits can return fewer. Follow next_cursor for more pages. Its aliases are
+	// limit, count, max_results, maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Match a username substring, ignoring case.
+	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
+	// Only return verified profiles.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Match the verification type exactly, ignoring case.
+	VerifiedType param.Opt[string] `query:"verifiedType,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetAffiliatesParams]'s query parameters as `url.Values`.
+func (r XUserGetAffiliatesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetArticlesParams struct {
+	// Words or quoted phrases where any one can match. Separate with spaces, commas,
+	// or lines.
+	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
+	// Only return tweets from Blue-verified authors.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Cashtags separated by spaces, commas, or lines.
+	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Match this literal phrase, including any hyphens.
+	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
+	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Filter by author username.
+	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// Hashtags separated by spaces, commas, or lines.
+	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Filter by language. Its alias is `lang`.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Maximum likes threshold. maxLikes & max_likes also work.
+	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
+	// Return Tweets at or below this ID.
+	MaxID param.Opt[string] `query:"maxId,omitzero" json:"-"`
+	// Maximum quotes threshold.
+	MaxQuotes param.Opt[int64] `query:"maxQuotes,omitzero" json:"-"`
+	// Maximum replies threshold.
+	MaxReplies param.Opt[int64] `query:"maxReplies,omitzero" json:"-"`
+	// Maximum retweets threshold.
+	MaxRetweets param.Opt[int64] `query:"maxRetweets,omitzero" json:"-"`
+	// Filter tweets mentioning a username.
+	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
+	// Minimum bookmark count threshold.
+	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Minimum likes. Its aliases are minFaves, min_likes & min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
+	// Minimum quote count threshold.
+	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Minimum view count threshold.
+	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
+	// Only return native reposts.
+	NativeRetweets param.Opt[bool] `query:"nativeRetweets,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format, as a UTC day.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// Return Tweets whose IDs exceed this ID.
+	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
+	// Filter replies sent to a username.
+	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
+	// End date in YYYY-MM-DD format, as a UTC day, inclusive, so its own posts count.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Keeps Tweets from a recent window, such as 90m or 7d. Use a whole number & s, m,
+	// h or d.
+	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
+	// Filter media. Its aliases are has_video & has_media.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XUserGetArticlesParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Only when the caller requests a quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XUserGetArticlesParamsQuotes `query:"quotes,omitzero" json:"-"`
+	// Reply mode. Exclude keeps own-thread replies.
+	//
+	// Any of "include", "exclude", "only".
+	Replies XUserGetArticlesParamsReplies `query:"replies,omitzero" json:"-"`
+	// Only when the caller requests a repost mode.
+	//
+	// Any of "include", "exclude", "only".
+	Retweets XUserGetArticlesParamsRetweets `query:"retweets,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetArticlesParams]'s query parameters as `url.Values`.
+func (r XUserGetArticlesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter media. Its aliases are has_video & has_media.
+type XUserGetArticlesParamsMediaType string
+
+const (
+	XUserGetArticlesParamsMediaTypeImages XUserGetArticlesParamsMediaType = "images"
+	XUserGetArticlesParamsMediaTypeVideos XUserGetArticlesParamsMediaType = "videos"
+	XUserGetArticlesParamsMediaTypeGifs   XUserGetArticlesParamsMediaType = "gifs"
+	XUserGetArticlesParamsMediaTypeMedia  XUserGetArticlesParamsMediaType = "media"
+	XUserGetArticlesParamsMediaTypeLinks  XUserGetArticlesParamsMediaType = "links"
+	XUserGetArticlesParamsMediaTypeNone   XUserGetArticlesParamsMediaType = "none"
+)
+
+// Only when the caller requests a quote mode.
+type XUserGetArticlesParamsQuotes string
+
+const (
+	XUserGetArticlesParamsQuotesInclude XUserGetArticlesParamsQuotes = "include"
+	XUserGetArticlesParamsQuotesExclude XUserGetArticlesParamsQuotes = "exclude"
+	XUserGetArticlesParamsQuotesOnly    XUserGetArticlesParamsQuotes = "only"
+)
+
+// Reply mode. Exclude keeps own-thread replies.
+type XUserGetArticlesParamsReplies string
+
+const (
+	XUserGetArticlesParamsRepliesInclude XUserGetArticlesParamsReplies = "include"
+	XUserGetArticlesParamsRepliesExclude XUserGetArticlesParamsReplies = "exclude"
+	XUserGetArticlesParamsRepliesOnly    XUserGetArticlesParamsReplies = "only"
+)
+
+// Only when the caller requests a repost mode.
+type XUserGetArticlesParamsRetweets string
+
+const (
+	XUserGetArticlesParamsRetweetsInclude XUserGetArticlesParamsRetweets = "include"
+	XUserGetArticlesParamsRetweetsExclude XUserGetArticlesParamsRetweets = "exclude"
+	XUserGetArticlesParamsRetweetsOnly    XUserGetArticlesParamsRetweets = "only"
+)
+
+type XUserGetBatchTweetsParams struct {
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Comma-separated numeric user IDs (1-20 values). Xquik ignores duplicate IDs and
+	// keeps the first-seen order.
+	IDs param.Opt[string] `query:"ids,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Posts per user (1-20, default 20). A low credit balance can return fewer. Its
+	// aliases are limit, count, max_results, maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Comma-separated X usernames, with or without @, or profile links such as
+	// x.com/nasa (1-20 values), in place of ids. A name in another case is the same
+	// account. A number is a user ID.
+	Usernames param.Opt[string] `query:"usernames,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetBatchTweetsParams]'s query parameters as `url.Values`.
+func (r XUserGetBatchTweetsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetFollowerIDsParams struct {
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// User IDs to request from this page (1-5000, default 5000). A low credit balance
+	// can return fewer. Follow next_cursor for more pages. Its aliases are limit,
+	// count, max_results, maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetFollowerIDsParams]'s query parameters as `url.Values`.
+func (r XUserGetFollowerIDsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetFollowingIDsParams struct {
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// User IDs to request from this page (1-5000, default 5000). A low credit balance
+	// can return fewer. Follow next_cursor for more pages. Its aliases are limit,
+	// count, max_results, maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetFollowingIDsParams]'s query parameters as `url.Values`.
+func (r XUserGetFollowingIDsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetHighlightsParams struct {
+	// Words or quoted phrases where any one can match. Separate with spaces, commas,
+	// or lines.
+	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
+	// Only return tweets from Blue-verified authors.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Cashtags separated by spaces, commas, or lines.
+	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Match this literal phrase, including any hyphens.
+	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
+	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Filter by author username.
+	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// Hashtags separated by spaces, commas, or lines.
+	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Filter by language. Its alias is `lang`.
+	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Maximum likes threshold. maxLikes & max_likes also work.
+	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
+	// Return Tweets at or below this ID.
+	MaxID param.Opt[string] `query:"maxId,omitzero" json:"-"`
+	// Maximum quotes threshold.
+	MaxQuotes param.Opt[int64] `query:"maxQuotes,omitzero" json:"-"`
+	// Maximum replies threshold.
+	MaxReplies param.Opt[int64] `query:"maxReplies,omitzero" json:"-"`
+	// Maximum retweets threshold.
+	MaxRetweets param.Opt[int64] `query:"maxRetweets,omitzero" json:"-"`
+	// Filter tweets mentioning a username.
+	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
+	// Minimum bookmark count threshold.
+	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
+	// Minimum likes. Its aliases are minFaves, min_likes & min_faves.
+	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
+	// Minimum quote count threshold.
+	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
+	// Minimum replies threshold.
+	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
+	// Minimum retweets threshold.
+	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
+	// Minimum view count threshold.
+	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
+	// Only return native reposts.
+	NativeRetweets param.Opt[bool] `query:"nativeRetweets,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
+	// Start date in YYYY-MM-DD format, as a UTC day.
+	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// Return Tweets whose IDs exceed this ID.
+	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
+	// Filter replies sent to a username.
+	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
+	// End date in YYYY-MM-DD format, as a UTC day, inclusive, so its own posts count.
+	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
+	// Only return tweets from verified authors.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Keeps Tweets from a recent window, such as 90m or 7d. Use a whole number & s, m,
+	// h or d.
+	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
+	// Filter media. Its aliases are has_video & has_media.
+	//
+	// Any of "images", "videos", "gifs", "media", "links", "none".
+	MediaType XUserGetHighlightsParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Only when the caller requests a quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XUserGetHighlightsParamsQuotes `query:"quotes,omitzero" json:"-"`
+	// Reply mode. Exclude keeps own-thread replies.
+	//
+	// Any of "include", "exclude", "only".
+	Replies XUserGetHighlightsParamsReplies `query:"replies,omitzero" json:"-"`
+	// Only when the caller requests a repost mode.
+	//
+	// Any of "include", "exclude", "only".
+	Retweets XUserGetHighlightsParamsRetweets `query:"retweets,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetHighlightsParams]'s query parameters as `url.Values`.
+func (r XUserGetHighlightsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter media. Its aliases are has_video & has_media.
+type XUserGetHighlightsParamsMediaType string
+
+const (
+	XUserGetHighlightsParamsMediaTypeImages XUserGetHighlightsParamsMediaType = "images"
+	XUserGetHighlightsParamsMediaTypeVideos XUserGetHighlightsParamsMediaType = "videos"
+	XUserGetHighlightsParamsMediaTypeGifs   XUserGetHighlightsParamsMediaType = "gifs"
+	XUserGetHighlightsParamsMediaTypeMedia  XUserGetHighlightsParamsMediaType = "media"
+	XUserGetHighlightsParamsMediaTypeLinks  XUserGetHighlightsParamsMediaType = "links"
+	XUserGetHighlightsParamsMediaTypeNone   XUserGetHighlightsParamsMediaType = "none"
+)
+
+// Only when the caller requests a quote mode.
+type XUserGetHighlightsParamsQuotes string
+
+const (
+	XUserGetHighlightsParamsQuotesInclude XUserGetHighlightsParamsQuotes = "include"
+	XUserGetHighlightsParamsQuotesExclude XUserGetHighlightsParamsQuotes = "exclude"
+	XUserGetHighlightsParamsQuotesOnly    XUserGetHighlightsParamsQuotes = "only"
+)
+
+// Reply mode. Exclude keeps own-thread replies.
+type XUserGetHighlightsParamsReplies string
+
+const (
+	XUserGetHighlightsParamsRepliesInclude XUserGetHighlightsParamsReplies = "include"
+	XUserGetHighlightsParamsRepliesExclude XUserGetHighlightsParamsReplies = "exclude"
+	XUserGetHighlightsParamsRepliesOnly    XUserGetHighlightsParamsReplies = "only"
+)
+
+// Only when the caller requests a repost mode.
+type XUserGetHighlightsParamsRetweets string
+
+const (
+	XUserGetHighlightsParamsRetweetsInclude XUserGetHighlightsParamsRetweets = "include"
+	XUserGetHighlightsParamsRetweetsExclude XUserGetHighlightsParamsRetweets = "exclude"
+	XUserGetHighlightsParamsRetweetsOnly    XUserGetHighlightsParamsRetweets = "only"
+)
+
+type XUserGetInsightsParams struct {
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetInsightsParams]'s query parameters as `url.Values`.
+func (r XUserGetInsightsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetListMembershipsParams struct {
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetListMembershipsParams]'s query parameters as `url.Values`.
+func (r XUserGetListMembershipsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetListsParams struct {
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetListsParams]'s query parameters as `url.Values`.
+func (r XUserGetListsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetLiveParams struct {
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetLiveParams]'s query parameters as `url.Values`.
+func (r XUserGetLiveParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetSimilarParams struct {
+	// Match any comma-separated or line-separated bio term, ignoring case.
+	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
+	// Only return profiles with a location.
+	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
+	// Only return profiles with a website.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Match a location substring, ignoring case.
+	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
+	// Maximum follower count. A profile without a count passes.
+	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Profiles may follow at most this many accounts.
+	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Maximum post count. maxPosts is also accepted.
+	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
+	// Minimum account age in whole days.
+	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
+	// Minimum follower count. Profiles the filter drops cost nothing.
+	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Profiles must follow at least this many accounts.
+	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
+	// Minimum post count. minPosts is also accepted.
+	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Profiles to request from this page (1-200, default 200). Source, filters or
+	// credits can return fewer. Follow next_cursor for more pages. Its aliases are
+	// limit, count, max_results, maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Match a username substring, ignoring case.
+	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
+	// Only return verified profiles.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Match the verification type exactly, ignoring case.
+	VerifiedType param.Opt[string] `query:"verifiedType,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetSimilarParams]'s query parameters as `url.Values`.
+func (r XUserGetSimilarParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetSubscriptionsParams struct {
+	// Match any comma-separated or line-separated bio term, ignoring case.
+	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
+	// Only return profiles with a location.
+	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
+	// Only return profiles with a website.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Match a location substring, ignoring case.
+	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
+	// Maximum follower count. A profile without a count passes.
+	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Profiles may follow at most this many accounts.
+	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Maximum post count. maxPosts is also accepted.
+	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
+	// Minimum account age in whole days.
+	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
+	// Minimum follower count. Profiles the filter drops cost nothing.
+	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Profiles must follow at least this many accounts.
+	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
+	// Minimum post count. minPosts is also accepted.
+	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Profiles to request from this page (1-200, default 200). Source, filters or
+	// credits can return fewer. Follow next_cursor for more pages. Its aliases are
+	// limit, count, max_results, maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Match a username substring, ignoring case.
+	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
+	// Only return verified profiles.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Match the verification type exactly, ignoring case.
+	VerifiedType param.Opt[string] `query:"verifiedType,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetSubscriptionsParams]'s query parameters as `url.Values`.
+func (r XUserGetSubscriptionsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserTranslateBioParams struct {
+	// Language code to translate into, such as `es`, `tr`, `pt-br`, or `zh-tw`. Upper
+	// and lower case both work.
+	Language string `query:"language" api:"required" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserTranslateBioParams]'s query parameters as `url.Values`.
+func (r XUserTranslateBioParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

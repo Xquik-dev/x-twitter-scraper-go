@@ -1,0 +1,144 @@
+{
+  "users": [
+    {
+      "id": "34743251",
+      "username": "SpaceX",
+      "name": "SpaceX",
+      "followers": 41936873,
+      "following": 127,
+      "verified": true,
+      "isBlueVerified": true,
+      "isVerified": true,
+      "profilePicture": "https://pbs.twimg.com/profile_images/1697749409851985920/HbrI04tM_normal.jpg",
+      "profilePictureOriginal": "https://pbs.twimg.com/profile_images/1697749409851985920/HbrI04tM.jpg",
+      "coverPicture": "https://pbs.twimg.com/profile_banners/34743251/1681251194",
+      "profileBannerUrl": "https://pbs.twimg.com/profile_banners/34743251/1681251194",
+      "description": "SpaceX designs, manufactures and launches the world's most advanced rockets and spacecraft",
+      "location": "Earth",
+      "createdAt": "Thu Apr 23 21:53:30 +0000 2009",
+      "statusesCount": 11834,
+      "mediaCount": 4713,
+      "protected": false,
+      "url": "http://spacex.com",
+      "contactInfo": {
+        "links": [
+          {
+            "url": "http://spacex.com",
+            "network": "website",
+            "source": "url"
+          }
+        ]
+      },
+      "favouritesCount": 529,
+      "possiblySensitive": false,
+      "pinnedTweetIds": [
+        "2104354931595423762"
+      ],
+      "verifiedType": "Business",
+      "profile_bio": {
+        "description": "SpaceX designs, manufactures and launches the world's most advanced rockets and spacecraft",
+        "entities": {
+          "description": {},
+          "url": {
+            "urls": [
+              {
+                "display_url": "spacex.com",
+                "expanded_url": "http://spacex.com",
+                "indices": [
+                  0,
+                  23
+                ],
+                "url": "https://t.co/VOJ6qEctND"
+              }
+            ]
+          }
+        }
+      },
+      "hasGraduatedAccess": true,
+      "parodyCommentaryFanLabel": "None",
+      "professional": {
+        "category": [],
+        "professional_type": "Business",
+        "rest_id": "1681839322029502464"
+      },
+      "profileDescriptionLanguage": "en",
+      "profileImageShape": "Square",
+      "profileTranslatorType": "none",
+      "superFollowEligible": false
+    },
+    {
+      "id": "20536157",
+      "username": "Google",
+      "name": "Google",
+      "followers": 31909314,
+      "following": 298,
+      "verified": true,
+      "isBlueVerified": true,
+      "isVerified": true,
+      "profilePicture": "https://pbs.twimg.com/profile_images/2042749771337564160/AgOFPEL3_normal.jpg",
+      "profilePictureOriginal": "https://pbs.twimg.com/profile_images/2042749771337564160/AgOFPEL3.jpg",
+      "coverPicture": "https://pbs.twimg.com/profile_banners/20536157/1780004508",
+      "profileBannerUrl": "https://pbs.twimg.com/profile_banners/20536157/1780004508",
+      "description": "Here to help.",
+      "location": "Mountain View, CA",
+      "createdAt": "Tue Feb 10 19:14:39 +0000 2009",
+      "statusesCount": 251787,
+      "mediaCount": 38271,
+      "protected": false,
+      "url": "https://blog.google/newsletter-subscribe/",
+      "contactInfo": {
+        "links": [
+          {
+            "url": "https://blog.google/newsletter-subscribe/",
+            "network": "website",
+            "source": "url"
+          }
+        ]
+      },
+      "favouritesCount": 5327,
+      "possiblySensitive": false,
+      "pinnedTweetIds": [
+        "2105388143902175529"
+      ],
+      "verifiedType": "Business",
+      "profile_bio": {
+        "description": "Here to help.",
+        "entities": {
+          "description": {},
+          "url": {
+            "urls": [
+              {
+                "display_url": "blog.google/newsletter-sub…",
+                "expanded_url": "https://blog.google/newsletter-subscribe/",
+                "indices": [
+                  0,
+                  23
+                ],
+                "url": "https://t.co/RS3iU87BGe"
+              }
+            ]
+          }
+        }
+      },
+      "hasGraduatedAccess": true,
+      "parodyCommentaryFanLabel": "None",
+      "professional": {
+        "category": [
+          {
+            "icon_name": "IconBriefcaseStroke",
+            "id": 713,
+            "name": "Science & Technology"
+          }
+        ],
+        "professional_type": "Business",
+        "rest_id": "1504886752259059716"
+      },
+      "profileDescriptionLanguage": "en",
+      "profileImageShape": "Square",
+      "profileTranslatorType": "regular",
+      "superFollowEligible": false
+    }
+  ],
+  "has_next_page": false,
+  "next_cursor": ""
+}
