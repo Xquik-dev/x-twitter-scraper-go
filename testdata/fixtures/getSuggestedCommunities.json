@@ -1,0 +1,21 @@
+{
+  "communities": [
+    {
+      "id": "1472105760389668865",
+      "name": "Tech Twitter",
+      "member_count": 121468,
+      "is_nsfw": false,
+      "primary_topic": {
+        "name": "Technology"
+      },
+      "banner_url": "https://pbs.twimg.com/community_banner_img/example.jpg",
+      "membersFacepile": [
+        {
+          "id": "2864203879",
+          "profilePicture": "https://pbs.twimg.com/profile_images/example.jpg"
+        }
+      ]
+    }
+  ],
+  "count": 1
+}

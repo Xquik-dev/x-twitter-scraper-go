@@ -1,0 +1,33 @@
+{
+  "query": "nasa",
+  "users": [
+    {
+      "id": "11348282",
+      "username": "NASA",
+      "name": "NASA",
+      "verified": true,
+      "isBlueVerified": true,
+      "isVerified": false,
+      "verifiedType": "Government",
+      "protected": false,
+      "location": "Pale Blue Dot",
+      "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+      "badges": [],
+      "isPersonaMediaGenable": false,
+      "score": 0,
+      "tokens": [],
+      "inline": false
+    }
+  ],
+  "topics": [
+    {
+      "topic": "nasa",
+      "score": 0,
+      "tokens": [],
+      "inline": false
+    }
+  ],
+  "hashtags": [],
+  "cashtags": [],
+  "count": 2
+}

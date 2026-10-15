@@ -40,6 +40,27 @@ func NewXDmService(opts ...option.RequestOption) (r XDmService) {
 	return
 }
 
+// Deletes 1 DM from the account's side. The other person keeps it. Success means
+// the account's conversation no longer shows it. A DM still shown gets 422
+// `x_dm_not_deleted`, and Xquik charges nothing.
+func (r *XDmService) DeleteMessage(ctx context.Context, messageID string, params XDmDeleteMessageParams, opts ...option.RequestOption) (res *XDmDeleteMessageResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
+	}
+	opts = slices.Concat(r.options, opts)
+	if params.UserID == "" {
+		err = errors.New("missing required userId parameter")
+		return nil, err
+	}
+	if messageID == "" {
+		err = errors.New("missing required messageId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/dm/%s/messages/%s", url.PathEscape(params.UserID), url.PathEscape(messageID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
+	return res, err
+}
+
 // Returns message history with one user for the connected X account.
 func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGetHistoryParams, opts ...option.RequestOption) (res *XDmGetHistoryResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -410,6 +431,342 @@ func (r *XDmSendResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// Idempotency-Key returns this record. Create another action only when safeToRetry
+// is true.
+type XDmDeleteMessageResponse struct {
+	ID string `json:"id" api:"required"`
+	// Connected account selected for the write.
+	Account XDmDeleteMessageResponseAccount `json:"account" api:"required"`
+	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "update_profile", "update_avatar", "update_banner", "create_community",
+	// "delete_community", "join_community", "leave_community".
+	Action XDmDeleteMessageResponseAction `json:"action" api:"required"`
+	// plannedCredits is the approved maximum. chargedCredits comes from the settled
+	// credit ledger. Xquik charges nothing for pending or failed writes.
+	Billing        XDmDeleteMessageResponseBilling `json:"billing" api:"required"`
+	Charged        bool                            `json:"charged" api:"required"`
+	ChargedCredits string                          `json:"chargedCredits" api:"required"`
+	// Exact follow-up an API client or agent should perform.
+	NextAction  XDmDeleteMessageResponseNextAction `json:"nextAction" api:"required"`
+	Object      constant.XWriteAction              `json:"object" default:"x_write_action"`
+	PollAfterMs int64                              `json:"pollAfterMs" api:"required"`
+	// Stable fingerprint and sanitized payload for replay checks.
+	Request XDmDeleteMessageResponseRequest `json:"request" api:"required"`
+	// Confirmed result produced by the write, when available.
+	Result XDmDeleteMessageResponseResult `json:"result" api:"required"`
+	// True only when a new attempt is likely to succeed.
+	Retryable bool `json:"retryable" api:"required"`
+	// True only when X did not get the write and a new idempotency key may be used.
+	SafeToRetry    bool `json:"safeToRetry" api:"required"`
+	SendDispatched bool `json:"sendDispatched" api:"required"`
+	// Any of "accepted", "dispatching", "pending_confirmation", "success", "failed",
+	// "expired".
+	Status    XDmDeleteMessageResponseStatus `json:"status" api:"required"`
+	StatusURL string                         `json:"statusUrl" api:"required"`
+	Success   bool                           `json:"success" api:"required"`
+	// Existing X resource targeted by the write, when applicable.
+	Target        XDmDeleteMessageResponseTarget `json:"target" api:"required"`
+	TargetID      string                         `json:"targetId" api:"required"`
+	Terminal      bool                           `json:"terminal" api:"required"`
+	WriteActionID string                         `json:"writeActionId" api:"required"`
+	// Compatibility field for a confirmed community ID.
+	CommunityID string `json:"communityId"`
+	// Confirmed community name when available.
+	CommunityName         string    `json:"communityName"`
+	CompletedAt           time.Time `json:"completedAt" format:"date-time"`
+	ConfirmationAttempts  int64     `json:"confirmationAttempts"`
+	ConfirmationCheckedAt time.Time `json:"confirmationCheckedAt" format:"date-time"`
+	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
+	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
+	// Structured recovery context for a failed write.
+	Details map[string]any `json:"details"`
+	Error   string         `json:"error"`
+	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
+	// retention deadline.
+	ExpiresAt time.Time `json:"expiresAt" format:"date-time"`
+	// True when this answers a retry of an earlier request with the same
+	// Idempotency-Key.
+	Idempotent bool `json:"idempotent"`
+	// Media count, kind, size, and billing details when used.
+	Media map[string]any `json:"media"`
+	// Compatibility field for a confirmed media upload ID.
+	MediaID string `json:"mediaId"`
+	// Public media URL when the upload creates one.
+	MediaURL string `json:"mediaUrl" format:"uri"`
+	Message  string `json:"message"`
+	// Compatibility field for a confirmed direct message ID.
+	MessageID   string `json:"messageId"`
+	RequestHash string `json:"requestHash"`
+	RequestID   string `json:"requestId"`
+	// Compatibility result ID for other write actions.
+	ResultID string `json:"resultId"`
+	// Dispatch timestamp when the write reached execution.
+	SendDispatchedAt time.Time `json:"sendDispatchedAt" format:"date-time"`
+	// Compatibility field for a confirmed tweet result ID.
+	TweetID   string    `json:"tweetId"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		Account               respjson.Field
+		Action                respjson.Field
+		Billing               respjson.Field
+		Charged               respjson.Field
+		ChargedCredits        respjson.Field
+		NextAction            respjson.Field
+		Object                respjson.Field
+		PollAfterMs           respjson.Field
+		Request               respjson.Field
+		Result                respjson.Field
+		Retryable             respjson.Field
+		SafeToRetry           respjson.Field
+		SendDispatched        respjson.Field
+		Status                respjson.Field
+		StatusURL             respjson.Field
+		Success               respjson.Field
+		Target                respjson.Field
+		TargetID              respjson.Field
+		Terminal              respjson.Field
+		WriteActionID         respjson.Field
+		CommunityID           respjson.Field
+		CommunityName         respjson.Field
+		CompletedAt           respjson.Field
+		ConfirmationAttempts  respjson.Field
+		ConfirmationCheckedAt respjson.Field
+		ConfirmedAt           respjson.Field
+		CreatedAt             respjson.Field
+		Details               respjson.Field
+		Error                 respjson.Field
+		ExpiresAt             respjson.Field
+		Idempotent            respjson.Field
+		Media                 respjson.Field
+		MediaID               respjson.Field
+		MediaURL              respjson.Field
+		Message               respjson.Field
+		MessageID             respjson.Field
+		RequestHash           respjson.Field
+		RequestID             respjson.Field
+		ResultID              respjson.Field
+		SendDispatchedAt      respjson.Field
+		TweetID               respjson.Field
+		UpdatedAt             respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XDmDeleteMessageResponse) RawJSON() string { return r.JSON.raw }
+func (r *XDmDeleteMessageResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Connected account selected for the write.
+type XDmDeleteMessageResponseAccount struct {
+	ID       string `json:"id" api:"required"`
+	Username string `json:"username" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XDmDeleteMessageResponseAccount) RawJSON() string { return r.JSON.raw }
+func (r *XDmDeleteMessageResponseAccount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XDmDeleteMessageResponseAction string
+
+const (
+	XDmDeleteMessageResponseActionCreateTweet     XDmDeleteMessageResponseAction = "create_tweet"
+	XDmDeleteMessageResponseActionDeleteTweet     XDmDeleteMessageResponseAction = "delete_tweet"
+	XDmDeleteMessageResponseActionLike            XDmDeleteMessageResponseAction = "like"
+	XDmDeleteMessageResponseActionUnlike          XDmDeleteMessageResponseAction = "unlike"
+	XDmDeleteMessageResponseActionRetweet         XDmDeleteMessageResponseAction = "retweet"
+	XDmDeleteMessageResponseActionUnretweet       XDmDeleteMessageResponseAction = "unretweet"
+	XDmDeleteMessageResponseActionFollow          XDmDeleteMessageResponseAction = "follow"
+	XDmDeleteMessageResponseActionUnfollow        XDmDeleteMessageResponseAction = "unfollow"
+	XDmDeleteMessageResponseActionRemoveFollower  XDmDeleteMessageResponseAction = "remove_follower"
+	XDmDeleteMessageResponseActionSendDm          XDmDeleteMessageResponseAction = "send_dm"
+	XDmDeleteMessageResponseActionDeleteDm        XDmDeleteMessageResponseAction = "delete_dm"
+	XDmDeleteMessageResponseActionUploadMedia     XDmDeleteMessageResponseAction = "upload_media"
+	XDmDeleteMessageResponseActionUpdateProfile   XDmDeleteMessageResponseAction = "update_profile"
+	XDmDeleteMessageResponseActionUpdateAvatar    XDmDeleteMessageResponseAction = "update_avatar"
+	XDmDeleteMessageResponseActionUpdateBanner    XDmDeleteMessageResponseAction = "update_banner"
+	XDmDeleteMessageResponseActionCreateCommunity XDmDeleteMessageResponseAction = "create_community"
+	XDmDeleteMessageResponseActionDeleteCommunity XDmDeleteMessageResponseAction = "delete_community"
+	XDmDeleteMessageResponseActionJoinCommunity   XDmDeleteMessageResponseAction = "join_community"
+	XDmDeleteMessageResponseActionLeaveCommunity  XDmDeleteMessageResponseAction = "leave_community"
+)
+
+// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// credit ledger. Xquik charges nothing for pending or failed writes.
+type XDmDeleteMessageResponseBilling struct {
+	Charged        bool   `json:"charged" api:"required"`
+	ChargedCredits string `json:"chargedCredits" api:"required"`
+	PlannedCredits string `json:"plannedCredits" api:"required"`
+	// Any of "not_charged", "pending", "charged", "charge_failed", "refunded".
+	Status XDmDeleteMessageResponseBillingStatus `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Charged        respjson.Field
+		ChargedCredits respjson.Field
+		PlannedCredits respjson.Field
+		Status         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XDmDeleteMessageResponseBilling) RawJSON() string { return r.JSON.raw }
+func (r *XDmDeleteMessageResponseBilling) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XDmDeleteMessageResponseBillingStatus string
+
+const (
+	XDmDeleteMessageResponseBillingStatusNotCharged   XDmDeleteMessageResponseBillingStatus = "not_charged"
+	XDmDeleteMessageResponseBillingStatusPending      XDmDeleteMessageResponseBillingStatus = "pending"
+	XDmDeleteMessageResponseBillingStatusCharged      XDmDeleteMessageResponseBillingStatus = "charged"
+	XDmDeleteMessageResponseBillingStatusChargeFailed XDmDeleteMessageResponseBillingStatus = "charge_failed"
+	XDmDeleteMessageResponseBillingStatusRefunded     XDmDeleteMessageResponseBillingStatus = "refunded"
+)
+
+// Exact follow-up an API client or agent should perform.
+type XDmDeleteMessageResponseNextAction struct {
+	// Any of "poll", "retry", "verify_result", "fix_request".
+	Type XDmDeleteMessageResponseNextActionType `json:"type" api:"required"`
+	// Milliseconds to wait before you poll or retry.
+	AfterMs                   int64  `json:"afterMs"`
+	RequiresNewIdempotencyKey bool   `json:"requiresNewIdempotencyKey"`
+	URL                       string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                      respjson.Field
+		AfterMs                   respjson.Field
+		RequiresNewIdempotencyKey respjson.Field
+		URL                       respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XDmDeleteMessageResponseNextAction) RawJSON() string { return r.JSON.raw }
+func (r *XDmDeleteMessageResponseNextAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XDmDeleteMessageResponseNextActionType string
+
+const (
+	XDmDeleteMessageResponseNextActionTypePoll         XDmDeleteMessageResponseNextActionType = "poll"
+	XDmDeleteMessageResponseNextActionTypeRetry        XDmDeleteMessageResponseNextActionType = "retry"
+	XDmDeleteMessageResponseNextActionTypeVerifyResult XDmDeleteMessageResponseNextActionType = "verify_result"
+	XDmDeleteMessageResponseNextActionTypeFixRequest   XDmDeleteMessageResponseNextActionType = "fix_request"
+)
+
+// Stable fingerprint and sanitized payload for replay checks.
+type XDmDeleteMessageResponseRequest struct {
+	// Stable hash of account, action, target, and payload.
+	Hash string `json:"hash" api:"required"`
+	// Exact sanitized payload dispatched for this action.
+	Payload map[string]any `json:"payload" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hash        respjson.Field
+		Payload     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XDmDeleteMessageResponseRequest) RawJSON() string { return r.JSON.raw }
+func (r *XDmDeleteMessageResponseRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Confirmed result produced by the write, when available.
+type XDmDeleteMessageResponseResult struct {
+	ID    string `json:"id"`
+	State string `json:"state"`
+	// Any of "tweet", "direct_message", "media", "community", "state_change".
+	Type XDmDeleteMessageResponseResultType `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		State       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XDmDeleteMessageResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *XDmDeleteMessageResponseResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XDmDeleteMessageResponseResultType string
+
+const (
+	XDmDeleteMessageResponseResultTypeTweet         XDmDeleteMessageResponseResultType = "tweet"
+	XDmDeleteMessageResponseResultTypeDirectMessage XDmDeleteMessageResponseResultType = "direct_message"
+	XDmDeleteMessageResponseResultTypeMedia         XDmDeleteMessageResponseResultType = "media"
+	XDmDeleteMessageResponseResultTypeCommunity     XDmDeleteMessageResponseResultType = "community"
+	XDmDeleteMessageResponseResultTypeStateChange   XDmDeleteMessageResponseResultType = "state_change"
+)
+
+type XDmDeleteMessageResponseStatus string
+
+const (
+	XDmDeleteMessageResponseStatusAccepted            XDmDeleteMessageResponseStatus = "accepted"
+	XDmDeleteMessageResponseStatusDispatching         XDmDeleteMessageResponseStatus = "dispatching"
+	XDmDeleteMessageResponseStatusPendingConfirmation XDmDeleteMessageResponseStatus = "pending_confirmation"
+	XDmDeleteMessageResponseStatusSuccess             XDmDeleteMessageResponseStatus = "success"
+	XDmDeleteMessageResponseStatusFailed              XDmDeleteMessageResponseStatus = "failed"
+	XDmDeleteMessageResponseStatusExpired             XDmDeleteMessageResponseStatus = "expired"
+)
+
+// Existing X resource targeted by the write, when applicable.
+type XDmDeleteMessageResponseTarget struct {
+	ID string `json:"id" api:"required"`
+	// Any of "tweet", "user", "community".
+	Type XDmDeleteMessageResponseTargetType `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XDmDeleteMessageResponseTarget) RawJSON() string { return r.JSON.raw }
+func (r *XDmDeleteMessageResponseTarget) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XDmDeleteMessageResponseTargetType string
+
+const (
+	XDmDeleteMessageResponseTargetTypeTweet     XDmDeleteMessageResponseTargetType = "tweet"
+	XDmDeleteMessageResponseTargetTypeUser      XDmDeleteMessageResponseTargetType = "user"
+	XDmDeleteMessageResponseTargetTypeCommunity XDmDeleteMessageResponseTargetType = "community"
+)
+
 type XDmGetHistoryParams struct {
 	// X handle (without the `@` prefix) of the connected X account used to read the
 	// conversation. The account must be a participant in the conversation.
@@ -445,4 +802,28 @@ func (r XDmSendParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *XDmSendParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type XDmDeleteMessageParams struct {
+	// The other person in the conversation, as a user ID, username with or without @,
+	// or URL-encoded profile URL, such as x.com/nasa. Xquik looks up a username's ID
+	// first. Anything else gets 400 `invalid_user_id`.
+	UserID string `path:"userId" api:"required" json:"-"`
+	// Connected X account (@username or ID) that sees the DM.
+	Account string `query:"account" api:"required" json:"-"`
+	// Use 1 unique value per intended write. Reuse it only for an identical retry. A
+	// matching retry returns the first answer again, with `idempotent: true` added. It
+	// keeps the first status, body & Retry-After. It sends nothing to X & charges
+	// nothing. While the first request runs, a retry returns 202 & the action.
+	// Different input returns 409. Protection lasts at least 90 days.
+	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XDmDeleteMessageParams]'s query parameters as `url.Values`.
+func (r XDmDeleteMessageParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }

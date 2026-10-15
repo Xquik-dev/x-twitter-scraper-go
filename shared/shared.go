@@ -17,6 +17,691 @@ type paramUnion = param.APIUnion
 
 type paramObj = param.APIObject
 
+// Public X Community, as every Community read returns it.
+type Community struct {
+	// Unique community identifier
+	ID string `json:"id" api:"required"`
+	// Whether the community is marked sensitive
+	IsNsfw bool `json:"is_nsfw" api:"required"`
+	// Total member count
+	MemberCount int64 `json:"member_count" api:"required"`
+	// Display name of the community
+	Name string `json:"name" api:"required"`
+	// Public X profile.
+	Admin UserProfile `json:"admin"`
+	// The banner X shows for a community, with its size & colors.
+	Banner CommunityBanner `json:"banner"`
+	// Community banner image URL
+	BannerURL string `json:"banner_url"`
+	// Community creation timestamp
+	CreatedAt string `json:"created_at"`
+	// The creator's public profile, or the ID, username and badge alone when X sends
+	// no profile
+	Creator CommunityCreatorUnion `json:"creator"`
+	// About text for the community
+	Description string `json:"description"`
+	// Invitation policy
+	InvitesPolicy string `json:"invites_policy"`
+	// Join policy (open or restricted)
+	JoinPolicy string `json:"join_policy"`
+	// The members X previews beside the member count. A keyword or topic result gives
+	// each member's ID & picture only.
+	MembersFacepile []CommunityMembersFacepileUnion `json:"membersFacepile"`
+	// Total moderator count
+	ModeratorCount int64 `json:"moderator_count"`
+	// Primary topic. Its id is absent when X lists the community in a keyword or topic
+	// result.
+	PrimaryTopic CommunityPrimaryTopic `json:"primary_topic"`
+	// What the community asks a user who joins
+	Question string `json:"question"`
+	// Community rules
+	Rules []CommunityRule `json:"rules"`
+	// Tags X finds the community by
+	SearchTags []string `json:"searchTags"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		IsNsfw          respjson.Field
+		MemberCount     respjson.Field
+		Name            respjson.Field
+		Admin           respjson.Field
+		Banner          respjson.Field
+		BannerURL       respjson.Field
+		CreatedAt       respjson.Field
+		Creator         respjson.Field
+		Description     respjson.Field
+		InvitesPolicy   respjson.Field
+		JoinPolicy      respjson.Field
+		MembersFacepile respjson.Field
+		ModeratorCount  respjson.Field
+		PrimaryTopic    respjson.Field
+		Question        respjson.Field
+		Rules           respjson.Field
+		SearchTags      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Community) RawJSON() string { return r.JSON.raw }
+func (r *Community) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The banner X shows for a community, with its size & colors.
+type CommunityBanner struct {
+	// Banner image URL at its original size
+	URL string `json:"url" api:"required"`
+	// Main colors of the banner, largest share first
+	Colors []CommunityBannerColor `json:"colors"`
+	// Area X keeps in view when it crops the banner, in pixels from the top left
+	Focus CommunityBannerFocus `json:"focus"`
+	// Banner height in pixels
+	Height int64 `json:"height"`
+	// Banner width in pixels
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Colors      respjson.Field
+		Focus       respjson.Field
+		Height      respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityBanner) RawJSON() string { return r.JSON.raw }
+func (r *CommunityBanner) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommunityBannerColor struct {
+	// Blue value of the color
+	Blue int64 `json:"blue" api:"required"`
+	// Green value of the color
+	Green int64 `json:"green" api:"required"`
+	// Share of the banner in this color
+	Percentage float64 `json:"percentage" api:"required"`
+	// Red value of the color
+	Red int64 `json:"red" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Blue        respjson.Field
+		Green       respjson.Field
+		Percentage  respjson.Field
+		Red         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityBannerColor) RawJSON() string { return r.JSON.raw }
+func (r *CommunityBannerColor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Area X keeps in view when it crops the banner, in pixels from the top left
+type CommunityBannerFocus struct {
+	// Height of the area
+	Height int64 `json:"height"`
+	// Distance from the left edge
+	Left int64 `json:"left"`
+	// Distance from the top edge
+	Top int64 `json:"top"`
+	// Width of the area
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Left        respjson.Field
+		Top         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityBannerFocus) RawJSON() string { return r.JSON.raw }
+func (r *CommunityBannerFocus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// CommunityCreatorUnion contains all possible properties and values from
+// [UserProfile], [CommunityCreatorObject].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type CommunityCreatorUnion struct {
+	ID string `json:"id"`
+	// This field is from variant [UserProfile].
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	// This field is from variant [UserProfile].
+	AccountBasedIn UserProfileAccountBasedIn `json:"accountBasedIn"`
+	// This field is from variant [UserProfile].
+	AffiliatesHighlightedLabel UserProfileAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
+	// This field is from variant [UserProfile].
+	AutomatedBy string `json:"automatedBy"`
+	// This field is from variant [UserProfile].
+	BusinessAccountAffiliatesCount int64 `json:"businessAccountAffiliatesCount"`
+	// This field is from variant [UserProfile].
+	CommunityRole string `json:"communityRole"`
+	// This field is from variant [UserProfile].
+	CoverPicture string `json:"coverPicture"`
+	// This field is from variant [UserProfile].
+	CreatedAt string `json:"createdAt"`
+	// This field is from variant [UserProfile].
+	CreatorSubscriptionsCount int64 `json:"creatorSubscriptionsCount"`
+	// This field is from variant [UserProfile].
+	Description string `json:"description"`
+	// This field is from variant [UserProfile].
+	FavouritesCount int64 `json:"favouritesCount"`
+	// This field is from variant [UserProfile].
+	Followers int64 `json:"followers"`
+	// This field is from variant [UserProfile].
+	Following int64 `json:"following"`
+	// This field is from variant [UserProfile].
+	GrokTranslatedBio map[string]any `json:"grokTranslatedBio"`
+	// This field is from variant [UserProfile].
+	HasCustomTimelines bool `json:"hasCustomTimelines"`
+	// This field is from variant [UserProfile].
+	HasGraduatedAccess bool `json:"hasGraduatedAccess"`
+	// This field is from variant [UserProfile].
+	HasHiddenSubscriptionsOnProfile bool `json:"hasHiddenSubscriptionsOnProfile"`
+	// This field is from variant [UserProfile].
+	HighlightsInfo UserProfileHighlightsInfo `json:"highlightsInfo"`
+	// This field is from variant [UserProfile].
+	IdentityVerification UserProfileIdentityVerification `json:"identityVerification"`
+	// This field is from variant [UserProfile].
+	IsAutomated bool `json:"isAutomated"`
+	// This field is from variant [UserProfile].
+	IsBlueVerified bool `json:"isBlueVerified"`
+	// This field is from variant [UserProfile].
+	IsProfileTranslatable bool `json:"isProfileTranslatable"`
+	// This field is from variant [UserProfile].
+	IsTranslator bool `json:"isTranslator"`
+	// This field is from variant [UserProfile].
+	IsVerified bool `json:"isVerified"`
+	// This field is from variant [UserProfile].
+	Location string `json:"location"`
+	// This field is from variant [UserProfile].
+	MediaCount int64 `json:"mediaCount"`
+	// This field is from variant [UserProfile].
+	ParodyCommentaryFanLabel string `json:"parodyCommentaryFanLabel"`
+	// This field is from variant [UserProfile].
+	PinnedTweetIDs []string `json:"pinnedTweetIds"`
+	// This field is from variant [UserProfile].
+	PossiblySensitive bool `json:"possiblySensitive"`
+	// This field is from variant [UserProfile].
+	Professional map[string]any `json:"professional"`
+	// This field is from variant [UserProfile].
+	ProfileBio map[string]any `json:"profile_bio"`
+	// This field is from variant [UserProfile].
+	ProfileBannerURL string `json:"profileBannerUrl"`
+	// This field is from variant [UserProfile].
+	ProfileDescriptionLanguage string `json:"profileDescriptionLanguage"`
+	// This field is from variant [UserProfile].
+	ProfileImageShape string `json:"profileImageShape"`
+	// This field is from variant [UserProfile].
+	ProfileInterstitialType string `json:"profileInterstitialType"`
+	// This field is from variant [UserProfile].
+	ProfilePicture string `json:"profilePicture"`
+	// This field is from variant [UserProfile].
+	ProfileSortEnabled bool `json:"profileSortEnabled"`
+	// This field is from variant [UserProfile].
+	ProfileTranslatorType string `json:"profileTranslatorType"`
+	// This field is from variant [UserProfile].
+	Protected bool `json:"protected"`
+	// This field is from variant [UserProfile].
+	RetweetedAt time.Time `json:"retweetedAt"`
+	// This field is from variant [UserProfile].
+	StatusesCount int64 `json:"statusesCount"`
+	// This field is from variant [UserProfile].
+	SuperFollowEligible bool `json:"superFollowEligible"`
+	// This field is from variant [UserProfile].
+	SuperFollowsUserProfileActive bool `json:"superFollowsUserProfileActive"`
+	// This field is from variant [UserProfile].
+	TipJar UserProfileTipJar `json:"tipJar"`
+	// This field is from variant [UserProfile].
+	Unavailable bool `json:"unavailable"`
+	// This field is from variant [UserProfile].
+	UnavailableReason string `json:"unavailableReason"`
+	// This field is from variant [UserProfile].
+	URL      string `json:"url"`
+	Verified bool   `json:"verified"`
+	// This field is from variant [UserProfile].
+	VerifiedType string `json:"verifiedType"`
+	// This field is from variant [UserProfile].
+	WithheldInCountries []string `json:"withheldInCountries"`
+	// This field is from variant [UserProfile].
+	WithheldScope string `json:"withheldScope"`
+	JSON          struct {
+		ID                              respjson.Field
+		Name                            respjson.Field
+		Username                        respjson.Field
+		AccountBasedIn                  respjson.Field
+		AffiliatesHighlightedLabel      respjson.Field
+		AutomatedBy                     respjson.Field
+		BusinessAccountAffiliatesCount  respjson.Field
+		CommunityRole                   respjson.Field
+		CoverPicture                    respjson.Field
+		CreatedAt                       respjson.Field
+		CreatorSubscriptionsCount       respjson.Field
+		Description                     respjson.Field
+		FavouritesCount                 respjson.Field
+		Followers                       respjson.Field
+		Following                       respjson.Field
+		GrokTranslatedBio               respjson.Field
+		HasCustomTimelines              respjson.Field
+		HasGraduatedAccess              respjson.Field
+		HasHiddenSubscriptionsOnProfile respjson.Field
+		HighlightsInfo                  respjson.Field
+		IdentityVerification            respjson.Field
+		IsAutomated                     respjson.Field
+		IsBlueVerified                  respjson.Field
+		IsProfileTranslatable           respjson.Field
+		IsTranslator                    respjson.Field
+		IsVerified                      respjson.Field
+		Location                        respjson.Field
+		MediaCount                      respjson.Field
+		ParodyCommentaryFanLabel        respjson.Field
+		PinnedTweetIDs                  respjson.Field
+		PossiblySensitive               respjson.Field
+		Professional                    respjson.Field
+		ProfileBio                      respjson.Field
+		ProfileBannerURL                respjson.Field
+		ProfileDescriptionLanguage      respjson.Field
+		ProfileImageShape               respjson.Field
+		ProfileInterstitialType         respjson.Field
+		ProfilePicture                  respjson.Field
+		ProfileSortEnabled              respjson.Field
+		ProfileTranslatorType           respjson.Field
+		Protected                       respjson.Field
+		RetweetedAt                     respjson.Field
+		StatusesCount                   respjson.Field
+		SuperFollowEligible             respjson.Field
+		SuperFollowsUserProfileActive   respjson.Field
+		TipJar                          respjson.Field
+		Unavailable                     respjson.Field
+		UnavailableReason               respjson.Field
+		URL                             respjson.Field
+		Verified                        respjson.Field
+		VerifiedType                    respjson.Field
+		WithheldInCountries             respjson.Field
+		WithheldScope                   respjson.Field
+		raw                             string
+	} `json:"-"`
+}
+
+func (u CommunityCreatorUnion) AsUserProfile() (v UserProfile) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CommunityCreatorUnion) AsCommunityCreatorObject() (v CommunityCreatorObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CommunityCreatorUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *CommunityCreatorUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommunityCreatorObject struct {
+	// Numeric X user ID of the creator
+	ID string `json:"id" api:"required"`
+	// X username of the creator
+	Username string `json:"username" api:"required"`
+	// Whether X shows the creator a badge
+	Verified bool `json:"verified" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Username    respjson.Field
+		Verified    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityCreatorObject) RawJSON() string { return r.JSON.raw }
+func (r *CommunityCreatorObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// CommunityMembersFacepileUnion contains all possible properties and values from
+// [UserProfile], [CommunityMembersFacepileCommunityMemberPreview].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type CommunityMembersFacepileUnion struct {
+	ID string `json:"id"`
+	// This field is from variant [UserProfile].
+	Name string `json:"name"`
+	// This field is from variant [UserProfile].
+	Username string `json:"username"`
+	// This field is from variant [UserProfile].
+	AccountBasedIn UserProfileAccountBasedIn `json:"accountBasedIn"`
+	// This field is from variant [UserProfile].
+	AffiliatesHighlightedLabel UserProfileAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
+	// This field is from variant [UserProfile].
+	AutomatedBy string `json:"automatedBy"`
+	// This field is from variant [UserProfile].
+	BusinessAccountAffiliatesCount int64 `json:"businessAccountAffiliatesCount"`
+	// This field is from variant [UserProfile].
+	CommunityRole string `json:"communityRole"`
+	// This field is from variant [UserProfile].
+	CoverPicture string `json:"coverPicture"`
+	// This field is from variant [UserProfile].
+	CreatedAt string `json:"createdAt"`
+	// This field is from variant [UserProfile].
+	CreatorSubscriptionsCount int64 `json:"creatorSubscriptionsCount"`
+	// This field is from variant [UserProfile].
+	Description string `json:"description"`
+	// This field is from variant [UserProfile].
+	FavouritesCount int64 `json:"favouritesCount"`
+	// This field is from variant [UserProfile].
+	Followers int64 `json:"followers"`
+	// This field is from variant [UserProfile].
+	Following int64 `json:"following"`
+	// This field is from variant [UserProfile].
+	GrokTranslatedBio map[string]any `json:"grokTranslatedBio"`
+	// This field is from variant [UserProfile].
+	HasCustomTimelines bool `json:"hasCustomTimelines"`
+	// This field is from variant [UserProfile].
+	HasGraduatedAccess bool `json:"hasGraduatedAccess"`
+	// This field is from variant [UserProfile].
+	HasHiddenSubscriptionsOnProfile bool `json:"hasHiddenSubscriptionsOnProfile"`
+	// This field is from variant [UserProfile].
+	HighlightsInfo UserProfileHighlightsInfo `json:"highlightsInfo"`
+	// This field is from variant [UserProfile].
+	IdentityVerification UserProfileIdentityVerification `json:"identityVerification"`
+	// This field is from variant [UserProfile].
+	IsAutomated bool `json:"isAutomated"`
+	// This field is from variant [UserProfile].
+	IsBlueVerified bool `json:"isBlueVerified"`
+	// This field is from variant [UserProfile].
+	IsProfileTranslatable bool `json:"isProfileTranslatable"`
+	// This field is from variant [UserProfile].
+	IsTranslator bool `json:"isTranslator"`
+	// This field is from variant [UserProfile].
+	IsVerified bool `json:"isVerified"`
+	// This field is from variant [UserProfile].
+	Location string `json:"location"`
+	// This field is from variant [UserProfile].
+	MediaCount int64 `json:"mediaCount"`
+	// This field is from variant [UserProfile].
+	ParodyCommentaryFanLabel string `json:"parodyCommentaryFanLabel"`
+	// This field is from variant [UserProfile].
+	PinnedTweetIDs []string `json:"pinnedTweetIds"`
+	// This field is from variant [UserProfile].
+	PossiblySensitive bool `json:"possiblySensitive"`
+	// This field is from variant [UserProfile].
+	Professional map[string]any `json:"professional"`
+	// This field is from variant [UserProfile].
+	ProfileBio map[string]any `json:"profile_bio"`
+	// This field is from variant [UserProfile].
+	ProfileBannerURL string `json:"profileBannerUrl"`
+	// This field is from variant [UserProfile].
+	ProfileDescriptionLanguage string `json:"profileDescriptionLanguage"`
+	// This field is from variant [UserProfile].
+	ProfileImageShape string `json:"profileImageShape"`
+	// This field is from variant [UserProfile].
+	ProfileInterstitialType string `json:"profileInterstitialType"`
+	ProfilePicture          string `json:"profilePicture"`
+	// This field is from variant [UserProfile].
+	ProfileSortEnabled bool `json:"profileSortEnabled"`
+	// This field is from variant [UserProfile].
+	ProfileTranslatorType string `json:"profileTranslatorType"`
+	// This field is from variant [UserProfile].
+	Protected bool `json:"protected"`
+	// This field is from variant [UserProfile].
+	RetweetedAt time.Time `json:"retweetedAt"`
+	// This field is from variant [UserProfile].
+	StatusesCount int64 `json:"statusesCount"`
+	// This field is from variant [UserProfile].
+	SuperFollowEligible bool `json:"superFollowEligible"`
+	// This field is from variant [UserProfile].
+	SuperFollowsUserProfileActive bool `json:"superFollowsUserProfileActive"`
+	// This field is from variant [UserProfile].
+	TipJar UserProfileTipJar `json:"tipJar"`
+	// This field is from variant [UserProfile].
+	Unavailable bool `json:"unavailable"`
+	// This field is from variant [UserProfile].
+	UnavailableReason string `json:"unavailableReason"`
+	// This field is from variant [UserProfile].
+	URL string `json:"url"`
+	// This field is from variant [UserProfile].
+	Verified bool `json:"verified"`
+	// This field is from variant [UserProfile].
+	VerifiedType string `json:"verifiedType"`
+	// This field is from variant [UserProfile].
+	WithheldInCountries []string `json:"withheldInCountries"`
+	// This field is from variant [UserProfile].
+	WithheldScope string `json:"withheldScope"`
+	// This field is from variant [CommunityMembersFacepileCommunityMemberPreview].
+	ProfilePictureOriginal string `json:"profilePictureOriginal"`
+	JSON                   struct {
+		ID                              respjson.Field
+		Name                            respjson.Field
+		Username                        respjson.Field
+		AccountBasedIn                  respjson.Field
+		AffiliatesHighlightedLabel      respjson.Field
+		AutomatedBy                     respjson.Field
+		BusinessAccountAffiliatesCount  respjson.Field
+		CommunityRole                   respjson.Field
+		CoverPicture                    respjson.Field
+		CreatedAt                       respjson.Field
+		CreatorSubscriptionsCount       respjson.Field
+		Description                     respjson.Field
+		FavouritesCount                 respjson.Field
+		Followers                       respjson.Field
+		Following                       respjson.Field
+		GrokTranslatedBio               respjson.Field
+		HasCustomTimelines              respjson.Field
+		HasGraduatedAccess              respjson.Field
+		HasHiddenSubscriptionsOnProfile respjson.Field
+		HighlightsInfo                  respjson.Field
+		IdentityVerification            respjson.Field
+		IsAutomated                     respjson.Field
+		IsBlueVerified                  respjson.Field
+		IsProfileTranslatable           respjson.Field
+		IsTranslator                    respjson.Field
+		IsVerified                      respjson.Field
+		Location                        respjson.Field
+		MediaCount                      respjson.Field
+		ParodyCommentaryFanLabel        respjson.Field
+		PinnedTweetIDs                  respjson.Field
+		PossiblySensitive               respjson.Field
+		Professional                    respjson.Field
+		ProfileBio                      respjson.Field
+		ProfileBannerURL                respjson.Field
+		ProfileDescriptionLanguage      respjson.Field
+		ProfileImageShape               respjson.Field
+		ProfileInterstitialType         respjson.Field
+		ProfilePicture                  respjson.Field
+		ProfileSortEnabled              respjson.Field
+		ProfileTranslatorType           respjson.Field
+		Protected                       respjson.Field
+		RetweetedAt                     respjson.Field
+		StatusesCount                   respjson.Field
+		SuperFollowEligible             respjson.Field
+		SuperFollowsUserProfileActive   respjson.Field
+		TipJar                          respjson.Field
+		Unavailable                     respjson.Field
+		UnavailableReason               respjson.Field
+		URL                             respjson.Field
+		Verified                        respjson.Field
+		VerifiedType                    respjson.Field
+		WithheldInCountries             respjson.Field
+		WithheldScope                   respjson.Field
+		ProfilePictureOriginal          respjson.Field
+		raw                             string
+	} `json:"-"`
+}
+
+func (u CommunityMembersFacepileUnion) AsUserProfile() (v UserProfile) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CommunityMembersFacepileUnion) AsCommunityMembersFacepileCommunityMemberPreview() (v CommunityMembersFacepileCommunityMemberPreview) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CommunityMembersFacepileUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *CommunityMembersFacepileUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A member X previews by ID & profile picture only.
+type CommunityMembersFacepileCommunityMemberPreview struct {
+	// Numeric X user ID of the member
+	ID string `json:"id" api:"required"`
+	// Profile picture URL of the member
+	ProfilePicture string `json:"profilePicture"`
+	// The member's profile picture at full size
+	ProfilePictureOriginal string `json:"profilePictureOriginal"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		ProfilePicture         respjson.Field
+		ProfilePictureOriginal respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityMembersFacepileCommunityMemberPreview) RawJSON() string { return r.JSON.raw }
+func (r *CommunityMembersFacepileCommunityMemberPreview) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Primary topic. Its id is absent when X lists the community in a keyword or topic
+// result.
+type CommunityPrimaryTopic struct {
+	// Topic name X shows on the community
+	Name string `json:"name" api:"required"`
+	// Topic ID that /x/communities/popular takes
+	ID string `json:"id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityPrimaryTopic) RawJSON() string { return r.JSON.raw }
+func (r *CommunityPrimaryTopic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommunityRule struct {
+	// Rule ID
+	ID string `json:"id"`
+	// What the rule asks of members
+	Description string `json:"description"`
+	// Rule title
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Description respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityRule) RawJSON() string { return r.JSON.raw }
+func (r *CommunityRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// 1 page of X Communities, in X's order.
+type CommunityPage struct {
+	// Communities in X's order
+	Communities []Community `json:"communities" api:"required"`
+	// Whether another page of communities follows
+	HasNextPage bool `json:"has_next_page" api:"required"`
+	// Cursor for the next page of communities. Empty at the end.
+	NextCursor string `json:"next_cursor" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Communities respjson.Field
+		HasNextPage respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityPage) RawJSON() string { return r.JSON.raw }
+func (r *CommunityPage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A topic X groups communities under, with its subtopics.
+type CommunityTopic struct {
+	// Topic ID. Pass it as topicId to /x/communities/popular.
+	ID string `json:"id" api:"required"`
+	// Topic name, which topic on /x/communities/popular takes
+	Name string `json:"name" api:"required"`
+	// Narrower topics inside this topic
+	Subtopics []CommunityTopicSubtopic `json:"subtopics" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Subtopics   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityTopic) RawJSON() string { return r.JSON.raw }
+func (r *CommunityTopic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommunityTopicSubtopic struct {
+	// Subtopic ID, which topicId also takes
+	ID string `json:"id" api:"required"`
+	// Subtopic name, which topic also takes
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityTopicSubtopic) RawJSON() string { return r.JSON.raw }
+func (r *CommunityTopicSubtopic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Content disclosure metadata shown by X when a tweet is labeled as paid
 // partnership content or AI-generated media.
 type ContentDisclosure struct {

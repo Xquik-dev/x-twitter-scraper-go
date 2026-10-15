@@ -34,6 +34,8 @@ type XCommunityService struct {
 	Join XCommunityJoinService
 	// X Community info, members, and tweets
 	Tweets XCommunityTweetService
+	// Find X Communities & read their info, members, posts & media
+	Media XCommunityMediaService
 }
 
 // NewXCommunityService generates a new service that applies the given options to
@@ -44,6 +46,7 @@ func NewXCommunityService(opts ...option.RequestOption) (r XCommunityService) {
 	r.options = opts
 	r.Join = NewXCommunityJoinService(opts...)
 	r.Tweets = NewXCommunityTweetService(opts...)
+	r.Media = NewXCommunityMediaService(opts...)
 	return
 }
 
@@ -70,6 +73,15 @@ func (r *XCommunityService) Delete(ctx context.Context, id string, params XCommu
 	}
 	path := fmt.Sprintf("x/communities/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
+	return res, err
+}
+
+// Returns the communities X finds for a keyword, in X's order. Each community
+// costs 1 credit. To search the tweets in Communities, use /x/communities/search.
+func (r *XCommunityService) Find(ctx context.Context, query XCommunityFindParams, opts ...option.RequestOption) (res *shared.CommunityPage, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/communities/find"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -113,6 +125,52 @@ func (r *XCommunityService) GetModerators(ctx context.Context, id string, query 
 func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/communities/search"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the communities X ranks highest under a topic or subtopic. Name it by
+// topicId or by topic name from /x/communities/topics. Each community costs 1
+// credit. A missing or unknown topic returns invalid_community_topic & lists the
+// topic names.
+func (r *XCommunityService) ListPopular(ctx context.Context, query XCommunityListPopularParams, opts ...option.RequestOption) (res *shared.CommunityPage, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/communities/popular"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the communities X suggests, with their full public fields. X picks them
+// per request, so 2 calls can differ. If X suggests none, Xquik asks up to 2 more
+// times. An empty list is free. Each community costs 1 credit.
+func (r *XCommunityService) ListSuggested(ctx context.Context, query XCommunityListSuggestedParams, opts ...option.RequestOption) (res *XCommunityListSuggestedResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/communities/suggested"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns the community topics with their subtopics. Pass an ID as topicId, or a
+// name as topic, to /x/communities/popular. Each top-level topic costs 1 credit,
+// its subtopics included.
+func (r *XCommunityService) ListTopics(ctx context.Context, query XCommunityListTopicsParams, opts ...option.RequestOption) (res *XCommunityListTopicsResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/communities/topics"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Finds a community's members by name or username, as the search box on X's
+// members page does. X checks up to 10 accounts that match, & the answer holds the
+// members among them, each with its role. Each member costs 1 credit. An answer
+// without members is free.
+func (r *XCommunityService) SearchMembers(ctx context.Context, id string, query XCommunitySearchMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/communities/%s/members/search", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -838,6 +896,52 @@ func (r *XCommunityGetInfoResponseCommunityRule) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type XCommunityListSuggestedResponse struct {
+	// Suggested communities in X's order
+	Communities []shared.Community `json:"communities" api:"required"`
+	// Communities returned & charged
+	Count int64 `json:"count" api:"required"`
+	// What to do next. Present only when X suggests none.
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Communities respjson.Field
+		Count       respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityListSuggestedResponse) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityListSuggestedResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XCommunityListTopicsResponse struct {
+	// Top-level topics returned & charged
+	Count int64 `json:"count" api:"required"`
+	// Topics in X's order
+	Topics []shared.CommunityTopic `json:"topics" api:"required"`
+	// What to do next. Present only when X lists no topic.
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Topics      respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XCommunityListTopicsResponse) RawJSON() string { return r.JSON.raw }
+func (r *XCommunityListTopicsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type XCommunityNewParams struct {
 	// X account (@username or ID) creating the community
 	Account string `json:"account" api:"required"`
@@ -1028,3 +1132,182 @@ const (
 	XCommunityGetSearchParamsQueryTypeLatest XCommunityGetSearchParamsQueryType = "Latest"
 	XCommunityGetSearchParamsQueryTypeTop    XCommunityGetSearchParamsQueryType = "Top"
 )
+
+type XCommunityFindParams struct {
+	// Keyword to find communities by, such as ai. Alias query.
+	Q string `query:"q" api:"required" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XCommunityFindParams]'s query parameters as `url.Values`.
+func (r XCommunityFindParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XCommunityListPopularParams struct {
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Topic or subtopic name in any case, such as technology. Send this or topicId.
+	Topic param.Opt[string] `query:"topic,omitzero" json:"-"`
+	// Topic or subtopic ID from /x/communities/topics, such as 301. Wins over topic.
+	TopicID param.Opt[string] `query:"topicId,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XCommunityListPopularParams]'s query parameters as `url.Values`.
+func (r XCommunityListPopularParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XCommunityListSuggestedParams struct {
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Maximum communities to return. Omit it for every suggestion. A low credit
+	// balance can return fewer. Aliases pageSize, count, max_results, maxItems,
+	// max_items & per_page.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XCommunityListSuggestedParams]'s query parameters as `url.Values`.
+func (r XCommunityListSuggestedParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XCommunityListTopicsParams struct {
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Maximum topics to return. Omit it for every topic. A low credit balance can
+	// return fewer. Aliases pageSize, count, max_results, maxItems, max_items &
+	// per_page.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XCommunityListTopicsParams]'s query parameters as `url.Values`.
+func (r XCommunityListTopicsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XCommunitySearchMembersParams struct {
+	// Name or username to find members by, such as marckohlbrugge. A leading @ is
+	// dropped. Alias query.
+	Q string `query:"q" api:"required" json:"-"`
+	// Match any comma-separated or line-separated bio term, ignoring case.
+	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
+	// Only return profiles with a location.
+	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
+	// Only return profiles with a website.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Match a location substring, ignoring case.
+	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
+	// Maximum follower count. A profile without a count passes.
+	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Profiles may follow at most this many accounts.
+	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Maximum post count. maxPosts is also accepted.
+	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
+	// Minimum account age in whole days.
+	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
+	// Minimum follower count. Profiles the filter drops cost nothing.
+	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Profiles must follow at least this many accounts.
+	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
+	// Minimum post count. minPosts is also accepted.
+	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Match a username substring, ignoring case.
+	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
+	// Only return verified profiles.
+	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Match the verification type exactly, ignoring case.
+	VerifiedType param.Opt[string] `query:"verifiedType,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XCommunitySearchMembersParams]'s query parameters as `url.Values`.
+func (r XCommunitySearchMembersParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

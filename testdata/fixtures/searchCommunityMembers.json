@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "id": "641633",
+      "username": "marckohlbrugge",
+      "name": "Marc Köhlbrugge",
+      "communityRole": "Admin",
+      "profilePicture": "https://pbs.twimg.com/profile_images/1857124042433572864/iMivVaYP_normal.jpg",
+      "isBlueVerified": true
+    }
+  ],
+  "has_next_page": false,
+  "next_cursor": ""
+}

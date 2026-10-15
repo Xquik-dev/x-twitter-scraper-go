@@ -1,0 +1,513 @@
+{
+  "id": "1493446837214187523",
+  "name": "Build in Public",
+  "member_count": 268126,
+  "is_nsfw": false,
+  "banner": {
+    "url": "https://pbs.twimg.com/community_banner_img/1915033378811772928/KdaKUaRP?format=png&name=orig",
+    "width": 805,
+    "height": 322,
+    "colors": [
+      {
+        "percentage": 42.48,
+        "red": 247,
+        "green": 228,
+        "blue": 29
+      },
+      {
+        "percentage": 42.48,
+        "red": 0,
+        "green": 0,
+        "blue": 1
+      },
+      {
+        "percentage": 9.57,
+        "red": 64,
+        "green": 58,
+        "blue": 13
+      },
+      {
+        "percentage": 4.43,
+        "red": 167,
+        "green": 154,
+        "blue": 27
+      },
+      {
+        "percentage": 0.75,
+        "red": 219,
+        "green": 219,
+        "blue": 219
+      }
+    ],
+    "focus": {
+      "left": 403,
+      "top": 161,
+      "width": 1,
+      "height": 1
+    }
+  },
+  "description": "Share what you're working on. Get feedback. Help each other move forward. – Sponsored by bolt.new ⚡",
+  "created_at": "1644900447551",
+  "join_policy": "Open",
+  "invites_policy": "MemberInvitesAllowed",
+  "banner_url": "https://pbs.twimg.com/community_banner_img/1915033378811772928/KdaKUaRP?format=png&name=orig",
+  "moderator_count": 6,
+  "primary_topic": {
+    "id": "603",
+    "name": "Entrepreneurship"
+  },
+  "question": "What are you working on?",
+  "rules": [
+    {
+      "description": "Don't be scared to share unfinished work",
+      "id": "1493447542045958144",
+      "name": "Share what you're working on"
+    },
+    {
+      "description": "Visual tweets tend to grab people's attention",
+      "id": "1493448150169755648",
+      "name": "Screenshots, screencasts, drafts, etc"
+    },
+    {
+      "description": "Don't ask for upvotes or advertise your products/services.",
+      "id": "1836095088465781029",
+      "name": "No self-promotion"
+    },
+    {
+      "description": "Only post about building in public. No politics or other off-topic posts. There are other communities for that.",
+      "id": "1836095194716066104",
+      "name": "Stay on-topic"
+    },
+    {
+      "description": "If your goal is to get replies, likes, etc, don't post it here. Don't ask super generic questions like \"what's everyone working on?\"",
+      "id": "1836095002557944207",
+      "name": "No engagement farming"
+    },
+    {
+      "description": "No company accounts. No logos. Use your own name. No promotion or URLs in your name.",
+      "id": "1836094745590059481",
+      "name": "Use a personal account"
+    }
+  ],
+  "searchTags": [
+    "buildinpublic",
+    "buildinginpublic",
+    "builtinpublic"
+  ],
+  "admin": {
+    "id": "641633",
+    "username": "marckohlbrugge",
+    "name": "Marc Köhlbrugge",
+    "followers": 89054,
+    "following": 973,
+    "verified": true,
+    "isBlueVerified": true,
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1857124042433572864/iMivVaYP_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/641633/1781378883",
+    "profileBannerUrl": "https://pbs.twimg.com/profile_banners/641633/1781378883",
+    "description": "🚧 https://t.co/aMZ4K3azU0 🏠 https://t.co/1KH3Ex4L2r 🤑 https://t.co/z2G662Uvhl 👀 https://t.co/LtA0MMRVNA 🚀 https://t.co/sxmNUGTYQv 📣 https://t.co/oPODwYE4Iq 💻 https://t.co/leziY51tRd 📸 https://t.co/NJnFBXCSCj #️⃣ https://t.co/6qUnpK7VH5",
+    "createdAt": "Mon Jan 15 23:55:33 +0000 2007",
+    "statusesCount": 50114,
+    "mediaCount": 4890,
+    "protected": false,
+    "url": "https://wip.co/@marc",
+    "favouritesCount": 37854,
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "2105016385931989045"
+    ],
+    "verifiedType": "Blue",
+    "profile_bio": {
+      "description": "🚧 https://t.co/aMZ4K3azU0 🏠 https://t.co/1KH3Ex4L2r 🤑 https://t.co/z2G662Uvhl 👀 https://t.co/LtA0MMRVNA 🚀 https://t.co/sxmNUGTYQv 📣 https://t.co/oPODwYE4Iq 💻 https://t.co/leziY51tRd 📸 https://t.co/NJnFBXCSCj #️⃣ https://t.co/6qUnpK7VH5",
+      "entities": {
+        "description": {
+          "urls": [
+            {
+              "display_url": "wip.co",
+              "expanded_url": "http://wip.co",
+              "indices": [
+                2,
+                25
+              ],
+              "url": "https://t.co/aMZ4K3azU0"
+            },
+            {
+              "display_url": "roomai.com",
+              "expanded_url": "http://roomai.com",
+              "indices": [
+                28,
+                51
+              ],
+              "url": "https://t.co/1KH3Ex4L2r"
+            },
+            {
+              "display_url": "highscore.money",
+              "expanded_url": "http://highscore.money",
+              "indices": [
+                54,
+                77
+              ],
+              "url": "https://t.co/z2G662Uvhl"
+            },
+            {
+              "display_url": "loot.photos",
+              "expanded_url": "http://loot.photos",
+              "indices": [
+                80,
+                103
+              ],
+              "url": "https://t.co/LtA0MMRVNA"
+            },
+            {
+              "display_url": "betalist.com",
+              "expanded_url": "http://betalist.com",
+              "indices": [
+                106,
+                129
+              ],
+              "url": "https://t.co/sxmNUGTYQv"
+            },
+            {
+              "display_url": "submit.co",
+              "expanded_url": "http://submit.co",
+              "indices": [
+                132,
+                155
+              ],
+              "url": "https://t.co/oPODwYE4Iq"
+            },
+            {
+              "display_url": "startup.jobs",
+              "expanded_url": "http://startup.jobs",
+              "indices": [
+                158,
+                181
+              ],
+              "url": "https://t.co/leziY51tRd"
+            },
+            {
+              "display_url": "yay.camera",
+              "expanded_url": "http://yay.camera",
+              "indices": [
+                184,
+                207
+              ],
+              "url": "https://t.co/NJnFBXCSCj"
+            },
+            {
+              "display_url": "buildinpublic.com",
+              "expanded_url": "http://buildinpublic.com",
+              "indices": [
+                212,
+                235
+              ],
+              "url": "https://t.co/6qUnpK7VH5"
+            }
+          ]
+        },
+        "url": {
+          "urls": [
+            {
+              "display_url": "wip.co/@marc",
+              "expanded_url": "https://wip.co/@marc",
+              "indices": [
+                0,
+                23
+              ],
+              "url": "https://t.co/QVn818Sinw"
+            }
+          ]
+        }
+      }
+    },
+    "hasGraduatedAccess": true,
+    "professional": {
+      "category": [],
+      "professional_type": "Creator",
+      "rest_id": "1458256691506683904"
+    },
+    "profileDescriptionLanguage": "en",
+    "profileImageShape": "Circle",
+    "profileTranslatorType": "none",
+    "superFollowEligible": true
+  },
+  "creator": {
+    "id": "641633",
+    "username": "marckohlbrugge",
+    "name": "Marc Köhlbrugge",
+    "followers": 89054,
+    "following": 973,
+    "verified": true,
+    "isBlueVerified": true,
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1857124042433572864/iMivVaYP_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/641633/1781378883",
+    "profileBannerUrl": "https://pbs.twimg.com/profile_banners/641633/1781378883",
+    "description": "🚧 https://t.co/aMZ4K3azU0 🏠 https://t.co/1KH3Ex4L2r 🤑 https://t.co/z2G662Uvhl 👀 https://t.co/LtA0MMRVNA 🚀 https://t.co/sxmNUGTYQv 📣 https://t.co/oPODwYE4Iq 💻 https://t.co/leziY51tRd 📸 https://t.co/NJnFBXCSCj #️⃣ https://t.co/6qUnpK7VH5",
+    "createdAt": "Mon Jan 15 23:55:33 +0000 2007",
+    "statusesCount": 50114,
+    "mediaCount": 4890,
+    "protected": false,
+    "url": "https://wip.co/@marc",
+    "favouritesCount": 37854,
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "2105016385931989045"
+    ],
+    "verifiedType": "Blue",
+    "profile_bio": {
+      "description": "🚧 https://t.co/aMZ4K3azU0 🏠 https://t.co/1KH3Ex4L2r 🤑 https://t.co/z2G662Uvhl 👀 https://t.co/LtA0MMRVNA 🚀 https://t.co/sxmNUGTYQv 📣 https://t.co/oPODwYE4Iq 💻 https://t.co/leziY51tRd 📸 https://t.co/NJnFBXCSCj #️⃣ https://t.co/6qUnpK7VH5",
+      "entities": {
+        "description": {
+          "urls": [
+            {
+              "display_url": "wip.co",
+              "expanded_url": "http://wip.co",
+              "indices": [
+                2,
+                25
+              ],
+              "url": "https://t.co/aMZ4K3azU0"
+            },
+            {
+              "display_url": "roomai.com",
+              "expanded_url": "http://roomai.com",
+              "indices": [
+                28,
+                51
+              ],
+              "url": "https://t.co/1KH3Ex4L2r"
+            },
+            {
+              "display_url": "highscore.money",
+              "expanded_url": "http://highscore.money",
+              "indices": [
+                54,
+                77
+              ],
+              "url": "https://t.co/z2G662Uvhl"
+            },
+            {
+              "display_url": "loot.photos",
+              "expanded_url": "http://loot.photos",
+              "indices": [
+                80,
+                103
+              ],
+              "url": "https://t.co/LtA0MMRVNA"
+            },
+            {
+              "display_url": "betalist.com",
+              "expanded_url": "http://betalist.com",
+              "indices": [
+                106,
+                129
+              ],
+              "url": "https://t.co/sxmNUGTYQv"
+            },
+            {
+              "display_url": "submit.co",
+              "expanded_url": "http://submit.co",
+              "indices": [
+                132,
+                155
+              ],
+              "url": "https://t.co/oPODwYE4Iq"
+            },
+            {
+              "display_url": "startup.jobs",
+              "expanded_url": "http://startup.jobs",
+              "indices": [
+                158,
+                181
+              ],
+              "url": "https://t.co/leziY51tRd"
+            },
+            {
+              "display_url": "yay.camera",
+              "expanded_url": "http://yay.camera",
+              "indices": [
+                184,
+                207
+              ],
+              "url": "https://t.co/NJnFBXCSCj"
+            },
+            {
+              "display_url": "buildinpublic.com",
+              "expanded_url": "http://buildinpublic.com",
+              "indices": [
+                212,
+                235
+              ],
+              "url": "https://t.co/6qUnpK7VH5"
+            }
+          ]
+        },
+        "url": {
+          "urls": [
+            {
+              "display_url": "wip.co/@marc",
+              "expanded_url": "https://wip.co/@marc",
+              "indices": [
+                0,
+                23
+              ],
+              "url": "https://t.co/QVn818Sinw"
+            }
+          ]
+        }
+      }
+    },
+    "hasGraduatedAccess": true,
+    "professional": {
+      "category": [],
+      "professional_type": "Creator",
+      "rest_id": "1458256691506683904"
+    },
+    "profileDescriptionLanguage": "en",
+    "profileImageShape": "Circle",
+    "profileTranslatorType": "none",
+    "superFollowEligible": true
+  },
+  "membersFacepile": [
+    {
+      "id": "641633",
+      "username": "marckohlbrugge",
+      "name": "Marc Köhlbrugge",
+      "followers": 89054,
+      "following": 973,
+      "verified": true,
+      "isBlueVerified": true,
+      "isVerified": true,
+      "profilePicture": "https://pbs.twimg.com/profile_images/1857124042433572864/iMivVaYP_normal.jpg",
+      "coverPicture": "https://pbs.twimg.com/profile_banners/641633/1781378883",
+      "profileBannerUrl": "https://pbs.twimg.com/profile_banners/641633/1781378883",
+      "description": "🚧 https://t.co/aMZ4K3azU0 🏠 https://t.co/1KH3Ex4L2r 🤑 https://t.co/z2G662Uvhl 👀 https://t.co/LtA0MMRVNA 🚀 https://t.co/sxmNUGTYQv 📣 https://t.co/oPODwYE4Iq 💻 https://t.co/leziY51tRd 📸 https://t.co/NJnFBXCSCj #️⃣ https://t.co/6qUnpK7VH5",
+      "createdAt": "Mon Jan 15 23:55:33 +0000 2007",
+      "statusesCount": 50114,
+      "mediaCount": 4890,
+      "protected": false,
+      "url": "https://wip.co/@marc",
+      "favouritesCount": 37854,
+      "possiblySensitive": false,
+      "pinnedTweetIds": [
+        "2105016385931989045"
+      ],
+      "verifiedType": "Blue",
+      "profile_bio": {
+        "description": "🚧 https://t.co/aMZ4K3azU0 🏠 https://t.co/1KH3Ex4L2r 🤑 https://t.co/z2G662Uvhl 👀 https://t.co/LtA0MMRVNA 🚀 https://t.co/sxmNUGTYQv 📣 https://t.co/oPODwYE4Iq 💻 https://t.co/leziY51tRd 📸 https://t.co/NJnFBXCSCj #️⃣ https://t.co/6qUnpK7VH5",
+        "entities": {
+          "description": {
+            "urls": [
+              {
+                "display_url": "wip.co",
+                "expanded_url": "http://wip.co",
+                "indices": [
+                  2,
+                  25
+                ],
+                "url": "https://t.co/aMZ4K3azU0"
+              },
+              {
+                "display_url": "roomai.com",
+                "expanded_url": "http://roomai.com",
+                "indices": [
+                  28,
+                  51
+                ],
+                "url": "https://t.co/1KH3Ex4L2r"
+              },
+              {
+                "display_url": "highscore.money",
+                "expanded_url": "http://highscore.money",
+                "indices": [
+                  54,
+                  77
+                ],
+                "url": "https://t.co/z2G662Uvhl"
+              },
+              {
+                "display_url": "loot.photos",
+                "expanded_url": "http://loot.photos",
+                "indices": [
+                  80,
+                  103
+                ],
+                "url": "https://t.co/LtA0MMRVNA"
+              },
+              {
+                "display_url": "betalist.com",
+                "expanded_url": "http://betalist.com",
+                "indices": [
+                  106,
+                  129
+                ],
+                "url": "https://t.co/sxmNUGTYQv"
+              },
+              {
+                "display_url": "submit.co",
+                "expanded_url": "http://submit.co",
+                "indices": [
+                  132,
+                  155
+                ],
+                "url": "https://t.co/oPODwYE4Iq"
+              },
+              {
+                "display_url": "startup.jobs",
+                "expanded_url": "http://startup.jobs",
+                "indices": [
+                  158,
+                  181
+                ],
+                "url": "https://t.co/leziY51tRd"
+              },
+              {
+                "display_url": "yay.camera",
+                "expanded_url": "http://yay.camera",
+                "indices": [
+                  184,
+                  207
+                ],
+                "url": "https://t.co/NJnFBXCSCj"
+              },
+              {
+                "display_url": "buildinpublic.com",
+                "expanded_url": "http://buildinpublic.com",
+                "indices": [
+                  212,
+                  235
+                ],
+                "url": "https://t.co/6qUnpK7VH5"
+              }
+            ]
+          },
+          "url": {
+            "urls": [
+              {
+                "display_url": "wip.co/@marc",
+                "expanded_url": "https://wip.co/@marc",
+                "indices": [
+                  0,
+                  23
+                ],
+                "url": "https://t.co/QVn818Sinw"
+              }
+            ]
+          }
+        }
+      },
+      "hasGraduatedAccess": true,
+      "professional": {
+        "category": [],
+        "professional_type": "Creator",
+        "rest_id": "1458256691506683904"
+      },
+      "profileDescriptionLanguage": "en",
+      "profileImageShape": "Circle",
+      "profileTranslatorType": "none",
+      "superFollowEligible": true
+    }
+  ]
+}

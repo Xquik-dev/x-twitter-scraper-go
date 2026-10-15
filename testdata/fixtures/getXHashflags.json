@@ -1,0 +1,15 @@
+{
+  "hashflags": [
+    {
+      "hashtag": "AION2",
+      "assetUrl": "https://abs.twimg.com/hashflags/BF-16692_AIon2_jp_Hashmoji_v3/BF-16692_AIon2_jp_Hashmoji_v3.png",
+      "startsAt": "2026-10-02T10:00:00.000Z",
+      "endsAt": "2027-01-03T14:59:00.000Z",
+      "isHashfettiEnabled": false,
+      "animations": []
+    }
+  ],
+  "count": 1,
+  "total": 1,
+  "message": "No hashflag runs now. Send activeOnly=false to list the rest."
+}
