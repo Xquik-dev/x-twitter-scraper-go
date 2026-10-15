@@ -1,0 +1,21 @@
+{
+  "translation": {
+    "tweetId": "2102882545427714266",
+    "language": "tr",
+    "sourceLanguage": "en",
+    "text": "Artemis Anlaşmaları’na Hoş Geldiniz, Hırvatistan https://t.co/Xe1nm2pkSX",
+    "entities": {
+      "urls": [
+        {
+          "url": "https://t.co/Xe1nm2pkSX",
+          "expanded_url": "https://go.nasa.gov/3VcvAQn",
+          "display_url": "go.nasa.gov/3VcvAQn",
+          "indices": [
+            49,
+            72
+          ]
+        }
+      ]
+    }
+  }
+}
