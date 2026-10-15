@@ -788,6 +788,10 @@ func (r *XCommunityGetInfoResponse) UnmarshalJSON(data []byte) error {
 type XCommunityGetInfoResponseCommunity struct {
 	// Unique community identifier
 	ID string `json:"id" api:"required"`
+	// Public X profile.
+	Admin shared.UserProfile `json:"admin"`
+	// The banner X shows for a community, with its size & colors.
+	Banner shared.CommunityBanner `json:"banner"`
 	// Community banner image URL
 	BannerURL string `json:"banner_url"`
 	// Community creation timestamp
@@ -798,36 +802,48 @@ type XCommunityGetInfoResponseCommunity struct {
 	// Invitation policy
 	InvitesPolicy string `json:"invites_policy"`
 	// Whether the community is marked sensitive
-	IsNsfw bool `json:"is_nsfw"`
+	IsNsfw bool `json:"is_nsfw" api:"required"`
 	// Join policy (open or restricted)
 	JoinPolicy string `json:"join_policy"`
 	// Total member count
-	MemberCount int64 `json:"member_count"`
+	MemberCount int64 `json:"member_count" api:"required"`
+	// The members X previews beside the member count. A keyword or topic result gives
+	// each member's ID & picture only.
+	MembersFacepile []shared.CommunityMembersFacepileUnion `json:"membersFacepile"`
 	// Total moderator count
 	ModeratorCount int64 `json:"moderator_count"`
 	// Display name of the community
-	Name string `json:"name"`
+	Name string `json:"name" api:"required"`
 	// Primary topic
 	PrimaryTopic XCommunityGetInfoResponseCommunityPrimaryTopic `json:"primary_topic"`
+	// What the community asks a user who joins
+	Question string `json:"question"`
 	// Community rules
 	Rules []XCommunityGetInfoResponseCommunityRule `json:"rules"`
+	// Tags X finds the community by
+	SearchTags []string `json:"searchTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		BannerURL      respjson.Field
-		CreatedAt      respjson.Field
-		Creator        respjson.Field
-		Description    respjson.Field
-		InvitesPolicy  respjson.Field
-		IsNsfw         respjson.Field
-		JoinPolicy     respjson.Field
-		MemberCount    respjson.Field
-		ModeratorCount respjson.Field
-		Name           respjson.Field
-		PrimaryTopic   respjson.Field
-		Rules          respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID              respjson.Field
+		Admin           respjson.Field
+		Banner          respjson.Field
+		BannerURL       respjson.Field
+		CreatedAt       respjson.Field
+		Creator         respjson.Field
+		Description     respjson.Field
+		InvitesPolicy   respjson.Field
+		IsNsfw          respjson.Field
+		JoinPolicy      respjson.Field
+		MemberCount     respjson.Field
+		MembersFacepile respjson.Field
+		ModeratorCount  respjson.Field
+		Name            respjson.Field
+		PrimaryTopic    respjson.Field
+		Question        respjson.Field
+		Rules           respjson.Field
+		SearchTags      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -840,16 +856,219 @@ func (r *XCommunityGetInfoResponseCommunity) UnmarshalJSON(data []byte) error {
 type XCommunityGetInfoResponseCommunityCreator struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
-	Verified bool   `json:"verified" api:"required"`
-	Name     string `json:"name"`
+	// Null when X shows no label.
+	AccountBasedIn shared.UserProfileAccountBasedIn `json:"accountBasedIn" api:"nullable"`
+	// False when X notes accountBasedIn may be inaccurate.
+	AccountBasedInAccurate bool `json:"accountBasedInAccurate"`
+	// True when X withheld accountBasedIn from this read. Retry later.
+	AccountBasedInUnavailable bool `json:"accountBasedInUnavailable"`
+	// X Ads services the account uses, such as `analytics`, `media_studio` or `smb`.
+	// Empty for an account without ads.
+	AdvertiserAccountServiceLevels []string `json:"advertiserAccountServiceLevels"`
+	// The account's X Ads type. `none` for an account without ads, or
+	// `promotable_user` for one that may run them.
+	AdvertiserAccountType string `json:"advertiserAccountType"`
+	// Organization affiliation label shown on an X profile.
+	AffiliatesHighlightedLabel shared.UserProfileAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
+	// Handle of the organization X shows the account is affiliated with, from its
+	// About page.
+	AffiliateUsername string `json:"affiliateUsername"`
+	AutomatedBy       string `json:"automatedBy"`
+	// The parts of the birthday the account made public.
+	Birthdate shared.UserProfileBirthdate `json:"birthdate"`
+	// Whole number from 0.
+	BusinessAccountAffiliatesCount int64 `json:"businessAccountAffiliatesCount"`
+	// Whether X treats the profile as a business profile. `none` or `enabled`.
+	BusinessProfileState string `json:"businessProfileState"`
+	// Community role when returned by community member reads
+	CommunityRole string `json:"communityRole"`
+	// How the account first connected to X.
+	ConnectedVia string `json:"connectedVia"`
+	// False when X notes that country may be inaccurate.
+	ConnectedViaAccurate bool `json:"connectedViaAccurate"`
+	// Emails, phone numbers & links the account publishes on its own profile. Omitted
+	// when it publishes none.
+	ContactInfo  shared.UserProfileContactInfo `json:"contactInfo"`
+	CoverPicture string                        `json:"coverPicture"`
+	// Account creation time.
+	CreatedAt string `json:"createdAt"`
+	// Whole number from 0.
+	CreatorSubscriptionsCount int64 `json:"creatorSubscriptionsCount"`
+	// Whether the profile keeps X's default theme.
+	DefaultProfile bool `json:"defaultProfile"`
+	// Whether the profile keeps X's default avatar.
+	DefaultProfileImage bool   `json:"defaultProfileImage"`
+	Description         string `json:"description"`
+	// First email the account publishes on its profile, lowercased. Omitted when it
+	// publishes none.
+	Email string `json:"email"`
+	// Followers X counts as fast followers.
+	FastFollowersCount int64 `json:"fastFollowersCount"`
+	FavouritesCount    int64 `json:"favouritesCount"`
+	// Omitted when X sends no count, as for the account that first posted reused
+	// media.
+	Followers int64 `json:"followers"`
+	Following int64 `json:"following"`
+	// Whether the profile may add a location to posts.
+	GeoEnabled bool `json:"geoEnabled"`
+	// Public profile bio translation returned by X
+	GrokTranslatedBio  map[string]any `json:"grokTranslatedBio"`
+	HasCustomTimelines bool           `json:"hasCustomTimelines"`
+	// Whether the profile filled X's extended fields, such as a birth date. True or
+	// false.
+	HasExtendedProfile              bool `json:"hasExtendedProfile"`
+	HasGraduatedAccess              bool `json:"hasGraduatedAccess"`
+	HasHiddenSubscriptionsOnProfile bool `json:"hasHiddenSubscriptionsOnProfile"`
+	// Profile highlight availability and count metadata.
+	HighlightsInfo shared.UserProfileHighlightsInfo `json:"highlightsInfo"`
+	// Identity verification X shows on the profile & its About page.
+	IdentityVerification shared.UserProfileIdentityVerification `json:"identityVerification"`
+	IsAutomated          bool                                   `json:"isAutomated"`
+	// Whether X shows a blue verification badge
+	IsBlueVerified        bool `json:"isBlueVerified"`
+	IsProfileTranslatable bool `json:"isProfileTranslatable"`
+	// Whether the account turned on X's translation of its posts. True or false.
+	IsTranslationEnabled bool `json:"isTranslationEnabled"`
+	IsTranslator         bool `json:"isTranslator"`
+	// Whether X marks the profile as verified
+	IsVerified bool `json:"isVerified"`
+	// Public lists that include the profile.
+	ListedCount int64 `json:"listedCount"`
+	// Account owner's public profile location text
+	Location   string `json:"location"`
+	MediaCount int64  `json:"mediaCount"`
+	// Followers minus fast followers.
+	NormalFollowersCount     int64    `json:"normalFollowersCount"`
+	ParodyCommentaryFanLabel string   `json:"parodyCommentaryFanLabel"`
+	PinnedTweetIDs           []string `json:"pinnedTweetIds"`
+	PossiblySensitive        bool     `json:"possiblySensitive"`
+	// Professional metadata with category display settings
+	Professional map[string]any `json:"professional"`
+	// Structured profile bio with entity annotations
+	ProfileBio map[string]any `json:"profile_bio"`
+	// Original X profile banner field when available
+	ProfileBannerURL           string `json:"profileBannerUrl"`
+	ProfileDescriptionLanguage string `json:"profileDescriptionLanguage"`
+	ProfileImageShape          string `json:"profileImageShape"`
+	ProfileInterstitialType    string `json:"profileInterstitialType"`
+	// Profile picture at 48 px, as X sends it.
+	ProfilePicture string `json:"profilePicture"`
+	// The same profile picture at full size, as the account uploaded it. Download this
+	// one for the image.
+	ProfilePictureOriginal string `json:"profilePictureOriginal"`
+	ProfileSortEnabled     bool   `json:"profileSortEnabled"`
+	ProfileTranslatorType  string `json:"profileTranslatorType"`
+	// Whether the profile protects its posts
+	Protected bool `json:"protected"`
+	// Handle x.com sends this profile's visitors to, such as the new handle of a
+	// renamed account whose old handle now holds a placeholder. Missing when x.com
+	// shows the profile itself.
+	RedirectsToUsername string `json:"redirectsToUsername"`
+	// UTC repost time with includeRetweetTimestamp. Null if the newest profile page
+	// has no match or lookup failed. Otherwise omitted.
+	RetweetedAt   time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
+	StatusesCount int64     `json:"statusesCount"`
+	// Accounts subscribed to the profile's paid Subscriptions. 0 when it has none.
+	SubscribersCount    int64 `json:"subscribersCount"`
+	SuperFollowEligible bool  `json:"superFollowEligible"`
+	// Whether X marks the subscription profile as active.
+	SuperFollowsUserProfileActive bool `json:"superFollowsUserProfileActive"`
+	// Public payment and creator-support handles shown on X.
+	TipJar            shared.UserProfileTipJar `json:"tipJar"`
+	Unavailable       bool                     `json:"unavailable"`
+	UnavailableReason string                   `json:"unavailableReason"`
+	URL               string                   `json:"url"`
+	// How often the account changed its username.
+	UsernameChanges shared.UserProfileUsernameChanges `json:"usernameChanges"`
+	// X's text on why the profile is verified, with its links.
+	VerificationReason  shared.UserProfileVerificationReason `json:"verificationReason"`
+	Verified            bool                                 `json:"verified"`
+	Name                string                               `json:"name"`
+	VerifiedType        string                               `json:"verifiedType"`
+	WithheldInCountries []string                             `json:"withheldInCountries"`
+	// Whether X withholds a post or user
+	WithheldScope string `json:"withheldScope"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Username    respjson.Field
-		Verified    respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                              respjson.Field
+		Username                        respjson.Field
+		AccountBasedIn                  respjson.Field
+		AccountBasedInAccurate          respjson.Field
+		AccountBasedInUnavailable       respjson.Field
+		AdvertiserAccountServiceLevels  respjson.Field
+		AdvertiserAccountType           respjson.Field
+		AffiliatesHighlightedLabel      respjson.Field
+		AffiliateUsername               respjson.Field
+		AutomatedBy                     respjson.Field
+		Birthdate                       respjson.Field
+		BusinessAccountAffiliatesCount  respjson.Field
+		BusinessProfileState            respjson.Field
+		CommunityRole                   respjson.Field
+		ConnectedVia                    respjson.Field
+		ConnectedViaAccurate            respjson.Field
+		ContactInfo                     respjson.Field
+		CoverPicture                    respjson.Field
+		CreatedAt                       respjson.Field
+		CreatorSubscriptionsCount       respjson.Field
+		DefaultProfile                  respjson.Field
+		DefaultProfileImage             respjson.Field
+		Description                     respjson.Field
+		Email                           respjson.Field
+		FastFollowersCount              respjson.Field
+		FavouritesCount                 respjson.Field
+		Followers                       respjson.Field
+		Following                       respjson.Field
+		GeoEnabled                      respjson.Field
+		GrokTranslatedBio               respjson.Field
+		HasCustomTimelines              respjson.Field
+		HasExtendedProfile              respjson.Field
+		HasGraduatedAccess              respjson.Field
+		HasHiddenSubscriptionsOnProfile respjson.Field
+		HighlightsInfo                  respjson.Field
+		IdentityVerification            respjson.Field
+		IsAutomated                     respjson.Field
+		IsBlueVerified                  respjson.Field
+		IsProfileTranslatable           respjson.Field
+		IsTranslationEnabled            respjson.Field
+		IsTranslator                    respjson.Field
+		IsVerified                      respjson.Field
+		ListedCount                     respjson.Field
+		Location                        respjson.Field
+		MediaCount                      respjson.Field
+		NormalFollowersCount            respjson.Field
+		ParodyCommentaryFanLabel        respjson.Field
+		PinnedTweetIDs                  respjson.Field
+		PossiblySensitive               respjson.Field
+		Professional                    respjson.Field
+		ProfileBio                      respjson.Field
+		ProfileBannerURL                respjson.Field
+		ProfileDescriptionLanguage      respjson.Field
+		ProfileImageShape               respjson.Field
+		ProfileInterstitialType         respjson.Field
+		ProfilePicture                  respjson.Field
+		ProfilePictureOriginal          respjson.Field
+		ProfileSortEnabled              respjson.Field
+		ProfileTranslatorType           respjson.Field
+		Protected                       respjson.Field
+		RedirectsToUsername             respjson.Field
+		RetweetedAt                     respjson.Field
+		StatusesCount                   respjson.Field
+		SubscribersCount                respjson.Field
+		SuperFollowEligible             respjson.Field
+		SuperFollowsUserProfileActive   respjson.Field
+		TipJar                          respjson.Field
+		Unavailable                     respjson.Field
+		UnavailableReason               respjson.Field
+		URL                             respjson.Field
+		UsernameChanges                 respjson.Field
+		VerificationReason              respjson.Field
+		Verified                        respjson.Field
+		Name                            respjson.Field
+		VerifiedType                    respjson.Field
+		WithheldInCountries             respjson.Field
+		WithheldScope                   respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -862,7 +1081,7 @@ func (r *XCommunityGetInfoResponseCommunityCreator) UnmarshalJSON(data []byte) e
 // Primary topic
 type XCommunityGetInfoResponseCommunityPrimaryTopic struct {
 	ID   string `json:"id"`
-	Name string `json:"name"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -983,8 +1202,16 @@ func (r *XCommunityDeleteParams) UnmarshalJSON(data []byte) error {
 type XCommunityGetMembersParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -992,6 +1219,8 @@ type XCommunityGetMembersParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -1038,8 +1267,16 @@ func (r XCommunityGetMembersParams) URLQuery() (v url.Values, err error) {
 type XCommunityGetModeratorsParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Pagination cursor for collection results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -1047,6 +1284,8 @@ type XCommunityGetModeratorsParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -1093,8 +1332,21 @@ type XCommunityGetSearchParams struct {
 	CommunityID string `query:"communityId" api:"required" json:"-"`
 	// Search query
 	Q string `query:"q" api:"required" json:"-"`
+	// Words or quoted phrases where any one can match. Separate with spaces, commas,
+	// or lines.
+	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
+	// Only return tweets from Blue-verified authors.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Cashtags separated by spaces, commas, or lines.
+	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Pagination cursor for community search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Match this literal phrase, including any hyphens.
+	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
+	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -1102,16 +1354,40 @@ type XCommunityGetSearchParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Filter by author username.
+	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// Hashtags separated by spaces, commas, or lines.
+	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Maximum likes threshold. maxLikes & max_likes also work.
+	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
+	// Return Tweets at or below this ID.
+	MaxID param.Opt[string] `query:"maxId,omitzero" json:"-"`
+	// Maximum quotes threshold.
+	MaxQuotes param.Opt[int64] `query:"maxQuotes,omitzero" json:"-"`
+	// Maximum replies threshold.
+	MaxReplies param.Opt[int64] `query:"maxReplies,omitzero" json:"-"`
+	// Maximum retweets threshold.
+	MaxRetweets param.Opt[int64] `query:"maxRetweets,omitzero" json:"-"`
+	// Filter tweets mentioning a username.
+	Mentioning param.Opt[string] `query:"mentioning,omitzero" json:"-"`
+	// Minimum bookmark count threshold.
+	MinBookmarks param.Opt[int64] `query:"minBookmarks,omitzero" json:"-"`
 	// Minimum likes. Aliases: minFaves, min_likes, min_faves.
 	MinLikes param.Opt[int64] `query:"minLikes,omitzero" json:"-"`
+	// Minimum quote count threshold.
+	MinQuotes param.Opt[int64] `query:"minQuotes,omitzero" json:"-"`
 	// Minimum replies threshold.
 	MinReplies param.Opt[int64] `query:"minReplies,omitzero" json:"-"`
 	// Minimum retweets threshold.
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
 	// Minimum view count threshold.
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
+	// Only return native reposts.
+	NativeRetweets param.Opt[bool] `query:"nativeRetweets,omitzero" json:"-"`
 	// Fields to drop from each row, comma-separated. It takes the same names as
 	// fields. With fields, it drops from the kept fields.
 	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
@@ -1119,12 +1395,25 @@ type XCommunityGetSearchParams struct {
 	// results. Follow next_cursor while the response reports more pages. Deprecated
 	// limit and count aliases remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
 	// Start date in YYYY-MM-DD format.
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// Return Tweets whose IDs exceed this ID.
+	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
+	// Filter replies sent to a username.
+	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
 	// Only return tweets from verified authors.
 	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Keeps Tweets from a recent window, such as 90m or 7d. Use a whole number & s, m,
+	// h or d.
+	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
 	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
@@ -1133,6 +1422,18 @@ type XCommunityGetSearchParams struct {
 	//
 	// Any of "Latest", "Top".
 	QueryType XCommunityGetSearchParamsQueryType `query:"queryType,omitzero" json:"-"`
+	// Only when the caller requests a quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XCommunityGetSearchParamsQuotes `query:"quotes,omitzero" json:"-"`
+	// Reply mode. Exclude keeps own-thread replies.
+	//
+	// Any of "include", "exclude", "only".
+	Replies XCommunityGetSearchParamsReplies `query:"replies,omitzero" json:"-"`
+	// Only when the caller requests a repost mode.
+	//
+	// Any of "include", "exclude", "only".
+	Retweets XCommunityGetSearchParamsRetweets `query:"retweets,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1343,3 +1644,30 @@ func (r XCommunitySearchMembersParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Reply mode. Exclude keeps own-thread replies.
+type XCommunityGetSearchParamsReplies string
+
+const (
+	XCommunityGetSearchParamsRepliesInclude XCommunityGetSearchParamsReplies = "include"
+	XCommunityGetSearchParamsRepliesExclude XCommunityGetSearchParamsReplies = "exclude"
+	XCommunityGetSearchParamsRepliesOnly    XCommunityGetSearchParamsReplies = "only"
+)
+
+// Only when the caller requests a repost mode.
+type XCommunityGetSearchParamsRetweets string
+
+const (
+	XCommunityGetSearchParamsRetweetsInclude XCommunityGetSearchParamsRetweets = "include"
+	XCommunityGetSearchParamsRetweetsExclude XCommunityGetSearchParamsRetweets = "exclude"
+	XCommunityGetSearchParamsRetweetsOnly    XCommunityGetSearchParamsRetweets = "only"
+)
+
+// Only when the caller requests a quote mode.
+type XCommunityGetSearchParamsQuotes string
+
+const (
+	XCommunityGetSearchParamsQuotesInclude XCommunityGetSearchParamsQuotes = "include"
+	XCommunityGetSearchParamsQuotesExclude XCommunityGetSearchParamsQuotes = "exclude"
+	XCommunityGetSearchParamsQuotesOnly    XCommunityGetSearchParamsQuotes = "only"
+)

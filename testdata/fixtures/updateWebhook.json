@@ -1,0 +1,12 @@
+{
+  "id": "42",
+  "url": "https://example.com/webhook",
+  "eventTypes": [
+    "tweet.new"
+  ],
+  "isActive": true,
+  "consecutiveFailures": 0,
+  "deliveryStatus": "active",
+  "failureHardCap": 200,
+  "createdAt": "2025-01-15T12:00:00Z"
+}

@@ -51,12 +51,18 @@ type XFollowerCheckResponse struct {
 	IsFollowing    bool   `json:"isFollowing" api:"required"`
 	SourceUsername string `json:"sourceUsername" api:"required"`
 	TargetUsername string `json:"targetUsername" api:"required"`
+	// The source account's user ID, as X gives it.
+	SourceID string `json:"sourceId"`
+	// The target account's user ID, as X gives it.
+	TargetID string `json:"targetId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsFollowedBy   respjson.Field
 		IsFollowing    respjson.Field
 		SourceUsername respjson.Field
 		TargetUsername respjson.Field
+		SourceID       respjson.Field
+		TargetID       respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`

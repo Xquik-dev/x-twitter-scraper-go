@@ -30,6 +30,11 @@ func TestConstantsMarshalDefaults(t *testing.T) {
 		},
 		{"currency", Usd(""), `"usd"`},
 		{"point", Point(""), `"Point"`},
+		{"insufficient credits", InsufficientCredits(""), `"insufficient_credits"`},
+		{"insufficient credits", InsufficientCredits(""), `"insufficient_credits"`},
+		{"insufficient credits", InsufficientCredits(""), `"insufficient_credits"`},
+		{"insufficient credits", InsufficientCredits(""), `"insufficient_credits"`},
+		{"insufficient credits", InsufficientCredits(""), `"insufficient_credits"`},
 		{"write action", XWriteAction(""), `"x_write_action"`},
 	}
 

@@ -107,6 +107,13 @@ type MonitorKeywordNewResponse struct {
 	// Next hourly credit charge time for this keyword query monitor.
 	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
 	Query         string    `json:"query" api:"required"`
+	// Customer-set label of the keyword monitor, when set.
+	Name string `json:"name"`
+	// When Xquik paused this keyword monitor.
+	PausedAt time.Time `json:"pausedAt" format:"date-time"`
+	// Why Xquik paused this keyword monitor. The balance could not pay an hour, so add
+	// credits & resume. Absent when the monitor is active or you paused it yourself.
+	PausedReason constant.InsufficientCredits `json:"pausedReason" default:"insufficient_credits"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -115,6 +122,9 @@ type MonitorKeywordNewResponse struct {
 		IsActive      respjson.Field
 		NextBillingAt respjson.Field
 		Query         respjson.Field
+		Name          respjson.Field
+		PausedAt      respjson.Field
+		PausedReason  respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -136,6 +146,13 @@ type MonitorKeywordGetResponse struct {
 	// Next hourly credit charge time for this keyword query monitor.
 	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
 	Query         string    `json:"query" api:"required"`
+	// Customer-set label of the keyword monitor, when set.
+	Name string `json:"name"`
+	// When Xquik paused this keyword monitor.
+	PausedAt time.Time `json:"pausedAt" format:"date-time"`
+	// Why Xquik paused this keyword monitor. The balance could not pay an hour, so add
+	// credits & resume. Absent when the monitor is active or you paused it yourself.
+	PausedReason constant.InsufficientCredits `json:"pausedReason" default:"insufficient_credits"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -144,6 +161,9 @@ type MonitorKeywordGetResponse struct {
 		IsActive      respjson.Field
 		NextBillingAt respjson.Field
 		Query         respjson.Field
+		Name          respjson.Field
+		PausedAt      respjson.Field
+		PausedReason  respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -165,6 +185,13 @@ type MonitorKeywordUpdateResponse struct {
 	// Next hourly credit charge time for this keyword query monitor.
 	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
 	Query         string    `json:"query" api:"required"`
+	// Customer-set label of the keyword monitor, when set.
+	Name string `json:"name"`
+	// When Xquik paused this keyword monitor.
+	PausedAt time.Time `json:"pausedAt" format:"date-time"`
+	// Why Xquik paused this keyword monitor. The balance could not pay an hour, so add
+	// credits & resume. Absent when the monitor is active or you paused it yourself.
+	PausedReason constant.InsufficientCredits `json:"pausedReason" default:"insufficient_credits"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -173,6 +200,9 @@ type MonitorKeywordUpdateResponse struct {
 		IsActive      respjson.Field
 		NextBillingAt respjson.Field
 		Query         respjson.Field
+		Name          respjson.Field
+		PausedAt      respjson.Field
+		PausedReason  respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -185,12 +215,16 @@ func (r *MonitorKeywordUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MonitorKeywordListResponse struct {
-	Monitors []MonitorKeywordListResponseMonitor `json:"monitors" api:"required"`
-	Total    int64                               `json:"total" api:"required"`
+	HasMore    bool                                `json:"hasMore" api:"required"`
+	Monitors   []MonitorKeywordListResponseMonitor `json:"monitors" api:"required"`
+	Total      int64                               `json:"total" api:"required"`
+	NextCursor string                              `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		HasMore     respjson.Field
 		Monitors    respjson.Field
 		Total       respjson.Field
+		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -212,6 +246,13 @@ type MonitorKeywordListResponseMonitor struct {
 	// Next hourly credit charge time for this keyword query monitor.
 	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
 	Query         string    `json:"query" api:"required"`
+	// Customer-set label of the keyword monitor, when set.
+	Name string `json:"name"`
+	// When Xquik paused this keyword monitor.
+	PausedAt time.Time `json:"pausedAt" format:"date-time"`
+	// Why Xquik paused this keyword monitor. The balance could not pay an hour, so add
+	// credits & resume. Absent when the monitor is active or you paused it yourself.
+	PausedReason constant.InsufficientCredits `json:"pausedReason" default:"insufficient_credits"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -220,6 +261,9 @@ type MonitorKeywordListResponseMonitor struct {
 		IsActive      respjson.Field
 		NextBillingAt respjson.Field
 		Query         respjson.Field
+		Name          respjson.Field
+		PausedAt      respjson.Field
+		PausedReason  respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -257,6 +301,8 @@ type MonitorKeywordNewParams struct {
 	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
 	// X search query to monitor. Whitespace is normalized.
 	Query string `json:"query" api:"required"`
+	// Your own label for the keyword monitor. Its events carry it as monitorName.
+	Name param.Opt[string] `json:"name,omitzero"`
 	paramObj
 }
 
@@ -270,6 +316,8 @@ func (r *MonitorKeywordNewParams) UnmarshalJSON(data []byte) error {
 
 type MonitorKeywordUpdateParams struct {
 	IsActive param.Opt[bool] `json:"isActive,omitzero"`
+	// New label for the keyword monitor. Send null to remove it.
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes,omitzero"`
 	paramObj

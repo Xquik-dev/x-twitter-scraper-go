@@ -128,6 +128,7 @@ export XQUIK_COVERAGE_DIR="$work/coverage"
 mkdir "$XQUIK_COVERAGE_DIR"
 
 run "API coverage" "API coverage" "Follow the lines above, then run bin/check-local again." go run ./cmd/api-coverage
+run "API fields" "API fields" "Follow the lines above, then run bin/check-local again." go run ./cmd/api-fields
 run modules "Module integrity" "Run go clean -modcache, then retry." go mod verify
 run lint "Lint" "Run scripts/format, then fix the go vet findings above." scripts/lint
 run REUSE "REUSE licensing" "Add the missing license notice or REUSE.toml entry." \

@@ -178,10 +178,14 @@ func (r *StyleProfileSummary) UnmarshalJSON(data []byte) error {
 }
 
 type StyleListResponse struct {
-	Styles []StyleProfileSummary `json:"styles" api:"required"`
+	HasMore    bool                  `json:"hasMore" api:"required"`
+	Styles     []StyleProfileSummary `json:"styles" api:"required"`
+	NextCursor string                `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		HasMore     respjson.Field
 		Styles      respjson.Field
+		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -234,24 +238,28 @@ func (r *StyleGetPerformanceResponse) UnmarshalJSON(data []byte) error {
 }
 
 type StyleGetPerformanceResponseTweet struct {
-	ID           string `json:"id" api:"required"`
-	Text         string `json:"text" api:"required"`
-	CreatedAt    string `json:"createdAt"`
-	LikeCount    int64  `json:"likeCount"`
-	ReplyCount   int64  `json:"replyCount"`
-	RetweetCount int64  `json:"retweetCount"`
-	ViewCount    int64  `json:"viewCount"`
+	ID            string `json:"id" api:"required"`
+	Text          string `json:"text" api:"required"`
+	BookmarkCount int64  `json:"bookmarkCount"`
+	CreatedAt     string `json:"createdAt"`
+	LikeCount     int64  `json:"likeCount"`
+	QuoteCount    int64  `json:"quoteCount"`
+	ReplyCount    int64  `json:"replyCount"`
+	RetweetCount  int64  `json:"retweetCount"`
+	ViewCount     int64  `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Text         respjson.Field
-		CreatedAt    respjson.Field
-		LikeCount    respjson.Field
-		ReplyCount   respjson.Field
-		RetweetCount respjson.Field
-		ViewCount    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID            respjson.Field
+		Text          respjson.Field
+		BookmarkCount respjson.Field
+		CreatedAt     respjson.Field
+		LikeCount     respjson.Field
+		QuoteCount    respjson.Field
+		ReplyCount    respjson.Field
+		RetweetCount  respjson.Field
+		ViewCount     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 

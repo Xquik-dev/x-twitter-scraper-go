@@ -2157,6 +2157,33 @@ const EventTypeProfilePinnedTweetChanged = shared.EventTypeProfilePinnedTweetCha
 // Equals "profile.unavailable.changed"
 const EventTypeProfileUnavailableChanged = shared.EventTypeProfileUnavailableChanged
 
+// Equals "tweet.deleted"
+const EventTypeTweetDeleted = shared.EventTypeTweetDeleted
+
+// Equals "broadcast.started"
+const EventTypeBroadcastStarted = shared.EventTypeBroadcastStarted
+
+// Equals "space.started"
+const EventTypeSpaceStarted = shared.EventTypeSpaceStarted
+
+// Equals "following.added"
+const EventTypeFollowingAdded = shared.EventTypeFollowingAdded
+
+// Equals "following.removed"
+const EventTypeFollowingRemoved = shared.EventTypeFollowingRemoved
+
+// Equals "follower.added"
+const EventTypeFollowerAdded = shared.EventTypeFollowerAdded
+
+// Equals "follower.removed"
+const EventTypeFollowerRemoved = shared.EventTypeFollowerRemoved
+
+// Equals "profile.followers.changed"
+const EventTypeProfileFollowersChanged = shared.EventTypeProfileFollowersChanged
+
+// Equals "profile.following.changed"
+const EventTypeProfileFollowingChanged = shared.EventTypeProfileFollowingChanged
+
 // Automatic search, user Tweet, and reply coverage preserves shape, filters,
 // aliases, and billing. Follow next_cursor while the response reports more pages.
 // An empty filtered page can still require continuation. Unprefixed cursors are

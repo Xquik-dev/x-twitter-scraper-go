@@ -27,6 +27,7 @@ type Compose string
 type Deleting string
 type Failed string
 type HTTPSXquikComAPIV1GuestWalletsStatus string
+type InsufficientCredits string
 type PaidReads string
 type Pending string
 type Point string
@@ -54,13 +55,14 @@ func (c Failed) Default() Failed     { return "failed" }
 func (c HTTPSXquikComAPIV1GuestWalletsStatus) Default() HTTPSXquikComAPIV1GuestWalletsStatus {
 	return "https://xquik.com/api/v1/guest-wallets/status"
 }
-func (c PaidReads) Default() PaidReads                 { return "paid_reads" }
-func (c Pending) Default() Pending                     { return "pending" }
-func (c Point) Default() Point                         { return "Point" }
-func (c Post) Default() Post                           { return "POST" }
-func (c Refine) Default() Refine                       { return "refine" }
-func (c RequiresEmailCode) Default() RequiresEmailCode { return "requires_email_code" }
-func (c Score) Default() Score                         { return "score" }
+func (c InsufficientCredits) Default() InsufficientCredits { return "insufficient_credits" }
+func (c PaidReads) Default() PaidReads                     { return "paid_reads" }
+func (c Pending) Default() Pending                         { return "pending" }
+func (c Point) Default() Point                             { return "Point" }
+func (c Post) Default() Post                               { return "POST" }
+func (c Refine) Default() Refine                           { return "refine" }
+func (c RequiresEmailCode) Default() RequiresEmailCode     { return "requires_email_code" }
+func (c Score) Default() Score                             { return "score" }
 func (c SourceDefaultProductionValueCanVary) Default() SourceDefaultProductionValueCanVary {
 	return "Source default; production value can vary"
 }
@@ -85,6 +87,7 @@ func (c Compose) MarshalJSON() ([]byte, error)                              { re
 func (c Deleting) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c Failed) MarshalJSON() ([]byte, error)                               { return marshalString(c) }
 func (c HTTPSXquikComAPIV1GuestWalletsStatus) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c InsufficientCredits) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c PaidReads) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Pending) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
 func (c Point) MarshalJSON() ([]byte, error)                                { return marshalString(c) }

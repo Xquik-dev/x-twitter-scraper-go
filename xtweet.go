@@ -2762,12 +2762,39 @@ func (r *XTweetDeleteResponseTarget) UnmarshalJSON(data []byte) error {
 type XTweetGetRepliesResponse struct {
 	// Evidence for direct-reply coverage and collector behavior.
 	Diagnostic XTweetGetRepliesResponseDiagnostic `json:"diagnostic"`
+	// Present on the last automatic page, and on a complete-mode answer without rows.
+	// X counts this many more replies but shows them to nobody. They may be hidden,
+	// protected or deleted. A retry returns the same replies.
+	HiddenReplies int64 `json:"hiddenReplies"`
+	// Present when your limit cut a complete-mode answer. The post has more replies.
+	// Raise limit to get them all.
+	//
+	// Any of true.
+	LimitReached bool `json:"limit_reached"`
+	// Explains an answer cut by your limit.
+	Message string `json:"message"`
 	// Nested replies. Excluded from direct coverage.
 	NestedReplies []shared.SearchTweet `json:"nested_replies"`
+	// Present with latest or oldest sort. The read stopped before it held every reply
+	// X shows. Rows stay sorted by date, but replies may be missing between them.
+	// Retry later for a gap-free order. Complete mode and automatic pages set it
+	// alike.
+	//
+	// Any of true.
+	OrderPartial bool `json:"orderPartial"`
+	// Present on an answer that lacks replies of a large thread posted before this
+	// time. X shows only part of the replies older than 7 days. A retry returns about
+	// the same replies.
+	PartialBefore time.Time `json:"partialBefore" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Diagnostic    respjson.Field
+		HiddenReplies respjson.Field
+		LimitReached  respjson.Field
+		Message       respjson.Field
 		NestedReplies respjson.Field
+		OrderPartial  respjson.Field
+		PartialBefore respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -2810,6 +2837,9 @@ type XTweetGetRepliesResponseDiagnostic struct {
 	ResponseTruncated bool `json:"responseTruncated" api:"required"`
 	// Field-presence counts across the collected direct replies.
 	Richness XTweetGetRepliesResponseDiagnosticRichness `json:"richness" api:"required"`
+	// Every source ended, or no reply view shows a reply. A retry returns the same
+	// rows.
+	SourcesEnded bool `json:"sourcesEnded" api:"required"`
 	// Per-strategy pagination and contribution evidence.
 	StrategiesAttempted []XTweetGetRepliesResponseDiagnosticStrategiesAttempted `json:"strategiesAttempted" api:"required"`
 	// Minimum direct replies required for the coverage target.
@@ -2818,6 +2848,11 @@ type XTweetGetRepliesResponseDiagnostic struct {
 	UniqueDirectReplies int64 `json:"uniqueDirectReplies" api:"required"`
 	// Tweets rejected because they belonged elsewhere.
 	UnrelatedCount int64 `json:"unrelatedCount" api:"required"`
+	// Replies are accounted for through the requested scope & depth. Source errors
+	// remain separate.
+	ReplyScopeComplete bool `json:"replyScopeComplete"`
+	// All child counts are known & match collected replies.
+	ReplyTreeComplete bool `json:"replyTreeComplete"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Complete                       respjson.Field
@@ -2834,10 +2869,13 @@ type XTweetGetRepliesResponseDiagnostic struct {
 		ReportedReplyCount             respjson.Field
 		ResponseTruncated              respjson.Field
 		Richness                       respjson.Field
+		SourcesEnded                   respjson.Field
 		StrategiesAttempted            respjson.Field
 		TargetDirectReplies            respjson.Field
 		UniqueDirectReplies            respjson.Field
 		UnrelatedCount                 respjson.Field
+		ReplyScopeComplete             respjson.Field
+		ReplyTreeComplete              respjson.Field
 		ExtraFields                    map[string]respjson.Field
 		raw                            string
 	} `json:"-"`
@@ -2912,15 +2950,19 @@ type XTweetGetRepliesResponseDiagnosticStrategiesAttempted struct {
 	// Any of "deadline", "empty_pages", "error", "missing_cursor", "no_next_page",
 	// "page_cap", "repeated_cursor".
 	StopReason string `json:"stopReason" api:"required"`
+	// For a search of the post's conversation, the page that listed each new direct
+	// reply, from 1.
+	NewDirectReplyPages []int64 `json:"newDirectReplyPages"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name             respjson.Field
-		NewDirectReplies respjson.Field
-		NewNestedReplies respjson.Field
-		PagesAttempted   respjson.Field
-		StopReason       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		Name                respjson.Field
+		NewDirectReplies    respjson.Field
+		NewNestedReplies    respjson.Field
+		PagesAttempted      respjson.Field
+		StopReason          respjson.Field
+		NewDirectReplyPages respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -4009,8 +4051,16 @@ func (r *XTweetDeleteParams) UnmarshalJSON(data []byte) error {
 type XTweetGetFavoritersParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Pagination cursor for favoriters
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -4018,6 +4068,8 @@ type XTweetGetFavoritersParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -4064,11 +4116,15 @@ func (r XTweetGetFavoritersParams) URLQuery() (v url.Values, err error) {
 }
 
 type XTweetGetQuotesParams struct {
+	// Raw advanced search query appended as-is.
+	AdvancedQuery param.Opt[string] `query:"advancedQuery,omitzero" json:"-"`
 	// Words or quoted phrases where any one can match. Separate with spaces, commas,
 	// or lines.
 	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
 	// Only return tweets from Blue-verified authors.
 	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Geo bounding box, such as -74.1 40.6 -73.9 40.8.
+	BoundingBox param.Opt[string] `query:"boundingBox,omitzero" json:"-"`
 	// Match the Tweet card name.
 	CardName param.Opt[string] `query:"cardName,omitzero" json:"-"`
 	// Cashtags separated by spaces, commas, or lines.
@@ -4101,8 +4157,12 @@ type XTweetGetQuotesParams struct {
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Words the Tweets must match, in X search syntax.
+	Keywords param.Opt[string] `query:"keywords,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Search within a list ID.
+	ListID param.Opt[string] `query:"listId,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
 	// Return Tweets older than this Tweet ID.
@@ -4143,6 +4203,12 @@ type XTweetGetQuotesParams struct {
 	// Follow next_cursor while the response reports more pages. Deprecated aliases
 	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Search within a place ID.
+	Place param.Opt[string] `query:"place,omitzero" json:"-"`
+	// Search within a country code.
+	PlaceCountry param.Opt[string] `query:"placeCountry,omitzero" json:"-"`
+	// Geo point radius, such as -73.99 40.73 25mi.
+	PointRadius param.Opt[string] `query:"pointRadius,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
 	// Only retweets of this tweet ID.
@@ -4179,6 +4245,13 @@ type XTweetGetQuotesParams struct {
 	//
 	// Any of "standard".
 	Mode XTweetGetQuotesParamsMode `query:"mode,omitzero" json:"-"`
+	// Latest for newest first, or Top for the quotes X ranks highest. Top is X's
+	// ranking, not a count order, & a later page can hold a quote X ranks higher. Any
+	// case works. Alias sort, which also takes Recency & Relevance. Send the same
+	// value with each cursor. Standard pages list Latest.
+	//
+	// Any of "Latest", "Top".
+	QueryType XTweetGetQuotesParamsQueryType `query:"queryType,omitzero" json:"-"`
 	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
@@ -4249,6 +4322,8 @@ const (
 )
 
 type XTweetGetRepliesParams struct {
+	// Legacy cursor alias. Prefer cursor.
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Words or quoted phrases where any one can match. Separate with spaces, commas,
 	// or lines.
 	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
@@ -4286,6 +4361,10 @@ type XTweetGetRepliesParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Only return replies containing media.
 	HasMediaOnly param.Opt[bool] `query:"hasMediaOnly,omitzero" json:"-"`
+	// Complete mode only. Adds the replies the post's author hid, each with
+	// hiddenByAuthor true. They count toward limit like any reply. A paged read
+	// answers 400. Get its hidden replies from GET /x/tweets/{id}/hidden-replies.
+	IncludeHidden param.Opt[bool] `query:"includeHidden,omitzero" json:"-"`
 	// Include the source post and count it toward limit.
 	IncludeOriginalPost param.Opt[bool] `query:"includeOriginalPost,omitzero" json:"-"`
 	// Only replies to this tweet ID.
@@ -4476,8 +4555,19 @@ const (
 type XTweetGetRetweetersParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Pagination cursor for retweeters
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Add each row's full profile, as GET /x/users/{id} returns it. Pages take several
+	// seconds longer.
+	EnrichProfiles param.Opt[bool] `query:"enrichProfiles,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -4485,6 +4575,8 @@ type XTweetGetRetweetersParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -4565,6 +4657,8 @@ type XTweetGetThreadParams struct {
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
+	// Return Tweets at or below this ID.
+	MaxID param.Opt[string] `query:"maxId,omitzero" json:"-"`
 	// Maximum quotes threshold.
 	MaxQuotes param.Opt[int64] `query:"maxQuotes,omitzero" json:"-"`
 	// Maximum replies threshold.
@@ -4588,6 +4682,8 @@ type XTweetGetThreadParams struct {
 	MinRetweets param.Opt[int64] `query:"minRetweets,omitzero" json:"-"`
 	// Minimum view count threshold.
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
+	// Only return native reposts.
+	NativeRetweets param.Opt[bool] `query:"nativeRetweets,omitzero" json:"-"`
 	// Fields to drop from each row, comma-separated. It takes the same names as
 	// fields. With fields, it drops from the kept fields.
 	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
@@ -4601,6 +4697,8 @@ type XTweetGetThreadParams struct {
 	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
 	// Start date in YYYY-MM-DD format.
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// Return Tweets whose IDs exceed this ID.
+	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
@@ -4609,6 +4707,9 @@ type XTweetGetThreadParams struct {
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
 	// Only return tweets from verified authors.
 	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Keeps Tweets from a recent window, such as 90m or 7d. Use a whole number & s, m,
+	// h or d.
+	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
 	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
@@ -4718,6 +4819,8 @@ type XTweetSearchParams struct {
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Words the Tweets must match, in X search syntax.
+	Keywords param.Opt[string] `query:"keywords,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Unique matching result upper bound after filtering. Default 20. Explicit
@@ -5284,3 +5387,14 @@ func (r XTweetTranslateParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Latest for newest first, or Top for the quotes X ranks highest. Top is X's
+// ranking, not a count order, & a later page can hold a quote X ranks higher. Any
+// case works. Alias sort, which also takes Recency & Relevance. Send the same
+// value with each cursor. Standard pages list Latest.
+type XTweetGetQuotesParamsQueryType string
+
+const (
+	XTweetGetQuotesParamsQueryTypeLatest XTweetGetQuotesParamsQueryType = "Latest"
+	XTweetGetQuotesParamsQueryTypeTop    XTweetGetQuotesParamsQueryType = "Top"
+)

@@ -21419,6 +21419,15 @@ const (
 	EventTypeProfileProtectedChanged   EventType = "profile.protected.changed"
 	EventTypeProfilePinnedTweetChanged EventType = "profile.pinned_tweet.changed"
 	EventTypeProfileUnavailableChanged EventType = "profile.unavailable.changed"
+	EventTypeTweetDeleted              EventType = "tweet.deleted"
+	EventTypeBroadcastStarted          EventType = "broadcast.started"
+	EventTypeSpaceStarted              EventType = "space.started"
+	EventTypeFollowingAdded            EventType = "following.added"
+	EventTypeFollowingRemoved          EventType = "following.removed"
+	EventTypeFollowerAdded             EventType = "follower.added"
+	EventTypeFollowerRemoved           EventType = "follower.removed"
+	EventTypeProfileFollowersChanged   EventType = "profile.followers.changed"
+	EventTypeProfileFollowingChanged   EventType = "profile.following.changed"
 )
 
 // Automatic search, user Tweet, and reply coverage preserves shape, filters,

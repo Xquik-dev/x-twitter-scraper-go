@@ -248,6 +248,10 @@ type ExtractionGetResponseResult struct {
 	CreatedAt     time.Time `json:"createdAt" api:"required" format:"date-time"`
 	XUserID       string    `json:"xUserId" api:"required"`
 	BookmarkCount int64     `json:"bookmarkCount"`
+	// First email the account publishes on its profile, with outputPreset=flat.
+	// Default nested output uses enrichmentData.user.email, beside
+	// enrichmentData.user.contactInfo. Absent when the profile publishes none.
+	Email string `json:"email"`
 	// Public metadata whose fields are defined by X.
 	EnrichmentData map[string]any `json:"enrichmentData"`
 	LikeCount      int64          `json:"likeCount"`
@@ -274,6 +278,7 @@ type ExtractionGetResponseResult struct {
 		CreatedAt        respjson.Field
 		XUserID          respjson.Field
 		BookmarkCount    respjson.Field
+		Email            respjson.Field
 		EnrichmentData   respjson.Field
 		LikeCount        respjson.Field
 		Media            respjson.Field
@@ -390,25 +395,48 @@ const (
 // Free conservative cost estimate. Post estimates use the supported cap without a
 // live profile lookup. It never creates a job or charges.
 type ExtractionRunResponse struct {
+	ID string `json:"id"`
 	// Whether the balance covers the full estimate.
-	Allowed          bool   `json:"allowed" api:"required"`
-	CreditsAvailable string `json:"creditsAvailable" api:"required"`
-	CreditsRequired  string `json:"creditsRequired" api:"required"`
+	Allowed          bool   `json:"allowed"`
+	CreditsAvailable string `json:"creditsAvailable"`
+	CreditsRequired  string `json:"creditsRequired"`
 	// Credit calculation row count, not source availability.
-	EstimatedResults int64 `json:"estimatedResults" api:"required"`
+	EstimatedResults int64 `json:"estimatedResults"`
+	PollAfterMs      int64 `json:"pollAfterMs"`
 	// Any of "followers", "following", "collection", "likeCount", "paginationCap",
 	// "quoteCount", "replyCount", "resultsLimit", "retweetCount", "unknown".
-	Source ExtractionRunResponseSource `json:"source" api:"required"`
+	Source ExtractionRunResponseSource `json:"source"`
 	// Resolved X user ID from count-based profile estimates.
 	ResolvedXUserID string `json:"resolvedXUserId"`
+	// Any of "pending", "running", "canceled", "completed", "failed".
+	Status    ExtractionRunResponseStatus `json:"status"`
+	StatusURL string                      `json:"statusUrl"`
+	// Identifier for the extraction tool used to run a job.
+	//
+	// Any of "article_extractor", "community_extractor",
+	// "community_moderator_explorer", "community_post_extractor", "community_search",
+	// "favoriters", "follower_explorer", "following_explorer",
+	// "list_follower_explorer", "list_member_extractor", "list_post_extractor",
+	// "mention_extractor", "people_search", "post_extractor", "quote_extractor",
+	// "reply_extractor", "repost_extractor", "space_explorer", "thread_extractor",
+	// "tweet_search_extractor", "user_likes", "user_media",
+	// "verified_follower_explorer".
+	ToolType string `json:"toolType"`
+	WaitURL  string `json:"waitUrl"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID               respjson.Field
 		Allowed          respjson.Field
 		CreditsAvailable respjson.Field
 		CreditsRequired  respjson.Field
 		EstimatedResults respjson.Field
+		PollAfterMs      respjson.Field
 		Source           respjson.Field
 		ResolvedXUserID  respjson.Field
+		Status           respjson.Field
+		StatusURL        respjson.Field
+		ToolType         respjson.Field
+		WaitURL          respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -419,6 +447,16 @@ func (r ExtractionRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type ExtractionRunResponseStatus string
+
+const (
+	ExtractionRunResponseStatusPending   ExtractionRunResponseStatus = "pending"
+	ExtractionRunResponseStatusRunning   ExtractionRunResponseStatus = "running"
+	ExtractionRunResponseStatusCanceled  ExtractionRunResponseStatus = "canceled"
+	ExtractionRunResponseStatusCompleted ExtractionRunResponseStatus = "completed"
+	ExtractionRunResponseStatusFailed    ExtractionRunResponseStatus = "failed"
+)
 
 type ExtractionRunResponseSource string
 
@@ -589,6 +627,8 @@ type ExtractionEstimateCostParams struct {
 	BlueVerifiedOnly param.Opt[bool] `json:"blueVerifiedOnly,omitzero"`
 	// Geo bounding box, e.g. -74.1 40.6 -73.9 40.8 (tweet_search_extractor)
 	BoundingBox param.Opt[string] `json:"boundingBox,omitzero"`
+	// Require an email the profile publishes outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `json:"businessEmailOnly,omitzero"`
 	// Require Tweet cards whose name matches this value.
 	CardName param.Opt[string] `json:"cardName,omitzero"`
 	// Matching cashtags (tweet_search_extractor).
@@ -597,6 +637,13 @@ type ExtractionEstimateCostParams struct {
 	ConversationID param.Opt[string] `json:"conversationId,omitzero"`
 	// Merge duplicate results across collection targets.
 	DedupeAcrossTargets param.Opt[bool] `json:"dedupeAcrossTargets,omitzero"`
+	// Require an email at one of these domains. Separate domains with commas.
+	// Subdomains match.
+	EmailDomains param.Opt[string] `json:"emailDomains,omitzero"`
+	// Add each user's full profile to follower_explorer, following_explorer,
+	// verified_follower_explorer, people_search & repost_extractor rows. Jobs take
+	// longer.
+	EnrichProfiles param.Opt[bool] `json:"enrichProfiles,omitzero"`
 	// Exact phrase to match (tweet_search_extractor)
 	ExactPhrase param.Opt[string] `json:"exactPhrase,omitzero"`
 	// Exclude replies from the source author.
@@ -609,6 +656,8 @@ type ExtractionEstimateCostParams struct {
 	FromUser param.Opt[string] `json:"fromUser,omitzero"`
 	// Restrict Tweets by latitude, longitude, and radius.
 	Geocode param.Opt[string] `json:"geocode,omitzero"`
+	// Require an email the profile publishes.
+	HasEmail param.Opt[bool] `json:"hasEmail,omitzero"`
 	// Matching hashtags (tweet_search_extractor).
 	Hashtags param.Opt[string] `json:"hashtags,omitzero"`
 	// Require a profile location.
@@ -1019,8 +1068,15 @@ type ExtractionExportResultsParams struct {
 	//
 	// Any of "csv", "json", "md", "md-document", "pdf", "txt", "xlsx".
 	Format ExtractionExportResultsParamsFormat `query:"format,omitzero" api:"required" json:"-"`
+	// Require an email outside free webmail, such as Gmail, in the row's Email column.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
+	// Require the row's email at one of these domains. Separate domains with commas.
+	// Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Require a non-empty description.
 	HasDescription param.Opt[bool] `query:"hasDescription,omitzero" json:"-"`
+	// Require an email in the row's Email column.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Require a non-empty location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Require media.
@@ -1092,6 +1148,8 @@ type ExtractionRunParams struct {
 	// "tweet_search_extractor", "user_likes", "user_media",
 	// "verified_follower_explorer".
 	ToolType ExtractionRunParamsToolType `json:"toolType,omitzero" api:"required"`
+	// Require an email the profile publishes outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `json:"businessEmailOnly,omitzero"`
 	// Estimate cost without creating an extraction.
 	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
 	// Raw advanced search query appended as-is (tweet_search_extractor)
@@ -1112,6 +1170,13 @@ type ExtractionRunParams struct {
 	ConversationID param.Opt[string] `json:"conversationId,omitzero"`
 	// Merge duplicate results across collection targets.
 	DedupeAcrossTargets param.Opt[bool] `json:"dedupeAcrossTargets,omitzero"`
+	// Require an email at one of these domains. Separate domains with commas.
+	// Subdomains match.
+	EmailDomains param.Opt[string] `json:"emailDomains,omitzero"`
+	// Add each user's full profile to follower_explorer, following_explorer,
+	// verified_follower_explorer, people_search & repost_extractor rows. Jobs take
+	// longer.
+	EnrichProfiles param.Opt[bool] `json:"enrichProfiles,omitzero"`
 	// Exact phrase to match (tweet_search_extractor)
 	ExactPhrase param.Opt[string] `json:"exactPhrase,omitzero"`
 	// Exclude replies from the source author.
@@ -1124,6 +1189,8 @@ type ExtractionRunParams struct {
 	FromUser param.Opt[string] `json:"fromUser,omitzero"`
 	// Restrict Tweets by latitude, longitude, and radius.
 	Geocode param.Opt[string] `json:"geocode,omitzero"`
+	// Require an email the profile publishes.
+	HasEmail param.Opt[bool] `json:"hasEmail,omitzero"`
 	// Matching hashtags (tweet_search_extractor).
 	Hashtags param.Opt[string] `json:"hashtags,omitzero"`
 	// Require a profile location.

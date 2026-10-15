@@ -1,0 +1,30 @@
+{
+  "plan": "active",
+  "subscription": {
+    "status": "active",
+    "tier": "pro",
+    "currentPeriodStart": "2026-09-01T00:00:00.000Z",
+    "currentPeriodEnd": "2026-10-01T00:00:00.000Z"
+  },
+  "monitorsUsed": 3,
+  "monitorsAllowed": 9007199254740991,
+  "monitorBilling": {
+    "activeDailyEstimate": "2160",
+    "activeHourlyBurn": "90",
+    "creditsPerActiveMonitorDay": "720",
+    "creditsPerActiveMonitorHour": "30",
+    "eventsIncluded": true,
+    "instantCheckIntervalSeconds": 1,
+    "unlimitedSlots": true
+  },
+  "creditInfo": {
+    "balance": "50000",
+    "lifetimePurchased": "140000",
+    "lifetimeUsed": "90000",
+    "autoTopupEnabled": false,
+    "autoTopupStopped": false,
+    "autoTopupAmountDollars": 10,
+    "autoTopupThreshold": "50000"
+  },
+  "xUsername": "elonmusk"
+}

@@ -1,0 +1,44 @@
+{
+  "article": {
+    "articleId": "2100651802404544512",
+    "title": "The Future of AI",
+    "previewText": "A deep dive into the latest AI trends...",
+    "coverImageUrl": "https://pbs.twimg.com/media/example.jpg",
+    "contents": [
+      {
+        "type": "paragraph",
+        "text": "This is the first paragraph of the article.",
+        "links": [
+          {
+            "offset": 18,
+            "length": 9,
+            "url": "https://example.com/paragraph"
+          }
+        ]
+      },
+      {
+        "type": "tweet",
+        "tweetId": "2058951429612875794"
+      }
+    ],
+    "createdAt": "2025-01-15T12:00:00Z",
+    "metadata": {
+      "first_published_at_secs": 1736942400
+    },
+    "lifecycleState": {
+      "modified_at_secs": 1736946000
+    },
+    "likeCount": 150,
+    "replyCount": 23,
+    "quoteCount": 8,
+    "retweetCount": 40,
+    "bookmarkCount": 61,
+    "viewCount": 5000
+  },
+  "author": {
+    "id": "9876543210",
+    "name": "Elon Musk",
+    "username": "elonmusk",
+    "profilePicture": "https://pbs.twimg.com/profile_images/example.jpg"
+  }
+}

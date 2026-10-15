@@ -1,0 +1,12 @@
+{
+  "id": "42",
+  "username": "elonmusk",
+  "xUserId": "1234567890",
+  "eventTypes": [
+    "tweet.new",
+    "tweet.reply"
+  ],
+  "isActive": true,
+  "createdAt": "2025-01-15T12:00:00Z",
+  "nextBillingAt": "2025-01-15T13:00:00Z"
+}

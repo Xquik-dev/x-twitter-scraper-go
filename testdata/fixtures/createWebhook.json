@@ -1,0 +1,10 @@
+{
+  "id": "42",
+  "url": "https://example.com/webhook",
+  "secret": "abababababababababababababababababababababababababababababababab",
+  "eventTypes": [
+    "tweet.new",
+    "tweet.reply"
+  ],
+  "createdAt": "2025-01-15T12:00:00Z"
+}

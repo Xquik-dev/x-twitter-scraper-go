@@ -112,6 +112,8 @@ type Monitor struct {
 	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
 	Username      string    `json:"username" api:"required"`
 	XUserID       string    `json:"xUserId" api:"required"`
+	// Customer-set label of the account monitor, when set.
+	Name string `json:"name"`
 	// When Xquik automatically paused this monitor.
 	PausedAt time.Time `json:"pausedAt" format:"date-time"`
 	// Why Xquik automatically paused this monitor.
@@ -127,6 +129,7 @@ type Monitor struct {
 		NextBillingAt respjson.Field
 		Username      respjson.Field
 		XUserID       respjson.Field
+		Name          respjson.Field
 		PausedAt      respjson.Field
 		PausedReason  respjson.Field
 		ExtraFields   map[string]respjson.Field
@@ -180,12 +183,16 @@ func (r *MonitorNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MonitorListResponse struct {
-	Monitors []Monitor `json:"monitors" api:"required"`
-	Total    int64     `json:"total" api:"required"`
+	HasMore    bool      `json:"hasMore" api:"required"`
+	Monitors   []Monitor `json:"monitors" api:"required"`
+	Total      int64     `json:"total" api:"required"`
+	NextCursor string    `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		HasMore     respjson.Field
 		Monitors    respjson.Field
 		Total       respjson.Field
+		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -223,6 +230,9 @@ type MonitorNewParams struct {
 	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
 	// X username (without @)
 	Username string `json:"username" api:"required"`
+	// Your label for the monitor. Its events carry it as monitorName. Xquik normalizes
+	// whitespace.
+	Name param.Opt[string] `json:"name,omitzero"`
 	paramObj
 }
 
@@ -236,6 +246,8 @@ func (r *MonitorNewParams) UnmarshalJSON(data []byte) error {
 
 type MonitorUpdateParams struct {
 	IsActive param.Opt[bool] `json:"isActive,omitzero"`
+	// New label for the account monitor. Send null to remove the label.
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes,omitzero"`
 	paramObj

@@ -8,6 +8,7 @@ import (
 	"context"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
@@ -71,8 +72,10 @@ type AccountGetResponse struct {
 	MonitorsAllowed int64 `json:"monitorsAllowed" api:"required"`
 	MonitorsUsed    int64 `json:"monitorsUsed" api:"required"`
 	// Any of "active", "inactive".
-	Plan       AccountGetResponsePlan       `json:"plan" api:"required"`
-	CreditInfo AccountGetResponseCreditInfo `json:"creditInfo"`
+	Plan AccountGetResponsePlan `json:"plan" api:"required"`
+	// Subscription state without billing provider identifiers.
+	Subscription AccountGetResponseSubscription `json:"subscription" api:"required"`
+	CreditInfo   AccountGetResponseCreditInfo   `json:"creditInfo"`
 	// Linked X username, omitted when no X account is connected.
 	XUsername string `json:"xUsername"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -81,6 +84,7 @@ type AccountGetResponse struct {
 		MonitorsAllowed respjson.Field
 		MonitorsUsed    respjson.Field
 		Plan            respjson.Field
+		Subscription    respjson.Field
 		CreditInfo      respjson.Field
 		XUsername       respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -93,6 +97,50 @@ func (r AccountGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Subscription state without billing provider identifiers.
+type AccountGetResponseSubscription struct {
+	// Any of "none", "active", "past_due", "canceling", "incomplete".
+	Status AccountGetResponseSubscriptionStatus `json:"status" api:"required"`
+	// Renewal date, or the end date when canceling.
+	CurrentPeriodEnd   time.Time `json:"currentPeriodEnd" format:"date-time"`
+	CurrentPeriodStart time.Time `json:"currentPeriodStart" format:"date-time"`
+	// Any of "starter", "pro", "business".
+	Tier AccountGetResponseSubscriptionTier `json:"tier"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Status             respjson.Field
+		CurrentPeriodEnd   respjson.Field
+		CurrentPeriodStart respjson.Field
+		Tier               respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AccountGetResponseSubscription) RawJSON() string { return r.JSON.raw }
+func (r *AccountGetResponseSubscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AccountGetResponseSubscriptionStatus string
+
+const (
+	AccountGetResponseSubscriptionStatusNone       AccountGetResponseSubscriptionStatus = "none"
+	AccountGetResponseSubscriptionStatusActive     AccountGetResponseSubscriptionStatus = "active"
+	AccountGetResponseSubscriptionStatusPastDue    AccountGetResponseSubscriptionStatus = "past_due"
+	AccountGetResponseSubscriptionStatusCanceling  AccountGetResponseSubscriptionStatus = "canceling"
+	AccountGetResponseSubscriptionStatusIncomplete AccountGetResponseSubscriptionStatus = "incomplete"
+)
+
+type AccountGetResponseSubscriptionTier string
+
+const (
+	AccountGetResponseSubscriptionTierStarter  AccountGetResponseSubscriptionTier = "starter"
+	AccountGetResponseSubscriptionTierPro      AccountGetResponseSubscriptionTier = "pro"
+	AccountGetResponseSubscriptionTierBusiness AccountGetResponseSubscriptionTier = "business"
+)
 
 type AccountGetResponseMonitorBilling struct {
 	// Estimated daily credits for currently active monitors.
@@ -140,6 +188,10 @@ type AccountGetResponseCreditInfo struct {
 	// Dollar amount charged when automatic top-up runs.
 	AutoTopupAmountDollars float64 `json:"autoTopupAmountDollars" api:"required"`
 	AutoTopupEnabled       bool    `json:"autoTopupEnabled" api:"required"`
+	// True when 3 declined charges in a row on 1 card stopped automatic top-up. The
+	// setting stays enabled. A paid top-up, a paid plan renewal, or the next automatic
+	// top-up on a new card clears it.
+	AutoTopupStopped bool `json:"autoTopupStopped" api:"required"`
 	// Bigint string threshold that triggers automatic top-up when enabled.
 	AutoTopupThreshold string `json:"autoTopupThreshold" api:"required"`
 	// Bigint string to preserve precision above Number.MAX_SAFE_INTEGER.
@@ -152,6 +204,7 @@ type AccountGetResponseCreditInfo struct {
 	JSON struct {
 		AutoTopupAmountDollars respjson.Field
 		AutoTopupEnabled       respjson.Field
+		AutoTopupStopped       respjson.Field
 		AutoTopupThreshold     respjson.Field
 		Balance                respjson.Field
 		LifetimePurchased      respjson.Field
@@ -187,11 +240,15 @@ func (r *AccountSetXUsernameResponse) UnmarshalJSON(data []byte) error {
 
 type AccountUpdateLocaleResponse struct {
 	Success bool `json:"success" api:"required"`
+	// Fields the request sent that this route does not read, in the order sent. They
+	// changed nothing. The answer leaves this out when the route read every field.
+	IgnoredFields []string `json:"ignoredFields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Success       respjson.Field
+		IgnoredFields respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 

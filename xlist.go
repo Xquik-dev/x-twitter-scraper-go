@@ -111,6 +111,10 @@ func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetT
 type XListGetFollowersResponseUnion struct {
 	HasNextPage bool   `json:"has_next_page"`
 	NextCursor  string `json:"next_cursor"`
+	// Present on the last page of a filtered automatic read that sent no maxScan, once
+	// the list scanned 100,000 profiles across its pages. That page is the list's
+	// last.
+	ScanLimit XListGetFollowersResponseScanLimit `json:"scanLimit"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XListGetFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -122,6 +126,7 @@ type XListGetFollowersResponseUnion struct {
 	JSON       struct {
 		HasNextPage   respjson.Field
 		NextCursor    respjson.Field
+		ScanLimit     respjson.Field
 		Users         respjson.Field
 		FilteredCount respjson.Field
 		Diagnostic    respjson.Field
@@ -143,6 +148,35 @@ func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCover
 func (u XListGetFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XListGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Present on the last page of a filtered automatic read that sent no maxScan, once
+// the list scanned 100,000 profiles across its pages. That page is the list's
+// last.
+type XListGetFollowersResponseScanLimit struct {
+	// The profiles a filtered read scans of a list without maxScan.
+	//
+	// Any of 100000.
+	Limit int64 `json:"limit" api:"required"`
+	// What stopped the list & how to read further.
+	Message string `json:"message" api:"required"`
+	// Profiles the list read across its pages, kept or dropped by the filters. The
+	// last page may read past the limit.
+	RowsRead int64 `json:"rowsRead" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Message     respjson.Field
+		RowsRead    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
+func (r *XListGetFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -256,6 +290,10 @@ func (r *XListGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) Un
 type XListGetMembersResponseUnion struct {
 	HasNextPage bool   `json:"has_next_page"`
 	NextCursor  string `json:"next_cursor"`
+	// Present on the last page of a filtered automatic read that sent no maxScan, once
+	// the list scanned 100,000 profiles across its pages. That page is the list's
+	// last.
+	ScanLimit XListGetMembersResponseScanLimit `json:"scanLimit"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XListGetMembersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -267,6 +305,7 @@ type XListGetMembersResponseUnion struct {
 	JSON       struct {
 		HasNextPage   respjson.Field
 		NextCursor    respjson.Field
+		ScanLimit     respjson.Field
 		Users         respjson.Field
 		FilteredCount respjson.Field
 		Diagnostic    respjson.Field
@@ -288,6 +327,35 @@ func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageR
 func (u XListGetMembersResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XListGetMembersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Present on the last page of a filtered automatic read that sent no maxScan, once
+// the list scanned 100,000 profiles across its pages. That page is the list's
+// last.
+type XListGetMembersResponseScanLimit struct {
+	// The profiles a filtered read scans of a list without maxScan.
+	//
+	// Any of 100000.
+	Limit int64 `json:"limit" api:"required"`
+	// What stopped the list & how to read further.
+	Message string `json:"message" api:"required"`
+	// Profiles the list read across its pages, kept or dropped by the filters. The
+	// last page may read past the limit.
+	RowsRead int64 `json:"rowsRead" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Message     respjson.Field
+		RowsRead    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XListGetMembersResponseScanLimit) RawJSON() string { return r.JSON.raw }
+func (r *XListGetMembersResponseScanLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -965,11 +1033,21 @@ func (r *XListGetSearchResponseListDefaultBannerSalientRect) UnmarshalJSON(data 
 }
 
 type XListGetFollowersParams struct {
+	// Legacy cursor alias. Prefer cursor.
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -977,6 +1055,8 @@ type XListGetFollowersParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -987,6 +1067,13 @@ type XListGetFollowersParams struct {
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
 	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Most profiles 1 request reads, kept or dropped by the filters. The request then
+	// answers the profiles it kept, the count it dropped & the cursor to read on. Each
+	// request of a cursor may send its own value. Without it, a filtered read scans at
+	// most 100,000 profiles of the list across all its pages, & the page that reaches
+	// them ends the list with `scanLimit`. An unfiltered read has no scan limit.
+	// Automatic mode only.
+	MaxScan param.Opt[int64] `query:"maxScan,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
 	// Minimum account age in whole days.
@@ -1036,11 +1123,21 @@ const (
 )
 
 type XListGetMembersParams struct {
+	// Legacy cursor alias. Prefer cursor.
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -1048,6 +1145,8 @@ type XListGetMembersParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -1058,6 +1157,13 @@ type XListGetMembersParams struct {
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
 	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Most profiles 1 request reads, kept or dropped by the filters. The request then
+	// answers the profiles it kept, the count it dropped & the cursor to read on. Each
+	// request of a cursor may send its own value. Without it, a filtered read scans at
+	// most 100,000 profiles of the list across all its pages, & the page that reaches
+	// them ends the list with `scanLimit`. An unfiltered read has no scan limit.
+	// Automatic mode only.
+	MaxScan param.Opt[int64] `query:"maxScan,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
 	// Minimum account age in whole days.
@@ -1106,18 +1212,32 @@ const (
 )
 
 type XListGetTweetsParams struct {
+	// Raw advanced search query appended as-is.
+	AdvancedQuery param.Opt[string] `query:"advancedQuery,omitzero" json:"-"`
+	// Legacy cursor alias. Prefer cursor.
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Words or quoted phrases where any one can match. Separate with spaces, commas,
 	// or lines.
 	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
 	// Only return tweets from Blue-verified authors.
 	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Geo bounding box, such as -74.1 40.6 -73.9 40.8.
+	BoundingBox param.Opt[string] `query:"boundingBox,omitzero" json:"-"`
+	// Keep only Tweets with this card type, such as poll2choice_text_only. Tweet
+	// search checks each Tweet's card.
+	CardName param.Opt[string] `query:"cardName,omitzero" json:"-"`
 	// Cashtags separated by spaces, commas, or lines.
 	Cashtags param.Opt[string] `query:"cashtags,omitzero" json:"-"`
+	// Conversation ID filter.
+	ConversationID param.Opt[string] `query:"conversationId,omitzero" json:"-"`
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Match this literal phrase, including any hyphens.
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
+	// X search no longer supports excludeSource. A Tweet search with it answers 424 &
+	// charges nothing.
+	ExcludeSource param.Opt[string] `query:"excludeSource,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
@@ -1129,14 +1249,23 @@ type XListGetTweetsParams struct {
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by author username.
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
+	// X search no longer supports geocode. A Tweet search with it answers 424 &
+	// charges nothing.
+	Geocode param.Opt[string] `query:"geocode,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
 	// Include reply tweets unless replies specifies another mode.
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
+	// Only replies to this tweet ID.
+	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Words the Tweets must match, in X search syntax.
+	Keywords param.Opt[string] `query:"keywords,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
+	// Return Tweets at or below this ID.
+	MaxID param.Opt[string] `query:"maxId,omitzero" json:"-"`
 	// Maximum quotes threshold.
 	MaxQuotes param.Opt[int64] `query:"maxQuotes,omitzero" json:"-"`
 	// Maximum replies threshold.
@@ -1159,6 +1288,11 @@ type XListGetTweetsParams struct {
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
 	// Only return native reposts.
 	NativeRetweets param.Opt[bool] `query:"nativeRetweets,omitzero" json:"-"`
+	// A place name. A country, such as United States, works like placeCountry & keeps
+	// Tweets tagged there. A city keeps Tweets about it.
+	Near param.Opt[string] `query:"near,omitzero" json:"-"`
+	// X no longer searches filter:news.
+	News param.Opt[bool] `query:"news,omitzero" json:"-"`
 	// Fields to drop from each row, comma-separated. It takes the same names as
 	// fields. With fields, it drops from the kept fields.
 	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
@@ -1166,18 +1300,43 @@ type XListGetTweetsParams struct {
 	// Follow next_cursor while the response reports more pages. Deprecated aliases
 	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Search within a place ID.
+	Place param.Opt[string] `query:"place,omitzero" json:"-"`
+	// Search within a country code.
+	PlaceCountry param.Opt[string] `query:"placeCountry,omitzero" json:"-"`
+	// Geo point radius, such as -73.99 40.73 25mi.
+	PointRadius param.Opt[string] `query:"pointRadius,omitzero" json:"-"`
+	// Only quotes of this tweet ID.
+	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
+	// Only retweets of this tweet ID.
+	RetweetsOfTweetID param.Opt[string] `query:"retweetsOfTweetId,omitzero" json:"-"`
+	// Enable the safe-search filter.
+	Safe param.Opt[bool] `query:"safe,omitzero" json:"-"`
 	// Start date in YYYY-MM-DD format.
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
+	// Return Tweets whose IDs exceed this ID.
+	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
 	// Inclusive ISO bound for Tweet creation time.
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
+	// X search no longer supports source. A Tweet search with it answers 424 & charges
+	// nothing.
+	Source param.Opt[string] `query:"source,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
 	// Exclusive ISO bound for Tweet creation time.
 	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
+	// URL substring or domain filter.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
 	// Only return tweets from verified authors.
 	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// X search no longer supports within. A Tweet search with it answers 424 & charges
+	// nothing. Use near alone.
+	Within param.Opt[string] `query:"within,omitzero" json:"-"`
+	// Keeps Tweets from a recent window, such as 90m or 7d. Use a whole number & s, m,
+	// h or d.
+	WithinTime param.Opt[string] `query:"withinTime,omitzero" json:"-"`
 	// Filter media. Aliases: has_video, has_media.
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
@@ -1187,6 +1346,10 @@ type XListGetTweetsParams struct {
 	//
 	// Any of "standard", "coverage".
 	Mode XListGetTweetsParamsMode `query:"mode,omitzero" json:"-"`
+	// Only when the caller requests a quote mode.
+	//
+	// Any of "include", "exclude", "only".
+	Quotes XListGetTweetsParamsQuotes `query:"quotes,omitzero" json:"-"`
 	// Only when the caller requests a reply mode.
 	//
 	// Any of "include", "exclude", "only".
@@ -1297,3 +1460,12 @@ func (r XListGetSearchParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Only when the caller requests a quote mode.
+type XListGetTweetsParamsQuotes string
+
+const (
+	XListGetTweetsParamsQuotesInclude XListGetTweetsParamsQuotes = "include"
+	XListGetTweetsParamsQuotesExclude XListGetTweetsParamsQuotes = "exclude"
+	XListGetTweetsParamsQuotesOnly    XListGetTweetsParamsQuotes = "only"
+)

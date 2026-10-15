@@ -37,7 +37,7 @@ Run focused tests while editing.
 
 Run `bin/check-local` on your pushed branch head. GitHub Actions does not run here.
 It runs these checks in order and stops at the first failure.
-They are API coverage, module integrity, lint, REUSE licensing, tests, statement and branch coverage,
+They are API coverage, API fields, module integrity, lint, REUSE licensing, tests, statement and branch coverage,
 coverage against the parent, race detection, the dependency audit, the signing tool audit,
 the source scan, reproducible archives, CodeQL, and fuzzing.
 REUSE is required. It runs at a pinned version through `uv`, never from another install.
@@ -128,6 +128,50 @@ Write an operation as an upper case method, a space and the absolute path from t
   }
 ]
 ```
+
+## API fields
+
+`bin/check-local` runs `go run ./cmd/api-fields` right after the coverage check.
+It reads the spec the same way, from https://xquik.com/openapi.json or `XQUIK_OPENAPI_SPEC`.
+For each operation that the SDK implements, it compares the request query params, the request body and the 2xx JSON response with the SDK's Go types.
+It reads the JSON request body, or the form body when the operation takes no JSON.
+It reads wire names from the `query` and `json` tags at every depth. Header and path params stay out.
+
+It follows `$ref` and `allOf` and walks arrays through their items.
+It merges `oneOf`, `anyOf` and several 2xx bodies into 1 object, where a field is required only when every variant requires it.
+A free-form object, a cycle, a map or an `any` value stops the walk.
+An extra SDK field is fine under a spec object whose `additionalProperties` is set and not `false`.
+A field missing on 1 side counts once, at its top position.
+
+It reports 5 kinds of difference.
+
+- `missing` is a field in the spec that the SDK lacks or types as another kind, such as a string for an object.
+- `extra` is a field in the SDK that the spec lacks.
+- `enum` means both sides list enum values, and the values differ.
+- `required` means the required flag differs.
+- `nullable` means the SDK marks a field `api:"nullable"` that the spec does not mark nullable.
+
+Each difference prints as a line such as `GET /api/v1/x/tweets/{id}/replies request extra cardName`.
+That is the method, the absolute path, `request` or `response`, the kind and the wire path.
+It also fails on a Go type or spec reference it cannot resolve.
+
+Fix a difference in the SDK when the fix is additive.
+Never remove or rename a public field or param to pass the check.
+List a difference the SDK keeps on purpose in `accepted-field-differences.json` with its reason.
+The file has the shape of `excluded-operations.json`, with `differences` in place of `operations`.
+The check fails on an entry it no longer finds.
+
+```json
+[
+  {
+    "reason": "Deprecated alias of minLikes, which the API still reads. The SDK keeps it so existing calls still compile.",
+    "differences": ["GET /api/v1/x/tweets/search request extra minFaves"]
+  }
+]
+```
+
+The SDK keeps plain `string` fields where the spec now lists enum values.
+Turning a `string` into a named enum type breaks code that assigns a `string` to it. So the check compares enum values only when both sides list them.
 
 ## Submit changes
 
