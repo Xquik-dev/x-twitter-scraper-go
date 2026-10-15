@@ -93,6 +93,20 @@ func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...
 	return res, err
 }
 
+// Returns a t.me link to @XquikBot that connects a Telegram chat to the account's
+// monitor events. Opening it & pressing Start connects the chat, which then gets
+// each alert as a message. Alerts that wait together come as 1 digest. A busy chat
+// gets 5 quick messages, then 1 every 30 s. Only 1 message a minute rings. The
+// link works once, within 15 minutes. The chat appears in the webhook list with
+// the URL `telegram:<chat ID>`, with deliveries, retries & resume as any webhook.
+// In the chat, /stop pauses its alerts. It costs no credits.
+func (r *WebhookService) NewTelegramLink(ctx context.Context, body WebhookNewTelegramLinkParams, opts ...option.RequestOption) (res *WebhookNewTelegramLinkResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "webhooks/telegram"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Tests the endpoint before resuming a manually paused webhook.
 func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookResumeResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -311,6 +325,26 @@ func (r *WebhookTestResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WebhookNewTelegramLinkResponse struct {
+	// When the link stops working, 15 minutes after creation.
+	ExpiresAt time.Time `json:"expiresAt" api:"required" format:"date-time"`
+	// Opens @XquikBot with the link's code.
+	URL string `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExpiresAt   respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookNewTelegramLinkResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookNewTelegramLinkResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WebhookNewParams struct {
 	// Array of event types to subscribe to.
 	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
@@ -340,5 +374,19 @@ func (r WebhookUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookNewTelegramLinkParams struct {
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes,omitzero"`
+	paramObj
+}
+
+func (r WebhookNewTelegramLinkParams) MarshalJSON() (data []byte, err error) {
+	type shadow WebhookNewTelegramLinkParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebhookNewTelegramLinkParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

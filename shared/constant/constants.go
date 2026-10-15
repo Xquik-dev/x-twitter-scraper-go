@@ -37,6 +37,7 @@ type Score string
 type SourceDefaultProductionValueCanVary string
 type StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable string
 type Success string
+type Succeeded string
 type Usd string
 type XAccountConnectionAttempt string
 type XAccountConnectionChallenge string
@@ -66,8 +67,9 @@ func (c SourceDefaultProductionValueCanVary) Default() SourceDefaultProductionVa
 func (c StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable) Default() StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable {
 	return "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
 }
-func (c Success) Default() Success { return "success" }
-func (c Usd) Default() Usd         { return "usd" }
+func (c Success) Default() Success     { return "success" }
+func (c Succeeded) Default() Succeeded { return "succeeded" }
+func (c Usd) Default() Usd             { return "usd" }
 func (c XAccountConnectionAttempt) Default() XAccountConnectionAttempt {
 	return "x_account_connection_attempt"
 }
@@ -95,6 +97,7 @@ func (c StoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRe
 	return marshalString(c)
 }
 func (c Success) MarshalJSON() ([]byte, error)                     { return marshalString(c) }
+func (c Succeeded) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Usd) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c XAccountConnectionAttempt) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c XAccountConnectionChallenge) MarshalJSON() ([]byte, error) { return marshalString(c) }

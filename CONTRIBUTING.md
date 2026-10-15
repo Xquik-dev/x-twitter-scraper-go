@@ -129,8 +129,6 @@ Write an operation as an upper case method, a space and the absolute path from t
 ]
 ```
 
-The group whose reason says "Not ported yet" lists the operations that [issue 82](https://github.com/Xquik-dev/x-twitter-scraper-go/issues/82) ports. Each port removes its entries, and the last one removes the group.
-
 ## Submit changes
 
 Use clear Conventional Commit subjects and sign commits with `git commit --signoff`.

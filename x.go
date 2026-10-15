@@ -31,8 +31,10 @@ type XService struct {
 	options []option.RequestOption
 	// X write actions (tweets, likes, follows, DMs)
 	WriteActions XWriteActionService
-	Tweets       XTweetService
-	Users        XUserService
+	// AI analysis of posts, at 2 credits per analyzed post
+	Analysis XAnalysisService
+	Tweets   XTweetService
+	Users    XUserService
 	// Look up, search, and explore user profiles and relationships
 	Followers XFollowerService
 	// Public X job listings, search and details
@@ -67,6 +69,7 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 	r = XService{}
 	r.options = opts
 	r.WriteActions = NewXWriteActionService(opts...)
+	r.Analysis = NewXAnalysisService(opts...)
 	r.Tweets = NewXTweetService(opts...)
 	r.Users = NewXUserService(opts...)
 	r.Followers = NewXFollowerService(opts...)

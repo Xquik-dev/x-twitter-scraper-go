@@ -14,18 +14,5 @@
       "DELETE /api/v1/api-keys/{id}",
       "POST /api/v1/credits/quick-topup"
     ]
-  },
-  {
-    "reason": "Not ported yet. https://github.com/Xquik-dev/x-twitter-scraper-go/issues/82 tracks the port.",
-    "operations": [
-      "POST /api/v1/x/analysis/sentiment",
-      "POST /api/v1/x/analysis/viral-score",
-      "POST /api/v1/x/analysis/brand",
-      "POST /api/v1/x/analysis/news",
-      "POST /api/v1/x/analysis/market-signals",
-      "POST /api/v1/x/analysis/classify",
-      "GET /api/v1/events/stream",
-      "POST /api/v1/webhooks/telegram"
-    ]
   }
 ]

@@ -19,6 +19,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/ssestream"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
@@ -60,6 +61,27 @@ func (r *EventService) List(ctx context.Context, query EventListParams, opts ...
 	path := "events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
+}
+
+// Streams the account's monitor events as server-sent events, each named by its
+// event type and numbered by its event ID. A reconnect that sends Last-Event-ID
+// first gets every event after that one from the last 30 days, then each new
+// event. A connection lasts up to 30 minutes and sends a comment every 15 seconds
+// while idle. Keep up to 5 streams open per account. Events and streams cost no
+// credits.
+func (r *EventService) StreamStreaming(ctx context.Context, params EventStreamParams, opts ...option.RequestOption) (stream *ssestream.Stream[Event]) {
+	var (
+		raw *http.Response
+		err error
+	)
+	if !param.IsOmitted(params.LastEventID) {
+		opts = append(opts, option.WithHeader("Last-Event-ID", fmt.Sprintf("%v", params.LastEventID.Value)))
+	}
+	opts = slices.Concat(r.options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/event-stream")}, opts...)
+	path := "events/stream"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &raw, opts...)
+	return ssestream.NewStream[Event](ssestream.NewDecoder(raw), err)
 }
 
 // Monitor event summary with source metadata and occurrence time.
@@ -228,4 +250,10 @@ func (r EventListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type EventStreamParams struct {
+	// The last event ID the client got. The stream first sends every event after it.
+	LastEventID param.Opt[string] `header:"Last-Event-ID,omitzero" json:"-"`
+	paramObj
 }

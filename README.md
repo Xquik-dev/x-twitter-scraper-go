@@ -79,7 +79,7 @@ import (
 Or pin the version.
 
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.19.2'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.20.0'
 ```
 
 ## Verify a release
@@ -358,6 +358,36 @@ for {
 ```
 
 Tweet & user lists report `HasNextPage` & `NextCursor` instead of `HasMore`.
+
+### Server-sent events
+
+`Events.StreamStreaming` streams monitor events as they happen.
+Call `Next` until it returns false, then check `Err`.
+Close the stream when you finish.
+
+```go
+params := xtwitterscraper.EventStreamParams{}
+if lastID != "" {
+	params.LastEventID = xtwitterscraper.String(lastID)
+}
+stream := client.Events.StreamStreaming(context.TODO(), params)
+defer stream.Close()
+for stream.Next() {
+	event := stream.Current()
+	lastID = event.ID
+	fmt.Println(event.Type, event.ID)
+}
+if err := stream.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
+The API ends each connection after 30 minutes at most.
+Then start a new stream with `LastEventID` set to the last event ID you read.
+Leave `LastEventID` unset on the first connection.
+The stream skips the keep-alive comments the API sends while idle.
+A client-level `option.WithRequestTimeout` also ends the stream.
+Pass `option.WithRequestTimeout(0)` to the stream call to lift it.
 
 ### Errors
 
