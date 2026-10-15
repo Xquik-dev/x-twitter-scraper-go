@@ -29,6 +29,7 @@ type Failed string
 type HTTPSXquikComAPIV1GuestWalletsStatus string
 type PaidReads string
 type Pending string
+type Point string
 type Post string
 type Refine string
 type RequiresEmailCode string
@@ -54,6 +55,7 @@ func (c HTTPSXquikComAPIV1GuestWalletsStatus) Default() HTTPSXquikComAPIV1GuestW
 }
 func (c PaidReads) Default() PaidReads                 { return "paid_reads" }
 func (c Pending) Default() Pending                     { return "pending" }
+func (c Point) Default() Point                         { return "Point" }
 func (c Post) Default() Post                           { return "POST" }
 func (c Refine) Default() Refine                       { return "refine" }
 func (c RequiresEmailCode) Default() RequiresEmailCode { return "requires_email_code" }
@@ -83,6 +85,7 @@ func (c Failed) MarshalJSON() ([]byte, error)                               { re
 func (c HTTPSXquikComAPIV1GuestWalletsStatus) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c PaidReads) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Pending) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
+func (c Point) MarshalJSON() ([]byte, error)                                { return marshalString(c) }
 func (c Post) MarshalJSON() ([]byte, error)                                 { return marshalString(c) }
 func (c Refine) MarshalJSON() ([]byte, error)                               { return marshalString(c) }
 func (c RequiresEmailCode) MarshalJSON() ([]byte, error)                    { return marshalString(c) }

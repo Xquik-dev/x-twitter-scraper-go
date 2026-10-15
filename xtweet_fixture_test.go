@@ -117,7 +117,13 @@ func TestXTweetGetHiddenRepliesFixture(t *testing.T) {
 		res.Tweets[0].ID != "2102761519985332442" ||
 		res.Tweets[0].RetweetCount != 1364 ||
 		res.Tweets[0].ReplyCount != 271 ||
-		res.Tweets[0].LikeCount != 9775 {
+		res.Tweets[0].LikeCount != 9775 ||
+		!res.ReadBackTo.Equal(time.Date(2026, time.October, 8, 0, 0, 0, 0, time.UTC)) ||
+		res.SearchContext.SmartTag.ID != "cashtag-tsla" ||
+		!res.SearchContext.SmartTag.Active ||
+		!res.SearchContext.SmartTag.SupportsOhlc ||
+		res.SearchedQuery != "$TSLA since:2026-10-08" ||
+		!res.WindowComplete {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 }

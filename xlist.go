@@ -970,6 +970,13 @@ type XListGetFollowersParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -990,6 +997,9 @@ type XListGetFollowersParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
 	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
@@ -1031,6 +1041,13 @@ type XListGetMembersParams struct {
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -1051,6 +1068,9 @@ type XListGetMembersParams struct {
 	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
 	// Minimum post count. minPosts is also accepted.
 	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Maximum user profiles: automatic 300; standard 200. Sources return fewer
 	// profiles. Follow next_cursor while the response reports more pages.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
@@ -1100,6 +1120,13 @@ type XListGetTweetsParams struct {
 	ExactPhrase param.Opt[string] `query:"exactPhrase,omitzero" json:"-"`
 	// Words or quoted phrases to exclude. Separate with spaces, commas, or lines.
 	ExcludeWords param.Opt[string] `query:"excludeWords,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
 	// Filter by author username.
 	FromUser param.Opt[string] `query:"fromUser,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
@@ -1132,6 +1159,9 @@ type XListGetTweetsParams struct {
 	MinViews param.Opt[int64] `query:"minViews,omitzero" json:"-"`
 	// Only return native reposts.
 	NativeRetweets param.Opt[bool] `query:"nativeRetweets,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
 	// Automatic pages accept 1-300 Tweets. Standard pages keep 1-100. Default 20.
 	// Follow next_cursor while the response reports more pages. Deprecated aliases
 	// remain accepted.

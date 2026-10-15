@@ -88,7 +88,7 @@ type XMediaUploadResponse struct {
 	// Connected account selected for the write.
 	Account XMediaUploadResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XMediaUploadResponseAction `json:"action" api:"required"`
@@ -242,6 +242,7 @@ const (
 	XMediaUploadResponseActionUnfollow        XMediaUploadResponseAction = "unfollow"
 	XMediaUploadResponseActionRemoveFollower  XMediaUploadResponseAction = "remove_follower"
 	XMediaUploadResponseActionSendDm          XMediaUploadResponseAction = "send_dm"
+	XMediaUploadResponseActionDeleteDm        XMediaUploadResponseAction = "delete_dm"
 	XMediaUploadResponseActionUploadMedia     XMediaUploadResponseAction = "upload_media"
 	XMediaUploadResponseActionUpdateProfile   XMediaUploadResponseAction = "update_profile"
 	XMediaUploadResponseActionUpdateAvatar    XMediaUploadResponseAction = "update_avatar"

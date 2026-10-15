@@ -80,7 +80,7 @@ type XProfileUpdateResponse struct {
 	// Connected account selected for the write.
 	Account XProfileUpdateResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XProfileUpdateResponseAction `json:"action" api:"required"`
@@ -234,6 +234,7 @@ const (
 	XProfileUpdateResponseActionUnfollow        XProfileUpdateResponseAction = "unfollow"
 	XProfileUpdateResponseActionRemoveFollower  XProfileUpdateResponseAction = "remove_follower"
 	XProfileUpdateResponseActionSendDm          XProfileUpdateResponseAction = "send_dm"
+	XProfileUpdateResponseActionDeleteDm        XProfileUpdateResponseAction = "delete_dm"
 	XProfileUpdateResponseActionUploadMedia     XProfileUpdateResponseAction = "upload_media"
 	XProfileUpdateResponseActionUpdateProfile   XProfileUpdateResponseAction = "update_profile"
 	XProfileUpdateResponseActionUpdateAvatar    XProfileUpdateResponseAction = "update_avatar"
@@ -375,7 +376,7 @@ type XProfileUpdateAvatarResponse struct {
 	// Connected account selected for the write.
 	Account XProfileUpdateAvatarResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XProfileUpdateAvatarResponseAction `json:"action" api:"required"`
@@ -529,6 +530,7 @@ const (
 	XProfileUpdateAvatarResponseActionUnfollow        XProfileUpdateAvatarResponseAction = "unfollow"
 	XProfileUpdateAvatarResponseActionRemoveFollower  XProfileUpdateAvatarResponseAction = "remove_follower"
 	XProfileUpdateAvatarResponseActionSendDm          XProfileUpdateAvatarResponseAction = "send_dm"
+	XProfileUpdateAvatarResponseActionDeleteDm        XProfileUpdateAvatarResponseAction = "delete_dm"
 	XProfileUpdateAvatarResponseActionUploadMedia     XProfileUpdateAvatarResponseAction = "upload_media"
 	XProfileUpdateAvatarResponseActionUpdateProfile   XProfileUpdateAvatarResponseAction = "update_profile"
 	XProfileUpdateAvatarResponseActionUpdateAvatar    XProfileUpdateAvatarResponseAction = "update_avatar"
@@ -670,7 +672,7 @@ type XProfileUpdateBannerResponse struct {
 	// Connected account selected for the write.
 	Account XProfileUpdateBannerResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "upload_media",
+	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XProfileUpdateBannerResponseAction `json:"action" api:"required"`
@@ -824,6 +826,7 @@ const (
 	XProfileUpdateBannerResponseActionUnfollow        XProfileUpdateBannerResponseAction = "unfollow"
 	XProfileUpdateBannerResponseActionRemoveFollower  XProfileUpdateBannerResponseAction = "remove_follower"
 	XProfileUpdateBannerResponseActionSendDm          XProfileUpdateBannerResponseAction = "send_dm"
+	XProfileUpdateBannerResponseActionDeleteDm        XProfileUpdateBannerResponseAction = "delete_dm"
 	XProfileUpdateBannerResponseActionUploadMedia     XProfileUpdateBannerResponseAction = "upload_media"
 	XProfileUpdateBannerResponseActionUpdateProfile   XProfileUpdateBannerResponseAction = "update_profile"
 	XProfileUpdateBannerResponseActionUpdateAvatar    XProfileUpdateBannerResponseAction = "update_avatar"
