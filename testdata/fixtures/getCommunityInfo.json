@@ -1,0 +1,13 @@
+{
+  "community": {
+    "id": "1500000000000000000",
+    "name": "Tesla Fans",
+    "description": "A community for Tesla enthusiasts",
+    "banner_url": "https://xquik.com/example",
+    "created_at": "2025-01-15T12:00:00Z",
+    "join_policy": "open",
+    "member_count": 10000,
+    "moderator_count": 5,
+    "is_nsfw": false
+  }
+}

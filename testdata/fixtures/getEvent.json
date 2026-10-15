@@ -1,0 +1,11 @@
+{
+  "id": "42",
+  "type": "tweet.new",
+  "username": "elonmusk",
+  "monitorId": "7",
+  "monitorType": "account",
+  "occurredAt": "2025-01-15T12:00:00Z",
+  "data": {
+    "tweetId": "1234567890"
+  }
+}

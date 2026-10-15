@@ -1,0 +1,125 @@
+[
+  {
+    "reason": "Deprecated alias of minLikes, which the API still reads. The SDK keeps it so existing calls still compile.",
+    "differences": [
+      "GET /api/v1/x/tweets/search request extra minFaves",
+      "GET /api/v1/x/tweets/{id}/quotes request extra minFaves",
+      "GET /api/v1/x/tweets/{id}/replies request extra minFaves",
+      "GET /api/v1/x/tweets/{id}/thread request extra minFaves",
+      "GET /api/v1/x/users/{id}/likes request extra minFaves",
+      "GET /api/v1/x/users/{id}/media request extra minFaves",
+      "GET /api/v1/x/users/{id}/mentions request extra minFaves",
+      "GET /api/v1/x/users/{id}/replies request extra minFaves",
+      "GET /api/v1/x/users/{id}/tweets request extra minFaves"
+    ]
+  },
+  {
+    "reason": "The API ignores these params on these routes. The SDK keeps them so existing calls still compile.",
+    "differences": [
+      "GET /api/v1/x/tweets/{id}/replies request extra cardName",
+      "GET /api/v1/x/tweets/{id}/replies request extra excludeSource",
+      "GET /api/v1/x/tweets/{id}/replies request extra geocode",
+      "GET /api/v1/x/tweets/{id}/replies request extra near",
+      "GET /api/v1/x/tweets/{id}/replies request extra news",
+      "GET /api/v1/x/tweets/{id}/replies request extra safe",
+      "GET /api/v1/x/tweets/{id}/replies request extra source",
+      "GET /api/v1/x/tweets/{id}/replies request extra within",
+      "GET /api/v1/x/users/{id}/likes request extra cardName",
+      "GET /api/v1/x/users/{id}/likes request extra excludeSource",
+      "GET /api/v1/x/users/{id}/likes request extra geocode",
+      "GET /api/v1/x/users/{id}/likes request extra near",
+      "GET /api/v1/x/users/{id}/likes request extra news",
+      "GET /api/v1/x/users/{id}/likes request extra safe",
+      "GET /api/v1/x/users/{id}/likes request extra source",
+      "GET /api/v1/x/users/{id}/likes request extra within",
+      "GET /api/v1/x/users/{id}/media request extra cardName",
+      "GET /api/v1/x/users/{id}/media request extra excludeSource",
+      "GET /api/v1/x/users/{id}/media request extra geocode",
+      "GET /api/v1/x/users/{id}/media request extra near",
+      "GET /api/v1/x/users/{id}/media request extra news",
+      "GET /api/v1/x/users/{id}/media request extra safe",
+      "GET /api/v1/x/users/{id}/media request extra source",
+      "GET /api/v1/x/users/{id}/media request extra within",
+      "GET /api/v1/x/users/{id}/mentions request extra cardName",
+      "GET /api/v1/x/users/{id}/mentions request extra excludeSource",
+      "GET /api/v1/x/users/{id}/mentions request extra geocode",
+      "GET /api/v1/x/users/{id}/mentions request extra near",
+      "GET /api/v1/x/users/{id}/mentions request extra news",
+      "GET /api/v1/x/users/{id}/mentions request extra safe",
+      "GET /api/v1/x/users/{id}/mentions request extra source",
+      "GET /api/v1/x/users/{id}/mentions request extra within"
+    ]
+  },
+  {
+    "reason": "The method takes no params struct, and adding 1 would change its signature and break callers. Send fields and omit with option.WithQuery.",
+    "differences": [
+      "GET /api/v1/x/articles/{tweetId} request missing fields",
+      "GET /api/v1/x/articles/{tweetId} request missing omit",
+      "GET /api/v1/x/communities/{id}/info request missing fields",
+      "GET /api/v1/x/communities/{id}/info request missing omit",
+      "GET /api/v1/x/tweets/{id} request missing fields",
+      "GET /api/v1/x/tweets/{id} request missing omit",
+      "GET /api/v1/x/users/{id} request missing fields",
+      "GET /api/v1/x/users/{id} request missing omit"
+    ]
+  },
+  {
+    "reason": "The method takes no params struct, and adding 1 would change its signature and break callers. Send cursor and limit with option.WithQuery.",
+    "differences": [
+      "GET /api/v1/monitors request missing cursor",
+      "GET /api/v1/monitors request missing limit",
+      "GET /api/v1/monitors/keywords request missing cursor",
+      "GET /api/v1/monitors/keywords request missing limit",
+      "GET /api/v1/styles request missing cursor",
+      "GET /api/v1/styles request missing limit",
+      "GET /api/v1/support/tickets request missing cursor",
+      "GET /api/v1/support/tickets request missing limit",
+      "GET /api/v1/webhooks request missing cursor",
+      "GET /api/v1/webhooks request missing limit",
+      "GET /api/v1/webhooks/{id}/deliveries request missing cursor",
+      "GET /api/v1/webhooks/{id}/deliveries request missing limit",
+      "GET /api/v1/x/bookmarks/folders request missing cursor"
+    ]
+  },
+  {
+    "reason": "The SDK requires this param, which the API now treats as optional. Making it optional would change its Go type and break callers.",
+    "differences": [
+      "GET /api/v1/x/communities/search request required communityId",
+      "GET /api/v1/x/communities/tweets request required communityId",
+      "GET /api/v1/x/users/batch request required ids",
+      "PUT /api/v1/styles/{id} request required label"
+    ]
+  },
+  {
+    "reason": "The API adds this field to a shared model on this route only. The SDK returns the shared model, so read the field from JSON.ExtraFields.",
+    "differences": [
+      "GET /api/v1/x/tweets response missing skipped",
+      "GET /api/v1/x/tweets/{id}/replies response missing nested_replies[].hiddenByAuthor",
+      "GET /api/v1/x/tweets/{id}/replies response missing tweets[].hiddenByAuthor"
+    ]
+  },
+  {
+    "reason": "The SDK shares 1 model between creating and reading a draft, and only the create answer carries ignoredFields.",
+    "differences": [
+      "GET /api/v1/drafts/{id} response extra ignoredFields"
+    ]
+  },
+  {
+    "reason": "The API no longer documents this field. The SDK keeps it so existing code still compiles.",
+    "differences": [
+      "GET /api/v1/styles/{id}/performance response extra tweets[].createdAt"
+    ]
+  },
+  {
+    "reason": "The SDK types multiplier as the constant text the API sent until 2026-10-14. Changing constant.SourceDefaultProductionValueCanVary would break code that compares with it.",
+    "differences": [
+      "POST /api/v1/compose response enum engagementMultipliers[].multiplier"
+    ]
+  },
+  {
+    "reason": "The SDK reads the 201 account answer and the 202 email code answer into 1 struct and types status as the constant active of the 201 answer. Changing that type would break callers, so read a 202 status from RawJSON.",
+    "differences": [
+      "POST /api/v1/x/account-connection-challenges/{id}/submit response enum status"
+    ]
+  }
+]

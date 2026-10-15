@@ -218,15 +218,19 @@ type WebhookNewResponse struct {
 	// Plaintext HMAC signing secret returned only at creation.
 	Secret string `json:"secret" api:"required"`
 	URL    string `json:"url" api:"required" format:"uri"`
+	// Fields the request sent that this route does not read, in the order sent. They
+	// changed nothing. The answer leaves this out when the route read every field.
+	IgnoredFields []string `json:"ignoredFields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EventTypes  respjson.Field
-		Secret      respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		EventTypes    respjson.Field
+		Secret        respjson.Field
+		URL           respjson.Field
+		IgnoredFields respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -237,10 +241,14 @@ func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type WebhookListResponse struct {
-	Webhooks []Webhook `json:"webhooks" api:"required"`
+	HasMore    bool      `json:"hasMore" api:"required"`
+	Webhooks   []Webhook `json:"webhooks" api:"required"`
+	NextCursor string    `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		HasMore     respjson.Field
 		Webhooks    respjson.Field
+		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -270,9 +278,13 @@ func (r *WebhookDeactivateResponse) UnmarshalJSON(data []byte) error {
 
 type WebhookListDeliveriesResponse struct {
 	Deliveries []Delivery `json:"deliveries" api:"required"`
+	HasMore    bool       `json:"hasMore" api:"required"`
+	NextCursor string     `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Deliveries  respjson.Field
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

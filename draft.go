@@ -110,11 +110,15 @@ func (r *Draft) UnmarshalJSON(data []byte) error {
 // Full tweet draft including update timestamp.
 type DraftDetail struct {
 	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
+	// Fields the request sent that this route does not read, in the order sent. They
+	// changed nothing. The answer leaves this out when the route read every field.
+	IgnoredFields []string `json:"ignoredFields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		UpdatedAt     respjson.Field
+		IgnoredFields respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 	Draft
 }

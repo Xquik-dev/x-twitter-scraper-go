@@ -221,31 +221,56 @@ func (r *XGetArticleResponse) UnmarshalJSON(data []byte) error {
 }
 
 type XGetArticleResponseArticle struct {
+	// X's ID for the Article, which differs from its post's ID
+	ArticleID string `json:"articleId"`
+	// Article blocks as Markdown, with headings, lists, bold, italic, links, images &
+	// embedded posts as their x.com URLs. Holds no HTML.
+	BodyMarkdown string `json:"bodyMarkdown"`
 	// Plain text joined from all article blocks
-	BodyText      string                              `json:"bodyText"`
+	BodyText string `json:"bodyText"`
+	// Accounts that bookmarked the Article's post. 0 or more.
+	BookmarkCount int64                               `json:"bookmarkCount"`
 	Contents      []XGetArticleResponseArticleContent `json:"contents"`
 	CoverImageURL string                              `json:"coverImageUrl"`
-	CreatedAt     string                              `json:"createdAt"`
-	LikeCount     int64                               `json:"likeCount"`
-	PreviewText   string                              `json:"previewText"`
-	QuoteCount    int64                               `json:"quoteCount"`
-	ReplyCount    int64                               `json:"replyCount"`
-	Title         string                              `json:"title"`
-	ViewCount     int64                               `json:"viewCount"`
+	// Public metadata whose fields X defines.
+	CoverMedia map[string]any `json:"coverMedia"`
+	CreatedAt  string         `json:"createdAt"`
+	// Public metadata whose fields X defines.
+	LifecycleState map[string]any `json:"lifecycleState"`
+	LikeCount      int64          `json:"likeCount"`
+	// Public metadata whose fields X defines.
+	Metadata    map[string]any `json:"metadata"`
+	PreviewText string         `json:"previewText"`
+	QuoteCount  int64          `json:"quoteCount"`
+	ReplyCount  int64          `json:"replyCount"`
+	// Reposts of the Article's post. 0 or more.
+	RetweetCount int64 `json:"retweetCount"`
+	// X's summary of the Article, when X has one
+	SummaryText string `json:"summaryText"`
+	Title       string `json:"title"`
+	ViewCount   int64  `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BodyText      respjson.Field
-		Contents      respjson.Field
-		CoverImageURL respjson.Field
-		CreatedAt     respjson.Field
-		LikeCount     respjson.Field
-		PreviewText   respjson.Field
-		QuoteCount    respjson.Field
-		ReplyCount    respjson.Field
-		Title         respjson.Field
-		ViewCount     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ArticleID      respjson.Field
+		BodyMarkdown   respjson.Field
+		BodyText       respjson.Field
+		BookmarkCount  respjson.Field
+		Contents       respjson.Field
+		CoverImageURL  respjson.Field
+		CoverMedia     respjson.Field
+		CreatedAt      respjson.Field
+		LifecycleState respjson.Field
+		LikeCount      respjson.Field
+		Metadata       respjson.Field
+		PreviewText    respjson.Field
+		QuoteCount     respjson.Field
+		ReplyCount     respjson.Field
+		RetweetCount   respjson.Field
+		SummaryText    respjson.Field
+		Title          respjson.Field
+		ViewCount      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -256,27 +281,50 @@ func (r *XGetArticleResponseArticle) UnmarshalJSON(data []byte) error {
 }
 
 type XGetArticleResponseArticleContent struct {
-	Height int64 `json:"height"`
+	// Alt text of the image or preview image
+	AltText string `json:"altText"`
+	// Caption the author wrote under a media block
+	Caption string `json:"caption"`
+	// Length of a video, in milliseconds
+	DurationMs int64 `json:"durationMs"`
+	Height     int64 `json:"height"`
 	// Inline text formatting ranges
 	InlineStyleRanges []XGetArticleResponseArticleContentInlineStyleRange `json:"inlineStyleRanges"`
+	// Links in the block's text, with the text range each covers
+	Links []XGetArticleResponseArticleContentLink `json:"links"`
+	// What a media block holds
+	//
+	// Any of "image", "video", "gif".
+	MediaType XGetArticleResponseArticleContentMediaType `json:"mediaType"`
 	// Preview image URL for media blocks
 	PreviewURL string `json:"previewUrl"`
 	Text       string `json:"text"`
+	// ID of the post a tweet block embeds
+	TweetID string `json:"tweetId"`
 	// Block type: paragraph, header-one, header-two, header-three, header-four,
 	// header-five, header-six, unordered-list-item, ordered-list-item, blockquote,
 	// code-block, media, divider
 	Type string `json:"type"`
 	// Media URL for media blocks
-	URL   string `json:"url"`
-	Width int64  `json:"width"`
+	URL string `json:"url"`
+	// Files of a video or GIF block, in X's order
+	Variants []shared.TweetMediaVideoVariant `json:"variants"`
+	Width    int64                           `json:"width"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AltText           respjson.Field
+		Caption           respjson.Field
+		DurationMs        respjson.Field
 		Height            respjson.Field
 		InlineStyleRanges respjson.Field
+		Links             respjson.Field
+		MediaType         respjson.Field
 		PreviewURL        respjson.Field
 		Text              respjson.Field
+		TweetID           respjson.Field
 		Type              respjson.Field
 		URL               respjson.Field
+		Variants          respjson.Field
 		Width             respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
@@ -288,6 +336,35 @@ func (r XGetArticleResponseArticleContent) RawJSON() string { return r.JSON.raw 
 func (r *XGetArticleResponseArticleContent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type XGetArticleResponseArticleContentLink struct {
+	Length int64  `json:"length"`
+	Offset int64  `json:"offset"`
+	URL    string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Length      respjson.Field
+		Offset      respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XGetArticleResponseArticleContentLink) RawJSON() string { return r.JSON.raw }
+func (r *XGetArticleResponseArticleContentLink) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// What a media block holds
+type XGetArticleResponseArticleContentMediaType string
+
+const (
+	XGetArticleResponseArticleContentMediaTypeImage XGetArticleResponseArticleContentMediaType = "image"
+	XGetArticleResponseArticleContentMediaTypeVideo XGetArticleResponseArticleContentMediaType = "video"
+	XGetArticleResponseArticleContentMediaTypeGif   XGetArticleResponseArticleContentMediaType = "gif"
+)
 
 type XGetArticleResponseArticleContentInlineStyleRange struct {
 	Length int64  `json:"length"`
@@ -326,31 +403,34 @@ type XGetArticleResponseAuthor struct {
 	MediaCount       int64  `json:"mediaCount"`
 	ProfileBannerURL string `json:"profileBannerUrl"`
 	ProfilePicture   string `json:"profilePicture"`
-	Protected        bool   `json:"protected"`
-	StatusesCount    int64  `json:"statusesCount"`
-	URL              string `json:"url"`
+	// The same profile picture at full size.
+	ProfilePictureOriginal string `json:"profilePictureOriginal"`
+	Protected              bool   `json:"protected"`
+	StatusesCount          int64  `json:"statusesCount"`
+	URL                    string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		Name             respjson.Field
-		Username         respjson.Field
-		CreatedAt        respjson.Field
-		Description      respjson.Field
-		FavouritesCount  respjson.Field
-		FollowersCount   respjson.Field
-		FollowingCount   respjson.Field
-		IsBlueVerified   respjson.Field
-		IsTranslator     respjson.Field
-		IsVerified       respjson.Field
-		Location         respjson.Field
-		MediaCount       respjson.Field
-		ProfileBannerURL respjson.Field
-		ProfilePicture   respjson.Field
-		Protected        respjson.Field
-		StatusesCount    respjson.Field
-		URL              respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ID                     respjson.Field
+		Name                   respjson.Field
+		Username               respjson.Field
+		CreatedAt              respjson.Field
+		Description            respjson.Field
+		FavouritesCount        respjson.Field
+		FollowersCount         respjson.Field
+		FollowingCount         respjson.Field
+		IsBlueVerified         respjson.Field
+		IsTranslator           respjson.Field
+		IsVerified             respjson.Field
+		Location               respjson.Field
+		MediaCount             respjson.Field
+		ProfileBannerURL       respjson.Field
+		ProfilePicture         respjson.Field
+		ProfilePictureOriginal respjson.Field
+		Protected              respjson.Field
+		StatusesCount          respjson.Field
+		URL                    respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 

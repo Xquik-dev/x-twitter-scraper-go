@@ -1,0 +1,10 @@
+{
+  "id": "21",
+  "query": "xquik OR \"x api\"",
+  "eventTypes": [
+    "tweet.new"
+  ],
+  "isActive": true,
+  "createdAt": "2025-01-15T12:00:00Z",
+  "nextBillingAt": "2025-01-15T13:00:00Z"
+}

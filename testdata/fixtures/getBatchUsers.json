@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "id": "9876543210",
+      "username": "elonmusk",
+      "name": "Elon Musk"
+    }
+  ],
+  "has_next_page": false,
+  "next_cursor": "",
+  "requested_count": 2,
+  "processed_count": 2,
+  "returned_count": 1,
+  "unavailable_ids": [
+    "1234567890"
+  ],
+  "failed_ids": [],
+  "unprocessed_ids": []
+}

@@ -262,10 +262,14 @@ const (
 )
 
 type SupportTicketListResponse struct {
-	Tickets []SupportTicketListResponseTicket `json:"tickets" api:"required"`
+	HasMore    bool                              `json:"hasMore" api:"required"`
+	Tickets    []SupportTicketListResponseTicket `json:"tickets" api:"required"`
+	NextCursor string                            `json:"nextCursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		HasMore     respjson.Field
 		Tickets     respjson.Field
+		NextCursor  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

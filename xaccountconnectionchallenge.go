@@ -56,19 +56,27 @@ func (r *XAccountConnectionChallengeService) Submit(ctx context.Context, id stri
 // Sanitized X account summary returned by connect and reauth.
 type XAccountConnectionChallengeSubmitResponse struct {
 	ID        string    `json:"id" api:"required"`
-	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	ExpiresAt time.Time `json:"expiresAt" format:"date-time"`
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
-	Health    XAccountConnectionChallengeSubmitResponseHealth `json:"health" api:"required"`
+	Health    XAccountConnectionChallengeSubmitResponseHealth `json:"health"`
 	Status    constant.Active                                 `json:"status" default:"active"`
-	XUserID   string                                          `json:"xUserId" api:"required"`
-	XUsername string                                          `json:"xUsername" api:"required"`
+	Object    constant.XAccountConnectionChallenge            `json:"object" default:"x_account_connection_challenge"`
+	Message   string                                          `json:"message"`
+	Username  string                                          `json:"username"`
+	XUserID   string                                          `json:"xUserId"`
+	XUsername string                                          `json:"xUsername"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
+		ExpiresAt   respjson.Field
 		Health      respjson.Field
 		Status      respjson.Field
+		Object      respjson.Field
+		Message     respjson.Field
+		Username    respjson.Field
 		XUserID     respjson.Field
 		XUsername   respjson.Field
 		ExtraFields map[string]respjson.Field

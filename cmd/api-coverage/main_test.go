@@ -19,6 +19,7 @@ import (
 	"testing"
 	"testing/fstest"
 
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apicheck"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 )
@@ -171,7 +172,7 @@ func TestPathParameterNamesDoNotMatter(t *testing.T) {
 }
 
 func TestInvalidExclusionFilesFail(t *testing.T) {
-	shape := "It must be a JSON list of groups, each with only a reason string and an operations list of strings."
+	shape := "It must be a JSON list of groups, each with only a reason string and a list of strings named operations."
 	notOperation := ", which is not an upper case HTTP method, a space and a path starting with /."
 	for _, test := range []struct{ name, content, want string }{
 		{"not JSON", "[}", "It is not valid JSON near byte 2."},
@@ -349,7 +350,7 @@ func TestUnreadableSourcesFail(t *testing.T) {
 }
 
 func TestRepositorySourcesParse(t *testing.T) {
-	operations, unreadable, err := sdkOperations(os.DirFS(filepath.Join("..", "..")), "/api/v1")
+	operations, unreadable, err := apicheck.Coverage.SDKOperations(os.DirFS(filepath.Join("..", "..")), "/api/v1")
 	if err != nil || len(unreadable) > 0 {
 		t.Fatalf("err = %v, unreadable = %q", err, unreadable)
 	}
@@ -359,7 +360,7 @@ func TestRepositorySourcesParse(t *testing.T) {
 		"DELETE /api/v1/x/tweets/{}",
 		"GET /api/v1/credits/topup/redirect",
 	} {
-		if operations[want] != want {
+		if _, ok := operations[want]; !ok {
 			t.Errorf("the SDK sources lack %s", want)
 		}
 	}
@@ -370,17 +371,24 @@ func TestMainPassesOnTheRepository(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	implemented, _, err := sdkOperations(os.DirFS(root), "/api/v1")
+	implemented, _, err := apicheck.Coverage.SDKOperations(os.DirFS(root), "/api/v1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	excluded, err := readExclusions(os.DirFS(root))
+	excluded, err := exclusions.Read(os.DirFS(root))
 	if err != nil {
 		t.Fatal(err)
 	}
 	paths := map[string]map[string]any{}
-	for _, text := range append(mapValues(implemented), mapValues(excluded)...) {
-		method, operationPath, _ := strings.Cut(text, " ")
+	var keys []string
+	for key := range implemented {
+		keys = append(keys, key)
+	}
+	for key := range excluded {
+		keys = append(keys, key)
+	}
+	for _, key := range keys {
+		method, operationPath, _ := strings.Cut(key, " ")
 		if paths[operationPath] == nil {
 			paths[operationPath] = map[string]any{}
 		}
@@ -390,7 +398,7 @@ func TestMainPassesOnTheRepository(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv(specVariable, writeSpec(t, string(document)))
+	t.Setenv(apicheck.SpecVariable, writeSpec(t, string(document)))
 	file, err := os.CreateTemp(t.TempDir(), "stdout")
 	if err != nil {
 		t.Fatal(err)
@@ -413,12 +421,4 @@ func TestMainPassesOnTheRepository(t *testing.T) {
 	if string(got) != want {
 		t.Fatalf("main printed %q, want %q", got, want)
 	}
-}
-
-func mapValues(values operations) []string {
-	var out []string
-	for _, value := range values {
-		out = append(out, value)
-	}
-	return out
 }

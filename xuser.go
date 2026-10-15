@@ -673,6 +673,9 @@ func (r *XUserRemoveFollowerResponseTarget) UnmarshalJSON(data []byte) error {
 // unavailable_ids were processed without profiles. unprocessed_ids were
 // credit-limited.
 type XUserGetBatchResponse struct {
+	// Processed IDs that failed to load, in first-seen request order. They cost
+	// nothing. Retry them.
+	FailedIDs []string `json:"failed_ids" api:"required"`
 	// Batch lookups never paginate.
 	HasNextPage bool `json:"has_next_page" api:"required"`
 	// Empty because batch lookups never paginate.
@@ -693,6 +696,7 @@ type XUserGetBatchResponse struct {
 	FilteredCount int64 `json:"filtered_count"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FailedIDs      respjson.Field
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
 		ProcessedCount respjson.Field
@@ -720,6 +724,10 @@ func (r *XUserGetBatchResponse) UnmarshalJSON(data []byte) error {
 type XUserGetFollowersResponseUnion struct {
 	HasNextPage bool   `json:"has_next_page"`
 	NextCursor  string `json:"next_cursor"`
+	// Present on the last page of a filtered automatic read that sent no maxScan, once
+	// the list scanned 100,000 profiles across its pages. That page is the list's
+	// last.
+	ScanLimit XUserGetFollowersResponseScanLimit `json:"scanLimit"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -731,6 +739,7 @@ type XUserGetFollowersResponseUnion struct {
 	JSON       struct {
 		HasNextPage   respjson.Field
 		NextCursor    respjson.Field
+		ScanLimit     respjson.Field
 		Users         respjson.Field
 		FilteredCount respjson.Field
 		Diagnostic    respjson.Field
@@ -752,6 +761,35 @@ func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCover
 func (u XUserGetFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XUserGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Present on the last page of a filtered automatic read that sent no maxScan, once
+// the list scanned 100,000 profiles across its pages. That page is the list's
+// last.
+type XUserGetFollowersResponseScanLimit struct {
+	// The profiles a filtered read scans of a list without maxScan.
+	//
+	// Any of 100000.
+	Limit int64 `json:"limit" api:"required"`
+	// What stopped the list & how to read further.
+	Message string `json:"message" api:"required"`
+	// Profiles the list read across its pages, kept or dropped by the filters. The
+	// last page may read past the limit.
+	RowsRead int64 `json:"rowsRead" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Message     respjson.Field
+		RowsRead    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -865,6 +903,10 @@ func (r *XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) Un
 type XUserGetFollowingResponseUnion struct {
 	HasNextPage bool   `json:"has_next_page"`
 	NextCursor  string `json:"next_cursor"`
+	// Present on the last page of a filtered automatic read that sent no maxScan, once
+	// the list scanned 100,000 profiles across its pages. That page is the list's
+	// last.
+	ScanLimit XUserGetFollowingResponseScanLimit `json:"scanLimit"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetFollowingResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -876,6 +918,7 @@ type XUserGetFollowingResponseUnion struct {
 	JSON       struct {
 		HasNextPage   respjson.Field
 		NextCursor    respjson.Field
+		ScanLimit     respjson.Field
 		Users         respjson.Field
 		FilteredCount respjson.Field
 		Diagnostic    respjson.Field
@@ -897,6 +940,35 @@ func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCover
 func (u XUserGetFollowingResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XUserGetFollowingResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Present on the last page of a filtered automatic read that sent no maxScan, once
+// the list scanned 100,000 profiles across its pages. That page is the list's
+// last.
+type XUserGetFollowingResponseScanLimit struct {
+	// The profiles a filtered read scans of a list without maxScan.
+	//
+	// Any of 100000.
+	Limit int64 `json:"limit" api:"required"`
+	// What stopped the list & how to read further.
+	Message string `json:"message" api:"required"`
+	// Profiles the list read across its pages, kept or dropped by the filters. The
+	// last page may read past the limit.
+	RowsRead int64 `json:"rowsRead" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Message     respjson.Field
+		RowsRead    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetFollowingResponseScanLimit) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetFollowingResponseScanLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1011,6 +1083,10 @@ func (r *XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy) Un
 type XUserGetVerifiedFollowersResponseUnion struct {
 	HasNextPage bool   `json:"has_next_page"`
 	NextCursor  string `json:"next_cursor"`
+	// Present on the last page of a filtered automatic read that sent no maxScan, once
+	// the list scanned 100,000 profiles across its pages. That page is the list's
+	// last.
+	ScanLimit XUserGetVerifiedFollowersResponseScanLimit `json:"scanLimit"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -1023,6 +1099,7 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 	JSON       struct {
 		HasNextPage   respjson.Field
 		NextCursor    respjson.Field
+		ScanLimit     respjson.Field
 		Users         respjson.Field
 		FilteredCount respjson.Field
 		Diagnostic    respjson.Field
@@ -1044,6 +1121,35 @@ func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersRespo
 func (u XUserGetVerifiedFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XUserGetVerifiedFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Present on the last page of a filtered automatic read that sent no maxScan, once
+// the list scanned 100,000 profiles across its pages. That page is the list's
+// last.
+type XUserGetVerifiedFollowersResponseScanLimit struct {
+	// The profiles a filtered read scans of a list without maxScan.
+	//
+	// Any of 100000.
+	Limit int64 `json:"limit" api:"required"`
+	// What stopped the list & how to read further.
+	Message string `json:"message" api:"required"`
+	// Profiles the list read across its pages, kept or dropped by the filters. The
+	// last page may read past the limit.
+	RowsRead int64 `json:"rowsRead" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Message     respjson.Field
+		RowsRead    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetVerifiedFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetVerifiedFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2593,6 +2699,16 @@ type XUserGetBatchParams struct {
 	// Comma-separated numeric user IDs (1-100 values). Duplicate IDs are ignored while
 	// preserving first-seen order.
 	IDs string `query:"ids" api:"required" json:"-"`
+	// Match any comma-separated or line-separated bio term, ignoring case.
+	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -2600,17 +2716,41 @@ type XUserGetBatchParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
+	// Only return profiles with a location.
+	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
+	// Only return profiles with a website.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Match a location substring, ignoring case.
+	LocationContains param.Opt[string] `query:"locationContains,omitzero" json:"-"`
 	// Maximum follower count. Missing counts pass this maximum.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
+	// Profiles may follow at most this many accounts.
+	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Maximum post count. maxPosts is also accepted.
+	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
 	// Minimum account age in whole days.
 	MinAccountAgeDays param.Opt[int64] `query:"minAccountAgeDays,omitzero" json:"-"`
 	// Minimum follower count. Filtering happens before billing.
 	MinFollowers param.Opt[int64] `query:"minFollowers,omitzero" json:"-"`
+	// Profiles must follow at least this many accounts.
+	MinFollowing param.Opt[int64] `query:"minFollowing,omitzero" json:"-"`
+	// Minimum post count. minPosts is also accepted.
+	MinStatuses param.Opt[int64] `query:"minStatuses,omitzero" json:"-"`
 	// Fields to drop from each row, comma-separated. It takes the same names as
 	// fields. With fields, it drops from the kept fields.
 	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Match a username substring, ignoring case.
+	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
+	// Comma-separated X usernames, with or without @, or profile links such as
+	// x.com/nasa (1-100 values), in place of ids. A name in another case is the same
+	// account.
+	Usernames param.Opt[string] `query:"usernames,omitzero" json:"-"`
 	// Only return verified profiles.
 	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
+	// Match the verification type exactly, ignoring case.
+	VerifiedType param.Opt[string] `query:"verifiedType,omitzero" json:"-"`
 	paramObj
 }
 
@@ -2627,9 +2767,20 @@ type XUserGetFollowersParams struct {
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Add each row's full profile, as GET /x/users/{id} returns it. Pages take several
+	// seconds longer.
+	EnrichProfiles param.Opt[bool] `query:"enrichProfiles,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -2637,6 +2788,8 @@ type XUserGetFollowersParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -2649,6 +2802,13 @@ type XUserGetFollowersParams struct {
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
 	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Most profiles 1 request reads, kept or dropped by the filters. The request then
+	// answers the profiles it kept, the count it dropped & the cursor to read on. Each
+	// request of a cursor may send its own value. Without it, a filtered read scans at
+	// most 100,000 profiles of the list across all its pages, & the page that reaches
+	// them ends the list with `scanLimit`. An unfiltered read has no scan limit.
+	// Automatic mode only.
+	MaxScan param.Opt[int64] `query:"maxScan,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
 	// Minimum account age in whole days.
@@ -2700,8 +2860,16 @@ const (
 type XUserGetFollowersYouKnowParams struct {
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Pagination cursor for followers-you-know
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -2709,6 +2877,8 @@ type XUserGetFollowersYouKnowParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -2759,9 +2929,20 @@ type XUserGetFollowingParams struct {
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Add each row's full profile, as GET /x/users/{id} returns it. Pages take several
+	// seconds longer.
+	EnrichProfiles param.Opt[bool] `query:"enrichProfiles,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -2769,6 +2950,8 @@ type XUserGetFollowingParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -2782,6 +2965,13 @@ type XUserGetFollowingParams struct {
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
 	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Most profiles 1 request reads, kept or dropped by the filters. The request then
+	// answers the profiles it kept, the count it dropped & the cursor to read on. Each
+	// request of a cursor may send its own value. Without it, a filtered read scans at
+	// most 100,000 profiles of the list across all its pages, & the page that reaches
+	// them ends the list with `scanLimit`. An unfiltered read has no scan limit.
+	// Automatic mode only.
+	MaxScan param.Opt[int64] `query:"maxScan,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
 	// Minimum account age in whole days.
@@ -3336,11 +3526,15 @@ const (
 )
 
 type XUserGetRepliesParams struct {
+	// Raw advanced search query appended as-is.
+	AdvancedQuery param.Opt[string] `query:"advancedQuery,omitzero" json:"-"`
 	// Words or quoted phrases where any one can match. Separate with spaces, commas,
 	// or lines.
 	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
 	// Only return tweets from Blue-verified authors.
 	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Geo bounding box, such as -74.1 40.6 -73.9 40.8.
+	BoundingBox param.Opt[string] `query:"boundingBox,omitzero" json:"-"`
 	// Match the Tweet card name.
 	CardName param.Opt[string] `query:"cardName,omitzero" json:"-"`
 	// Cashtags separated by spaces, commas, or lines.
@@ -3373,8 +3567,12 @@ type XUserGetRepliesParams struct {
 	IncludeParentTweet param.Opt[bool] `query:"includeParentTweet,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Words the Tweets must match, in X search syntax.
+	Keywords param.Opt[string] `query:"keywords,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Search within a list ID.
+	ListID param.Opt[string] `query:"listId,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
 	// Return Tweets older than this Tweet ID.
@@ -3415,6 +3613,12 @@ type XUserGetRepliesParams struct {
 	// Follow next_cursor while the response reports more pages. Deprecated aliases
 	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Search within a place ID.
+	Place param.Opt[string] `query:"place,omitzero" json:"-"`
+	// Search within a country code.
+	PlaceCountry param.Opt[string] `query:"placeCountry,omitzero" json:"-"`
+	// Geo point radius, such as -73.99 40.73 25mi.
+	PointRadius param.Opt[string] `query:"pointRadius,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
 	// Only retweets of this tweet ID.
@@ -3425,12 +3629,18 @@ type XUserGetRepliesParams struct {
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Return Tweets newer than this Tweet ID.
 	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
+	// Inclusive ISO bound for Tweet creation time, such as 2026-09-25T19:20:41Z. Unix
+	// seconds also work. A time without an offset is UTC.
+	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// Exclusive ISO bound for Tweet creation time. Unix seconds also work. A time
+	// without an offset is UTC.
+	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	// URL substring or domain filter.
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
 	// Only return tweets from verified authors.
@@ -3443,6 +3653,11 @@ type XUserGetRepliesParams struct {
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetRepliesParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Optional legacy pagination override. Search-only filters such as keywords apply
+	// only without it.
+	//
+	// Any of "standard".
+	Mode XUserGetRepliesParamsMode `query:"mode,omitzero" json:"-"`
 	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
@@ -3510,8 +3725,19 @@ type XUserGetSearchParams struct {
 	Q string `query:"q" api:"required" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Pagination cursor for user search
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Add each row's full profile, as GET /x/users/{id} returns it. Pages take several
+	// seconds longer.
+	EnrichProfiles param.Opt[bool] `query:"enrichProfiles,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -3519,6 +3745,8 @@ type XUserGetSearchParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -3564,11 +3792,15 @@ func (r XUserGetSearchParams) URLQuery() (v url.Values, err error) {
 }
 
 type XUserGetTweetsParams struct {
+	// Raw advanced search query appended as-is.
+	AdvancedQuery param.Opt[string] `query:"advancedQuery,omitzero" json:"-"`
 	// Words or quoted phrases where any one can match. Separate with spaces, commas,
 	// or lines.
 	AnyWords param.Opt[string] `query:"anyWords,omitzero" json:"-"`
 	// Only return tweets from Blue-verified authors.
 	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Geo bounding box, such as -74.1 40.6 -73.9 40.8.
+	BoundingBox param.Opt[string] `query:"boundingBox,omitzero" json:"-"`
 	// Match the Tweet card name.
 	CardName param.Opt[string] `query:"cardName,omitzero" json:"-"`
 	// Cashtags separated by spaces, commas, or lines.
@@ -3603,8 +3835,12 @@ type XUserGetTweetsParams struct {
 	IncludeReplies param.Opt[bool] `query:"includeReplies,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
+	// Words the Tweets must match, in X search syntax.
+	Keywords param.Opt[string] `query:"keywords,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
 	Language param.Opt[string] `query:"language,omitzero" json:"-"`
+	// Search within a list ID.
+	ListID param.Opt[string] `query:"listId,omitzero" json:"-"`
 	// Maximum likes threshold. maxLikes is also accepted.
 	MaxFaves param.Opt[int64] `query:"maxFaves,omitzero" json:"-"`
 	// Return Tweets older than this Tweet ID.
@@ -3645,6 +3881,12 @@ type XUserGetTweetsParams struct {
 	// Follow next_cursor while the response reports more pages. Deprecated aliases
 	// remain accepted.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Search within a place ID.
+	Place param.Opt[string] `query:"place,omitzero" json:"-"`
+	// Search within a country code.
+	PlaceCountry param.Opt[string] `query:"placeCountry,omitzero" json:"-"`
+	// Geo point radius, such as -73.99 40.73 25mi.
+	PointRadius param.Opt[string] `query:"pointRadius,omitzero" json:"-"`
 	// Only quotes of this tweet ID.
 	QuotesOfTweetID param.Opt[string] `query:"quotesOfTweetId,omitzero" json:"-"`
 	// Only retweets of this tweet ID.
@@ -3655,12 +3897,18 @@ type XUserGetTweetsParams struct {
 	SinceDate param.Opt[time.Time] `query:"sinceDate,omitzero" format:"date" json:"-"`
 	// Return Tweets newer than this Tweet ID.
 	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
+	// Inclusive ISO bound for Tweet creation time, such as 2026-09-25T19:20:41Z. Unix
+	// seconds also work. A time without an offset is UTC.
+	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
+	// Exclusive ISO bound for Tweet creation time. Unix seconds also work. A time
+	// without an offset is UTC.
+	UntilTime param.Opt[string] `query:"untilTime,omitzero" json:"-"`
 	// URL substring or domain filter.
 	URL param.Opt[string] `query:"url,omitzero" json:"-"`
 	// Only return tweets from verified authors.
@@ -3673,6 +3921,11 @@ type XUserGetTweetsParams struct {
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetTweetsParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// Optional legacy pagination override. Search-only filters such as keywords apply
+	// only without it.
+	//
+	// Any of "standard".
+	Mode XUserGetTweetsParamsMode `query:"mode,omitzero" json:"-"`
 	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
@@ -3740,9 +3993,20 @@ type XUserGetVerifiedFollowersParams struct {
 	After param.Opt[string] `query:"after,omitzero" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
+	// Only return profiles X marks as blue verified. X marks many business &
+	// government accounts blue too. Use verifiedType for 1 badge type.
+	BlueVerifiedOnly param.Opt[bool] `query:"blueVerifiedOnly,omitzero" json:"-"`
+	// Only return profiles that publish an email outside free webmail, such as Gmail.
+	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
 	// Cursor from the previous response. Xquik cursors resume automatic coverage.
 	// Existing unprefixed cursors keep legacy standard behavior.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Only return profiles with an email at one of these domains. Separate domains
+	// with commas. Subdomains match.
+	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
+	// Add each row's full profile, as GET /x/users/{id} returns it. Pages take several
+	// seconds longer.
+	EnrichProfiles param.Opt[bool] `query:"enrichProfiles,omitzero" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
 	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
@@ -3750,6 +4014,8 @@ type XUserGetVerifiedFollowersParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Only return profiles that publish an email.
+	HasEmail param.Opt[bool] `query:"hasEmail,omitzero" json:"-"`
 	// Only return profiles with a location.
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Only return profiles with a website.
@@ -3763,6 +4029,13 @@ type XUserGetVerifiedFollowersParams struct {
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
 	// Profiles may follow at most this many accounts.
 	MaxFollowing param.Opt[int64] `query:"maxFollowing,omitzero" json:"-"`
+	// Most profiles 1 request reads, kept or dropped by the filters. The request then
+	// answers the profiles it kept, the count it dropped & the cursor to read on. Each
+	// request of a cursor may send its own value. Without it, a filtered read scans at
+	// most 100,000 profiles of the list across all its pages, & the page that reaches
+	// them ends the list with `scanLimit`. An unfiltered read has no scan limit.
+	// Automatic mode only.
+	MaxScan param.Opt[int64] `query:"maxScan,omitzero" json:"-"`
 	// Maximum post count. maxPosts is also accepted.
 	MaxStatuses param.Opt[int64] `query:"maxStatuses,omitzero" json:"-"`
 	// Minimum account age in whole days.
@@ -4508,3 +4781,19 @@ func (r XUserTranslateBioParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Optional legacy pagination override. Search-only filters such as keywords apply
+// only without it.
+type XUserGetRepliesParamsMode string
+
+const (
+	XUserGetRepliesParamsModeStandard XUserGetRepliesParamsMode = "standard"
+)
+
+// Optional legacy pagination override. Search-only filters such as keywords apply
+// only without it.
+type XUserGetTweetsParamsMode string
+
+const (
+	XUserGetTweetsParamsModeStandard XUserGetTweetsParamsMode = "standard"
+)

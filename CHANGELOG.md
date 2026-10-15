@@ -1,10 +1,10 @@
 # Changelog
 
-## 0.20.0 (2026-10-15)
+## 0.20.0 (2026-10-16)
 
 [Full changelog from v0.19.2 to v0.20.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.2...v0.20.0)
 
-The SDK catches up with the API. It adds the 55 operations it lacked, and every change is additive. It now covers 180 of the 186 API operations, and `excluded-operations.json` says why the other 6 stay out.
+The SDK catches up with the API. It adds the 55 operations it lacked and the request and response fields it dropped. It now covers 180 of the 186 API operations, and `excluded-operations.json` says why the other 6 stay out. Every change is additive except the 1 that Compatibility lists.
 
 - The new `X.Analysis` service has `Brand`, `Classify`, `MarketSignals`, `News`, `Sentiment` and `ViralScore`.
 - `Events.StreamStreaming` streams monitor events as server-sent events. The new `packages/ssestream` package reads them and skips keep-alive comments.
@@ -24,6 +24,15 @@ The SDK catches up with the API. It adds the 55 operations it lacked, and every 
 - `X.Users` gains `GetAffiliates`, `GetArticles`, `GetBatchTweets`, `GetFollowerIDs`, `GetFollowingIDs`, `GetHighlights`, `GetInsights`, `GetListMemberships`, `GetLists`, `GetLive`, `GetSimilar`, `GetSubscriptions` and `TranslateBio`.
 - `X.Tweets` gains `CheckRepost`, `Embed`, `GetHiddenReplies`, `GetInsights`, `GetRetweeterIDs`, `GetSubtitles`, `ListTop`, `ResolveLinks` and `Translate`.
 - `bin/check-local` starts with an API coverage check. It fails when the API has an operation that the SDK neither implements nor lists in `excluded-operations.json`. CONTRIBUTING.md explains the check and the file.
+- `bin/check-local` runs an API fields check right after the coverage check. It compares the query params, request bodies and JSON responses with the spec at every depth. `accepted-field-differences.json` lists the 73 differences the SDK keeps on purpose, each with its reason. CONTRIBUTING.md explains the check and the file.
+- The params of 29 methods gain the query params and body fields the API added. They include the email filters `HasEmail`, `BusinessEmailOnly` and `EmailDomains`, `BlueVerifiedOnly`, `MaxScan` and `EnrichProfiles` on profile reads, the search operators on Community and List tweets, and `Name` on monitors.
+- Responses gain the fields the API returns and the SDK dropped. They include the Community creator profile, banner and members facepile, the scan limit of filtered follower and member reads, article links and counts, reply diagnostics, the started job from `Extractions.Run` and the email code challenge from `X.AccountConnectionChallenges.Submit`. New fields reuse the shared models where the spec does.
+- `shared.EventType` gains `tweet.deleted`, `broadcast.started`, `space.started`, the 4 follower and following events and 2 profile count events.
+- The `api:"required"` tags of 14 response fields now match the spec.
+
+### Compatibility
+
+- `XAccount` and `XAccountDetail` drop a timestamp field the API stopped returning. It always read empty.
 
 ## 0.19.2 (2026-10-14)
 

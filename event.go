@@ -103,14 +103,22 @@ type Event struct {
 	// "profile.name.changed", "profile.username.changed", "profile.bio.changed",
 	// "profile.location.changed", "profile.url.changed", "profile.verified.changed",
 	// "profile.protected.changed", "profile.pinned_tweet.changed",
-	// "profile.unavailable.changed".
+	// "profile.unavailable.changed", "tweet.deleted", "broadcast.started",
+	// "space.started", "following.added", "following.removed", "follower.added",
+	// "follower.removed", "profile.followers.changed", "profile.following.changed".
 	Type shared.EventType `json:"type" api:"required"`
 	// Keyword monitor ID, present for keyword monitor events.
 	KeywordMonitorID string `json:"keywordMonitorId"`
+	// Your monitor label when Xquik created the event, present when set. A rename
+	// leaves the event's label unchanged.
+	MonitorName string `json:"monitorName"`
 	// Keyword query, present for keyword monitor events.
 	Query string `json:"query"`
 	// Account username, present for account monitor events.
 	Username string `json:"username"`
+	// Permanent X user ID of the monitored account, present for account monitor
+	// events. It stays the same after a username change.
+	XUserID string `json:"xUserId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -120,8 +128,10 @@ type Event struct {
 		OccurredAt       respjson.Field
 		Type             respjson.Field
 		KeywordMonitorID respjson.Field
+		MonitorName      respjson.Field
 		Query            respjson.Field
 		Username         respjson.Field
+		XUserID          respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -161,15 +171,23 @@ type EventDetail struct {
 	// "profile.name.changed", "profile.username.changed", "profile.bio.changed",
 	// "profile.location.changed", "profile.url.changed", "profile.verified.changed",
 	// "profile.protected.changed", "profile.pinned_tweet.changed",
-	// "profile.unavailable.changed".
+	// "profile.unavailable.changed", "tweet.deleted", "broadcast.started",
+	// "space.started", "following.added", "following.removed", "follower.added",
+	// "follower.removed", "profile.followers.changed", "profile.following.changed".
 	Type shared.EventType `json:"type" api:"required"`
 	// Keyword monitor ID included on detailed keyword events.
 	KeywordMonitorID string `json:"keywordMonitorId"`
+	// Your monitor label when Xquik created this event, present when set. A rename
+	// leaves the event's label unchanged.
+	MonitorName string `json:"monitorName"`
 	// Keyword query for this detailed monitor event.
 	Query string `json:"query"`
 	// Account username for this detailed monitor event.
 	Username string `json:"username"`
 	XEventID string `json:"xEventId"`
+	// Permanent X user ID of the monitored account on account events. It stays the
+	// same after a username change.
+	XUserID string `json:"xUserId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -179,9 +197,11 @@ type EventDetail struct {
 		OccurredAt       respjson.Field
 		Type             respjson.Field
 		KeywordMonitorID respjson.Field
+		MonitorName      respjson.Field
 		Query            respjson.Field
 		Username         respjson.Field
 		XEventID         respjson.Field
+		XUserID          respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -239,7 +259,9 @@ type EventListParams struct {
 	// "profile.name.changed", "profile.username.changed", "profile.bio.changed",
 	// "profile.location.changed", "profile.url.changed", "profile.verified.changed",
 	// "profile.protected.changed", "profile.pinned_tweet.changed",
-	// "profile.unavailable.changed".
+	// "profile.unavailable.changed", "tweet.deleted", "broadcast.started",
+	// "space.started", "following.added", "following.removed", "follower.added",
+	// "follower.removed", "profile.followers.changed", "profile.following.changed".
 	EventType shared.EventType `query:"eventType,omitzero" json:"-"`
 	paramObj
 }

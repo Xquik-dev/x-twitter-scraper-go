@@ -83,51 +83,74 @@ func (r *capturedRequest) expectBody(t *testing.T, want string) {
 func expectDecoded(t *testing.T, response any) {
 	t.Helper()
 	var problems []string
-	walkDecoded(reflect.ValueOf(response), "res", &problems)
+	walkDecoded(reflect.ValueOf(response), "res", nil, &problems)
 	if len(problems) > 0 {
 		t.Fatalf("the fixture did not decode into the response type\n%s", strings.Join(problems, "\n"))
 	}
 }
 
-func walkDecoded(value reflect.Value, path string, problems *[]string) {
+func jsonKeys(kind reflect.Type, keys map[string]bool) {
+	for index := range kind.NumField() {
+		field := kind.Field(index)
+		if field.Anonymous && field.Type.Kind() == reflect.Struct {
+			jsonKeys(field.Type, keys)
+			continue
+		}
+		if name, _, _ := strings.Cut(field.Tag.Get("json"), ","); name != "" && name != "-" {
+			keys[name] = true
+		}
+	}
+}
+
+func walkDecoded(value reflect.Value, path string, family map[string]bool, problems *[]string) {
 	switch value.Kind() {
 	case reflect.Pointer, reflect.Interface:
 		if !value.IsNil() {
-			walkDecoded(value.Elem(), path, problems)
+			walkDecoded(value.Elem(), path, nil, problems)
 		}
 	case reflect.Slice:
 		for index := range value.Len() {
-			walkDecoded(value.Index(index), fmt.Sprintf("%s[%d]", path, index), problems)
+			walkDecoded(value.Index(index), fmt.Sprintf("%s[%d]", path, index), nil, problems)
 		}
 	case reflect.Map:
 		for _, key := range value.MapKeys() {
-			walkDecoded(value.MapIndex(key), fmt.Sprintf("%s[%v]", path, key), problems)
+			walkDecoded(value.MapIndex(key), fmt.Sprintf("%s[%v]", path, key), nil, problems)
 		}
 	case reflect.Struct:
 		kind := value.Type()
 		if strings.HasSuffix(kind.Name(), "Union") {
 			return
 		}
+		keys := map[string]bool{}
+		for key := range family {
+			keys[key] = true
+		}
+		jsonKeys(kind, keys)
 		if metadata := value.FieldByName("JSON"); metadata.IsValid() {
-			checkMetadata(metadata, path, problems)
+			checkMetadata(metadata, path, keys, problems)
 		}
 		for index := range kind.NumField() {
 			field := kind.Field(index)
-			if field.IsExported() && field.Name != "JSON" {
-				walkDecoded(value.Field(index), path+"."+field.Name, problems)
+			switch {
+			case field.Anonymous && field.Type.Kind() == reflect.Struct:
+				walkDecoded(value.Field(index), path, keys, problems)
+			case field.IsExported() && field.Name != "JSON":
+				walkDecoded(value.Field(index), path+"."+field.Name, nil, problems)
 			}
 		}
 	}
 }
 
-func checkMetadata(metadata reflect.Value, path string, problems *[]string) {
+func checkMetadata(metadata reflect.Value, path string, keys map[string]bool, problems *[]string) {
 	for index := range metadata.NumField() {
 		field := metadata.Type().Field(index)
 		switch {
 		case !field.IsExported():
 		case field.Name == "ExtraFields":
 			for _, key := range metadata.Field(index).MapKeys() {
-				*problems = append(*problems, fmt.Sprintf("%s has the unknown key %v", path, key))
+				if !keys[key.String()] {
+					*problems = append(*problems, fmt.Sprintf("%s has the unknown key %v", path, key))
+				}
 			}
 		default:
 			status := metadata.Field(index).Interface().(respjson.Field)

@@ -1,0 +1,9 @@
+{
+  "auto_topup_amount_dollars": 10,
+  "auto_topup_enabled": false,
+  "auto_topup_stopped": false,
+  "auto_topup_threshold": "50000",
+  "balance": "50000",
+  "lifetime_purchased": "200000",
+  "lifetime_used": "150000"
+}

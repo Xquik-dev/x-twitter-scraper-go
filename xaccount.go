@@ -115,24 +115,25 @@ type XAccount struct {
 	//
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
-	Health            XAccountHealth `json:"health" api:"required"`
-	Status            string         `json:"status" api:"required"`
-	UpdatedAt         time.Time      `json:"updatedAt" api:"required" format:"date-time"`
-	XUserID           string         `json:"xUserId" api:"required"`
-	XUsername         string         `json:"xUsername" api:"required"`
-	CookiesObtainedAt time.Time      `json:"cookiesObtainedAt" format:"date-time"`
+	Health    XAccountHealth `json:"health" api:"required"`
+	Status    string         `json:"status" api:"required"`
+	UpdatedAt time.Time      `json:"updatedAt" api:"required" format:"date-time"`
+	XUserID   string         `json:"xUserId" api:"required"`
+	XUsername string         `json:"xUsername" api:"required"`
+	// When the account last connected or reconnected.
+	ConnectedAt time.Time `json:"connectedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		Health            respjson.Field
-		Status            respjson.Field
-		UpdatedAt         respjson.Field
-		XUserID           respjson.Field
-		XUsername         respjson.Field
-		CookiesObtainedAt respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Health      respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		ConnectedAt respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -162,24 +163,26 @@ type XAccountDetail struct {
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
-	Health            XAccountDetailHealth `json:"health" api:"required"`
-	Status            string               `json:"status" api:"required"`
-	XUserID           string               `json:"xUserId" api:"required"`
-	XUsername         string               `json:"xUsername" api:"required"`
-	CookiesObtainedAt time.Time            `json:"cookiesObtainedAt" format:"date-time"`
-	UpdatedAt         time.Time            `json:"updatedAt" format:"date-time"`
+	Health    XAccountDetailHealth `json:"health" api:"required"`
+	Status    string               `json:"status" api:"required"`
+	XUserID   string               `json:"xUserId" api:"required"`
+	XUsername string               `json:"xUsername" api:"required"`
+	// Last connection or reconnection time of this account. Omitted before its first
+	// login.
+	ConnectedAt time.Time `json:"connectedAt" format:"date-time"`
+	UpdatedAt   time.Time `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		Health            respjson.Field
-		Status            respjson.Field
-		XUserID           respjson.Field
-		XUsername         respjson.Field
-		CookiesObtainedAt respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Health      respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		ConnectedAt respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
