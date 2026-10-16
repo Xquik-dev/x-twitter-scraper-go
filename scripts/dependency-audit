@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
 
+source "$(dirname "$0")/temp-paths"
 cd "${1:-$(dirname "$0")/..}"
 
 readonly govulncheck="golang.org/x/vuln/cmd/govulncheck@v1.9.0"
@@ -20,8 +21,7 @@ if ((${#importable[@]} == 0)); then
 fi
 shipped="$(go list -deps -f '{{with .Module}}{{.Path}}{{end}}' "${importable[@]}")"
 
-report="$(mktemp "${TMPDIR:-/tmp}/xquik-govulncheck.XXXXXX")"
-trap 'rm -f -- "$report"' EXIT
+temp_path report "${TMPDIR:-/tmp}/xquik-govulncheck.XXXXXX"
 
 go run "$govulncheck" -format json -test ./... >"$report"
 

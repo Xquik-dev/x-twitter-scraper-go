@@ -69,8 +69,8 @@ if git rev-parse --quiet --verify "refs/tags/$tag" >/dev/null; then
   local_tag=true
 fi
 
-work="$(mktemp -d "${TMPDIR:-/tmp}/release-local.XXXXXX")"
-trap 'rm -rf -- "${work:?}"' EXIT
+source scripts/temp-paths
+temp_path work -d "${TMPDIR:-/tmp}/xquik-release-local.XXXXXX"
 
 step "Reading the $version notes from CHANGELOG.md"
 notes="$work/notes.md"

@@ -2,11 +2,20 @@
 # SPDX-FileCopyrightText: 2026 Xquik contributors
 # SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
-trap 'status=$?; if ((status)); then printf "{\"status\":\"failed\",\"exitCode\":%d}\n" "$status"; fi' EXIT
+source "$(dirname "$0")/temp-paths"
+finish() {
+  local status=$?
+  remove_temp_paths
+  if ((status)); then
+    printf '{"status":"failed","exitCode":%d}\n' "$status"
+  fi
+  exit "$status"
+}
+trap finish EXIT
 version="${1:?Pass the v-prefixed release version.}"
 revision="${2:?Pass the expected full commit SHA.}"
 [[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ && "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo 'Invalid version or commit SHA.' >&2; exit 2; }
-evidence=$(mktemp -d "${TMPDIR:-/tmp}/xquik-go-registry.XXXXXX")
+temp_path evidence -d "${TMPDIR:-/tmp}/xquik-go-registry.XXXXXX"
 export GOWORK=off GOPROXY=https://proxy.golang.org GOSUMDB=sum.golang.org
 export GOPRIVATE= GONOPROXY= GONOSUMDB= GOMODCACHE="$evidence/modules"
 module=github.com/Xquik-dev/x-twitter-scraper-go
@@ -25,5 +34,5 @@ import xquik "github.com/Xquik-dev/x-twitter-scraper-go"
 func main() { _ = xquik.NewClient() }
 EOF
 go run . >&2
-jq -n --arg version "$version" --arg revision "$revision" --arg evidence "$evidence" \
-  '{status:"completed", action:"verify", version:$version, commit:$revision, evidence:$evidence}'
+jq -n --arg version "$version" --arg revision "$revision" \
+  '{status:"completed", action:"verify", version:$version, commit:$revision}'

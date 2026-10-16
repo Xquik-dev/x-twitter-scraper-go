@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `bin/check-local`, `bin/release-local` and their scripts remove their temp files on every exit, including a failed step, Ctrl+C and a terminate signal. `scripts/verify-release` no longer prints the path of its deleted module cache.
+
 ## 0.20.0 (2026-10-16)
 
 [Full changelog from v0.19.2 to v0.20.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.2...v0.20.0)
