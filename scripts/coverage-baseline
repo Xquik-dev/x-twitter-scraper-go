@@ -4,15 +4,15 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 revision="$(git rev-parse --verify "${1:?Run scripts/coverage-baseline <revision>.}^{commit}")"
-workspace="$(mktemp -d "${TMPDIR:-/tmp}/xquik-coverage-baseline.XXXXXX")"
-trap 'rm -rf -- "${workspace:?}"' EXIT
-mkdir "$workspace/reports"
+source scripts/temp-paths
+temp_path workspace -d "${TMPDIR:-/tmp}/xquik-coverage-baseline.XXXXXX"
+mkdir "$workspace/reports" "$workspace/tmp"
 echo "==> Measuring the coverage of ${revision:0:12} for the baseline"
 git clone --quiet --shared --no-checkout "$PWD" "$workspace/source"
 git -C "$workspace/source" checkout --quiet --detach "$revision"
 (
   cd "$workspace/source"
-  export XQUIK_COVERAGE_DIR="$workspace/reports"
+  export XQUIK_COVERAGE_DIR="$workspace/reports" TMPDIR="$workspace/tmp"
   scripts/collect-coverage
   scripts/collect-branches
 )

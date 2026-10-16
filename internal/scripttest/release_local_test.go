@@ -63,6 +63,10 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 	if err != nil {
 		t.Fatal(err)
 	}
+	tempPaths, err := os.ReadFile("../../scripts/temp-paths")
+	if err != nil {
+		t.Fatal(err)
+	}
 	root := t.TempDir()
 	fixture := &releaseFixture{
 		t:      t,
@@ -88,6 +92,7 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 		"repo/bin/release-local":             {string(script), 0o755},
 		"repo/bin/check-local":               {recorder("check-local"), 0o755},
 		"repo/scripts/dependency-audit":      {recorder("dependency-audit"), 0o755},
+		"repo/scripts/temp-paths":            {string(tempPaths), 0o644},
 		"tools/gh":                           {fakeGH, 0o755},
 		"tools/curl":                         {fakeCurl, 0o755},
 		"gh-settings/.keep":                  {"", 0o644},
@@ -177,7 +182,7 @@ func TestReleaseLocalDryRunPublishesNothing(t *testing.T) {
 		"Version      v1.2.3\n" +
 		"Commit       " + revision + "\n" +
 		"Checksum     h1:"
-	files := "Files        8\n" +
+	files := "Files        9\n" +
 		".release-please-manifest.json\n" +
 		"CHANGELOG.md\n" +
 		"bin/check-local\n" +
@@ -186,6 +191,7 @@ func TestReleaseLocalDryRunPublishesNothing(t *testing.T) {
 		"internal/version.go\n" +
 		"lib.go\n" +
 		"scripts/dependency-audit\n" +
+		"scripts/temp-paths\n" +
 		"==> Checking whether proxy.golang.org already serves v1.2.3\n" +
 		"Dry run finished. Nothing was published, tagged or released.\n"
 	if !strings.Contains(stdout, listing) || !strings.HasSuffix(stdout, files) {
