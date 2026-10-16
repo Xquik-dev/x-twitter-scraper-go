@@ -3,6 +3,7 @@
 ## Unreleased
 
 - `shared.UserProfileIdentityVerification` gains the optional `OverrideVerifiedYear` field for profiles and users in tweets.
+- `bin/check-local`, `bin/release-local` and their scripts remove their temp files on every exit, including a failed step, Ctrl+C and a terminate signal. `scripts/verify-release` no longer prints the path of its deleted module cache.
 
 ## 0.20.0 (2026-10-16)
 

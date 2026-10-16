@@ -9,23 +9,11 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 readonly gocove_version="v0.0.0-20260427173940-a0dceb9dadca"
-readonly temp_root="${TMPDIR:-/tmp}"
-branch_workspace="$(mktemp -d "${temp_root%/}/xquik-gocove.XXXXXX")"
+source scripts/temp-paths
+temp_path branch_workspace -d "${TMPDIR:-/tmp}/xquik-gocove.XXXXXX"
 readonly branch_meta="$branch_workspace/meta"
 readonly branch_cache="$branch_workspace/go-cache"
 mkdir -p "$branch_meta" "$branch_cache"
-
-cleanup() {
-  case "$branch_workspace" in
-    "${temp_root%/}"/xquik-gocove.*)
-      rm -rf -- "$branch_cache"
-      ;;
-    *)
-      echo "Refusing to remove unexpected path: $branch_workspace" >&2
-      ;;
-  esac
-}
-trap cleanup EXIT
 
 export GOCOVE_META_DIR="$branch_meta"
 export GOCACHE="$branch_cache"

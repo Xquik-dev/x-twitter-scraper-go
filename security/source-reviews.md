@@ -13,6 +13,7 @@ On 2026-10-15, 4 findings in `shared/shared.go` were reviewed and added. They ar
 On 2026-10-15, 24 findings in `xanalysis.go` were reviewed and added. They are the As variant conversions of the 2 answer unions in each of the 6 analysis responses, with the reason the other generated As methods carry.
 On 2026-10-16, the API fields check moved the spec loader from `cmd/api-coverage/main.go` to `internal/apicheck/apicheck.go`. The 4 findings of the old file left with its code. The 1 finding gosec reports in the new file was reviewed with the reason the old file read finding carried.
 On 2026-10-16, the field fixes moved 53 findings the same way in `shared/shared.go`, `xaccount.go`, `xlist.go`, `xtweet.go` and `xuser.go`. Their code & reasons are unchanged.
+On 2026-10-16, the temp dir cleanup moved 2 findings in `internal/scripttest/release_local_test.go` the same way. 1 finding in `internal/scripttest/temp_cleanup_test.go` was reviewed and added, with the reason the release test runner carries.
 On 2026-10-17, the `OverrideVerifiedYear` field addition moved 36 findings in `shared/shared.go` to its new source hash.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
@@ -1744,18 +1745,18 @@ Finding: Errors unhandled
 24: 	}))
 ```
 
-## G204 in internal/scripttest/release_local_test.go:134
+## G204 in internal/scripttest/release_local_test.go:139
 
 Test-only Git helper. The tests pass literal Git arguments, and the command runs in a temporary repository that the test created. No input comes from outside the test.
 
-Source SHA-256: `fb3810d1a0546aa9bd864d5be01a5cb7951cb1b2b5c2fa7931a53816bad859bd`
+Source SHA-256: `d289edf6535f40168caf005637e127ae3fac915934edfdcd9f4f4c4abb03c9d5`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with variable
 
 ```go
-133: 	fixture.t.Helper()
-134: 	command := exec.Command("git", args...)
-135: 	command.Dir, command.Env = directory, fixture.env
+138: 	fixture.t.Helper()
+139: 	command := exec.Command("git", args...)
+140: 	command.Dir, command.Env = directory, fixture.env
 ```
 
 ## G204 in internal/scripttest/dependency_audit_test.go:110
@@ -1786,18 +1787,18 @@ Finding: Subprocess launched with variable
 57: 	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "TMPDIR="+root)
 ```
 
-## G204 in internal/scripttest/release_local_test.go:145
+## G204 in internal/scripttest/release_local_test.go:150
 
 Test-only runner for bin/release-local. The path points at the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake gh and curl commands stand in for GitHub and the module proxy.
 
-Source SHA-256: `fb3810d1a0546aa9bd864d5be01a5cb7951cb1b2b5c2fa7931a53816bad859bd`
+Source SHA-256: `d289edf6535f40168caf005637e127ae3fac915934edfdcd9f4f4c4abb03c9d5`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 ```go
-144: 	fixture.t.Helper()
-145: 	command := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
-146: 	command.Dir, command.Env = fixture.t.TempDir(), fixture.env
+149: 	fixture.t.Helper()
+150: 	command := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
+151: 	command.Dir, command.Env = fixture.t.TempDir(), fixture.env
 ```
 
 ## G306 in internal/scripttest/codeql_security_test.go:50
@@ -2218,4 +2219,32 @@ Finding: Potential file inclusion via variable
 117: 	if !strings.HasPrefix(source, "https://") && !strings.HasPrefix(source, "http://") {
 118: 		return os.ReadFile(source)
 119: 	}
+```
+
+## G204 in internal/scripttest/temp_cleanup_test.go:192
+
+Test-only runner for the check scripts and bin/release-local. The paths point at this repository's scripts or the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake tools stand in for go, CodeQL, uv, gh and curl.
+
+Source SHA-256: `c1c22c4bdc525b84fcff91c7811904a3160bba0f6cc04c28ddde92cbb34e23a6`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Subprocess launched with a potential tainted input or cmd arguments
+
+```go
+191: 	}
+192: 	cmd := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
+193: 	cmd.Dir = t.TempDir()
+```
+
+## G204 in internal/scripttest/temp_cleanup_test.go:103
+
+Test-only runner for the check scripts and bin/release-local. The paths point at this repository's scripts or the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake tools stand in for go, CodeQL, uv, gh and curl.
+
+Source SHA-256: `c1c22c4bdc525b84fcff91c7811904a3160bba0f6cc04c28ddde92cbb34e23a6`
+Severity: MEDIUM. Confidence: HIGH.
+Finding: Subprocess launched with a potential tainted input or cmd arguments
+
+```go
+102: 	}
+103: 	cmd := exec.Command(command[0], command[1:]...)
+104: 	cmd.Env = append(os.Environ(), env...)
 ```
