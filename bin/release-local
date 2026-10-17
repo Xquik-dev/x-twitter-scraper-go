@@ -71,6 +71,7 @@ fi
 
 source scripts/temp-paths
 temp_path work -d "${TMPDIR:-/tmp}/xquik-release-local.XXXXXX"
+export GOTMPDIR="$work"
 
 step "Reading the $version notes from CHANGELOG.md"
 notes="$work/notes.md"

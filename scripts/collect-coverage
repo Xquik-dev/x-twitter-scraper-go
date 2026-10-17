@@ -10,6 +10,7 @@ cd "$(dirname "$0")/.."
 
 source scripts/temp-paths
 temp_path workspace -d "${TMPDIR:-/tmp}/xquik-go-coverage.XXXXXX"
+export GOTMPDIR="$workspace"
 coverage_profile="$workspace/coverage.out"
 echo "Coverage profile: $coverage_profile"
 

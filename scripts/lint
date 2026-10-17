@@ -8,6 +8,10 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+source scripts/temp-paths
+temp_path workspace -d "${TMPDIR:-/tmp}/xquik-lint.XXXXXX"
+export GOTMPDIR="$workspace"
+
 echo "==> Checking gofmt"
 unformatted="$(gofmt -l .)"
 if [ -n "$unformatted" ]; then

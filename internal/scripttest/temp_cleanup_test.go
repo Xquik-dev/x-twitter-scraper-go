@@ -4,6 +4,7 @@
 package scripttest
 
 import (
+	"bytes"
 	"errors"
 	"os"
 	"os/exec"
@@ -17,8 +18,12 @@ import (
 const fakeTool = `#!/bin/sh
 case "$*" in
   "version --format=terse") echo 2.27.2; exit 0 ;;
-  "list -f "*|"list -deps "*) echo github.com/Xquik-dev/x-twitter-scraper-go; exit 0 ;;
+  "list -f "*|"list -deps "*|"list ./...") echo github.com/Xquik-dev/x-twitter-scraper-go; exit 0 ;;
+  "-l .") exit 0 ;;
 esac
+if [ "$(basename "$0")" = go ]; then
+  mktemp "${GOTMPDIR:-${TMPDIR:-/tmp}}/go-build.XXXXXX" >/dev/null || exit 1
+fi
 if [ -n "$GOMODCACHE" ]; then
   mkdir -p "$GOMODCACHE/cache/download" && : >"$GOMODCACHE/cache/download/list" && chmod -R a-w "$GOMODCACHE"
 fi
@@ -51,6 +56,9 @@ func cleanupCases(t *testing.T) []cleanupCase {
 	script := func(path string) string { return filepath.Join(repo, path) }
 	return []cleanupCase{
 		{name: "check-local", command: []string{script("bin/check-local"), "--no-status"}, tools: []string{"go", "jq", "uv"}},
+		{name: "test", command: []string{script("scripts/test")}, tools: []string{"go"}},
+		{name: "fuzz", command: []string{script("scripts/fuzz")}, tools: []string{"go"}},
+		{name: "lint", command: []string{script("scripts/lint")}, tools: []string{"go", "gofmt"}},
 		{name: "collect-coverage", command: []string{script("scripts/collect-coverage")}, tools: []string{"go"}},
 		{name: "collect-branches", command: []string{script("scripts/collect-branches")}, tools: []string{"go"}},
 		{name: "coverage-baseline", command: []string{script("scripts/coverage-baseline"), "HEAD"}, tools: []string{"go"}},
@@ -76,6 +84,7 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 	root := t.TempDir()
 	private := filepath.Join(root, "tmp")
 	bin := filepath.Join(root, "bin")
+	moduleCache := filepath.Join(root, "modules")
 	for _, directory := range []string{private, bin} {
 		if err := os.MkdirAll(directory, 0o750); err != nil {
 			t.Fatal(err)
@@ -86,7 +95,7 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 			t.Fatal(err)
 		}
 	}
-	env := []string{"PATH=" + bin + string(os.PathListSeparator) + os.Getenv("PATH"), "TMPDIR=" + private, "FUZZ_TIME=1s"}
+	env := []string{"PATH=" + bin + string(os.PathListSeparator) + os.Getenv("PATH"), "TMPDIR=" + private, "GOTMPDIR=", "GOMODCACHE=" + moduleCache, "FUZZ_TIME=1s"}
 	if started != "" {
 		env = append(env, "FAKE_STARTED="+started)
 	}
@@ -103,17 +112,26 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 	cmd := exec.Command(command[0], command[1:]...)
 	cmd.Env = append(os.Environ(), env...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout, cmd.Stderr = &stdout, &stderr
+	t.Cleanup(func() {
+		for _, directory := range []string{moduleCache, filepath.Join(moduleCache, "cache"), filepath.Join(moduleCache, "cache", "download")} {
+			if err := os.Chmod(directory, 0o700); err != nil && !errors.Is(err, os.ErrNotExist) {
+				t.Errorf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
+			}
+		}
+	})
 	if err := cmd.Start(); err != nil {
-		t.Fatal(err)
+		t.Fatalf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
 	}
 	return cmd, private
 }
 
-func exitCode(t *testing.T, err error) int {
+func exitCode(t *testing.T, cmd *exec.Cmd, err error) int {
 	t.Helper()
 	var exit *exec.ExitError
 	if err != nil && !errors.As(err, &exit) {
-		t.Fatal(err)
+		t.Fatalf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
 	}
 	if exit == nil {
 		return 0
@@ -121,18 +139,18 @@ func exitCode(t *testing.T, err error) int {
 	return exit.ExitCode()
 }
 
-func expectEmpty(t *testing.T, private string) {
+func expectEmpty(t *testing.T, cmd *exec.Cmd, private string) {
 	t.Helper()
 	entries, err := os.ReadDir(private)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
 	}
 	var left []string
 	for _, entry := range entries {
 		left = append(left, entry.Name())
 	}
 	if len(left) > 0 {
-		t.Fatalf("the run left %s in its TMPDIR", strings.Join(left, ", "))
+		t.Fatalf("the run left %s in its TMPDIR\n%s\n%s", strings.Join(left, ", "), cmd.Stdout, cmd.Stderr)
 	}
 }
 
@@ -140,10 +158,10 @@ func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
 	for _, test := range cleanupCases(t) {
 		t.Run(test.name, func(t *testing.T) {
 			cmd, private := startCleanupCase(t, test, "")
-			if code := exitCode(t, cmd.Wait()); code == 0 {
-				t.Fatal("the failing step did not fail the run")
+			if code := exitCode(t, cmd, cmd.Wait()); code == 0 {
+				t.Fatalf("the failing step did not fail the run\n%s\n%s", cmd.Stdout, cmd.Stderr)
 			}
-			expectEmpty(t, private)
+			expectEmpty(t, cmd, private)
 		})
 	}
 }
@@ -159,23 +177,26 @@ func TestChecksRemoveTheirTempDirsWhenTerminated(t *testing.T) {
 					break
 				}
 				if time.Now().After(deadline) {
-					if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL); err != nil {
-						t.Error(err)
+					killErr := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
+					waitErr := cmd.Wait()
+					if killErr != nil {
+						t.Errorf("%v\n%s\n%s", killErr, cmd.Stdout, cmd.Stderr)
 					}
-					if err := cmd.Wait(); err != nil {
-						t.Error(err)
+					if waitErr != nil {
+						t.Errorf("%v\n%s\n%s", waitErr, cmd.Stdout, cmd.Stderr)
 					}
-					t.Fatal("the run never reached its fake tool")
+					t.Fatalf("the run never reached its fake tool\n%s\n%s", cmd.Stdout, cmd.Stderr)
 				}
 				time.Sleep(20 * time.Millisecond)
 			}
 			if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGTERM); err != nil {
-				t.Fatal(err)
+				waitErr := cmd.Wait()
+				t.Fatalf("terminate %v, wait %v\n%s\n%s", err, waitErr, cmd.Stdout, cmd.Stderr)
 			}
-			if code := exitCode(t, cmd.Wait()); code != 143 {
-				t.Fatalf("exit code %d, want 143", code)
+			if code := exitCode(t, cmd, cmd.Wait()); code != 143 {
+				t.Fatalf("exit code %d, want 143\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 			}
-			expectEmpty(t, private)
+			expectEmpty(t, cmd, private)
 		})
 	}
 }
@@ -189,16 +210,19 @@ func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args
 		fixture.git(fixture.repo, "commit", "--quiet", "--all", "--message", "check-local")
 		fixture.git(fixture.repo, "push", "--quiet", "origin", "main")
 	}
-	private := filepath.Join(t.TempDir(), "tmp")
+	root := t.TempDir()
+	private := filepath.Join(root, "tmp")
 	if err := os.MkdirAll(private, 0o750); err != nil {
 		t.Fatal(err)
 	}
 	cmd := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
 	cmd.Dir = t.TempDir()
-	cmd.Env = append(append([]string(nil), fixture.env...), "TMPDIR="+private)
+	cmd.Env = append(append([]string(nil), fixture.env...), "TMPDIR="+private, "GOTMPDIR=", "GOMODCACHE="+filepath.Join(root, "modules"))
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout, cmd.Stderr = &stdout, &stderr
 	if err := cmd.Start(); err != nil {
-		t.Fatal(err)
+		t.Fatalf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
 	}
 	return cmd, private
 }
@@ -206,17 +230,17 @@ func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args
 func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 	t.Run("after a dry run with a read-only module cache", func(t *testing.T) {
 		cmd, private := startRelease(t, newReleaseFixture(t), "", "--dry-run")
-		if code := exitCode(t, cmd.Wait()); code != 0 {
-			t.Fatalf("dry run exit %d", code)
+		if code := exitCode(t, cmd, cmd.Wait()); code != 0 {
+			t.Fatalf("dry run exit %d\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
-		expectEmpty(t, private)
+		expectEmpty(t, cmd, private)
 	})
 	t.Run("when a step fails", func(t *testing.T) {
 		cmd, private := startRelease(t, newReleaseFixture(t), "#!/bin/sh\nexit 3\n", "--dry-run")
-		if code := exitCode(t, cmd.Wait()); code != 3 {
-			t.Fatalf("exit %d, want 3", code)
+		if code := exitCode(t, cmd, cmd.Wait()); code != 3 {
+			t.Fatalf("exit %d, want 3\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
-		expectEmpty(t, private)
+		expectEmpty(t, cmd, private)
 	})
 	t.Run("when terminated", func(t *testing.T) {
 		started := filepath.Join(t.TempDir(), "started")
@@ -227,22 +251,25 @@ func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 				break
 			}
 			if time.Now().After(deadline) {
-				if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL); err != nil {
-					t.Error(err)
+				killErr := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
+				waitErr := cmd.Wait()
+				if killErr != nil {
+					t.Errorf("%v\n%s\n%s", killErr, cmd.Stdout, cmd.Stderr)
 				}
-				if err := cmd.Wait(); err != nil {
-					t.Error(err)
+				if waitErr != nil {
+					t.Errorf("%v\n%s\n%s", waitErr, cmd.Stdout, cmd.Stderr)
 				}
-				t.Fatal("the release never reached bin/check-local")
+				t.Fatalf("the release never reached bin/check-local\n%s\n%s", cmd.Stdout, cmd.Stderr)
 			}
 			time.Sleep(20 * time.Millisecond)
 		}
 		if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGTERM); err != nil {
-			t.Fatal(err)
+			waitErr := cmd.Wait()
+			t.Fatalf("terminate %v, wait %v\n%s\n%s", err, waitErr, cmd.Stdout, cmd.Stderr)
 		}
-		if code := exitCode(t, cmd.Wait()); code != 143 {
-			t.Fatalf("exit code %d, want 143", code)
+		if code := exitCode(t, cmd, cmd.Wait()); code != 143 {
+			t.Fatalf("exit code %d, want 143\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
-		expectEmpty(t, private)
+		expectEmpty(t, cmd, private)
 	})
 }
