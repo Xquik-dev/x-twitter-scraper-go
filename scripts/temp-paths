@@ -23,5 +23,5 @@ remove_temp_paths() {
 
 trap remove_temp_paths EXIT
 trap 'exit 129' HUP
-trap 'exit 130' INT
+trap 'trap - INT; kill -INT "$$"' INT
 trap 'exit 143' TERM

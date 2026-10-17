@@ -154,6 +154,43 @@ func expectEmpty(t *testing.T, cmd *exec.Cmd, private string) {
 	}
 }
 
+func terminateRun(t *testing.T, cmd *exec.Cmd, started string, signal syscall.Signal) {
+	t.Helper()
+	deadline := time.Now().Add(20 * time.Second)
+	for {
+		if _, err := os.Stat(started); err == nil {
+			break
+		}
+		if time.Now().After(deadline) {
+			killErr := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
+			waitErr := cmd.Wait()
+			if killErr != nil {
+				t.Errorf("%v\n%s\n%s", killErr, cmd.Stdout, cmd.Stderr)
+			}
+			if waitErr != nil {
+				t.Errorf("%v\n%s\n%s", waitErr, cmd.Stdout, cmd.Stderr)
+			}
+			t.Fatalf("the run never reached its fake tool\n%s\n%s", cmd.Stdout, cmd.Stderr)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	if err := syscall.Kill(-cmd.Process.Pid, signal); err != nil {
+		waitErr := cmd.Wait()
+		t.Fatalf("terminate %v, wait %v\n%s\n%s", err, waitErr, cmd.Stdout, cmd.Stderr)
+	}
+	code := exitCode(t, cmd, cmd.Wait())
+	if signal == syscall.SIGINT {
+		status, ok := cmd.ProcessState.Sys().(syscall.WaitStatus)
+		if code != -1 || !ok || !status.Signaled() || status.Signal() != syscall.SIGINT {
+			t.Fatalf("process state %v, want SIGINT\n%s\n%s", cmd.ProcessState, cmd.Stdout, cmd.Stderr)
+		}
+		return
+	}
+	if want := 128 + int(signal); code != want {
+		t.Fatalf("exit code %d, want %d\n%s\n%s", code, want, cmd.Stdout, cmd.Stderr)
+	}
+}
+
 func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
 	for _, test := range cleanupCases(t) {
 		t.Run(test.name, func(t *testing.T) {
@@ -169,35 +206,31 @@ func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
 func TestChecksRemoveTheirTempDirsWhenTerminated(t *testing.T) {
 	for _, test := range cleanupCases(t) {
 		t.Run(test.name, func(t *testing.T) {
-			started := filepath.Join(t.TempDir(), "started")
-			cmd, private := startCleanupCase(t, test, started)
-			deadline := time.Now().Add(20 * time.Second)
-			for {
-				if _, err := os.Stat(started); err == nil {
-					break
-				}
-				if time.Now().After(deadline) {
-					killErr := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-					waitErr := cmd.Wait()
-					if killErr != nil {
-						t.Errorf("%v\n%s\n%s", killErr, cmd.Stdout, cmd.Stderr)
-					}
-					if waitErr != nil {
-						t.Errorf("%v\n%s\n%s", waitErr, cmd.Stdout, cmd.Stderr)
-					}
-					t.Fatalf("the run never reached its fake tool\n%s\n%s", cmd.Stdout, cmd.Stderr)
-				}
-				time.Sleep(20 * time.Millisecond)
+			for _, signal := range []syscall.Signal{syscall.SIGINT, syscall.SIGTERM} {
+				t.Run(signal.String(), func(t *testing.T) {
+					started := filepath.Join(t.TempDir(), "started")
+					cmd, private := startCleanupCase(t, test, started)
+					terminateRun(t, cmd, started, signal)
+					expectEmpty(t, cmd, private)
+				})
 			}
-			if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGTERM); err != nil {
-				waitErr := cmd.Wait()
-				t.Fatalf("terminate %v, wait %v\n%s\n%s", err, waitErr, cmd.Stdout, cmd.Stderr)
-			}
-			if code := exitCode(t, cmd, cmd.Wait()); code != 143 {
-				t.Fatalf("exit code %d, want 143\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
-			}
-			expectEmpty(t, cmd, private)
 		})
+	}
+}
+
+func TestInterruptStopsBashParent(t *testing.T) {
+	root := t.TempDir()
+	started := filepath.Join(root, "started")
+	continued := filepath.Join(root, "continued")
+	test := cleanupCase{
+		command: []string{"bash", "-c", "\"$1\"\n: >\"$2\"\n", "bash", filepath.Join(repositoryRoot(t), "scripts/test"), continued},
+		tools:   []string{"go"},
+	}
+	cmd, private := startCleanupCase(t, test, started)
+	terminateRun(t, cmd, started, syscall.SIGINT)
+	expectEmpty(t, cmd, private)
+	if _, err := os.Stat(continued); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("the bash parent ran its second command, stat %v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
 	}
 }
 
@@ -242,34 +275,12 @@ func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 		}
 		expectEmpty(t, cmd, private)
 	})
-	t.Run("when terminated", func(t *testing.T) {
-		started := filepath.Join(t.TempDir(), "started")
-		cmd, private := startRelease(t, newReleaseFixture(t), "#!/bin/sh\n: >\""+started+"\"\nexec sleep 30\n", "--dry-run")
-		deadline := time.Now().Add(20 * time.Second)
-		for {
-			if _, err := os.Stat(started); err == nil {
-				break
-			}
-			if time.Now().After(deadline) {
-				killErr := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-				waitErr := cmd.Wait()
-				if killErr != nil {
-					t.Errorf("%v\n%s\n%s", killErr, cmd.Stdout, cmd.Stderr)
-				}
-				if waitErr != nil {
-					t.Errorf("%v\n%s\n%s", waitErr, cmd.Stdout, cmd.Stderr)
-				}
-				t.Fatalf("the release never reached bin/check-local\n%s\n%s", cmd.Stdout, cmd.Stderr)
-			}
-			time.Sleep(20 * time.Millisecond)
-		}
-		if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGTERM); err != nil {
-			waitErr := cmd.Wait()
-			t.Fatalf("terminate %v, wait %v\n%s\n%s", err, waitErr, cmd.Stdout, cmd.Stderr)
-		}
-		if code := exitCode(t, cmd, cmd.Wait()); code != 143 {
-			t.Fatalf("exit code %d, want 143\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
-		}
-		expectEmpty(t, cmd, private)
-	})
+	for _, signal := range []syscall.Signal{syscall.SIGINT, syscall.SIGTERM} {
+		t.Run("when terminated by "+signal.String(), func(t *testing.T) {
+			started := filepath.Join(t.TempDir(), "started")
+			cmd, private := startRelease(t, newReleaseFixture(t), "#!/bin/sh\n: >\""+started+"\"\nexec sleep 30\n", "--dry-run")
+			terminateRun(t, cmd, started, signal)
+			expectEmpty(t, cmd, private)
+		})
+	}
 }

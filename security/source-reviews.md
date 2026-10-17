@@ -17,6 +17,7 @@ On 2026-10-16, the temp dir cleanup moved 2 findings in `internal/scripttest/rel
 On 2026-10-17, the `OverrideVerifiedYear` field addition moved 36 findings in `shared/shared.go` to its new source hash.
 On 2026-10-17, the temp cleanup tests handle timeout errors. Their 2 runner findings moved to the new source hash, and 2 executable fixture findings were reviewed and added.
 On 2026-10-17, the temp cleanup tests isolate their module caches, simulate Go build files and capture script output. Their 4 existing findings moved to the new source hash. The directory permission restore was reviewed and added.
+On 2026-10-17, the SIGINT cleanup tests added a bash parent regression. The same script moved their 5 findings to the new source hash and line numbers. Their code and reasons are unchanged.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
 Their order is rule, file, line, code, source hash, severity, confidence, details.
@@ -2223,25 +2224,25 @@ Finding: Potential file inclusion via variable
 119: 	}
 ```
 
-## G204 in internal/scripttest/temp_cleanup_test.go:218
+## G204 in internal/scripttest/temp_cleanup_test.go:251
 
 Test-only runner for the check scripts and bin/release-local. The paths point at this repository's scripts or the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake tools stand in for go, CodeQL, uv, gh and curl.
 
-Source SHA-256: `08e4edc1d77e4190c0b2fb29a14a00e9248328d13b7fe3c5ad3220e2a7737fa4`
+Source SHA-256: `44b979c4c5c2eaa952b3bc6f3d5a440c86545d5202db2bf930e85e430d349b49`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 ```go
-217: 	}
-218: 	cmd := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
-219: 	cmd.Dir = t.TempDir()
+250: 	}
+251: 	cmd := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
+252: 	cmd.Dir = t.TempDir()
 ```
 
 ## G204 in internal/scripttest/temp_cleanup_test.go:112
 
 Test-only runner for the check scripts and bin/release-local. The paths point at this repository's scripts or the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake tools stand in for go, CodeQL, uv, gh and curl.
 
-Source SHA-256: `08e4edc1d77e4190c0b2fb29a14a00e9248328d13b7fe3c5ad3220e2a7737fa4`
+Source SHA-256: `44b979c4c5c2eaa952b3bc6f3d5a440c86545d5202db2bf930e85e430d349b49`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
@@ -2251,25 +2252,25 @@ Finding: Subprocess launched with a potential tainted input or cmd arguments
 113: 	cmd.Env = append(os.Environ(), env...)
 ```
 
-## G306 in internal/scripttest/temp_cleanup_test.go:207
+## G306 in internal/scripttest/temp_cleanup_test.go:240
 
 Test-only stand-in for bin/check-local, written into the test's temporary repository. It must be executable, so it needs mode 0o755. Each test supplies its content.
 
-Source SHA-256: `08e4edc1d77e4190c0b2fb29a14a00e9248328d13b7fe3c5ad3220e2a7737fa4`
+Source SHA-256: `44b979c4c5c2eaa952b3bc6f3d5a440c86545d5202db2bf930e85e430d349b49`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Expect WriteFile permissions to be 0600 or less
 
 ```go
-206: 	if checkLocal != "" {
-207: 		if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o755); err != nil {
-208: 			t.Fatal(err)
+239: 	if checkLocal != "" {
+240: 		if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o755); err != nil {
+241: 			t.Fatal(err)
 ```
 
 ## G306 in internal/scripttest/temp_cleanup_test.go:94
 
 Test-only stand-ins for the check tools, written into the test's temporary folder. They must be executable, so they need mode 0o755. Their content is a literal in the test.
 
-Source SHA-256: `08e4edc1d77e4190c0b2fb29a14a00e9248328d13b7fe3c5ad3220e2a7737fa4`
+Source SHA-256: `44b979c4c5c2eaa952b3bc6f3d5a440c86545d5202db2bf930e85e430d349b49`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Expect WriteFile permissions to be 0600 or less
 
@@ -2283,7 +2284,7 @@ Finding: Expect WriteFile permissions to be 0600 or less
 
 Test-only cleanup restores owner access to directories in the fake module cache. The cache is inside the test's temporary root. Mode 0o700 lets the test remove its read-only fixture and grants no access to other users.
 
-Source SHA-256: `08e4edc1d77e4190c0b2fb29a14a00e9248328d13b7fe3c5ad3220e2a7737fa4`
+Source SHA-256: `44b979c4c5c2eaa952b3bc6f3d5a440c86545d5202db2bf930e85e430d349b49`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Expect file permissions to be 0600 or less
 
