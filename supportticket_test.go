@@ -6,14 +6,191 @@ package xtwitterscraper_test
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"io"
+	"mime"
+	"net/http"
 	"os"
+	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
+
+func TestSupportTicketRequestBodies(t *testing.T) {
+	services := []struct {
+		name    string
+		path    string
+		subject string
+		send    func(xtwitterscraper.Client, param.Opt[string], []io.Reader) error
+	}{
+		{
+			name:    "ticket",
+			path:    "/api/v1/support/tickets",
+			subject: "Cannot connect X account",
+			send: func(client xtwitterscraper.Client, body param.Opt[string], attachments []io.Reader) error {
+				_, err := client.Support.Tickets.New(context.Background(), xtwitterscraper.SupportTicketNewParams{
+					Subject:        "Cannot connect X account",
+					Body:           body,
+					Attachments:    attachments,
+					IdempotencyKey: xtwitterscraper.String("support-request"),
+				})
+				return err
+			},
+		},
+		{
+			name: "reply",
+			path: "/api/v1/support/tickets/tkt_example/messages",
+			send: func(client xtwitterscraper.Client, body param.Opt[string], attachments []io.Reader) error {
+				_, err := client.Support.Tickets.Reply(context.Background(), "tkt_example", xtwitterscraper.SupportTicketReplyParams{
+					Body:           body,
+					Attachments:    attachments,
+					IdempotencyKey: xtwitterscraper.String("support-request"),
+				})
+				return err
+			},
+		},
+	}
+	for _, service := range services {
+		t.Run(service.name, func(t *testing.T) {
+			tests := map[string]struct {
+				body        param.Opt[string]
+				attachments []io.Reader
+				wantJSON    bool
+				wantBody    []string
+				wantFiles   []string
+				filename    string
+				contentType string
+			}{
+				"attachments only": {
+					attachments: []io.Reader{strings.NewReader("first"), strings.NewReader("second"), strings.NewReader("third"), strings.NewReader("fourth")},
+					wantFiles:   []string{"first", "second", "third", "fourth"},
+				},
+				"body only": {
+					body:     xtwitterscraper.String("Please help."),
+					wantJSON: true,
+					wantBody: []string{"Please help."},
+				},
+				"body and attachments": {
+					body:        xtwitterscraper.String("Please help."),
+					attachments: []io.Reader{strings.NewReader("screenshot")},
+					wantBody:    []string{"Please help."},
+					wantFiles:   []string{"screenshot"},
+				},
+				"named attachment": {
+					attachments: []io.Reader{xtwitterscraper.File(strings.NewReader("image"), "screenshot.png", "image/png")},
+					wantFiles:   []string{"image"},
+					filename:    "screenshot.png",
+					contentType: "image/png",
+				},
+				"empty body and attachments": {
+					body:        xtwitterscraper.String(""),
+					attachments: []io.Reader{strings.NewReader("screenshot")},
+					wantBody:    []string{""},
+					wantFiles:   []string{"screenshot"},
+				},
+			}
+			for name, test := range tests {
+				t.Run(name, func(t *testing.T) {
+					sent := false
+					client := xtwitterscraper.NewClient(
+						option.WithBaseURL("https://example.com/api/v1/"),
+						option.WithMaxRetries(0),
+						option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
+							sent = true
+							if req.Method != http.MethodPost || req.URL.Path != service.path {
+								t.Fatalf("request = %s %s", req.Method, req.URL.Path)
+							}
+							if got := req.Header.Get("Idempotency-Key"); got != "support-request" {
+								t.Fatalf("Idempotency-Key = %q", got)
+							}
+							mediaType, _, err := mime.ParseMediaType(req.Header.Get("Content-Type"))
+							if err != nil {
+								t.Fatal(err)
+							}
+							if test.wantJSON {
+								if mediaType != "application/json" {
+									t.Fatalf("Content-Type = %q", mediaType)
+								}
+								var got map[string]string
+								if err := json.NewDecoder(req.Body).Decode(&got); err != nil {
+									t.Fatal(err)
+								}
+								want := map[string]string{"body": "Please help."}
+								if service.subject != "" {
+									want["subject"] = service.subject
+								}
+								if !reflect.DeepEqual(got, want) {
+									t.Fatalf("JSON body = %v, want %v", got, want)
+								}
+							} else {
+								if mediaType != "multipart/form-data" {
+									t.Fatalf("Content-Type = %q", mediaType)
+								}
+								if err := req.ParseMultipartForm(1 << 20); err != nil {
+									t.Fatal(err)
+								}
+								defer req.MultipartForm.RemoveAll()
+								want := map[string][]string{}
+								if test.wantBody != nil {
+									want["body"] = test.wantBody
+								}
+								if service.subject != "" {
+									want["subject"] = []string{service.subject}
+								}
+								if !reflect.DeepEqual(req.MultipartForm.Value, want) {
+									t.Fatalf("form fields = %v, want %v", req.MultipartForm.Value, want)
+								}
+								files := req.MultipartForm.File["attachments"]
+								if len(req.MultipartForm.File) != 1 || len(files) != len(test.wantFiles) {
+									t.Fatalf("form files = %v", req.MultipartForm.File)
+								}
+								for i, file := range files {
+									filename := test.filename
+									if filename == "" {
+										filename = "anonymous_file"
+									}
+									contentType := test.contentType
+									if contentType == "" {
+										contentType = "application/octet-stream"
+									}
+									if file.Filename != filename || file.Header.Get("Content-Type") != contentType {
+										t.Fatalf("attachment headers = %v", file.Header)
+									}
+									reader, err := file.Open()
+									if err != nil {
+										t.Fatal(err)
+									}
+									defer reader.Close()
+									content, err := io.ReadAll(reader)
+									if err != nil || string(content) != test.wantFiles[i] {
+										t.Fatalf("attachment = %q, error = %v", content, err)
+									}
+								}
+							}
+							return &http.Response{
+								StatusCode: http.StatusOK,
+								Header:     http.Header{"Content-Type": {"application/json"}},
+								Body:       io.NopCloser(strings.NewReader(`{"publicId":"tkt_example","attachments":[]}`)),
+							}, nil
+						})),
+					)
+					if err := service.send(client, test.body, test.attachments); err != nil {
+						t.Fatal(err)
+					}
+					if !sent {
+						t.Fatal("support request was not sent")
+					}
+				})
+			}
+		})
+	}
+}
 
 func TestSupportTicketNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
@@ -29,7 +206,7 @@ func TestSupportTicketNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Support.Tickets.New(context.TODO(), xtwitterscraper.SupportTicketNewParams{
-		Body:           "I am unable to connect my X account. Please help.",
+		Body:           xtwitterscraper.String("I am unable to connect my X account. Please help."),
 		Subject:        "Cannot connect X account",
 		IdempotencyKey: xtwitterscraper.String("Idempotency-Key"),
 	})
@@ -134,7 +311,7 @@ func TestSupportTicketReplyWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"tkt_a1b2c3d4e5f6a1b2c3d4e5f6",
 		xtwitterscraper.SupportTicketReplyParams{
-			Body:           "Thank you for the update.",
+			Body:           xtwitterscraper.String("Thank you for the update."),
 			IdempotencyKey: xtwitterscraper.String("Idempotency-Key"),
 		},
 	)

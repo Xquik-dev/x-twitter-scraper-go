@@ -102,20 +102,19 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 	contentType := "application/json"
 	hasSerializationFunc := false
 
-	if body, ok := body.(json.Marshaler); ok {
-		content, err := body.MarshalJSON()
+	if multipartBody, ok := body.(apiform.Marshaler); ok {
+		var (
+			content []byte
+			err     error
+		)
+		content, contentType, err = multipartBody.MarshalMultipart()
 		if err != nil {
 			return nil, err
 		}
 		reader = bytes.NewBuffer(content)
 		hasSerializationFunc = true
-	}
-	if body, ok := body.(apiform.Marshaler); ok {
-		var (
-			content []byte
-			err     error
-		)
-		content, contentType, err = body.MarshalMultipart()
+	} else if body, ok := body.(json.Marshaler); ok {
+		content, err := body.MarshalJSON()
 		if err != nil {
 			return nil, err
 		}
