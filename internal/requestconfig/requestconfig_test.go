@@ -134,15 +134,6 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 			contentType: "multipart/form-data; boundary=test",
 			wantBody:    "multipart",
 		},
-		"multipart marshaler selects JSON": {
-			body: jsonMultipartBody{
-				jsonMarshalerBody: jsonMarshalerBody{err: wantErr},
-				multipartBody:     multipartBody{data: []byte(`{"body":"Please help."}`), contentType: "application/json"},
-			},
-			path:        "/support/tickets",
-			contentType: "application/json",
-			wantBody:    `{"body":"Please help."}`,
-		},
 		"query": {
 			body:      queryBody{values: url.Values{"q": {"tweet search"}}},
 			path:      "/tweets?existing=1",
@@ -157,11 +148,11 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 			path:    "/tweets",
 			wantErr: wantErr,
 		},
-		"bytes": {
-			body:        []byte("bytes"),
-			path:        "/tweets",
+		"serialized JSON": {
+			body:        []byte(`{"body":"Please help."}`),
+			path:        "/support/tickets",
 			contentType: "application/json",
-			wantBody:    "bytes",
+			wantBody:    `{"body":"Please help."}`,
 		},
 		"reader": {
 			body:        strings.NewReader("reader"),

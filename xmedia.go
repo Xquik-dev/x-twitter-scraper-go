@@ -51,12 +51,29 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 
 // Uploads media and returns an identifier for later writes.
 func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
+	hasURL := !param.IsOmitted(params.URL)
+	if hasURL && params.File != nil {
+		return nil, ErrMediaHasURLAndFile
+	}
+	if !hasURL && params.File == nil {
+		return nil, ErrMediaNeedsURLOrFile
+	}
+	if !param.IsOmitted(params.IsLongVideo) && params.File == nil {
+		return nil, ErrLongVideoNeedsFile
+	}
+	var body any = params
+	if params.File == nil {
+		body, err = params.MarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
 	}
 	opts = slices.Concat(r.options, opts)
 	path := "x/media"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
@@ -400,10 +417,16 @@ func (r *XMediaDownloadParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+var (
+	ErrMediaNeedsURLOrFile = errors.New("missing required url or file parameter")
+	ErrMediaHasURLAndFile  = errors.New("cannot use url and file parameters together")
+	ErrLongVideoNeedsFile  = errors.New("is_long_video parameter requires a file parameter")
+)
+
 type XMediaUploadParams struct {
 	// X account (@username or ID) uploading media
 	Account string `json:"account" api:"required"`
-	// Media file to upload, up to 15 MB.
+	// Media file to upload, up to 15 MB. Required when is_long_video is provided.
 	File io.Reader `json:"file,omitzero" format:"binary"`
 	// Set true only for video/mp4 multipart uploads longer than 140 seconds.
 	IsLongVideo param.Opt[bool] `json:"is_long_video,omitzero"`
@@ -422,19 +445,8 @@ func (r *XMediaUploadParams) UnmarshalJSON(data []byte) error {
 }
 
 func (r XMediaUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	hasURL := !param.IsOmitted(r.URL)
-	if hasURL && r.File != nil {
-		return nil, "", errors.New("cannot use url and file parameters together")
-	}
-	if !hasURL && r.File == nil {
-		return nil, "", errors.New("missing required url or file parameter")
-	}
-	if !param.IsOmitted(r.IsLongVideo) && r.File == nil {
-		return nil, "", errors.New("is_long_video parameter requires a file parameter")
-	}
 	if r.File == nil {
-		data, err = r.MarshalJSON()
-		return data, "application/json", err
+		return apiform.MarshalMultipart(r)
 	}
 	var header [12]byte
 	n, err := io.ReadFull(r.File, header[:])

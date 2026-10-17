@@ -10,6 +10,7 @@ import (
 	"errors"
 	"io"
 	"mime"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"reflect"
@@ -261,53 +262,87 @@ func TestXMediaUploadFileRequest(t *testing.T) {
 	}
 }
 
+func TestXMediaUploadMarshalMultipart(t *testing.T) {
+	tests := map[string]xtwitterscraper.XMediaUploadParams{
+		"without file": {
+			Account: "@elonmusk",
+			URL:     xtwitterscraper.String("https://example.com/image.png"),
+		},
+		"with file": {
+			Account: "@elonmusk",
+			File:    strings.NewReader("\x89PNG\r\n\x1a\nimage"),
+		},
+		"empty params": {},
+	}
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			data, contentType, err := test.MarshalMultipart()
+			if err != nil {
+				t.Fatal(err)
+			}
+			mediaType, params, err := mime.ParseMediaType(contentType)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if mediaType != "multipart/form-data" || params["boundary"] == "" {
+				t.Fatalf("Content-Type = %q", contentType)
+			}
+			form, err := multipart.NewReader(strings.NewReader(string(data)), params["boundary"]).ReadForm(1 << 20)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer form.RemoveAll()
+		})
+	}
+}
+
 func TestXMediaUploadInvalidParams(t *testing.T) {
 	tests := map[string]struct {
 		params  xtwitterscraper.XMediaUploadParams
-		wantErr string
+		wantErr error
 	}{
 		"url and file": {
 			params: xtwitterscraper.XMediaUploadParams{
 				URL:  xtwitterscraper.String("https://example.com/image.png"),
 				File: strings.NewReader("image"),
 			},
-			wantErr: "cannot use url and file parameters together",
+			wantErr: xtwitterscraper.ErrMediaHasURLAndFile,
 		},
 		"empty url and file": {
 			params: xtwitterscraper.XMediaUploadParams{
 				URL:  xtwitterscraper.String(""),
 				File: strings.NewReader("image"),
 			},
-			wantErr: "cannot use url and file parameters together",
+			wantErr: xtwitterscraper.ErrMediaHasURLAndFile,
 		},
 		"neither url nor file": {
-			wantErr: "missing required url or file parameter",
+			wantErr: xtwitterscraper.ErrMediaNeedsURLOrFile,
 		},
 		"long video with url": {
 			params: xtwitterscraper.XMediaUploadParams{
 				URL:         xtwitterscraper.String("https://example.com/video.mp4"),
 				IsLongVideo: xtwitterscraper.Bool(true),
 			},
-			wantErr: "is_long_video parameter requires a file parameter",
+			wantErr: xtwitterscraper.ErrLongVideoNeedsFile,
 		},
 		"short video with url": {
 			params: xtwitterscraper.XMediaUploadParams{
 				URL:         xtwitterscraper.String("https://example.com/video.mp4"),
 				IsLongVideo: xtwitterscraper.Bool(false),
 			},
-			wantErr: "is_long_video parameter requires a file parameter",
+			wantErr: xtwitterscraper.ErrLongVideoNeedsFile,
 		},
 		"long video without file": {
 			params: xtwitterscraper.XMediaUploadParams{
 				IsLongVideo: xtwitterscraper.Bool(true),
 			},
-			wantErr: "missing required url or file parameter",
+			wantErr: xtwitterscraper.ErrMediaNeedsURLOrFile,
 		},
 		"short video without file": {
 			params: xtwitterscraper.XMediaUploadParams{
 				IsLongVideo: xtwitterscraper.Bool(false),
 			},
-			wantErr: "missing required url or file parameter",
+			wantErr: xtwitterscraper.ErrMediaNeedsURLOrFile,
 		},
 	}
 	for name, test := range tests {
@@ -324,8 +359,8 @@ func TestXMediaUploadInvalidParams(t *testing.T) {
 			test.params.Account = "@elonmusk"
 			test.params.IdempotencyKey = "upload-request"
 			_, err := client.X.Media.Upload(context.Background(), test.params)
-			if err == nil || err.Error() != test.wantErr {
-				t.Fatalf("error = %v, want %q", err, test.wantErr)
+			if !errors.Is(err, test.wantErr) {
+				t.Fatalf("error = %v, want %v", err, test.wantErr)
 			}
 			if sent {
 				t.Fatal("invalid media request was sent")

@@ -10,6 +10,7 @@ import (
 	"errors"
 	"io"
 	"mime"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"reflect"
@@ -66,7 +67,28 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 				wantFiles   []string
 				filename    string
 				contentType string
+				wantErr     error
 			}{
+				"neither body nor attachments": {
+					wantErr: xtwitterscraper.ErrTicketNeedsBodyOrAttachments,
+				},
+				"empty attachments": {
+					attachments: []io.Reader{},
+					wantErr:     xtwitterscraper.ErrTicketNeedsBodyOrAttachments,
+				},
+				"empty body": {
+					body:    xtwitterscraper.String(""),
+					wantErr: xtwitterscraper.ErrTicketNeedsBodyOrAttachments,
+				},
+				"empty body and empty attachments": {
+					body:        xtwitterscraper.String(""),
+					attachments: []io.Reader{},
+					wantErr:     xtwitterscraper.ErrTicketNeedsBodyOrAttachments,
+				},
+				"null body": {
+					body:    param.Null[string](),
+					wantErr: xtwitterscraper.ErrTicketNeedsBodyOrAttachments,
+				},
 				"attachments only": {
 					attachments: []io.Reader{strings.NewReader("first"), strings.NewReader("second"), strings.NewReader("third"), strings.NewReader("fourth")},
 					wantFiles:   []string{"first", "second", "third", "fourth"},
@@ -75,6 +97,12 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 					body:     xtwitterscraper.String("Please help."),
 					wantJSON: true,
 					wantBody: []string{"Please help."},
+				},
+				"body and empty attachments": {
+					body:        xtwitterscraper.String("Please help."),
+					attachments: []io.Reader{},
+					wantJSON:    true,
+					wantBody:    []string{"Please help."},
 				},
 				"body and attachments": {
 					body:        xtwitterscraper.String("Please help."),
@@ -103,6 +131,9 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 						option.WithMaxRetries(0),
 						option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
 							sent = true
+							if test.wantErr != nil {
+								return nil, errors.New("unexpected request")
+							}
 							if req.Method != http.MethodPost || req.URL.Path != service.path {
 								t.Fatalf("request = %s %s", req.Method, req.URL.Path)
 							}
@@ -117,11 +148,14 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 								if mediaType != "application/json" {
 									t.Fatalf("Content-Type = %q", mediaType)
 								}
-								var got map[string]string
+								var got map[string]any
 								if err := json.NewDecoder(req.Body).Decode(&got); err != nil {
 									t.Fatal(err)
 								}
-								want := map[string]string{"body": "Please help."}
+								want := map[string]any{"body": "Please help."}
+								if test.attachments != nil {
+									want["attachments"] = []any{}
+								}
 								if service.subject != "" {
 									want["subject"] = service.subject
 								}
@@ -180,7 +214,17 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 							}, nil
 						})),
 					)
-					if err := service.send(client, test.body, test.attachments); err != nil {
+					err := service.send(client, test.body, test.attachments)
+					if test.wantErr != nil {
+						if !errors.Is(err, test.wantErr) {
+							t.Fatalf("error = %v, want %v", err, test.wantErr)
+						}
+						if sent {
+							t.Fatal("invalid support request was sent")
+						}
+						return
+					}
+					if err != nil {
 						t.Fatal(err)
 					}
 					if !sent {
@@ -188,6 +232,54 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 					}
 				})
 			}
+		})
+	}
+}
+
+func TestSupportTicketMarshalMultipart(t *testing.T) {
+	tests := map[string]func() ([]byte, string, error){
+		"ticket without attachments": xtwitterscraper.SupportTicketNewParams{
+			Subject: "Cannot connect X account",
+			Body:    xtwitterscraper.String("Please help."),
+		}.MarshalMultipart,
+		"ticket with empty attachments": xtwitterscraper.SupportTicketNewParams{
+			Subject:     "Cannot connect X account",
+			Body:        xtwitterscraper.String("Please help."),
+			Attachments: []io.Reader{},
+		}.MarshalMultipart,
+		"ticket with attachments": xtwitterscraper.SupportTicketNewParams{
+			Subject:     "Cannot connect X account",
+			Attachments: []io.Reader{strings.NewReader("screenshot")},
+		}.MarshalMultipart,
+		"reply without attachments": xtwitterscraper.SupportTicketReplyParams{
+			Body: xtwitterscraper.String("Please help."),
+		}.MarshalMultipart,
+		"reply with empty attachments": xtwitterscraper.SupportTicketReplyParams{
+			Body:        xtwitterscraper.String("Please help."),
+			Attachments: []io.Reader{},
+		}.MarshalMultipart,
+		"reply with attachments": xtwitterscraper.SupportTicketReplyParams{
+			Attachments: []io.Reader{strings.NewReader("screenshot")},
+		}.MarshalMultipart,
+	}
+	for name, marshal := range tests {
+		t.Run(name, func(t *testing.T) {
+			data, contentType, err := marshal()
+			if err != nil {
+				t.Fatal(err)
+			}
+			mediaType, params, err := mime.ParseMediaType(contentType)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if mediaType != "multipart/form-data" || params["boundary"] == "" {
+				t.Fatalf("Content-Type = %q", contentType)
+			}
+			form, err := multipart.NewReader(strings.NewReader(string(data)), params["boundary"]).ReadForm(1 << 20)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer form.RemoveAll()
 		})
 	}
 }
