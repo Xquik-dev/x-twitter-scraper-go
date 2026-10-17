@@ -6,6 +6,8 @@ package xtwitterscraper_test
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -190,6 +192,168 @@ func TestSearchTweetDecodesEveryField(t *testing.T) {
 	}
 	expectDecoded(t, tweet)
 	expectValues(t, tweet, tweetFields)
+}
+
+func TestResponsesDecodeEmbeddedTweetFields(t *testing.T) {
+	payload, err := fixtures.ReadFile("testdata/fixtures/EmbeddedTweet.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tweetJSON := fmt.Sprintf(`{"id":"1234567891","text":"Repost","bookmarkCount":0,"likeCount":0,"quoteCount":0,"replyCount":0,"retweetCount":0,"viewCount":0,"parentTweet":%s,"quoted_tweet":%s,"retweeted_tweet":%s}`, payload, payload, payload)
+	values := []fieldValue{
+		{"ID", "2102761519985332442"},
+		{"BookmarkCount", int64(599)},
+		{"LikeCount", int64(9775)},
+		{"QuoteCount", int64(85)},
+		{"ReplyCount", int64(271)},
+		{"RetweetCount", int64(1364)},
+		{"ViewCount", int64(962488)},
+		{"Article.Title", "Release notes"},
+		{"Author.ID", "11348282"},
+		{"Author.Username", "NASA"},
+		{"Card.Name", "summary"},
+		{"CommunityID", "community-1"},
+		{"GrokShareAttachment", map[string]any{"id": "grok-1"}},
+		{"JetfuelAttachment", map[string]any{"id": "jetfuel-1"}},
+		{"LimitedActions[0].Action", "Reply"},
+		{"Place.ID", "example"},
+		{"PostCta", map[string]any{"action": "open"}},
+		{"PreviousCounts.LikeCount", int64(1)},
+		{"ReactionContext.ReactedToPostID", "1234567890"},
+		{"ReactionContext.ReactedToUser.Username", "NASA"},
+		{"RetweetedAt", "2026-09-11T20:24:45Z"},
+		{"Scopes", map[string]any{"followers": true}},
+		{"Type", "tweet"},
+	}
+	for _, field := range tweetFields {
+		if !strings.HasPrefix(field.path, "ParentTweet.") {
+			values = append(values, field)
+		}
+	}
+	cases := []struct {
+		name     string
+		response interface{ UnmarshalJSON([]byte) error }
+		envelope string
+		path     string
+	}{
+		{"replies", &xtwitterscraper.XTweetGetRepliesResponse{}, `{"tweets":[%s]}`, "Tweets[0]"},
+		{"nested replies", &xtwitterscraper.XTweetGetRepliesResponse{}, `{"nested_replies":[%s]}`, "NestedReplies[0]"},
+		{"tweet", &xtwitterscraper.XTweetGetResponse{}, `{"tweet":%s}`, "Tweet"},
+		{"users", &shared.PaginatedTweets{}, `{"tweets":[%s]}`, "Tweets[0]"},
+		{"space", &xtwitterscraper.XSpaceGetResponse{}, `{"space":{"tweet":%s}}`, "Space.Tweet"},
+		{"space sharing", &xtwitterscraper.XSpaceGetResponse{}, `{"space":{"sharings":[{"tweet":%s}]}}`, "Space.Sharings[0].Tweet"},
+		{"space search", &xtwitterscraper.XSpaceSearchResponse{}, `{"spaces":[{"tweet":%s}]}`, "Spaces[0].Tweet"},
+		{"space search sharing", &xtwitterscraper.XSpaceSearchResponse{}, `{"spaces":[{"sharings":[{"tweet":%s}]}]}`, "Spaces[0].Sharings[0].Tweet"},
+		{"brand", &xtwitterscraper.XAnalysisBrandResponse{}, `{"results":[{"tweet":%s}]}`, "Results[0].Tweet"},
+		{"classify", &xtwitterscraper.XAnalysisClassifyResponse{}, `{"results":[{"tweet":%s}]}`, "Results[0].Tweet"},
+		{"market signals", &xtwitterscraper.XAnalysisMarketSignalsResponse{}, `{"results":[{"tweet":%s}]}`, "Results[0].Tweet"},
+		{"news", &xtwitterscraper.XAnalysisNewsResponse{}, `{"results":[{"tweet":%s}]}`, "Results[0].Tweet"},
+		{"sentiment", &xtwitterscraper.XAnalysisSentimentResponse{}, `{"results":[{"tweet":%s}]}`, "Results[0].Tweet"},
+		{"viral score", &xtwitterscraper.XAnalysisViralScoreResponse{}, `{"results":[{"tweet":%s}]}`, "Results[0].Tweet"},
+	}
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			if err := test.response.UnmarshalJSON([]byte(fmt.Sprintf(test.envelope, tweetJSON))); err != nil {
+				t.Fatal(err)
+			}
+			expectDecoded(t, test.response)
+			for _, field := range []string{"ParentTweet", "QuotedTweet", "RetweetedTweet"} {
+				embedded, ok := valueAt(test.response, test.path+"."+field)
+				if !ok {
+					t.Fatalf("missing %s.%s", test.path, field)
+				}
+				expectValues(t, embedded, values)
+				tweet := embedded.(shared.EmbeddedTweet)
+				if !tweet.JSON.IsPinned.Valid() || !tweet.JSON.Author.Valid() || !tweet.JSON.ParentTweet.Valid() || !tweet.JSON.QuotedTweet.Valid() || !tweet.JSON.RetweetedTweet.Valid() {
+					t.Fatalf("missing field metadata in %s", tweet.RawJSON())
+				}
+				if tweet.ParentTweet == nil {
+					t.Fatalf("missing parent post in %s", tweet.RawJSON())
+				}
+				for _, nested := range []struct {
+					id          string
+					text        string
+					retweetedID string
+					quotedText  string
+				}{
+					{tweet.ParentTweet.ID, tweet.ParentTweet.Text, tweet.ParentTweet.RetweetedTweet.ID, tweet.ParentTweet.RetweetedTweet.QuotedTweet.Text},
+					{tweet.QuotedTweet.ID, tweet.QuotedTweet.Text, tweet.QuotedTweet.RetweetedTweet.ID, tweet.QuotedTweet.RetweetedTweet.QuotedTweet.Text},
+					{tweet.RetweetedTweet.ID, tweet.RetweetedTweet.Text, tweet.RetweetedTweet.RetweetedTweet.ID, tweet.RetweetedTweet.RetweetedTweet.QuotedTweet.Text},
+				} {
+					if nested.id != "1234567890" || nested.text != "Just launched!" || nested.retweetedID != "nested-1" || nested.quotedText != "Deeply nested post" {
+						t.Fatalf("decoded nested post = %#v", nested)
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestNestedEmbeddedTweetModelsDecodeEveryField(t *testing.T) {
+	payload, err := fixtures.ReadFile("testdata/fixtures/EmbeddedTweet.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(payload, &fields); err != nil {
+		t.Fatal(err)
+	}
+	delete(fields, "quoted_tweet")
+	delete(fields, "retweeted_tweet")
+	payload, err = json.Marshal(fields)
+	if err != nil {
+		t.Fatal(err)
+	}
+	values := []fieldValue{
+		{"Author.Username", "NASA"},
+		{"ParentTweet.Text", "Just launched!"},
+		{"ParentTweet.RetweetedTweet.ID", "nested-1"},
+	}
+	for _, field := range tweetFields {
+		if !strings.HasPrefix(field.path, "ParentTweet.") {
+			values = append(values, field)
+		}
+	}
+	models := []interface{ UnmarshalJSON([]byte) error }{
+		&shared.EmbeddedTweetQuotedTweet{},
+		&shared.EmbeddedTweetQuotedTweetQuotedTweet{},
+		&shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet{},
+		&shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet{},
+		&shared.EmbeddedTweetQuotedTweetRetweetedTweet{},
+		&shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet{},
+		&shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet{},
+		&shared.EmbeddedTweetRetweetedTweet{},
+		&shared.EmbeddedTweetRetweetedTweetQuotedTweet{},
+		&shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet{},
+		&shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet{},
+		&shared.EmbeddedTweetRetweetedTweetRetweetedTweet{},
+		&shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet{},
+		&shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{},
+	}
+	for _, model := range models {
+		t.Run(reflect.TypeOf(model).Elem().Name(), func(t *testing.T) {
+			if err := model.UnmarshalJSON(payload); err != nil {
+				t.Fatal(err)
+			}
+			expectDecoded(t, model)
+			expectValues(t, model, values)
+		})
+	}
+}
+
+func TestEmbeddedTweetOptionalFields(t *testing.T) {
+	for _, payload := range []string{`{}`, `{"id":"1234567890","text":"Just launched!"}`, `{"author":null,"parentTweet":null,"quoted_tweet":null,"retweeted_tweet":null}`} {
+		t.Run(payload, func(t *testing.T) {
+			var tweet shared.EmbeddedTweet
+			if err := tweet.UnmarshalJSON([]byte(payload)); err != nil {
+				t.Fatal(err)
+			}
+			expectDecoded(t, tweet)
+			if tweet.JSON.IsPinned.Valid() || tweet.JSON.CashtagAttachments.Valid() || tweet.JSON.Author.Valid() || tweet.ParentTweet != nil || tweet.JSON.QuotedTweet.Valid() || tweet.JSON.RetweetedTweet.Valid() {
+				t.Fatalf("decoded %s", tweet.RawJSON())
+			}
+		})
+	}
 }
 
 func TestXTweetGetFixture(t *testing.T) {
