@@ -24,6 +24,17 @@ esac
 if [ "$(basename "$0")" = go ]; then
   mktemp "${GOTMPDIR:-${TMPDIR:-/tmp}}/go-build.XXXXXX" >/dev/null || exit 1
 fi
+if [ "$FAKE_COVERAGE" = true ]; then
+  case "$1" in
+    test)
+      for argument; do
+        case "$argument" in -coverprofile=*) echo 'mode: set' >"${argument#-coverprofile=}" ;; esac
+      done ;;
+    run) cat ;;
+    *) exit 1 ;;
+  esac
+  exit 0
+fi
 if [ -n "$GOMODCACHE" ]; then
   mkdir -p "$GOMODCACHE/cache/download" && : >"$GOMODCACHE/cache/download/list" && chmod -R a-w "$GOMODCACHE"
 fi
@@ -186,6 +197,9 @@ func terminateRun(t *testing.T, cmd *exec.Cmd, started string, signal syscall.Si
 		}
 		return
 	}
+	if status, ok := cmd.ProcessState.Sys().(syscall.WaitStatus); ok && status.Signaled() && status.Signal() == signal {
+		return
+	}
 	if want := 128 + int(signal); code != want {
 		t.Fatalf("exit code %d, want %d\n%s\n%s", code, want, cmd.Stdout, cmd.Stderr)
 	}
@@ -206,7 +220,7 @@ func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
 func TestChecksRemoveTheirTempDirsWhenTerminated(t *testing.T) {
 	for _, test := range cleanupCases(t) {
 		t.Run(test.name, func(t *testing.T) {
-			for _, signal := range []syscall.Signal{syscall.SIGINT, syscall.SIGTERM} {
+			for _, signal := range []syscall.Signal{syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM} {
 				t.Run(signal.String(), func(t *testing.T) {
 					started := filepath.Join(t.TempDir(), "started")
 					cmd, private := startCleanupCase(t, test, started)
@@ -236,13 +250,12 @@ func TestInterruptStopsBashParent(t *testing.T) {
 
 func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args ...string) (*exec.Cmd, string) {
 	t.Helper()
-	if checkLocal != "" {
-		if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o755); err != nil {
-			t.Fatal(err)
-		}
-		fixture.git(fixture.repo, "commit", "--quiet", "--all", "--message", "check-local")
-		fixture.git(fixture.repo, "push", "--quiet", "origin", "main")
+	checkLocal = "#!/bin/sh\nmktemp \"${GOTMPDIR:-$TMPDIR}/go-build.XXXXXX\" >/dev/null || exit 1\n" + checkLocal
+	if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o755); err != nil {
+		t.Fatal(err)
 	}
+	fixture.git(fixture.repo, "commit", "--quiet", "--all", "--message", "check-local")
+	fixture.git(fixture.repo, "push", "--quiet", "origin", "main")
 	root := t.TempDir()
 	private := filepath.Join(root, "tmp")
 	if err := os.MkdirAll(private, 0o750); err != nil {
@@ -261,7 +274,7 @@ func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args
 }
 
 func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
-	t.Run("after a dry run with a read-only module cache", func(t *testing.T) {
+	t.Run("after a dry run", func(t *testing.T) {
 		cmd, private := startRelease(t, newReleaseFixture(t), "", "--dry-run")
 		if code := exitCode(t, cmd, cmd.Wait()); code != 0 {
 			t.Fatalf("dry run exit %d\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
@@ -269,17 +282,57 @@ func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 		expectEmpty(t, cmd, private)
 	})
 	t.Run("when a step fails", func(t *testing.T) {
-		cmd, private := startRelease(t, newReleaseFixture(t), "#!/bin/sh\nexit 3\n", "--dry-run")
+		cmd, private := startRelease(t, newReleaseFixture(t), "exit 3\n", "--dry-run")
 		if code := exitCode(t, cmd, cmd.Wait()); code != 3 {
 			t.Fatalf("exit %d, want 3\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
 		expectEmpty(t, cmd, private)
 	})
-	for _, signal := range []syscall.Signal{syscall.SIGINT, syscall.SIGTERM} {
+	for _, signal := range []syscall.Signal{syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM} {
 		t.Run("when terminated by "+signal.String(), func(t *testing.T) {
 			started := filepath.Join(t.TempDir(), "started")
-			cmd, private := startRelease(t, newReleaseFixture(t), "#!/bin/sh\n: >\""+started+"\"\nexec sleep 30\n", "--dry-run")
+			cmd, private := startRelease(t, newReleaseFixture(t), ": >\""+started+"\"\nexec sleep 30\n", "--dry-run")
 			terminateRun(t, cmd, started, signal)
+			expectEmpty(t, cmd, private)
+		})
+	}
+}
+
+func TestCoverageReportsOnlyRetainedProfiles(t *testing.T) {
+	for _, retain := range []bool{false, true} {
+		name := "without an output directory"
+		if retain {
+			name = "with an output directory"
+		}
+		t.Run(name, func(t *testing.T) {
+			output := ""
+			if retain {
+				output = t.TempDir()
+			}
+			test := cleanupCase{
+				command: []string{filepath.Join(repositoryRoot(t), "scripts/collect-coverage")},
+				tools:   []string{"go"},
+				setup: func(t *testing.T, root string) []string {
+					return []string{"FAKE_COVERAGE=true", "XQUIK_COVERAGE_DIR=" + output}
+				},
+			}
+			cmd, private := startCleanupCase(t, test, "")
+			if code := exitCode(t, cmd, cmd.Wait()); code != 0 {
+				t.Fatalf("exit %d, want 0\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
+			}
+			want := "==> Collecting statement, function, and line coverage\n"
+			if retain {
+				want += "Coverage profile: " + filepath.Join(output, "coverage.out") + "\n"
+				for _, name := range []string{"coverage.out", "coverage.xml"} {
+					data, err := os.ReadFile(filepath.Join(output, name))
+					if err != nil || string(data) != "mode: set\n" {
+						t.Fatalf("retained %s = %q, error %v", name, data, err)
+					}
+				}
+			}
+			if got := cmd.Stdout.(*bytes.Buffer).String(); got != want {
+				t.Fatalf("stdout %q, want %q", got, want)
+			}
 			expectEmpty(t, cmd, private)
 		})
 	}

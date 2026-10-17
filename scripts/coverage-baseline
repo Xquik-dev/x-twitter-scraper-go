@@ -5,9 +5,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 revision="$(git rev-parse --verify "${1:?Run scripts/coverage-baseline <revision>.}^{commit}")"
 source scripts/temp-paths
-temp_path workspace -d "${TMPDIR:-/tmp}/xquik-coverage-baseline.XXXXXX"
+temp_path workspace coverage-baseline
 mkdir "$workspace/reports" "$workspace/tmp"
-export GOTMPDIR="$workspace/tmp"
 echo "==> Measuring the coverage of ${revision:0:12} for the baseline"
 git clone --quiet --shared --no-checkout "$PWD" "$workspace/source"
 git -C "$workspace/source" checkout --quiet --detach "$revision"

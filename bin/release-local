@@ -70,8 +70,7 @@ if git rev-parse --quiet --verify "refs/tags/$tag" >/dev/null; then
 fi
 
 source scripts/temp-paths
-temp_path work -d "${TMPDIR:-/tmp}/xquik-release-local.XXXXXX"
-export GOTMPDIR="$work"
+temp_path work release-local
 
 step "Reading the $version notes from CHANGELOG.md"
 notes="$work/notes.md"

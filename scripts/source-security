@@ -4,8 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source scripts/temp-paths
-temp_path workspace -d "${TMPDIR:-/tmp}/xquik-gosec.XXXXXX"
-export GOTMPDIR="$workspace"
+temp_path workspace gosec
 report="$workspace/report.json"
 status=0
 # gosec 2.29.0 pins a golang.org/x/tools that cannot read Go 1.27 export data.

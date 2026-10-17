@@ -5,10 +5,10 @@ temp_paths=()
 
 temp_path() {
   local name="$1" path
-  shift
-  path="$(mktemp "$@")"
+  path="$(mktemp -d "${TMPDIR:-/tmp}/xquik-$2.XXXXXX")"
   temp_paths+=("$path")
   printf -v "$name" '%s' "$path"
+  export GOTMPDIR="$path"
 }
 
 remove_temp_paths() {

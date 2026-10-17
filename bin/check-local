@@ -56,8 +56,7 @@ post() {
 }
 
 source scripts/temp-paths
-temp_path work -d "${TMPDIR:-/tmp}/xquik-check-local.XXXXXX"
-export GOTMPDIR="$work"
+temp_path work check-local
 
 finish() {
   local code=$?

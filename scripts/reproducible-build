@@ -9,7 +9,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 source scripts/temp-paths
-temp_path workspace -d "${TMPDIR:-/tmp}/xquik-archive.XXXXXX"
+temp_path workspace archive
 
 echo "==> Verifying reproducible Go module archives"
-GOTMPDIR="$workspace" TMPDIR="$workspace" go run ./cmd/reproducible-build "$@"
+TMPDIR="$workspace" go run ./cmd/reproducible-build "$@"

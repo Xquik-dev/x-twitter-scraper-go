@@ -9,10 +9,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 source scripts/temp-paths
-temp_path workspace -d "${TMPDIR:-/tmp}/xquik-go-coverage.XXXXXX"
-export GOTMPDIR="$workspace"
+temp_path workspace go-coverage
 coverage_profile="$workspace/coverage.out"
-echo "Coverage profile: $coverage_profile"
 
 echo "==> Collecting statement, function, and line coverage"
 go test ./... -coverpkg=./... -coverprofile="$coverage_profile"
@@ -21,4 +19,5 @@ go run github.com/boumenot/gocover-cobertura@v1.5.0 -strict -by-files < "$covera
 if [ -n "${XQUIK_COVERAGE_DIR:-}" ]; then
   cp "$coverage_profile" "$XQUIK_COVERAGE_DIR/coverage.out"
   cp "$workspace/coverage.xml" "$XQUIK_COVERAGE_DIR/coverage.xml"
+  echo "Coverage profile: $XQUIK_COVERAGE_DIR/coverage.out"
 fi

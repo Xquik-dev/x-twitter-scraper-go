@@ -15,8 +15,7 @@ trap finish EXIT
 version="${1:?Pass the v-prefixed release version.}"
 revision="${2:?Pass the expected full commit SHA.}"
 [[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ && "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo 'Invalid version or commit SHA.' >&2; exit 2; }
-temp_path evidence -d "${TMPDIR:-/tmp}/xquik-go-registry.XXXXXX"
-export GOTMPDIR="$evidence"
+temp_path evidence go-registry
 export GOWORK=off GOPROXY=https://proxy.golang.org GOSUMDB=sum.golang.org
 export GOPRIVATE= GONOPROXY= GONOSUMDB= GOMODCACHE="$evidence/modules"
 module=github.com/Xquik-dev/x-twitter-scraper-go
