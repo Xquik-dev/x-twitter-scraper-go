@@ -84,12 +84,12 @@ func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Clears loginFailedAt and loginFailureReason for all accounts with transient or
-// automated failure reasons, making them eligible for retry on next use.
-func (r *XAccountService) BulkRetry(ctx context.Context, opts ...option.RequestOption) (res *XAccountBulkRetryResponse, err error) {
+// Clears loginFailedAt and loginFailureReason for accounts with transient or
+// automated failure reasons. Set accountIds to retry only those accounts.
+func (r *XAccountService) BulkRetry(ctx context.Context, body XAccountBulkRetryParams, opts ...option.RequestOption) (res *XAccountBulkRetryResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/accounts/bulk-retry"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
@@ -478,6 +478,21 @@ func (r XAccountListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type XAccountBulkRetryParams struct {
+	// IDs of the X accounts to retry. Accounts that failed for another reason, or
+	// belong to someone else, stay as they are.
+	AccountIDs []string `json:"accountIds,omitzero"`
+	paramObj
+}
+
+func (r XAccountBulkRetryParams) MarshalJSON() (data []byte, err error) {
+	type shadow XAccountBulkRetryParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XAccountBulkRetryParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type XAccountReauthParams struct {

@@ -1,0 +1,670 @@
+{
+  "id": "2102761519985332442",
+  "text": "This galaxy is a little extra.\n\nMeet Messier 106, a spiral galaxy with an extra set of arms. These two additional arms are made of gas heated up by jets from the galaxy’s central black hole. The jets’ superheated shockwaves are depicted in royal blue by @chandraxray. https://t.co/421Lzs0r0c",
+  "retweetCount": 1364,
+  "replyCount": 271,
+  "likeCount": 9775,
+  "quoteCount": 85,
+  "viewCount": 962488,
+  "bookmarkCount": 599,
+  "conversationId": "2102761519985332442",
+  "contentDisclosure": {
+    "aiGenerated": {
+      "hasAiGeneratedMedia": false
+    }
+  },
+  "displayTextRange": [
+    0,
+    267
+  ],
+  "edit": {
+    "editableUntilMsecs": "1790175988000",
+    "editTweetIds": [
+      "2102761519985332442"
+    ]
+  },
+  "entities": {
+    "hashtags": [
+      {
+        "text": "NASA",
+        "indices": [
+          10,
+          15
+        ],
+        "tag": {
+          "id": "hashtag-nasa",
+          "info": {
+            "info": {
+              "active": true,
+              "name": "NASA",
+              "ticker": "NASA"
+            }
+          }
+        }
+      }
+    ],
+    "urls": [],
+    "user_mentions": [
+      {
+        "id_str": "12415722",
+        "indices": [
+          254,
+          266
+        ],
+        "name": "Chandra Observatory",
+        "screen_name": "chandraxray"
+      }
+    ],
+    "smarttags": [
+      {
+        "indices": [
+          20,
+          25
+        ],
+        "seconds": 12.5,
+        "tag": {
+          "id": "smarttag-1",
+          "info": {
+            "info": {
+              "active": true,
+              "name": "Spiral galaxy",
+              "ticker": "GLXY"
+            }
+          }
+        },
+        "text": "galaxy"
+      }
+    ],
+    "symbols": [
+      {
+        "indices": [
+          30,
+          35
+        ],
+        "tag": {
+          "id": "symbol-tsla",
+          "info": {
+            "info": {
+              "active": true,
+              "name": "Tesla",
+              "ticker": "TSLA"
+            }
+          }
+        },
+        "text": "TSLA"
+      }
+    ],
+    "timestamps": [
+      {
+        "indices": [
+          40,
+          44
+        ],
+        "seconds": 75,
+        "tag": {
+          "id": "timestamp-75",
+          "info": {
+            "info": {
+              "active": true,
+              "name": "1:15",
+              "ticker": "T75"
+            }
+          }
+        },
+        "text": "1:15"
+      }
+    ]
+  },
+  "isNoteTweet": false,
+  "isPinned": true,
+  "isQuoteStatus": false,
+  "isReply": false,
+  "isRetweet": true,
+  "isTranslatable": false,
+  "lang": "en",
+  "possiblySensitive": false,
+  "source": "<a href=\"https://www.sprinklr.com\" rel=\"nofollow\">Sprinklr</a>",
+  "type": "tweet",
+  "url": "https://x.com/NASA/status/2102761519985332442",
+  "viewState": "EnabledWithCount",
+  "createdAt": "Wed Sep 23 14:06:28 +0000 2026",
+  "media": [
+    {
+      "altText": "A spiral galaxy, laying diagonally at a three-quarters profile view. Its center is a luminous yellow that stretches out into a pinwheel of wispy blue and red arms. The disc itself is decorated with a smattering of stars and dark dust.",
+      "availabilityStatus": "Available",
+      "displayUrl": "pic.x.com/421Lzs0r0c",
+      "expandedUrl": "https://x.com/NASA/status/2102761519985332442/photo/1",
+      "focusRects": [
+        {
+          "h": 1146,
+          "w": 2047,
+          "x": 0,
+          "y": 419
+        },
+        {
+          "h": 1565,
+          "w": 1565,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "h": 1565,
+          "w": 1373,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "h": 1565,
+          "w": 783,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "h": 1565,
+          "w": 2047,
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "height": 1565,
+      "id": "2102761515958833152",
+      "indices": [
+        268,
+        291
+      ],
+      "mediaKey": "3_2102761515958833152",
+      "mediaUrl": "https://pbs.twimg.com/media/HS6CdTYWkAAp0e1.jpg",
+      "sizes": {
+        "large": {
+          "h": 1565,
+          "resize": "fit",
+          "w": 2047
+        },
+        "medium": {
+          "h": 917,
+          "resize": "fit",
+          "w": 1200
+        },
+        "small": {
+          "h": 520,
+          "resize": "fit",
+          "w": 680
+        },
+        "thumb": {
+          "h": 150,
+          "resize": "crop",
+          "w": 150
+        }
+      },
+      "type": "photo",
+      "url": "https://t.co/421Lzs0r0c",
+      "width": 2047,
+      "grokImageAnnotation": {
+        "prompt": "A spiral galaxy",
+        "upsampledPrompt": "A detailed spiral galaxy with blue and red arms"
+      },
+      "sourceUser": {
+        "id": "19802879",
+        "username": "NASAJPL",
+        "name": "NASA JPL"
+      }
+    }
+  ],
+  "author": {
+    "id": "11348282",
+    "username": "NASA",
+    "name": "NASA",
+    "followers": 92376233,
+    "following": 115,
+    "verified": true,
+    "isBlueVerified": true,
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+    "profileBannerUrl": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+    "description": "Making the seemingly impossible, possible. ✨",
+    "location": "Pale Blue Dot",
+    "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+    "statusesCount": 74336,
+    "mediaCount": 28160,
+    "protected": false,
+    "url": "http://www.nasa.gov/",
+    "favouritesCount": 17003,
+    "isTranslator": false,
+    "possiblySensitive": false,
+    "verifiedType": "Government",
+    "profile_bio": {
+      "description": "Making the seemingly impossible, possible. ✨",
+      "entities": {
+        "description": {},
+        "url": {
+          "urls": [
+            {
+              "display_url": "nasa.gov",
+              "expanded_url": "http://www.nasa.gov/",
+              "indices": [
+                0,
+                23
+              ],
+              "url": "https://t.co/9NkQJKAnuU"
+            }
+          ]
+        }
+      }
+    },
+    "hasGraduatedAccess": true,
+    "parodyCommentaryFanLabel": "None",
+    "profileDescriptionLanguage": "en",
+    "profileImageShape": "Square",
+    "profileTranslatorType": "regular",
+    "superFollowEligible": false
+  },
+  "authorUnavailable": {
+    "reason": "Suspended",
+    "message": "This account is suspended."
+  },
+  "cashtagAttachments": [
+    {
+      "cashtag": "$TSLA",
+      "candleSize": "5m",
+      "timeframe": "1D",
+      "startTime": "2026-10-09T13:30:00.000Z",
+      "endTime": "2026-10-09T13:42:08.796Z",
+      "sizeVariant": 1
+    }
+  ],
+  "communityName": "Build in Public",
+  "coordinates": {
+    "coordinates": [
+      -122.4194,
+      37.7749
+    ],
+    "type": "Point"
+  },
+  "exclusiveContent": {
+    "creatorUserName": "NASA",
+    "subscribeUrl": "https://x.com/NASA/creator-subscriptions/subscribe"
+  },
+  "geo": {
+    "coordinates": [
+      37.7749,
+      -122.4194
+    ],
+    "type": "Point"
+  },
+  "grokTranslatedPost": {
+    "text": "La galaxia espiral.",
+    "language": "es"
+  },
+  "interstitial": {
+    "displayType": "NonCompliant",
+    "text": {
+      "text": "This Post violated the X Rules about glorifying violence. However, X has determined that it may be in the public's interest for the Post to remain accessible. Learn more",
+      "entities": [
+        {
+          "ref": {
+            "type": "TimelineUrl",
+            "url": "https://help.x.com/rules-and-policies/public-interest",
+            "urlType": "ExternalUrl",
+            "screenName": "XSafety",
+            "text": "Learn more"
+          },
+          "fromIndex": 164,
+          "toIndex": 174
+        }
+      ],
+      "rtl": true
+    }
+  },
+  "quotedTweetPermalink": {
+    "displayUrl": "x.com/NASA/status/2102…",
+    "expandedUrl": "https://x.com/NASA/status/2102761519985332000",
+    "url": "https://t.co/quoted123"
+  },
+  "quotedTweetUnavailable": {
+    "reason": "Protected"
+  },
+  "subscriberBadge": {
+    "creatorId": "44196397"
+  },
+  "textHighlights": [
+    {
+      "startIndex": 5,
+      "endIndex": 13
+    }
+  ],
+  "parentTweet": {
+    "id": "1234567890",
+    "text": "Just launched!",
+    "createdAt": "2025-01-15T12:00:00Z",
+    "retweetCount": 5,
+    "replyCount": 3,
+    "likeCount": 42,
+    "quoteCount": 1,
+    "viewCount": 1500,
+    "bookmarkCount": 2,
+    "retweeted_tweet": {
+      "id": "nested-1",
+      "quoted_tweet": {
+        "id": "nested-2",
+        "text": "Deeply nested post"
+      }
+    }
+  },
+  "hasCommunityNotes": true,
+  "unavailableAuthorId": "783214",
+  "conversationControl": {
+    "allowedCountryCodes": [
+      "US",
+      "CA"
+    ],
+    "inviteViaMention": true,
+    "mode": "Community",
+    "ownerId": "11348282",
+    "ownerUsername": "NASA",
+    "policy": "ByInvitation"
+  },
+  "noteTweet": {
+    "text": "A longer note about the spiral galaxy.",
+    "id": "note-tweet-1",
+    "isExpandable": true,
+    "noteId": "note-77"
+  },
+  "sportsContext": {
+    "gameId": "game-9",
+    "league": "NBA",
+    "state": "InProgress",
+    "title": "Lakers at Celtics",
+    "competitors": [
+      {
+        "name": "Celtics",
+        "color": "007A33",
+        "isActive": true,
+        "isWinner": true,
+        "score": "101"
+      }
+    ]
+  },
+  "tombstone": {
+    "type": "Unavailable",
+    "text": {
+      "text": "This Post is from a suspended account. Learn more",
+      "rtl": true,
+      "entities": [
+        {
+          "fromIndex": 38,
+          "toIndex": 48,
+          "ref": {
+            "screenName": "XSupport",
+            "text": "Learn more",
+            "type": "TimelineUrl",
+            "url": "https://help.x.com/rules-and-policies/notices-on-x",
+            "urlType": "ExternalUrl"
+          }
+        }
+      ]
+    }
+  },
+  "isLimitedReply": false,
+  "quotedTweetId": "example",
+  "retweetedAt": "2026-09-11T20:24:45.000Z",
+  "inReplyToId": "1234567890",
+  "inReplyToUserId": "9876543210",
+  "inReplyToUsername": "example_user",
+  "limitedActions": [
+    {
+      "action": "Reply",
+      "prompt": {
+        "ctaType": "SeeConversation",
+        "headline": "example",
+        "metadata": {},
+        "subtext": "example"
+      }
+    }
+  ],
+  "article": {
+    "coverMedia": {},
+    "id": "example",
+    "lifecycleState": {},
+    "metadata": {},
+    "title": "Release notes",
+    "previewText": "example",
+    "coverMediaUrl": "example"
+  },
+  "card": {
+    "id": "example",
+    "name": "summary",
+    "url": "example",
+    "bindingValues": {},
+    "platform": {},
+    "userReferenceErrors": [
+      {
+        "message": "User unavailable",
+        "reason": "Suspended"
+      }
+    ],
+    "userReferences": [
+      {
+        "id": "11348282",
+        "username": "NASA",
+        "name": "NASA",
+        "followers": 92376187,
+        "accountBasedIn": null,
+        "following": 115,
+        "verified": true,
+        "isBlueVerified": true,
+        "isVerified": true,
+        "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+        "profilePictureOriginal": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB.jpg",
+        "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+        "profileBannerUrl": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+        "description": "Making the seemingly impossible, possible. ✨",
+        "location": "Pale Blue Dot",
+        "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+        "birthdate": {
+          "day": 1,
+          "month": 10,
+          "year": 1958
+        },
+        "statusesCount": 74336,
+        "mediaCount": 28160,
+        "protected": false,
+        "url": "http://www.nasa.gov/",
+        "contactInfo": {
+          "links": [
+            {
+              "url": "http://www.nasa.gov/",
+              "network": "website",
+              "source": "url"
+            }
+          ]
+        },
+        "favouritesCount": 17003,
+        "possiblySensitive": false,
+        "verifiedType": "Government",
+        "profile_bio": {
+          "description": "Making the seemingly impossible, possible. ✨",
+          "entities": {
+            "description": {},
+            "url": {
+              "urls": [
+                {
+                  "display_url": "nasa.gov",
+                  "expanded_url": "http://www.nasa.gov/",
+                  "indices": [
+                    0,
+                    23
+                  ],
+                  "url": "https://t.co/9NkQJKAnuU"
+                }
+              ]
+            }
+          }
+        },
+        "businessAccountAffiliatesCount": 85,
+        "creatorSubscriptionsCount": 0,
+        "hasGraduatedAccess": true,
+        "hasHiddenSubscriptionsOnProfile": false,
+        "highlightsInfo": {
+          "canHighlightTweets": true,
+          "highlightedTweets": "280"
+        },
+        "identityVerification": {
+          "isIdentityVerified": false,
+          "verifiedSinceMsec": "1249674830941"
+        },
+        "isProfileTranslatable": false,
+        "parodyCommentaryFanLabel": "None",
+        "profileDescriptionLanguage": "en",
+        "profileImageShape": "Square",
+        "profileSortEnabled": true,
+        "profileTranslatorType": "regular",
+        "superFollowEligible": false,
+        "verificationReason": {
+          "entities": [
+            {
+              "fromIndex": 91,
+              "toIndex": 101,
+              "url": "https://help.twitter.com/en/rules-and-policies/profile-labels",
+              "urlType": "ExternalUrl"
+            }
+          ],
+          "text": "This account is verified because it is a government or multilateral organization account.  Learn more"
+        }
+      }
+    ]
+  },
+  "communityId": "community-1",
+  "communityNote": {
+    "id": "example",
+    "title": "example",
+    "shortTitle": "example",
+    "subtitle": "example",
+    "footer": "example",
+    "footerIconType": "example",
+    "destinationUrl": "example",
+    "iconType": "example",
+    "visualStyle": "example",
+    "metadata": {}
+  },
+  "grokShareAttachment": {
+    "id": "grok-1"
+  },
+  "jetfuelAttachment": {
+    "id": "jetfuel-1"
+  },
+  "place": {
+    "boundingBox": {},
+    "country": "example",
+    "countryCode": "example",
+    "fullName": "example",
+    "id": "example",
+    "name": "example",
+    "placeType": "example",
+    "url": "example"
+  },
+  "postCta": {
+    "action": "open"
+  },
+  "previousCounts": {
+    "bookmarkCount": 1,
+    "likeCount": 1,
+    "quoteCount": 1,
+    "replyCount": 1,
+    "retweetCount": 1
+  },
+  "reactionContext": {
+    "reactedToPostId": "1234567890",
+    "reactedToUser": {
+      "id": "11348282",
+      "username": "NASA",
+      "name": "NASA",
+      "followers": 92376233,
+      "following": 115,
+      "verified": true,
+      "isBlueVerified": true,
+      "isVerified": true,
+      "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+      "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+      "profileBannerUrl": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+      "description": "Making the seemingly impossible, possible. ✨",
+      "location": "Pale Blue Dot",
+      "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+      "statusesCount": 74336,
+      "mediaCount": 28160,
+      "protected": false,
+      "url": "http://www.nasa.gov/",
+      "favouritesCount": 17003,
+      "isTranslator": false,
+      "possiblySensitive": false,
+      "verifiedType": "Government",
+      "profile_bio": {
+        "description": "Making the seemingly impossible, possible. ✨",
+        "entities": {
+          "description": {},
+          "url": {
+            "urls": [
+              {
+                "display_url": "nasa.gov",
+                "expanded_url": "http://www.nasa.gov/",
+                "indices": [
+                  0,
+                  23
+                ],
+                "url": "https://t.co/9NkQJKAnuU"
+              }
+            ]
+          }
+        }
+      },
+      "hasGraduatedAccess": true,
+      "parodyCommentaryFanLabel": "None",
+      "profileDescriptionLanguage": "en",
+      "profileImageShape": "Square",
+      "profileTranslatorType": "regular",
+      "superFollowEligible": false
+    }
+  },
+  "unmentionedUserIds": [
+    "example"
+  ],
+  "scopes": {
+    "followers": true
+  },
+  "quoted_tweet": {
+    "id": "1234567890",
+    "text": "Just launched!",
+    "createdAt": "2025-01-15T12:00:00Z",
+    "retweetCount": 5,
+    "replyCount": 3,
+    "likeCount": 42,
+    "quoteCount": 1,
+    "viewCount": 1500,
+    "bookmarkCount": 2,
+    "retweeted_tweet": {
+      "id": "nested-1",
+      "quoted_tweet": {
+        "id": "nested-2",
+        "text": "Deeply nested post"
+      }
+    }
+  },
+  "retweeted_tweet": {
+    "id": "1234567890",
+    "text": "Just launched!",
+    "createdAt": "2025-01-15T12:00:00Z",
+    "retweetCount": 5,
+    "replyCount": 3,
+    "likeCount": 42,
+    "quoteCount": 1,
+    "viewCount": 1500,
+    "bookmarkCount": 2,
+    "retweeted_tweet": {
+      "id": "nested-1",
+      "quoted_tweet": {
+        "id": "nested-2",
+        "text": "Deeply nested post"
+      }
+    }
+  }
+}

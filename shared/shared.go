@@ -913,11 +913,14 @@ type EmbeddedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetCard `json:"card"`
+	Card               EmbeddedTweetCard              `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -926,22 +929,30 @@ type EmbeddedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                           `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates           `json:"coordinates"`
 	CreatedAt           string                           `json:"createdAt"`
 	DisplayTextRange    []int64                          `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetEntities       `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent `json:"exclusiveContent"`
+	Geo              SearchTweetGeo              `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -950,7 +961,8 @@ type EmbeddedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet         `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetPlace `json:"place"`
 	PossiblySensitive bool               `json:"possiblySensitive"`
@@ -961,7 +973,9 @@ type EmbeddedTweet struct {
 	// Nested tweet context at depth 2.
 	QuotedTweet EmbeddedTweetQuotedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetReactionContext `json:"reactionContext"`
 	// Nested tweet context at depth 2.
@@ -972,69 +986,89 @@ type EmbeddedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetTombstone `json:"tombstone"`
-	Type      string                 `json:"type"`
+	Tombstone           EmbeddedTweetTombstone `json:"tombstone"`
+	Type                string                 `json:"type"`
+	UnavailableAuthorID string                 `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -1164,16 +1198,22 @@ func (r *EmbeddedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -1233,12 +1273,14 @@ func (r *EmbeddedTweetEntities) UnmarshalJSON(data []byte) error {
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1274,9 +1316,11 @@ func (r *EmbeddedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 }
 
 type EmbeddedTweetEntitiesSmarttagTag struct {
+	ID   string                               `json:"id"`
 	Info EmbeddedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1306,10 +1350,12 @@ func (r *EmbeddedTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error 
 }
 
 type EmbeddedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -1347,9 +1393,11 @@ func (r *EmbeddedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 }
 
 type EmbeddedTweetEntitiesSymbolTag struct {
+	ID   string                             `json:"id"`
 	Info EmbeddedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1379,10 +1427,12 @@ func (r *EmbeddedTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 }
 
 type EmbeddedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -1420,9 +1470,11 @@ func (r *EmbeddedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 }
 
 type EmbeddedTweetEntitiesTimestampTag struct {
+	ID   string                                `json:"id"`
 	Info EmbeddedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1452,10 +1504,12 @@ func (r *EmbeddedTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error
 }
 
 type EmbeddedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -1565,6 +1619,7 @@ type EmbeddedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                `json:"isExpandable"`
+	NoteID       string                              `json:"noteId"`
 	RichtextTags []EmbeddedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1573,6 +1628,7 @@ type EmbeddedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -1614,12 +1670,14 @@ func (r *EmbeddedTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1655,9 +1713,11 @@ func (r *EmbeddedTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(data []byte) erro
 }
 
 type EmbeddedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                        `json:"id"`
 	Info EmbeddedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1687,10 +1747,12 @@ func (r *EmbeddedTweetNoteTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byt
 }
 
 type EmbeddedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -1728,9 +1790,11 @@ func (r *EmbeddedTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data []byte) error 
 }
 
 type EmbeddedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                      `json:"id"`
 	Info EmbeddedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1760,10 +1824,12 @@ func (r *EmbeddedTweetNoteTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte)
 }
 
 type EmbeddedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -1801,9 +1867,11 @@ func (r *EmbeddedTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(data []byte) err
 }
 
 type EmbeddedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                         `json:"id"`
 	Info EmbeddedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1833,10 +1901,12 @@ func (r *EmbeddedTweetNoteTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []by
 }
 
 type EmbeddedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -2004,11 +2074,14 @@ type EmbeddedTweetQuotedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetQuotedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetQuotedTweetCard `json:"card"`
+	Card               EmbeddedTweetQuotedTweetCard   `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -2017,22 +2090,30 @@ type EmbeddedTweetQuotedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetQuotedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                      `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                      `json:"coordinates"`
 	CreatedAt           string                                      `json:"createdAt"`
 	DisplayTextRange    []int64                                     `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetQuotedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetQuotedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetQuotedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent      `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                   `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -2041,7 +2122,8 @@ type EmbeddedTweetQuotedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                    `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                          `json:"possiblySensitive"`
@@ -2052,7 +2134,9 @@ type EmbeddedTweetQuotedTweet struct {
 	// Nested tweet context at depth 3.
 	QuotedTweet EmbeddedTweetQuotedTweetQuotedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetQuotedTweetReactionContext `json:"reactionContext"`
 	// Nested tweet context at depth 3.
@@ -2063,69 +2147,89 @@ type EmbeddedTweetQuotedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge            `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight            `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetQuotedTweetTombstone `json:"tombstone"`
-	Type      string                            `json:"type"`
+	Tombstone           EmbeddedTweetQuotedTweetTombstone `json:"tombstone"`
+	Type                string                            `json:"type"`
+	UnavailableAuthorID string                            `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -2255,16 +2359,22 @@ func (r *EmbeddedTweetQuotedTweetCommunityNote) UnmarshalJSON(data []byte) error
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -2324,12 +2434,14 @@ func (r *EmbeddedTweetQuotedTweetEntities) UnmarshalJSON(data []byte) error {
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -2365,9 +2477,11 @@ func (r *EmbeddedTweetQuotedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) er
 }
 
 type EmbeddedTweetQuotedTweetEntitiesSmarttagTag struct {
+	ID   string                                          `json:"id"`
 	Info EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -2397,10 +2511,12 @@ func (r *EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []b
 }
 
 type EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -2438,9 +2554,11 @@ func (r *EmbeddedTweetQuotedTweetEntitiesSymbol) UnmarshalJSON(data []byte) erro
 }
 
 type EmbeddedTweetQuotedTweetEntitiesSymbolTag struct {
+	ID   string                                        `json:"id"`
 	Info EmbeddedTweetQuotedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -2470,10 +2588,12 @@ func (r *EmbeddedTweetQuotedTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byt
 }
 
 type EmbeddedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -2511,9 +2631,11 @@ func (r *EmbeddedTweetQuotedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) e
 }
 
 type EmbeddedTweetQuotedTweetEntitiesTimestampTag struct {
+	ID   string                                           `json:"id"`
 	Info EmbeddedTweetQuotedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -2543,10 +2665,12 @@ func (r *EmbeddedTweetQuotedTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []
 }
 
 type EmbeddedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -2656,6 +2780,7 @@ type EmbeddedTweetQuotedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetQuotedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                           `json:"isExpandable"`
+	NoteID       string                                         `json:"noteId"`
 	RichtextTags []EmbeddedTweetQuotedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2664,6 +2789,7 @@ type EmbeddedTweetQuotedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -2705,12 +2831,14 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntities) UnmarshalJSON(data []byte) e
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -2746,9 +2874,11 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(data [
 }
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                   `json:"id"`
 	Info EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -2778,10 +2908,12 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) UnmarshalJSON
 }
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -2821,9 +2953,11 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data []b
 }
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                 `json:"id"`
 	Info EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -2853,10 +2987,12 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) UnmarshalJSON(d
 }
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -2896,9 +3032,11 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(data 
 }
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                    `json:"id"`
 	Info EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -2930,10 +3068,12 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) UnmarshalJSO
 }
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -3103,11 +3243,14 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetQuotedTweetQuotedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetQuotedTweetQuotedTweetCard `json:"card"`
+	Card               EmbeddedTweetQuotedTweetQuotedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment          `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -3116,22 +3259,30 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetQuotedTweetQuotedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                 `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                 `json:"coordinates"`
 	CreatedAt           string                                                 `json:"createdAt"`
 	DisplayTextRange    []int64                                                `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetQuotedTweetQuotedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetQuotedTweetQuotedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetQuotedTweetQuotedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                 `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                              `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -3140,7 +3291,8 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetQuotedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetQuotedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                               `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetQuotedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                     `json:"possiblySensitive"`
@@ -3151,7 +3303,9 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	// Final nested tweet context at depth 4.
 	QuotedTweet EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetQuotedTweetQuotedTweetReactionContext `json:"reactionContext"`
 	// Final nested tweet context at depth 4.
@@ -3162,69 +3316,89 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                       `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                       `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
-	Type      string                                       `json:"type"`
+	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
+	Type                string                                       `json:"type"`
+	UnavailableAuthorID string                                       `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -3356,16 +3530,22 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetCommunityNote) UnmarshalJSON(data []
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -3425,12 +3605,14 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntities) UnmarshalJSON(data []byte)
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -3466,9 +3648,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag) UnmarshalJSON(data
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag struct {
+	ID   string                                                     `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -3500,10 +3684,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo) UnmarshalJS
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -3543,9 +3729,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol) UnmarshalJSON(data [
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTag struct {
+	ID   string                                                   `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -3575,10 +3763,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo) UnmarshalJSON
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -3618,9 +3808,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp) UnmarshalJSON(dat
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTag struct {
+	ID   string                                                      `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -3652,10 +3844,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo) UnmarshalJ
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -3767,6 +3961,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                      `json:"isExpandable"`
+	NoteID       string                                                    `json:"noteId"`
 	RichtextTags []EmbeddedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3775,6 +3970,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -3816,12 +4012,14 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities) UnmarshalJSON(dat
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -3861,9 +4059,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag) Unmarshal
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                              `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -3897,10 +4097,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) Un
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -3942,9 +4144,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol) UnmarshalJS
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                            `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -3978,10 +4182,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) Unma
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -4023,9 +4229,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp) Unmarsha
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                               `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -4059,10 +4267,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) U
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -4234,11 +4444,14 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard `json:"card"`
+	Card               EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                     `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -4247,22 +4460,30 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                            `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                            `json:"coordinates"`
 	CreatedAt           string                                                            `json:"createdAt"`
 	DisplayTextRange    []int64                                                           `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                            `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                         `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -4271,7 +4492,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                          `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                `json:"possiblySensitive"`
@@ -4280,7 +4502,9 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -4289,67 +4513,87 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                  `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                  `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
-	Type      string                                                  `json:"type"`
+	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
+	Type                string                                                  `json:"type"`
+	UnavailableAuthorID string                                                  `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -4483,16 +4727,22 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote) UnmarshalJ
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -4554,12 +4804,14 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities) UnmarshalJSON(d
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -4599,9 +4851,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag) Unmarsh
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -4635,10 +4889,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo) 
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -4680,9 +4936,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol) Unmarshal
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTag struct {
+	ID   string                                                              `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -4716,10 +4974,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo) Un
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -4761,9 +5021,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp) Unmars
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTag struct {
+	ID   string                                                                 `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -4797,10 +5059,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo)
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -4920,6 +5184,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                 `json:"isExpandable"`
+	NoteID       string                                                               `json:"noteId"`
 	RichtextTags []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4928,6 +5193,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -4971,12 +5237,14 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities) Unmars
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -5016,9 +5284,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                         `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -5052,10 +5322,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -5097,9 +5369,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol) 
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                       `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -5133,10 +5407,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTa
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -5178,9 +5454,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestam
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                          `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -5214,10 +5492,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestam
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -5413,6 +5693,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext struct {
 	Competitors []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -5427,6 +5708,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -5448,8 +5730,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext) UnmarshalJ
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -5461,7 +5746,10 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor struc
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -5584,11 +5872,15 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntity) Unma
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -5639,11 +5931,14 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard `json:"card"`
+	Card               EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                        `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -5652,22 +5947,30 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                               `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                               `json:"coordinates"`
 	CreatedAt           string                                                               `json:"createdAt"`
 	DisplayTextRange    []int64                                                              `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                               `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                            `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -5676,7 +5979,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                             `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                   `json:"possiblySensitive"`
@@ -5685,7 +5989,9 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -5694,67 +6000,87 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                     `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                     `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
-	Type      string                                                     `json:"type"`
+	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
+	Type                string                                                     `json:"type"`
+	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -5888,16 +6214,22 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote) Unmarsh
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -5961,12 +6293,14 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities) UnmarshalJSO
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -6006,9 +6340,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag) Unma
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                   `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6042,10 +6378,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInf
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -6087,9 +6425,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol) Unmars
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag struct {
+	ID   string                                                                 `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6123,10 +6463,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo)
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -6168,9 +6510,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp) Unm
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag struct {
+	ID   string                                                                    `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6204,10 +6548,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagIn
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -6327,6 +6673,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                    `json:"isExpandable"`
+	NoteID       string                                                                  `json:"noteId"`
 	RichtextTags []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6335,6 +6682,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -6380,12 +6728,14 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities) Unm
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -6425,9 +6775,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmart
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                            `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6461,10 +6813,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmart
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -6506,9 +6860,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbo
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                          `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6542,10 +6898,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbo
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -6587,9 +6945,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimes
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                             `json:"id"`
 	Info EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -6623,10 +6983,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimes
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -6822,6 +7184,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	Competitors []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -6836,6 +7199,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -6857,8 +7221,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext) Unmarsh
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -6870,7 +7237,10 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor st
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -6995,11 +7365,15 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntity) U
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -7022,6 +7396,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetSportsContext struct {
 	Competitors []EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -7036,6 +7411,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -7055,8 +7431,11 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetSportsContext) UnmarshalJSON(data []
 type EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -7068,7 +7447,10 @@ type EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -7187,11 +7569,15 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntity) UnmarshalJSON(d
 }
 
 type EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -7242,11 +7628,14 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetQuotedTweetRetweetedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetQuotedTweetRetweetedTweetCard `json:"card"`
+	Card               EmbeddedTweetQuotedTweetRetweetedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment             `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -7255,22 +7644,30 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetQuotedTweetRetweetedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                    `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                    `json:"coordinates"`
 	CreatedAt           string                                                    `json:"createdAt"`
 	DisplayTextRange    []int64                                                   `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetQuotedTweetRetweetedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetQuotedTweetRetweetedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetQuotedTweetRetweetedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                    `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                 `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -7279,7 +7676,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                  `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetQuotedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                        `json:"possiblySensitive"`
@@ -7290,7 +7688,9 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	// Final nested tweet context at depth 4.
 	QuotedTweet EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetQuotedTweetRetweetedTweetReactionContext `json:"reactionContext"`
 	// Final nested tweet context at depth 4.
@@ -7301,69 +7701,89 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                          `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                          `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
-	Type      string                                          `json:"type"`
+	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
+	Type                string                                          `json:"type"`
+	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -7495,16 +7915,22 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote) UnmarshalJSON(data
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -7566,12 +7992,14 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntities) UnmarshalJSON(data []by
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -7607,9 +8035,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag) UnmarshalJSON(d
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag struct {
+	ID   string                                                        `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -7643,10 +8073,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo) Unmarsha
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -7686,9 +8118,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol) UnmarshalJSON(dat
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag struct {
+	ID   string                                                      `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -7720,10 +8154,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo) UnmarshalJ
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -7763,9 +8199,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp) UnmarshalJSON(
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag struct {
+	ID   string                                                         `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -7799,10 +8237,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo) Unmarsh
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -7918,6 +8358,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                         `json:"isExpandable"`
+	NoteID       string                                                       `json:"noteId"`
 	RichtextTags []EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -7926,6 +8367,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -7967,12 +8409,14 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities) UnmarshalJSON(
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -8012,9 +8456,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag) Unmars
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                 `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8048,10 +8494,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo)
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -8093,9 +8541,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol) Unmarsha
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                               `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8129,10 +8579,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) U
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -8174,9 +8626,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp) Unmar
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                  `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8210,10 +8664,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -8391,11 +8847,14 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard `json:"card"`
+	Card               EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                        `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -8404,22 +8863,30 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                               `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                               `json:"coordinates"`
 	CreatedAt           string                                                               `json:"createdAt"`
 	DisplayTextRange    []int64                                                              `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                               `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                            `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -8428,7 +8895,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                             `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                   `json:"possiblySensitive"`
@@ -8437,7 +8905,9 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -8446,67 +8916,87 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                     `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                     `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
-	Type      string                                                     `json:"type"`
+	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
+	Type                string                                                     `json:"type"`
+	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -8640,16 +9130,22 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote) Unmarsh
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -8713,12 +9209,14 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities) UnmarshalJSO
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -8758,9 +9256,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag) Unma
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                   `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8794,10 +9294,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInf
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -8839,9 +9341,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol) Unmars
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag struct {
+	ID   string                                                                 `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8875,10 +9379,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo)
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -8920,9 +9426,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp) Unm
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag struct {
+	ID   string                                                                    `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8956,10 +9464,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagIn
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -9079,6 +9589,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                    `json:"isExpandable"`
+	NoteID       string                                                                  `json:"noteId"`
 	RichtextTags []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -9087,6 +9598,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -9132,12 +9644,14 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities) Unm
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -9177,9 +9691,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmart
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                            `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -9213,10 +9729,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmart
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -9258,9 +9776,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbo
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                          `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -9294,10 +9814,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbo
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -9339,9 +9861,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimes
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                             `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -9375,10 +9899,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimes
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -9574,6 +10100,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	Competitors []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -9588,6 +10115,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -9609,8 +10137,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext) Unmarsh
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -9622,7 +10153,10 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor st
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -9747,11 +10281,15 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntity) U
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -9802,11 +10340,14 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard `json:"card"`
+	Card               EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                           `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -9815,22 +10356,30 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                                  `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                                  `json:"coordinates"`
 	CreatedAt           string                                                                  `json:"createdAt"`
 	DisplayTextRange    []int64                                                                 `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                                  `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                               `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -9839,7 +10388,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                                `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                      `json:"possiblySensitive"`
@@ -9848,7 +10398,9 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -9857,67 +10409,87 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                        `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                        `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
-	Type      string                                                        `json:"type"`
+	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
+	Type                string                                                        `json:"type"`
+	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -10053,16 +10625,22 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote) Unma
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -10126,12 +10704,14 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities) Unmarshal
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -10171,9 +10751,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag) U
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                      `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10207,10 +10789,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -10252,9 +10836,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol) Unm
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag struct {
+	ID   string                                                                    `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10288,10 +10874,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagIn
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -10333,9 +10921,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp) 
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag struct {
+	ID   string                                                                       `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10369,10 +10959,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTa
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -10492,6 +11084,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                       `json:"isExpandable"`
+	NoteID       string                                                                     `json:"noteId"`
 	RichtextTags []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -10500,6 +11093,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -10545,12 +11139,14 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities) 
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -10590,9 +11186,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSm
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                               `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10626,10 +11224,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSm
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -10671,9 +11271,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSy
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                             `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10707,10 +11309,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSy
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -10752,9 +11356,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTi
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                                `json:"id"`
 	Info EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10788,10 +11394,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTi
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -10989,6 +11597,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	Competitors []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -11003,6 +11612,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -11024,8 +11634,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext) Unma
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -11037,7 +11650,10 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -11162,11 +11778,15 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -11189,6 +11809,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	Competitors []EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -11203,6 +11824,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -11222,8 +11844,11 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetSportsContext) UnmarshalJSON(data
 type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -11235,7 +11860,10 @@ type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -11356,11 +11984,15 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntity) UnmarshalJSO
 }
 
 type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -11383,6 +12015,7 @@ type EmbeddedTweetQuotedTweetSportsContext struct {
 	Competitors []EmbeddedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -11397,6 +12030,7 @@ type EmbeddedTweetQuotedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -11416,8 +12050,11 @@ func (r *EmbeddedTweetQuotedTweetSportsContext) UnmarshalJSON(data []byte) error
 type EmbeddedTweetQuotedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -11429,7 +12066,10 @@ type EmbeddedTweetQuotedTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -11544,11 +12184,15 @@ func (r *EmbeddedTweetQuotedTweetTombstoneTextEntity) UnmarshalJSON(data []byte)
 }
 
 type EmbeddedTweetQuotedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -11597,11 +12241,14 @@ type EmbeddedTweetRetweetedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetRetweetedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetRetweetedTweetCard `json:"card"`
+	Card               EmbeddedTweetRetweetedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment  `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -11610,22 +12257,30 @@ type EmbeddedTweetRetweetedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetRetweetedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                         `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                         `json:"coordinates"`
 	CreatedAt           string                                         `json:"createdAt"`
 	DisplayTextRange    []int64                                        `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetRetweetedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetRetweetedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetRetweetedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent         `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                      `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -11634,7 +12289,8 @@ type EmbeddedTweetRetweetedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                       `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                             `json:"possiblySensitive"`
@@ -11645,7 +12301,9 @@ type EmbeddedTweetRetweetedTweet struct {
 	// Nested tweet context at depth 3.
 	QuotedTweet EmbeddedTweetRetweetedTweetQuotedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetRetweetedTweetReactionContext `json:"reactionContext"`
 	// Nested tweet context at depth 3.
@@ -11656,69 +12314,89 @@ type EmbeddedTweetRetweetedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge               `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight               `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetRetweetedTweetTombstone `json:"tombstone"`
-	Type      string                               `json:"type"`
+	Tombstone           EmbeddedTweetRetweetedTweetTombstone `json:"tombstone"`
+	Type                string                               `json:"type"`
+	UnavailableAuthorID string                               `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -11848,16 +12526,22 @@ func (r *EmbeddedTweetRetweetedTweetCommunityNote) UnmarshalJSON(data []byte) er
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -11917,12 +12601,14 @@ func (r *EmbeddedTweetRetweetedTweetEntities) UnmarshalJSON(data []byte) error {
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -11958,9 +12644,11 @@ func (r *EmbeddedTweetRetweetedTweetEntitiesSmarttag) UnmarshalJSON(data []byte)
 }
 
 type EmbeddedTweetRetweetedTweetEntitiesSmarttagTag struct {
+	ID   string                                             `json:"id"`
 	Info EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -11990,10 +12678,12 @@ func (r *EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data 
 }
 
 type EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -12031,9 +12721,11 @@ func (r *EmbeddedTweetRetweetedTweetEntitiesSymbol) UnmarshalJSON(data []byte) e
 }
 
 type EmbeddedTweetRetweetedTweetEntitiesSymbolTag struct {
+	ID   string                                           `json:"id"`
 	Info EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -12063,10 +12755,12 @@ func (r *EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []
 }
 
 type EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -12104,9 +12798,11 @@ func (r *EmbeddedTweetRetweetedTweetEntitiesTimestamp) UnmarshalJSON(data []byte
 }
 
 type EmbeddedTweetRetweetedTweetEntitiesTimestampTag struct {
+	ID   string                                              `json:"id"`
 	Info EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -12136,10 +12832,12 @@ func (r *EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfo) UnmarshalJSON(data
 }
 
 type EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -12249,6 +12947,7 @@ type EmbeddedTweetRetweetedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetRetweetedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                              `json:"isExpandable"`
+	NoteID       string                                            `json:"noteId"`
 	RichtextTags []EmbeddedTweetRetweetedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -12257,6 +12956,7 @@ type EmbeddedTweetRetweetedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -12298,12 +12998,14 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntities) UnmarshalJSON(data []byte
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -12339,9 +13041,11 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(dat
 }
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                      `json:"id"`
 	Info EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -12373,10 +13077,12 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) UnmarshalJ
 }
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -12416,9 +13122,11 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data 
 }
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                    `json:"id"`
 	Info EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -12450,10 +13158,12 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) UnmarshalJSO
 }
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -12493,9 +13203,11 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(da
 }
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                       `json:"id"`
 	Info EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -12527,10 +13239,12 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) Unmarshal
 }
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -12700,11 +13414,14 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetRetweetedTweetQuotedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetRetweetedTweetQuotedTweetCard `json:"card"`
+	Card               EmbeddedTweetRetweetedTweetQuotedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment             `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -12713,22 +13430,30 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetRetweetedTweetQuotedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                    `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                    `json:"coordinates"`
 	CreatedAt           string                                                    `json:"createdAt"`
 	DisplayTextRange    []int64                                                   `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetRetweetedTweetQuotedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetRetweetedTweetQuotedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetRetweetedTweetQuotedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                    `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                 `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -12737,7 +13462,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                  `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetRetweetedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                        `json:"possiblySensitive"`
@@ -12748,7 +13474,9 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	// Final nested tweet context at depth 4.
 	QuotedTweet EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetRetweetedTweetQuotedTweetReactionContext `json:"reactionContext"`
 	// Final nested tweet context at depth 4.
@@ -12759,69 +13487,89 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                          `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                          `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
-	Type      string                                          `json:"type"`
+	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
+	Type                string                                          `json:"type"`
+	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -12953,16 +13701,22 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote) UnmarshalJSON(data
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -13024,12 +13778,14 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntities) UnmarshalJSON(data []by
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -13065,9 +13821,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag) UnmarshalJSON(d
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag struct {
+	ID   string                                                        `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13101,10 +13859,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo) Unmarsha
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -13144,9 +13904,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol) UnmarshalJSON(dat
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag struct {
+	ID   string                                                      `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13178,10 +13940,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo) UnmarshalJ
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -13221,9 +13985,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp) UnmarshalJSON(
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag struct {
+	ID   string                                                         `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13257,10 +14023,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo) Unmarsh
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -13376,6 +14144,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                         `json:"isExpandable"`
+	NoteID       string                                                       `json:"noteId"`
 	RichtextTags []EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -13384,6 +14153,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -13425,12 +14195,14 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities) UnmarshalJSON(
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -13470,9 +14242,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag) Unmars
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                 `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13506,10 +14280,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo)
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -13551,9 +14327,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol) Unmarsha
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                               `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13587,10 +14365,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) U
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -13632,9 +14412,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp) Unmar
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                  `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13668,10 +14450,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -13849,11 +14633,14 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard `json:"card"`
+	Card               EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                        `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -13862,22 +14649,30 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                               `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                               `json:"coordinates"`
 	CreatedAt           string                                                               `json:"createdAt"`
 	DisplayTextRange    []int64                                                              `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                               `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                            `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -13886,7 +14681,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                             `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                   `json:"possiblySensitive"`
@@ -13895,7 +14691,9 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -13904,67 +14702,87 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                     `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                     `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
-	Type      string                                                     `json:"type"`
+	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
+	Type                string                                                     `json:"type"`
+	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -14098,16 +14916,22 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote) Unmarsh
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -14171,12 +14995,14 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities) UnmarshalJSO
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -14216,9 +15042,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag) Unma
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                   `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14252,10 +15080,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInf
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -14297,9 +15127,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol) Unmars
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTag struct {
+	ID   string                                                                 `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14333,10 +15165,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo)
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -14378,9 +15212,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp) Unm
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTag struct {
+	ID   string                                                                    `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14414,10 +15250,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagIn
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -14537,6 +15375,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                    `json:"isExpandable"`
+	NoteID       string                                                                  `json:"noteId"`
 	RichtextTags []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -14545,6 +15384,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -14590,12 +15430,14 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities) Unm
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -14635,9 +15477,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmart
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                            `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14671,10 +15515,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmart
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -14716,9 +15562,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbo
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                          `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14752,10 +15600,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbo
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -14797,9 +15647,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimes
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                             `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14833,10 +15685,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimes
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -15032,6 +15886,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext struct {
 	Competitors []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -15046,6 +15901,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -15067,8 +15923,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext) Unmarsh
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -15080,7 +15939,10 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor st
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -15205,11 +16067,15 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntity) U
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -15260,11 +16126,14 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard `json:"card"`
+	Card               EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                           `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -15273,22 +16142,30 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                                  `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                                  `json:"coordinates"`
 	CreatedAt           string                                                                  `json:"createdAt"`
 	DisplayTextRange    []int64                                                                 `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                                  `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                               `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -15297,7 +16174,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                                `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                      `json:"possiblySensitive"`
@@ -15306,7 +16184,9 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -15315,67 +16195,87 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                        `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                        `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
-	Type      string                                                        `json:"type"`
+	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
+	Type                string                                                        `json:"type"`
+	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -15511,16 +16411,22 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote) Unma
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -15584,12 +16490,14 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities) Unmarshal
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -15629,9 +16537,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag) U
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                      `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -15665,10 +16575,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -15710,9 +16622,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol) Unm
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag struct {
+	ID   string                                                                    `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -15746,10 +16660,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagIn
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -15791,9 +16707,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp) 
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag struct {
+	ID   string                                                                       `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -15827,10 +16745,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTa
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -15950,6 +16870,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                       `json:"isExpandable"`
+	NoteID       string                                                                     `json:"noteId"`
 	RichtextTags []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -15958,6 +16879,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -16003,12 +16925,14 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities) 
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -16048,9 +16972,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSm
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                               `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -16084,10 +17010,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSm
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -16129,9 +17057,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSy
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                             `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -16165,10 +17095,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSy
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -16210,9 +17142,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTi
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                                `json:"id"`
 	Info EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -16246,10 +17180,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTi
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -16447,6 +17383,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	Competitors []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -16461,6 +17398,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -16482,8 +17420,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext) Unma
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -16495,7 +17436,10 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -16620,11 +17564,15 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntity
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -16647,6 +17595,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	Competitors []EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -16661,6 +17610,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -16680,8 +17630,11 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetSportsContext) UnmarshalJSON(data
 type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -16693,7 +17646,10 @@ type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -16814,11 +17770,15 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntity) UnmarshalJSO
 }
 
 type EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -16869,11 +17829,14 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetRetweetedTweetRetweetedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetRetweetedTweetRetweetedTweetCard `json:"card"`
+	Card               EmbeddedTweetRetweetedTweetRetweetedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -16882,22 +17845,30 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                       `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                       `json:"coordinates"`
 	CreatedAt           string                                                       `json:"createdAt"`
 	DisplayTextRange    []int64                                                      `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetRetweetedTweetRetweetedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetRetweetedTweetRetweetedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetRetweetedTweetRetweetedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                       `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                    `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -16906,7 +17877,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                     `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetRetweetedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                           `json:"possiblySensitive"`
@@ -16917,7 +17889,9 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	// Final nested tweet context at depth 4.
 	QuotedTweet EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet `json:"quoted_tweet"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext `json:"reactionContext"`
 	// Final nested tweet context at depth 4.
@@ -16928,69 +17902,89 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                             `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                             `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
-	Type      string                                             `json:"type"`
+	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
+	Type                string                                             `json:"type"`
+	UnavailableAuthorID string                                             `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweet         respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedTweet      respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweet            respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedTweet         respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -17122,16 +18116,22 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote) UnmarshalJSON(d
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -17193,12 +18193,14 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntities) UnmarshalJSON(data [
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -17236,9 +18238,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag) UnmarshalJSO
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag struct {
+	ID   string                                                           `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17272,10 +18276,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo) Unmar
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -17315,9 +18321,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol) UnmarshalJSON(
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag struct {
+	ID   string                                                         `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17351,10 +18359,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo) Unmarsh
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -17396,9 +18406,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp) UnmarshalJS
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag struct {
+	ID   string                                                            `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17432,10 +18444,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo) Unma
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -17551,6 +18565,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                            `json:"isExpandable"`
+	NoteID       string                                                          `json:"noteId"`
 	RichtextTags []EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -17559,6 +18574,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -17602,12 +18618,14 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities) UnmarshalJS
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -17647,9 +18665,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag) Unm
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                    `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17683,10 +18703,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagIn
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -17728,9 +18750,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol) Unmar
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                  `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17764,10 +18788,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -17809,9 +18835,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp) Un
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                     `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17845,10 +18873,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagI
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -18026,11 +19056,14 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard `json:"card"`
+	Card               EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                           `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -18039,22 +19072,30 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                                  `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                                  `json:"coordinates"`
 	CreatedAt           string                                                                  `json:"createdAt"`
 	DisplayTextRange    []int64                                                                 `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                                  `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                               `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -18063,7 +19104,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                                `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                      `json:"possiblySensitive"`
@@ -18072,7 +19114,9 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -18081,67 +19125,87 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                        `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                        `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
-	Type      string                                                        `json:"type"`
+	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
+	Type                string                                                        `json:"type"`
+	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -18277,16 +19341,22 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote) Unma
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -18350,12 +19420,14 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities) Unmarshal
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -18395,9 +19467,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag) U
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                      `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -18431,10 +19505,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -18476,9 +19552,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol) Unm
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag struct {
+	ID   string                                                                    `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -18512,10 +19590,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagIn
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -18557,9 +19637,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp) 
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag struct {
+	ID   string                                                                       `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -18593,10 +19675,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTa
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -18716,6 +19800,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                       `json:"isExpandable"`
+	NoteID       string                                                                     `json:"noteId"`
 	RichtextTags []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -18724,6 +19809,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -18769,12 +19855,14 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities) 
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -18814,9 +19902,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSm
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                               `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -18850,10 +19940,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSm
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -18895,9 +19987,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSy
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                             `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -18931,10 +20025,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSy
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -18976,9 +20072,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTi
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                                `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -19012,10 +20110,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTi
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -19213,6 +20313,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	Competitors []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -19227,6 +20328,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -19248,8 +20350,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext) Unma
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -19261,7 +20366,10 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -19386,11 +20494,15 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntity
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -19441,11 +20553,14 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	// Describes an X Article preview and its lifecycle metadata.
 	Article EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle `json:"article"`
 	// Public X profile.
-	Author UserProfile `json:"author"`
+	Author            UserProfile                  `json:"author"`
+	AuthorUnavailable SearchTweetAuthorUnavailable `json:"authorUnavailable"`
 	// Describes a public card and its referenced profiles.
-	Card EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard `json:"card"`
+	Card               EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard `json:"card"`
+	CashtagAttachments []SearchTweetCashtagAttachment                              `json:"cashtagAttachments"`
 	// Community ID.
-	CommunityID string `json:"communityId"`
+	CommunityID   string `json:"communityId"`
+	CommunityName string `json:"communityName"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -19454,22 +20569,30 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	// Public reply policy and conversation owner.
 	ConversationControl EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl `json:"conversationControl"`
 	ConversationID      string                                                                     `json:"conversationId"`
+	Coordinates         SearchTweetCoordinates                                                     `json:"coordinates"`
 	CreatedAt           string                                                                     `json:"createdAt"`
 	DisplayTextRange    []int64                                                                    `json:"displayTextRange"`
 	// Lists edit-chain identifiers and the remaining edit window.
 	Edit EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit `json:"edit"`
 	// Lists hashtags, symbols, links, and mentions from tweet text.
-	Entities EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities `json:"entities"`
+	Entities         EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities `json:"entities"`
+	ExclusiveContent SearchTweetExclusiveContent                                     `json:"exclusiveContent"`
+	Geo              SearchTweetGeo                                                  `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
-	InReplyToID         string         `json:"inReplyToId"`
-	InReplyToUserID     string         `json:"inReplyToUserId"`
-	InReplyToUsername   string         `json:"inReplyToUsername"`
-	IsLimitedReply      bool           `json:"isLimitedReply"`
-	IsNoteTweet         bool           `json:"isNoteTweet"`
-	IsQuoteStatus       bool           `json:"isQuoteStatus"`
-	IsReply             bool           `json:"isReply"`
-	IsTranslatable      bool           `json:"isTranslatable"`
+	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
+	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
+	InReplyToID         string                  `json:"inReplyToId"`
+	InReplyToUserID     string                  `json:"inReplyToUserId"`
+	InReplyToUsername   string                  `json:"inReplyToUsername"`
+	Interstitial        SearchTweetInterstitial `json:"interstitial"`
+	IsLimitedReply      bool                    `json:"isLimitedReply"`
+	IsNoteTweet         bool                    `json:"isNoteTweet"`
+	IsPinned            bool                    `json:"isPinned"`
+	IsQuoteStatus       bool                    `json:"isQuoteStatus"`
+	IsReply             bool                    `json:"isReply"`
+	IsRetweet           bool                    `json:"isRetweet"`
+	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
 	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
@@ -19478,7 +20601,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
-	NoteTweet EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	NoteTweet   EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet `json:"noteTweet"`
+	ParentTweet *EmbeddedTweet                                                   `json:"parentTweet"`
 	// Describes public place metadata on a geotagged tweet.
 	Place             EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                         `json:"possiblySensitive"`
@@ -19487,7 +20611,9 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
-	QuotedTweetID string `json:"quotedTweetId"`
+	QuotedTweetID          string                            `json:"quotedTweetId"`
+	QuotedTweetPermalink   SearchTweetQuotedTweetPermalink   `json:"quotedTweetPermalink"`
+	QuotedTweetUnavailable SearchTweetQuotedTweetUnavailable `json:"quotedTweetUnavailable"`
 	// Public post and user referenced by this reaction.
 	ReactionContext EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext `json:"reactionContext"`
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
@@ -19496,67 +20622,87 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	Scopes map[string]any `json:"scopes"`
 	Source string         `json:"source"`
 	// Sports game context attached to the post, when available.
-	SportsContext EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SportsContext   EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
+	SubscriberBadge SearchTweetSubscriberBadge                                           `json:"subscriberBadge"`
+	TextHighlights  []SearchTweetTextHighlight                                           `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
-	Tombstone EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
-	Type      string                                                           `json:"type"`
+	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
+	Type                string                                                           `json:"type"`
+	UnavailableAuthorID string                                                           `json:"unavailableAuthorId"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
 	ViewState          string   `json:"viewState"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		BookmarkCount       respjson.Field
-		LikeCount           respjson.Field
-		QuoteCount          respjson.Field
-		ReplyCount          respjson.Field
-		RetweetCount        respjson.Field
-		Text                respjson.Field
-		ViewCount           respjson.Field
-		Article             respjson.Field
-		Author              respjson.Field
-		Card                respjson.Field
-		CommunityID         respjson.Field
-		CommunityNote       respjson.Field
-		ContentDisclosure   respjson.Field
-		ConversationControl respjson.Field
-		ConversationID      respjson.Field
-		CreatedAt           respjson.Field
-		DisplayTextRange    respjson.Field
-		Edit                respjson.Field
-		Entities            respjson.Field
-		GrokShareAttachment respjson.Field
-		InReplyToID         respjson.Field
-		InReplyToUserID     respjson.Field
-		InReplyToUsername   respjson.Field
-		IsLimitedReply      respjson.Field
-		IsNoteTweet         respjson.Field
-		IsQuoteStatus       respjson.Field
-		IsReply             respjson.Field
-		IsTranslatable      respjson.Field
-		JetfuelAttachment   respjson.Field
-		Lang                respjson.Field
-		LimitedActions      respjson.Field
-		Media               respjson.Field
-		NoteTweet           respjson.Field
-		Place               respjson.Field
-		PossiblySensitive   respjson.Field
-		PostCta             respjson.Field
-		PreviousCounts      respjson.Field
-		QuotedTweetID       respjson.Field
-		ReactionContext     respjson.Field
-		RetweetedAt         respjson.Field
-		Scopes              respjson.Field
-		Source              respjson.Field
-		SportsContext       respjson.Field
-		Tombstone           respjson.Field
-		Type                respjson.Field
-		UnmentionedUserIDs  respjson.Field
-		URL                 respjson.Field
-		ViewState           respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                     respjson.Field
+		BookmarkCount          respjson.Field
+		LikeCount              respjson.Field
+		QuoteCount             respjson.Field
+		ReplyCount             respjson.Field
+		RetweetCount           respjson.Field
+		Text                   respjson.Field
+		ViewCount              respjson.Field
+		Article                respjson.Field
+		Author                 respjson.Field
+		AuthorUnavailable      respjson.Field
+		Card                   respjson.Field
+		CashtagAttachments     respjson.Field
+		CommunityID            respjson.Field
+		CommunityName          respjson.Field
+		CommunityNote          respjson.Field
+		ContentDisclosure      respjson.Field
+		ConversationControl    respjson.Field
+		ConversationID         respjson.Field
+		Coordinates            respjson.Field
+		CreatedAt              respjson.Field
+		DisplayTextRange       respjson.Field
+		Edit                   respjson.Field
+		Entities               respjson.Field
+		ExclusiveContent       respjson.Field
+		Geo                    respjson.Field
+		GrokShareAttachment    respjson.Field
+		GrokTranslatedPost     respjson.Field
+		HasCommunityNotes      respjson.Field
+		InReplyToID            respjson.Field
+		InReplyToUserID        respjson.Field
+		InReplyToUsername      respjson.Field
+		Interstitial           respjson.Field
+		IsLimitedReply         respjson.Field
+		IsNoteTweet            respjson.Field
+		IsPinned               respjson.Field
+		IsQuoteStatus          respjson.Field
+		IsReply                respjson.Field
+		IsRetweet              respjson.Field
+		IsTranslatable         respjson.Field
+		JetfuelAttachment      respjson.Field
+		Lang                   respjson.Field
+		LimitedActions         respjson.Field
+		Media                  respjson.Field
+		NoteTweet              respjson.Field
+		ParentTweet            respjson.Field
+		Place                  respjson.Field
+		PossiblySensitive      respjson.Field
+		PostCta                respjson.Field
+		PreviousCounts         respjson.Field
+		QuotedTweetID          respjson.Field
+		QuotedTweetPermalink   respjson.Field
+		QuotedTweetUnavailable respjson.Field
+		ReactionContext        respjson.Field
+		RetweetedAt            respjson.Field
+		Scopes                 respjson.Field
+		Source                 respjson.Field
+		SportsContext          respjson.Field
+		SubscriberBadge        respjson.Field
+		TextHighlights         respjson.Field
+		Tombstone              respjson.Field
+		Type                   respjson.Field
+		UnavailableAuthorID    respjson.Field
+		UnmentionedUserIDs     respjson.Field
+		URL                    respjson.Field
+		ViewState              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -19694,16 +20840,22 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote) U
 
 // Public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl struct {
-	InviteViaMention bool   `json:"inviteViaMention"`
-	OwnerUsername    string `json:"ownerUsername"`
-	Policy           string `json:"policy"`
+	AllowedCountryCodes []string `json:"allowedCountryCodes"`
+	InviteViaMention    bool     `json:"inviteViaMention"`
+	Mode                string   `json:"mode"`
+	OwnerID             string   `json:"ownerId"`
+	OwnerUsername       string   `json:"ownerUsername"`
+	Policy              string   `json:"policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InviteViaMention respjson.Field
-		OwnerUsername    respjson.Field
-		Policy           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		AllowedCountryCodes respjson.Field
+		InviteViaMention    respjson.Field
+		Mode                respjson.Field
+		OwnerID             respjson.Field
+		OwnerUsername       respjson.Field
+		Policy              respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -19769,12 +20921,14 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities) Unmars
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                        `json:"text" api:"required"`
+	Indices []int64                       `json:"indices"`
+	Tag     SearchTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -19814,9 +20968,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag struct {
+	ID   string                                                                         `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -19850,10 +21006,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -19895,9 +21053,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol) 
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag struct {
+	ID   string                                                                       `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -19931,10 +21091,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTa
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -19976,9 +21138,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestam
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag struct {
+	ID   string                                                                          `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -20012,10 +21176,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestam
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -20135,6 +21301,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	// Inline media positions in the Note Tweet text.
 	InlineMedia  []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia `json:"inlineMedia"`
 	IsExpandable bool                                                                          `json:"isExpandable"`
+	NoteID       string                                                                        `json:"noteId"`
 	RichtextTags []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag `json:"richtextTags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -20143,6 +21310,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 		Entities     respjson.Field
 		InlineMedia  respjson.Field
 		IsExpandable respjson.Field
+		NoteID       respjson.Field
 		RichtextTags respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -20188,12 +21356,14 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 
 // Provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
-	Text    string  `json:"text" api:"required"`
-	Indices []int64 `json:"indices"`
+	Text    string                                 `json:"text" api:"required"`
+	Indices []int64                                `json:"indices"`
+	Tag     SearchTweetNoteTweetEntitiesHashtagTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Indices     respjson.Field
+		Tag         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -20233,9 +21403,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
+	ID   string                                                                                  `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -20269,10 +21441,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -20314,9 +21488,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
+	ID   string                                                                                `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -20350,10 +21526,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -20395,9 +21573,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
+	ID   string                                                                                   `json:"id"`
 	Info EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo `json:"info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -20431,10 +21611,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
+	Active bool   `json:"active"`
 	Name   string `json:"name"`
 	Ticker string `json:"ticker"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Active      respjson.Field
 		Name        respjson.Field
 		Ticker      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -20632,6 +21814,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext struct
 	Competitors []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -20646,6 +21829,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext struct
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -20667,8 +21851,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext) U
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -20680,7 +21867,10 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompeti
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -20805,11 +21995,15 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEnt
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -20832,6 +22026,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	Competitors []EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -20846,6 +22041,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -20865,8 +22061,11 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext) UnmarshalJSON(d
 type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -20878,7 +22077,10 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -20999,11 +22201,15 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity) Unmarshal
 }
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -21026,6 +22232,7 @@ type EmbeddedTweetRetweetedTweetSportsContext struct {
 	Competitors []EmbeddedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -21040,6 +22247,7 @@ type EmbeddedTweetRetweetedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -21059,8 +22267,11 @@ func (r *EmbeddedTweetRetweetedTweetSportsContext) UnmarshalJSON(data []byte) er
 type EmbeddedTweetRetweetedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -21072,7 +22283,10 @@ type EmbeddedTweetRetweetedTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -21189,11 +22403,15 @@ func (r *EmbeddedTweetRetweetedTweetTombstoneTextEntity) UnmarshalJSON(data []by
 }
 
 type EmbeddedTweetRetweetedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
@@ -21214,6 +22432,7 @@ type EmbeddedTweetSportsContext struct {
 	Competitors []EmbeddedTweetSportsContextCompetitor `json:"competitors"`
 	// Game ID.
 	GameID string `json:"gameId"`
+	League string `json:"league"`
 	// Scheduled Unix time in milliseconds, preserving the source representation.
 	ScheduledAtMs EmbeddedTweetSportsContextScheduledAtMsUnion `json:"scheduledAtMs"`
 	// Game state reported by the source.
@@ -21228,6 +22447,7 @@ type EmbeddedTweetSportsContext struct {
 	JSON struct {
 		Competitors   respjson.Field
 		GameID        respjson.Field
+		League        respjson.Field
 		ScheduledAtMs respjson.Field
 		State         respjson.Field
 		StatusText    respjson.Field
@@ -21247,8 +22467,11 @@ func (r *EmbeddedTweetSportsContext) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetSportsContextCompetitor struct {
 	// Team abbreviation.
 	Abbreviation string `json:"abbreviation"`
+	Color        string `json:"color"`
 	// Team logo for dark backgrounds.
 	DarkLogoURL string `json:"darkLogoUrl"`
+	IsActive    bool   `json:"isActive"`
+	IsWinner    bool   `json:"isWinner"`
 	// Team logo for light backgrounds.
 	LogoURL string `json:"logoUrl"`
 	// Team name.
@@ -21260,7 +22483,10 @@ type EmbeddedTweetSportsContextCompetitor struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Abbreviation respjson.Field
+		Color        respjson.Field
 		DarkLogoURL  respjson.Field
+		IsActive     respjson.Field
+		IsWinner     respjson.Field
 		LogoURL      respjson.Field
 		Name         respjson.Field
 		Score        respjson.Field
@@ -21375,11 +22601,15 @@ func (r *EmbeddedTweetTombstoneTextEntity) UnmarshalJSON(data []byte) error {
 }
 
 type EmbeddedTweetTombstoneTextEntityRef struct {
-	Type    string `json:"type"`
-	URL     string `json:"url"`
-	URLType string `json:"urlType"`
+	ScreenName string `json:"screenName"`
+	Text       string `json:"text"`
+	Type       string `json:"type"`
+	URL        string `json:"url"`
+	URLType    string `json:"urlType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ScreenName  respjson.Field
+		Text        respjson.Field
 		Type        respjson.Field
 		URL         respjson.Field
 		URLType     respjson.Field
