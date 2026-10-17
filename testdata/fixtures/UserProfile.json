@@ -80,6 +80,7 @@
   },
   "identityVerification": {
     "isIdentityVerified": false,
+    "overrideVerifiedYear": 2009,
     "verifiedSinceMsec": "1249674830941"
   },
   "isProfileTranslatable": false,

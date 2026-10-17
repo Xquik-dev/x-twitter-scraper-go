@@ -24146,14 +24146,17 @@ func (r *UserProfileHighlightsInfo) UnmarshalJSON(data []byte) error {
 type UserProfileIdentityVerification struct {
 	Description        string `json:"description"`
 	IsIdentityVerified bool   `json:"isIdentityVerified"`
-	VerifiedSinceMsec  string `json:"verifiedSinceMsec"`
+	// The year X shows as the start of verification, in place of verifiedSinceMsec.
+	OverrideVerifiedYear int64  `json:"overrideVerifiedYear"`
+	VerifiedSinceMsec    string `json:"verifiedSinceMsec"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Description        respjson.Field
-		IsIdentityVerified respjson.Field
-		VerifiedSinceMsec  respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		Description          respjson.Field
+		IsIdentityVerified   respjson.Field
+		OverrideVerifiedYear respjson.Field
+		VerifiedSinceMsec    respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
