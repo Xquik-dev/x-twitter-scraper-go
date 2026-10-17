@@ -5,12 +5,10 @@
 package xtwitterscraper
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"net/url"
 	"slices"
@@ -374,15 +372,7 @@ func (r SupportTicketNewParams) MarshalMultipart() (data []byte, contentType str
 		data, err = r.MarshalJSON()
 		return data, "application/json", err
 	}
-	buffer := new(bytes.Buffer)
-	writer := multipart.NewWriter(buffer)
-	if err := apiform.MarshalWithSettings(r, writer, "repeat"); err != nil {
-		return nil, "", err
-	}
-	if err := writer.Close(); err != nil {
-		return nil, "", err
-	}
-	return buffer.Bytes(), writer.FormDataContentType(), nil
+	return apiform.MarshalMultipart(r)
 }
 
 type SupportTicketUpdateParams struct {
@@ -429,13 +419,5 @@ func (r SupportTicketReplyParams) MarshalMultipart() (data []byte, contentType s
 		data, err = r.MarshalJSON()
 		return data, "application/json", err
 	}
-	buffer := new(bytes.Buffer)
-	writer := multipart.NewWriter(buffer)
-	if err := apiform.MarshalWithSettings(r, writer, "repeat"); err != nil {
-		return nil, "", err
-	}
-	if err := writer.Close(); err != nil {
-		return nil, "", err
-	}
-	return buffer.Bytes(), writer.FormDataContentType(), nil
+	return apiform.MarshalMultipart(r)
 }
