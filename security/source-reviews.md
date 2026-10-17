@@ -13,11 +13,7 @@ On 2026-10-15, 4 findings in `shared/shared.go` were reviewed and added. They ar
 On 2026-10-15, 24 findings in `xanalysis.go` were reviewed and added. They are the As variant conversions of the 2 answer unions in each of the 6 analysis responses, with the reason the other generated As methods carry.
 On 2026-10-16, the API fields check moved the spec loader from `cmd/api-coverage/main.go` to `internal/apicheck/apicheck.go`. The 4 findings of the old file left with its code. The 1 finding gosec reports in the new file was reviewed with the reason the old file read finding carried.
 On 2026-10-16, the field fixes moved 53 findings the same way in `shared/shared.go`, `xaccount.go`, `xlist.go`, `xtweet.go` and `xuser.go`. Their code & reasons are unchanged.
-On 2026-10-16, the temp dir cleanup moved 2 findings in `internal/scripttest/release_local_test.go` the same way. 1 finding in `internal/scripttest/temp_cleanup_test.go` was reviewed and added, with the reason the release test runner carries.
 On 2026-10-17, the `OverrideVerifiedYear` field addition moved 36 findings in `shared/shared.go` to its new source hash.
-On 2026-10-17, the temp cleanup tests handle timeout errors. Their 2 runner findings moved to the new source hash, and 2 executable fixture findings were reviewed and added.
-On 2026-10-17, the temp cleanup tests isolate their module caches, simulate Go build files and capture script output. Their 4 existing findings moved to the new source hash. The directory permission restore was reviewed and added.
-On 2026-10-17, the SIGINT cleanup tests added a bash parent regression. The same script moved their 5 findings to the new source hash and line numbers. Their code and reasons are unchanged.
 The temp cleanup tests have 6 reviewed findings for test-controlled script runners, executable fixtures, retained coverage files and restoring owner access to isolated module caches. Their records match the current source hashes and line numbers.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
