@@ -8,10 +8,12 @@
 ### Features
 
 - Support tickets and replies accept attachments with an optional body.
+- Media uploads accept files and an optional long video flag through multipart form data.
 
 ### Breaking changes
 
 - `Body` on `SupportTicketNewParams` and `SupportTicketReplyParams` now uses `param.Opt[string]`. Wrap body strings with `xtwitterscraper.String`.
+- `URL` on `XMediaUploadParams` now uses `param.Opt[string]`. Wrap URL strings with `xtwitterscraper.String`.
 
 ## 0.20.0 (2026-10-16)
 

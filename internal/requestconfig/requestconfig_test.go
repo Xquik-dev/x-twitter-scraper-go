@@ -128,7 +128,7 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 		"multipart marshaler takes precedence over JSON": {
 			body: jsonMultipartBody{
 				jsonMarshalerBody: jsonMarshalerBody{err: wantErr},
-				multipartBody:    multipartBody{data: []byte("multipart"), contentType: "multipart/form-data; boundary=test"},
+				multipartBody:     multipartBody{data: []byte("multipart"), contentType: "multipart/form-data; boundary=test"},
 			},
 			path:        "/media",
 			contentType: "multipart/form-data; boundary=test",
@@ -137,7 +137,7 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 		"multipart marshaler selects JSON": {
 			body: jsonMultipartBody{
 				jsonMarshalerBody: jsonMarshalerBody{err: wantErr},
-				multipartBody:    multipartBody{data: []byte(`{"body":"Please help."}`), contentType: "application/json"},
+				multipartBody:     multipartBody{data: []byte(`{"body":"Please help."}`), contentType: "application/json"},
 			},
 			path:        "/support/tickets",
 			contentType: "application/json",
