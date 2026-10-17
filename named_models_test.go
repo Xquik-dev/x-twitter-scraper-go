@@ -84,6 +84,17 @@ func TestCommunityNoteOperationsReturnNamedModel(t *testing.T) {
 	}
 }
 
+func TestCommunityInfoCreatorPreservesExtraFields(t *testing.T) {
+	var community xtwitterscraper.XCommunityGetInfoResponseCommunity
+	if err := community.UnmarshalJSON([]byte(`{"creator":{"id":"641633","username":"marckohlbrugge","newProfileField":42}}`)); err != nil {
+		t.Fatal(err)
+	}
+	var creator xtwitterscraper.XCommunityGetInfoResponseCommunityCreator = community.Creator
+	if field, ok := creator.JSON.ExtraFields["newProfileField"]; !ok || field.Raw() != "42" {
+		t.Fatalf("creator extra field = %q, want 42", field.Raw())
+	}
+}
+
 var (
 	_ xtwitterscraper.Job                                        = xtwitterscraper.XJobGetResponseJob{}
 	_ xtwitterscraper.Job                                        = xtwitterscraper.XJobSearchResponseJob{}

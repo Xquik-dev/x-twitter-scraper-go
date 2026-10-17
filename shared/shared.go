@@ -527,6 +527,7 @@ type CommunityCreatorUnion struct {
 		SubscribersCount                respjson.Field
 		UsernameChanges                 respjson.Field
 		VerificationReason              respjson.Field
+		ExtraFields                     map[string]respjson.Field
 		raw                             string
 	} `json:"-"`
 }
