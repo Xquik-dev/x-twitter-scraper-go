@@ -159,8 +159,12 @@ func TestChecksRemoveTheirTempDirsWhenTerminated(t *testing.T) {
 					break
 				}
 				if time.Now().After(deadline) {
-					syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-					cmd.Wait()
+					if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL); err != nil {
+						t.Error(err)
+					}
+					if err := cmd.Wait(); err != nil {
+						t.Error(err)
+					}
 					t.Fatal("the run never reached its fake tool")
 				}
 				time.Sleep(20 * time.Millisecond)
@@ -223,8 +227,12 @@ func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 				break
 			}
 			if time.Now().After(deadline) {
-				syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-				cmd.Wait()
+				if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL); err != nil {
+					t.Error(err)
+				}
+				if err := cmd.Wait(); err != nil {
+					t.Error(err)
+				}
 				t.Fatal("the release never reached bin/check-local")
 			}
 			time.Sleep(20 * time.Millisecond)
