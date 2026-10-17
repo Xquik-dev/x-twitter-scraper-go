@@ -15,7 +15,7 @@ import (
 
 var (
 	compositeKeys = []string{"$ref", "allOf", "oneOf", "anyOf", "description", "example", "examples", "title", "deprecated", "readOnly", "writeOnly"}
-	formTypes     = []string{"multipart/form-data", "application/x-www-form-urlencoded"}
+	bodyTypes     = []string{"application/json", "multipart/form-data", "application/x-www-form-urlencoded"}
 )
 
 type specReader struct {
@@ -282,10 +282,7 @@ func (r specReader) operation(operation apicheck.SpecOperation) operationShapes 
 		query.fields[name] = field{required: flagOf(required), shape: next}
 	}
 	content := r.mapOf(r.mapOf(operation.Operation["requestBody"])["content"])
-	bodies := r.media(content, func(name string) bool { return name == "application/json" })
-	if len(bodies) == 0 {
-		bodies = r.media(content, func(name string) bool { return slices.Contains(formTypes, name) })
-	}
+	bodies := r.media(content, func(name string) bool { return slices.Contains(bodyTypes, name) })
 	shapes := operationShapes{query: query, body: optional(bodies)}
 	responses := r.mapOf(operation.Operation["responses"])
 	codes := make([]string, 0, len(responses))
