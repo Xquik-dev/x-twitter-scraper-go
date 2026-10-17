@@ -5,14 +5,18 @@
 package xtwitterscraper
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"slices"
 	"time"
 
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
@@ -347,10 +351,12 @@ func (r *SupportTicketReplyResponseAttachment) UnmarshalJSON(data []byte) error 
 }
 
 type SupportTicketNewParams struct {
-	// Non-empty support message text.
-	Body string `json:"body" api:"required"`
 	// Non-empty support ticket subject.
-	Subject        string            `json:"subject" api:"required"`
+	Subject string `json:"subject" api:"required"`
+	// Up to 4 attachments.
+	Attachments []io.Reader `json:"attachments,omitzero" format:"binary"`
+	// Non-empty support message text. Optional when attachments are provided.
+	Body           param.Opt[string] `json:"body,omitzero"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
@@ -361,6 +367,22 @@ func (r SupportTicketNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *SupportTicketNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r SupportTicketNewParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	if len(r.Attachments) == 0 {
+		data, err = r.MarshalJSON()
+		return data, "application/json", err
+	}
+	buffer := new(bytes.Buffer)
+	writer := multipart.NewWriter(buffer)
+	if err := apiform.MarshalWithSettings(r, writer, "repeat"); err != nil {
+		return nil, "", err
+	}
+	if err := writer.Close(); err != nil {
+		return nil, "", err
+	}
+	return buffer.Bytes(), writer.FormDataContentType(), nil
 }
 
 type SupportTicketUpdateParams struct {
@@ -386,8 +408,10 @@ const (
 )
 
 type SupportTicketReplyParams struct {
-	// Non-empty support message text.
-	Body           string            `json:"body" api:"required"`
+	// Up to 4 attachments.
+	Attachments []io.Reader `json:"attachments,omitzero" format:"binary"`
+	// Non-empty support message text. Optional when attachments are provided.
+	Body           param.Opt[string] `json:"body,omitzero"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
@@ -398,4 +422,20 @@ func (r SupportTicketReplyParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *SupportTicketReplyParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r SupportTicketReplyParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	if len(r.Attachments) == 0 {
+		data, err = r.MarshalJSON()
+		return data, "application/json", err
+	}
+	buffer := new(bytes.Buffer)
+	writer := multipart.NewWriter(buffer)
+	if err := apiform.MarshalWithSettings(r, writer, "repeat"); err != nil {
+		return nil, "", err
+	}
+	if err := writer.Close(); err != nil {
+		return nil, "", err
+	}
+	return buffer.Bytes(), writer.FormDataContentType(), nil
 }

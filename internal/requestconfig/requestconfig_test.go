@@ -36,6 +36,11 @@ func (body multipartBody) MarshalMultipart() ([]byte, string, error) {
 	return body.data, body.contentType, body.err
 }
 
+type jsonMultipartBody struct {
+	jsonMarshalerBody
+	multipartBody
+}
+
 type queryBody struct {
 	values url.Values
 	err    error
@@ -119,6 +124,24 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 			body:    multipartBody{err: wantErr},
 			path:    "/media",
 			wantErr: wantErr,
+		},
+		"multipart marshaler takes precedence over JSON": {
+			body: jsonMultipartBody{
+				jsonMarshalerBody: jsonMarshalerBody{err: wantErr},
+				multipartBody:    multipartBody{data: []byte("multipart"), contentType: "multipart/form-data; boundary=test"},
+			},
+			path:        "/media",
+			contentType: "multipart/form-data; boundary=test",
+			wantBody:    "multipart",
+		},
+		"multipart marshaler selects JSON": {
+			body: jsonMultipartBody{
+				jsonMarshalerBody: jsonMarshalerBody{err: wantErr},
+				multipartBody:    multipartBody{data: []byte(`{"body":"Please help."}`), contentType: "application/json"},
+			},
+			path:        "/support/tickets",
+			contentType: "application/json",
+			wantBody:    `{"body":"Please help."}`,
 		},
 		"query": {
 			body:      queryBody{values: url.Values{"q": {"tweet search"}}},

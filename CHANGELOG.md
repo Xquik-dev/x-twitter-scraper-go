@@ -9,6 +9,14 @@
 - `shared.UserProfileIdentityVerification` gains the optional `OverrideVerifiedYear` field for profiles and users in tweets.
 - `bin/check-local`, `bin/release-local` and their scripts remove their temp files on every exit, including a failed step, Ctrl+C and a terminate signal. `scripts/verify-release` no longer prints the path of its deleted module cache.
 
+### Features
+
+- Support tickets and replies accept attachments with an optional body.
+
+### Breaking changes
+
+- `Body` on `SupportTicketNewParams` and `SupportTicketReplyParams` now uses `param.Opt[string]`. Wrap body strings with `xtwitterscraper.String`.
+
 ## 0.20.0 (2026-10-16)
 
 [Full changelog from v0.19.2 to v0.20.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.2...v0.20.0)
