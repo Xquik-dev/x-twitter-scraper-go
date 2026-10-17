@@ -16,6 +16,10 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+type Broadcast = shared.Broadcast
+
+type BroadcastPeriscopeUser = shared.BroadcastPeriscopeUser
+
 // Public X Community, as every Community read returns it.
 type Community = shared.Community
 
