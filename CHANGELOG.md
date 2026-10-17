@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **Breaking.** `X.Accounts.BulkRetry` takes a required `XAccountBulkRetryParams` argument, so `BulkRetry(ctx)` stops compiling. Pass `x.XAccountBulkRetryParams{}` to retry every failed account as before.
+- Bulk retry can target specific accounts with `AccountIDs`.
+- Embedded parent, quoted and retweeted posts carry every tweet field and the author.
 - `shared.UserProfileIdentityVerification` gains the optional `OverrideVerifiedYear` field for profiles and users in tweets.
 - `bin/check-local`, `bin/release-local` and their scripts remove their temp files on every exit, including a failed step, Ctrl+C and a terminate signal. `scripts/verify-release` no longer prints the path of its deleted module cache.
 

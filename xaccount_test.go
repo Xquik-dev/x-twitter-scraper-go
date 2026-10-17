@@ -7,7 +7,10 @@ package xtwitterscraper_test
 import (
 	"context"
 	"errors"
+	"io"
+	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
@@ -128,13 +131,50 @@ func TestXAccountBulkRetry(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.X.Accounts.BulkRetry(context.TODO())
+	_, err := client.X.Accounts.BulkRetry(context.TODO(), xtwitterscraper.XAccountBulkRetryParams{})
 	if err != nil {
 		var apierr *xtwitterscraper.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestXAccountBulkRetryWithOptionalParams(t *testing.T) {
+	cases := map[string]struct {
+		params xtwitterscraper.XAccountBulkRetryParams
+		want   string
+	}{
+		"account IDs":         {xtwitterscraper.XAccountBulkRetryParams{AccountIDs: []string{"1", "xacct_1"}}, `{"accountIds":["1","xacct_1"]}`},
+		"all failed accounts": {xtwitterscraper.XAccountBulkRetryParams{}, `{}`},
+	}
+	for name, test := range cases {
+		t.Run(name, func(t *testing.T) {
+			request := &capturedRequest{}
+			client := xtwitterscraper.NewClient(
+				option.WithBaseURL("https://example.com/api/v1/"),
+				option.WithMaxRetries(0),
+				option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
+					body, err := io.ReadAll(req.Body)
+					if err != nil {
+						return nil, err
+					}
+					*request = capturedRequest{method: req.Method, path: req.URL.Path, query: req.URL.Query(), body: body}
+					return &http.Response{
+						StatusCode: http.StatusOK,
+						Header:     http.Header{"Content-Type": {"application/json"}},
+						Body:       io.NopCloser(strings.NewReader(`{"cleared":1}`)),
+					}, nil
+				})),
+			)
+			_, err := client.X.Accounts.BulkRetry(context.Background(), test.params)
+			if err != nil {
+				t.Fatal(err)
+			}
+			request.expect(t, http.MethodPost, "/api/v1/x/accounts/bulk-retry", "")
+			request.expectBody(t, test.want)
+		})
 	}
 }
 
