@@ -85,7 +85,7 @@ func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.
 }
 
 // Clears loginFailedAt and loginFailureReason for accounts with transient or
-// automated failure reasons. Set accountIds to retry only those accounts.
+// automated failure reasons. Set AccountIDs to retry only those accounts.
 func (r *XAccountService) BulkRetry(ctx context.Context, body XAccountBulkRetryParams, opts ...option.RequestOption) (res *XAccountBulkRetryResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/accounts/bulk-retry"
