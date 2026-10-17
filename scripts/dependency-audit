@@ -3,9 +3,12 @@
 # SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
 
+source "$(dirname "$0")/temp-paths"
 cd "${1:-$(dirname "$0")/..}"
 
 readonly govulncheck="golang.org/x/vuln/cmd/govulncheck@v1.9.0"
+temp_path workspace govulncheck
+report="$workspace/report.json"
 
 packages="$(go list -f '{{if and (ne .Name "main") .GoFiles}}{{.ImportPath}}{{end}}' ./...)"
 importable=()
@@ -19,9 +22,6 @@ if ((${#importable[@]} == 0)); then
   exit 1
 fi
 shipped="$(go list -deps -f '{{with .Module}}{{.Path}}{{end}}' "${importable[@]}")"
-
-report="$(mktemp "${TMPDIR:-/tmp}/xquik-govulncheck.XXXXXX")"
-trap 'rm -f -- "$report"' EXIT
 
 go run "$govulncheck" -format json -test ./... >"$report"
 

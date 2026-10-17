@@ -55,11 +55,12 @@ post() {
   printf '==> Could not post the %s status. GitHub CLI said %s\n' "$status_context" "${error//$'\n'/ }" >&2
 }
 
-work="$(mktemp -d "${TMPDIR:-/tmp}/xquik-check-local.XXXXXX")"
+source scripts/temp-paths
+temp_path work check-local
 
 finish() {
   local code=$?
-  rm -rf -- "${work:?}"
+  remove_temp_paths
   if ((code == 0)); then
     local list="$passed"
     if [[ "$list" == *", "* ]]; then

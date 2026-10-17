@@ -99,8 +99,8 @@ func TestCodeQLSecurity(t *testing.T) {
 			if result.code != test.code {
 				t.Fatalf("exit code %d, want %d\nstderr: %s", result.code, test.code, result.stderr)
 			}
-			if !strings.HasSuffix(result.stdout, test.stdout) {
-				t.Fatalf("stdout %q does not end with %q", result.stdout, test.stdout)
+			if want := test.report + test.stdout; result.stdout != want {
+				t.Fatalf("stdout %q, want %q", result.stdout, want)
 			}
 			if !strings.Contains(result.stderr, test.stderr) {
 				t.Fatalf("stderr %q does not contain %q", result.stderr, test.stderr)

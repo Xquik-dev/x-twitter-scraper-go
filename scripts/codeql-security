@@ -17,8 +17,8 @@ if [[ "$found" != "$pinned" ]]; then
   echo "CodeQL $found found, but this check pins $pinned. Set XQUIK_CODEQL_BIN to a $pinned CLI." >&2
   exit 1
 fi
-report="$(mktemp -d "${TMPDIR:-/tmp}/xquik-codeql.XXXXXX")"
-echo "CodeQL writes its reports to $report"
+source scripts/temp-paths
+temp_path report codeql
 "$codeql" pack install codeql/no-code-comments
 "$codeql" database create "$report/database" --language=go --build-mode=autobuild --source-root="$PWD" --threads=4
 "$codeql" database analyze "$report/database" codeql/go-queries@1.6.12:codeql-suites/go-security-extended.qls codeql/no-code-comments --format=sarifv2.1.0 --output="$report/report.sarif" --threads=4

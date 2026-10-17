@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2026 Xquik contributors
+# SPDX-License-Identifier: Apache-2.0
+
+temp_paths=()
+
+temp_path() {
+  local name="$1" path
+  path="$(mktemp -d "${TMPDIR:-/tmp}/xquik-$2.XXXXXX")"
+  temp_paths+=("$path")
+  printf -v "$name" '%s' "$path"
+  export GOTMPDIR="$path"
+}
+
+remove_temp_paths() {
+  local path
+  for path in ${temp_paths[@]+"${temp_paths[@]}"}; do
+    if [[ -e "$path" || -L "$path" ]]; then
+      chmod -R u+w -- "$path" 2>/dev/null || true
+      rm -rf -- "$path"
+    fi
+  done
+}
+
+trap remove_temp_paths EXIT
+trap 'exit 129' HUP
+trap 'trap - INT; kill -INT "$$"' INT
+trap 'exit 143' TERM

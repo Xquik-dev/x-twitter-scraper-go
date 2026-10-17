@@ -48,6 +48,8 @@ A parent without a recorded baseline is measured first in a temporary clone, onc
 On a clean HEAD that GitHub already has, it posts the `xquik-local-checks` commit status.
 The status lists only the checks that passed and says success only when all passed.
 Pass `--no-status` to skip it.
+Every check removes its temp files from `TMPDIR` when it passes, fails or stops on a signal.
+Scripts create them with `temp_path` from `scripts/temp-paths`, which removes them on exit.
 
 The dependency audit, `scripts/dependency-audit`, runs govulncheck over every package and test.
 Every finding counts, whether govulncheck traced a call to it or not.
@@ -198,7 +200,7 @@ It prints the module path, the version, the checksum, and every file in the modu
 Verify published modules with `bun run release:verify vVERSION COMMIT_SHA`.
 The command uses a fresh module cache and the public Go checksum database.
 It checks the exact version and source commit, then installs and constructs a client.
-JSON output identifies success or failure. Raw module evidence remains available.
+JSON output identifies success or failure. The command removes its module cache when it exits.
 
 `bin/release-local` attaches no signed source archive.
 To attach one, run `bun run release:publish` on the tagged commit afterwards.

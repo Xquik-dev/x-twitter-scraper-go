@@ -3,13 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
 cd "$(dirname "$0")/.."
-report="$(mktemp "${TMPDIR:-/tmp}/xquik-gosec.XXXXXX")"
+source scripts/temp-paths
+temp_path workspace gosec
+report="$workspace/report.json"
 status=0
 # gosec 2.29.0 pins a golang.org/x/tools that cannot read Go 1.27 export data.
 # tools/gosec/go.mod builds the same gosec with a newer x/tools.
 # https://github.com/securego/gosec/issues/1774
 go tool -modfile=tools/gosec/go.mod gosec -tests -nosec -enable-audit -track-suppressions -fmt=json ./... > "$report" || status=$?
 cat "$report"
-echo "Raw source scan exit: $status; retained report: $report"
+echo "Raw source scan exit: $status"
 if [ "$status" -gt 1 ]; then exit "$status"; fi
 go run ./cmd/source-security < "$report"

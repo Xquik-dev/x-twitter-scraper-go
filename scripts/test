@@ -8,5 +8,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+source scripts/temp-paths
+temp_path workspace test
+
 echo "==> Running tests"
 go test ./... "$@"
