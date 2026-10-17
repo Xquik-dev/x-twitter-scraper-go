@@ -256,7 +256,7 @@ func rawJSONReceiverNames(t *testing.T) map[string]struct{} {
 	for _, pkg := range loaded {
 		for _, name := range pkg.Types.Scope().Names() {
 			object, ok := pkg.Types.Scope().Lookup(name).(*types.TypeName)
-			if !ok || !object.Exported() {
+			if !ok || !object.Exported() || object.IsAlias() {
 				continue
 			}
 			if method := types.NewMethodSet(types.NewPointer(object.Type())).Lookup(pkg.Types, "RawJSON"); method != nil {

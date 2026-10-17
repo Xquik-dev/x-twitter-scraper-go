@@ -82,33 +82,16 @@ func (r *XSpaceService) Search(ctx context.Context, query XSpaceSearchParams, op
 	return res, err
 }
 
-type XSpaceGetResponse struct {
-	// X Space
-	Space XSpaceGetResponseSpace `json:"space" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Space       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // X Space
-type XSpaceGetResponseSpace struct {
+type Space struct {
 	// Space ID
 	ID string `json:"id" api:"required"`
 	// Hosts and co-hosts
-	Admins []XSpaceGetResponseSpaceAdmin `json:"admins" api:"required"`
+	Admins []SpaceParticipant `json:"admins" api:"required"`
 	// Accounts X lists as listeners
-	Listeners []XSpaceGetResponseSpaceListener `json:"listeners" api:"required"`
+	Listeners []SpaceParticipant `json:"listeners" api:"required"`
 	// Accounts X lists as speakers
-	Speakers []XSpaceGetResponseSpaceSpeaker `json:"speakers" api:"required"`
+	Speakers []SpaceParticipant `json:"speakers" api:"required"`
 	// Audio or video kind, as X names it
 	ContentType string `json:"contentType"`
 	// X's code for who may speak
@@ -143,7 +126,7 @@ type XSpaceGetResponseSpace struct {
 	ScheduledStart time.Time `json:"scheduledStart" format:"date-time"`
 	// Posts the hosts and speakers shared in the Space, in X's order. Present only
 	// when X lists them.
-	Sharings []XSpaceGetResponseSpaceSharing `json:"sharings"`
+	Sharings []SpaceSharing `json:"sharings"`
 	// When the Space went live
 	StartedAt time.Time `json:"startedAt" format:"date-time"`
 	// NotStarted (scheduled), Running (live), Ended, Canceled (scheduled, never
@@ -198,19 +181,19 @@ type XSpaceGetResponseSpace struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpace) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpace) UnmarshalJSON(data []byte) error {
+func (r Space) RawJSON() string { return r.JSON.raw }
+func (r *Space) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // An account on a Space's stage or in its audience, as X lists it there.
-type XSpaceGetResponseSpaceAdmin struct {
+type SpaceParticipant struct {
 	ID string `json:"id" api:"required"`
 	// Name the account shows in the Space
 	Name     string `json:"name" api:"required"`
 	Username string `json:"username" api:"required"`
 	// Organization affiliation label shown on an X profile.
-	AffiliatesHighlightedLabel XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
+	AffiliatesHighlightedLabel SpaceParticipantAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
 	// Whether the account has X Premium verification
 	IsBlueVerified bool `json:"isBlueVerified"`
 	// Whether a host muted the account
@@ -250,13 +233,13 @@ type XSpaceGetResponseSpaceAdmin struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpaceAdmin) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
+func (r SpaceParticipant) RawJSON() string { return r.JSON.raw }
+func (r *SpaceParticipant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Organization affiliation label shown on an X profile.
-type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
+type SpaceParticipantAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
@@ -280,177 +263,13 @@ type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An account on a Space's stage or in its audience, as X lists it there.
-type XSpaceGetResponseSpaceListener struct {
-	ID string `json:"id" api:"required"`
-	// Name the account shows in the Space
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	// Organization affiliation label shown on an X profile.
-	AffiliatesHighlightedLabel XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
-	// Whether the account has X Premium verification
-	IsBlueVerified bool `json:"isBlueVerified"`
-	// Whether a host muted the account
-	IsMutedByAdmin bool `json:"isMutedByAdmin"`
-	// Whether the account muted itself
-	IsMutedByGuest bool `json:"isMutedByGuest"`
-	// Whether X shows a verified badge in the Space
-	IsVerified bool `json:"isVerified"`
-	// When the account joined the Space
-	JoinedAt time.Time `json:"joinedAt" format:"date-time"`
-	// The account's ID in X's broadcast service
-	PeriscopeUserID string `json:"periscopeUserId"`
-	// Profile picture URL
-	ProfilePicture string `json:"profilePicture"`
-	// The participant's profile picture at full size
-	ProfilePictureOriginal string `json:"profilePictureOriginal"`
-	// Business or Government badge type
-	VerifiedType string `json:"verifiedType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		Name                       respjson.Field
-		Username                   respjson.Field
-		AffiliatesHighlightedLabel respjson.Field
-		IsBlueVerified             respjson.Field
-		IsMutedByAdmin             respjson.Field
-		IsMutedByGuest             respjson.Field
-		IsVerified                 respjson.Field
-		JoinedAt                   respjson.Field
-		PeriscopeUserID            respjson.Field
-		ProfilePicture             respjson.Field
-		ProfilePictureOriginal     respjson.Field
-		VerifiedType               respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpaceListener) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpaceListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Organization affiliation label shown on an X profile.
-type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
-	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
-	URL                  string         `json:"url"`
-	URLType              string         `json:"urlType"`
-	UserLabelDisplayType string         `json:"userLabelDisplayType"`
-	UserLabelType        string         `json:"userLabelType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BadgeURL             respjson.Field
-		Description          respjson.Field
-		LongDescription      respjson.Field
-		URL                  respjson.Field
-		URLType              respjson.Field
-		UserLabelDisplayType respjson.Field
-		UserLabelType        respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An account on a Space's stage or in its audience, as X lists it there.
-type XSpaceGetResponseSpaceSpeaker struct {
-	ID string `json:"id" api:"required"`
-	// Name the account shows in the Space
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	// Organization affiliation label shown on an X profile.
-	AffiliatesHighlightedLabel XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
-	// Whether the account has X Premium verification
-	IsBlueVerified bool `json:"isBlueVerified"`
-	// Whether a host muted the account
-	IsMutedByAdmin bool `json:"isMutedByAdmin"`
-	// Whether the account muted itself
-	IsMutedByGuest bool `json:"isMutedByGuest"`
-	// Whether X shows a verified badge in the Space
-	IsVerified bool `json:"isVerified"`
-	// When the account joined the Space
-	JoinedAt time.Time `json:"joinedAt" format:"date-time"`
-	// The account's ID in X's broadcast service
-	PeriscopeUserID string `json:"periscopeUserId"`
-	// Profile picture URL
-	ProfilePicture string `json:"profilePicture"`
-	// The participant's profile picture at full size
-	ProfilePictureOriginal string `json:"profilePictureOriginal"`
-	// Business or Government badge type
-	VerifiedType string `json:"verifiedType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		Name                       respjson.Field
-		Username                   respjson.Field
-		AffiliatesHighlightedLabel respjson.Field
-		IsBlueVerified             respjson.Field
-		IsMutedByAdmin             respjson.Field
-		IsMutedByGuest             respjson.Field
-		IsVerified                 respjson.Field
-		JoinedAt                   respjson.Field
-		PeriscopeUserID            respjson.Field
-		ProfilePicture             respjson.Field
-		ProfilePictureOriginal     respjson.Field
-		VerifiedType               respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpaceSpeaker) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Organization affiliation label shown on an X profile.
-type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
-	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
-	URL                  string         `json:"url"`
-	URLType              string         `json:"urlType"`
-	UserLabelDisplayType string         `json:"userLabelDisplayType"`
-	UserLabelType        string         `json:"userLabelType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BadgeURL             respjson.Field
-		Description          respjson.Field
-		LongDescription      respjson.Field
-		URL                  respjson.Field
-		URLType              respjson.Field
-		UserLabelDisplayType respjson.Field
-		UserLabelType        respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
+func (r SpaceParticipantAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
+func (r *SpaceParticipantAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // A post shared in a Space, & the account that shared it.
-type XSpaceGetResponseSpaceSharing struct {
+type SpaceSharing struct {
 	// X's ID of the sharing, not of the post
 	ID string `json:"id"`
 	// When the post was shared
@@ -474,10 +293,43 @@ type XSpaceGetResponseSpaceSharing struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XSpaceGetResponseSpaceSharing) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceGetResponseSpaceSharing) UnmarshalJSON(data []byte) error {
+func (r SpaceSharing) RawJSON() string { return r.JSON.raw }
+func (r *SpaceSharing) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type XSpaceGetResponse struct {
+	// X Space
+	Space Space `json:"space" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Space       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XSpaceGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *XSpaceGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XSpaceGetResponseSpace = Space
+
+type XSpaceGetResponseSpaceAdmin = SpaceParticipant
+
+type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel = SpaceParticipantAffiliatesHighlightedLabel
+
+type XSpaceGetResponseSpaceListener = SpaceParticipant
+
+type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel = SpaceParticipantAffiliatesHighlightedLabel
+
+type XSpaceGetResponseSpaceSpeaker = SpaceParticipant
+
+type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel = SpaceParticipantAffiliatesHighlightedLabel
+
+type XSpaceGetResponseSpaceSharing = SpaceSharing
 
 type XSpaceGetReplayResponse struct {
 	// Recording of an ended Space
@@ -524,7 +376,7 @@ type XSpaceSearchResponse struct {
 	HasNextPage bool   `json:"has_next_page" api:"required"`
 	NextCursor  string `json:"next_cursor" api:"required"`
 	// Public Spaces, in the order the posts share them
-	Spaces []XSpaceSearchResponseSpace `json:"spaces" api:"required"`
+	Spaces []Space `json:"spaces" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		HasNextPage respjson.Field
@@ -541,389 +393,21 @@ func (r *XSpaceSearchResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// X Space
-type XSpaceSearchResponseSpace struct {
-	// Space ID
-	ID string `json:"id" api:"required"`
-	// Hosts and co-hosts
-	Admins []XSpaceSearchResponseSpaceAdmin `json:"admins" api:"required"`
-	// Accounts X lists as listeners
-	Listeners []XSpaceSearchResponseSpaceListener `json:"listeners" api:"required"`
-	// Accounts X lists as speakers
-	Speakers []XSpaceSearchResponseSpaceSpeaker `json:"speakers" api:"required"`
-	// Audio or video kind, as X names it
-	ContentType string `json:"contentType"`
-	// X's code for who may speak
-	ConversationControls int64 `json:"conversationControls"`
-	// When the Space was made
-	CreatedAt time.Time `json:"createdAt" format:"date-time"`
-	// Public X profile.
-	Creator shared.UserProfile `json:"creator"`
-	// Whether X lets no more accounts join
-	DisallowJoin bool `json:"disallowJoin"`
-	// When the Space ended
-	EndedAt time.Time `json:"endedAt" format:"date-time"`
-	// Whether listeners may clip the Space
-	IsAvailableForClipping bool `json:"isAvailableForClipping"`
-	// Whether X offers a recording
-	IsAvailableForReplay bool `json:"isAvailableForReplay"`
-	// Whether only X employees may join
-	IsEmployeeOnly bool `json:"isEmployeeOnly"`
-	// Whether the host locked the Space
-	IsLocked bool `json:"isLocked"`
-	// Most hosts and co-hosts the Space allows
-	MaxAdminCapacity int64 `json:"maxAdminCapacity"`
-	// X's media key for the Space's audio
-	MediaKey string `json:"mediaKey"`
-	// IDs of the accounts the host tagged
-	MentionedUserIDs []string `json:"mentionedUserIds"`
-	// Whether anonymous listening is off
-	NoIncognito bool `json:"noIncognito"`
-	// Accounts in the Space now, while it is live
-	ParticipantCount int64 `json:"participantCount"`
-	// When the Space was set to start
-	ScheduledStart time.Time `json:"scheduledStart" format:"date-time"`
-	// Posts the hosts and speakers shared in the Space, in X's order. Present only
-	// when X lists them.
-	Sharings []XSpaceSearchResponseSpaceSharing `json:"sharings"`
-	// When the Space went live
-	StartedAt time.Time `json:"startedAt" format:"date-time"`
-	// NotStarted (scheduled), Running (live), Ended, Canceled (scheduled, never
-	// started) or TimedOut (closed by X, not by its host)
-	State string `json:"state"`
-	// Space title
-	Title string `json:"title"`
-	// Accounts that listened live
-	TotalLiveListeners int64 `json:"totalLiveListeners"`
-	// Accounts that played the recording
-	TotalReplayWatched int64 `json:"totalReplayWatched"`
-	// Search tweet with author. Zero metrics may mean X omitted counts.
-	Tweet shared.SearchTweet `json:"tweet"`
-	// ID of the post that announces the Space
-	TweetID string `json:"tweetId"`
-	// When X last changed the Space
-	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                     respjson.Field
-		Admins                 respjson.Field
-		Listeners              respjson.Field
-		Speakers               respjson.Field
-		ContentType            respjson.Field
-		ConversationControls   respjson.Field
-		CreatedAt              respjson.Field
-		Creator                respjson.Field
-		DisallowJoin           respjson.Field
-		EndedAt                respjson.Field
-		IsAvailableForClipping respjson.Field
-		IsAvailableForReplay   respjson.Field
-		IsEmployeeOnly         respjson.Field
-		IsLocked               respjson.Field
-		MaxAdminCapacity       respjson.Field
-		MediaKey               respjson.Field
-		MentionedUserIDs       respjson.Field
-		NoIncognito            respjson.Field
-		ParticipantCount       respjson.Field
-		ScheduledStart         respjson.Field
-		Sharings               respjson.Field
-		StartedAt              respjson.Field
-		State                  respjson.Field
-		Title                  respjson.Field
-		TotalLiveListeners     respjson.Field
-		TotalReplayWatched     respjson.Field
-		Tweet                  respjson.Field
-		TweetID                respjson.Field
-		UpdatedAt              respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
+type XSpaceSearchResponseSpace = Space
 
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpace) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceSearchResponseSpace) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type XSpaceSearchResponseSpaceAdmin = SpaceParticipant
 
-// An account on a Space's stage or in its audience, as X lists it there.
-type XSpaceSearchResponseSpaceAdmin struct {
-	ID string `json:"id" api:"required"`
-	// Name the account shows in the Space
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	// Organization affiliation label shown on an X profile.
-	AffiliatesHighlightedLabel XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
-	// Whether the account has X Premium verification
-	IsBlueVerified bool `json:"isBlueVerified"`
-	// Whether a host muted the account
-	IsMutedByAdmin bool `json:"isMutedByAdmin"`
-	// Whether the account muted itself
-	IsMutedByGuest bool `json:"isMutedByGuest"`
-	// Whether X shows a verified badge in the Space
-	IsVerified bool `json:"isVerified"`
-	// When the account joined the Space
-	JoinedAt time.Time `json:"joinedAt" format:"date-time"`
-	// The account's ID in X's broadcast service
-	PeriscopeUserID string `json:"periscopeUserId"`
-	// Profile picture URL
-	ProfilePicture string `json:"profilePicture"`
-	// The participant's profile picture at full size
-	ProfilePictureOriginal string `json:"profilePictureOriginal"`
-	// Business or Government badge type
-	VerifiedType string `json:"verifiedType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		Name                       respjson.Field
-		Username                   respjson.Field
-		AffiliatesHighlightedLabel respjson.Field
-		IsBlueVerified             respjson.Field
-		IsMutedByAdmin             respjson.Field
-		IsMutedByGuest             respjson.Field
-		IsVerified                 respjson.Field
-		JoinedAt                   respjson.Field
-		PeriscopeUserID            respjson.Field
-		ProfilePicture             respjson.Field
-		ProfilePictureOriginal     respjson.Field
-		VerifiedType               respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
+type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel = SpaceParticipantAffiliatesHighlightedLabel
 
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpaceAdmin) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceSearchResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type XSpaceSearchResponseSpaceListener = SpaceParticipant
 
-// Organization affiliation label shown on an X profile.
-type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
-	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
-	URL                  string         `json:"url"`
-	URLType              string         `json:"urlType"`
-	UserLabelDisplayType string         `json:"userLabelDisplayType"`
-	UserLabelType        string         `json:"userLabelType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BadgeURL             respjson.Field
-		Description          respjson.Field
-		LongDescription      respjson.Field
-		URL                  respjson.Field
-		URLType              respjson.Field
-		UserLabelDisplayType respjson.Field
-		UserLabelType        respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
+type XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel = SpaceParticipantAffiliatesHighlightedLabel
 
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type XSpaceSearchResponseSpaceSpeaker = SpaceParticipant
 
-// An account on a Space's stage or in its audience, as X lists it there.
-type XSpaceSearchResponseSpaceListener struct {
-	ID string `json:"id" api:"required"`
-	// Name the account shows in the Space
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	// Organization affiliation label shown on an X profile.
-	AffiliatesHighlightedLabel XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
-	// Whether the account has X Premium verification
-	IsBlueVerified bool `json:"isBlueVerified"`
-	// Whether a host muted the account
-	IsMutedByAdmin bool `json:"isMutedByAdmin"`
-	// Whether the account muted itself
-	IsMutedByGuest bool `json:"isMutedByGuest"`
-	// Whether X shows a verified badge in the Space
-	IsVerified bool `json:"isVerified"`
-	// When the account joined the Space
-	JoinedAt time.Time `json:"joinedAt" format:"date-time"`
-	// The account's ID in X's broadcast service
-	PeriscopeUserID string `json:"periscopeUserId"`
-	// Profile picture URL
-	ProfilePicture string `json:"profilePicture"`
-	// The participant's profile picture at full size
-	ProfilePictureOriginal string `json:"profilePictureOriginal"`
-	// Business or Government badge type
-	VerifiedType string `json:"verifiedType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		Name                       respjson.Field
-		Username                   respjson.Field
-		AffiliatesHighlightedLabel respjson.Field
-		IsBlueVerified             respjson.Field
-		IsMutedByAdmin             respjson.Field
-		IsMutedByGuest             respjson.Field
-		IsVerified                 respjson.Field
-		JoinedAt                   respjson.Field
-		PeriscopeUserID            respjson.Field
-		ProfilePicture             respjson.Field
-		ProfilePictureOriginal     respjson.Field
-		VerifiedType               respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
+type XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel = SpaceParticipantAffiliatesHighlightedLabel
 
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpaceListener) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceSearchResponseSpaceListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Organization affiliation label shown on an X profile.
-type XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
-	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
-	URL                  string         `json:"url"`
-	URLType              string         `json:"urlType"`
-	UserLabelDisplayType string         `json:"userLabelDisplayType"`
-	UserLabelType        string         `json:"userLabelType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BadgeURL             respjson.Field
-		Description          respjson.Field
-		LongDescription      respjson.Field
-		URL                  respjson.Field
-		URLType              respjson.Field
-		UserLabelDisplayType respjson.Field
-		UserLabelType        respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An account on a Space's stage or in its audience, as X lists it there.
-type XSpaceSearchResponseSpaceSpeaker struct {
-	ID string `json:"id" api:"required"`
-	// Name the account shows in the Space
-	Name     string `json:"name" api:"required"`
-	Username string `json:"username" api:"required"`
-	// Organization affiliation label shown on an X profile.
-	AffiliatesHighlightedLabel XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel `json:"affiliatesHighlightedLabel"`
-	// Whether the account has X Premium verification
-	IsBlueVerified bool `json:"isBlueVerified"`
-	// Whether a host muted the account
-	IsMutedByAdmin bool `json:"isMutedByAdmin"`
-	// Whether the account muted itself
-	IsMutedByGuest bool `json:"isMutedByGuest"`
-	// Whether X shows a verified badge in the Space
-	IsVerified bool `json:"isVerified"`
-	// When the account joined the Space
-	JoinedAt time.Time `json:"joinedAt" format:"date-time"`
-	// The account's ID in X's broadcast service
-	PeriscopeUserID string `json:"periscopeUserId"`
-	// Profile picture URL
-	ProfilePicture string `json:"profilePicture"`
-	// The participant's profile picture at full size
-	ProfilePictureOriginal string `json:"profilePictureOriginal"`
-	// Business or Government badge type
-	VerifiedType string `json:"verifiedType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		Name                       respjson.Field
-		Username                   respjson.Field
-		AffiliatesHighlightedLabel respjson.Field
-		IsBlueVerified             respjson.Field
-		IsMutedByAdmin             respjson.Field
-		IsMutedByGuest             respjson.Field
-		IsVerified                 respjson.Field
-		JoinedAt                   respjson.Field
-		PeriscopeUserID            respjson.Field
-		ProfilePicture             respjson.Field
-		ProfilePictureOriginal     respjson.Field
-		VerifiedType               respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpaceSpeaker) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceSearchResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Organization affiliation label shown on an X profile.
-type XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
-	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
-	URL                  string         `json:"url"`
-	URLType              string         `json:"urlType"`
-	UserLabelDisplayType string         `json:"userLabelDisplayType"`
-	UserLabelType        string         `json:"userLabelType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BadgeURL             respjson.Field
-		Description          respjson.Field
-		LongDescription      respjson.Field
-		URL                  respjson.Field
-		URLType              respjson.Field
-		UserLabelDisplayType respjson.Field
-		UserLabelType        respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A post shared in a Space, & the account that shared it.
-type XSpaceSearchResponseSpaceSharing struct {
-	// X's ID of the sharing, not of the post
-	ID string `json:"id"`
-	// When the post was shared
-	SharedAt time.Time `json:"sharedAt" format:"date-time"`
-	// Public X profile.
-	SharedBy shared.UserProfile `json:"sharedBy"`
-	// Search tweet with author. Zero metrics may mean X omitted counts.
-	Tweet shared.SearchTweet `json:"tweet"`
-	// When X last changed the sharing
-	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		SharedAt    respjson.Field
-		SharedBy    respjson.Field
-		Tweet       respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XSpaceSearchResponseSpaceSharing) RawJSON() string { return r.JSON.raw }
-func (r *XSpaceSearchResponseSpaceSharing) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type XSpaceSearchResponseSpaceSharing = SpaceSharing
 
 type XSpaceGetParams struct {
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as

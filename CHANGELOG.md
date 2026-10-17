@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Jobs, Spaces, broadcasts and Community Notes reuse named models, and community info returns the shared Community model. Existing type names remain aliases.
+
 ## 0.20.0 (2026-10-16)
 
 [Full changelog from v0.19.2 to v0.20.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.19.2...v0.20.0)

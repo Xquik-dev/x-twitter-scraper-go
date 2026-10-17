@@ -74,40 +74,21 @@ func (r *XJobService) Search(ctx context.Context, query XJobSearchParams, opts .
 	return res, err
 }
 
-type XJobGetResponse struct {
-	// Public X job listing. A search returns the fields down to the salary, plus
-	// company & account. A lookup adds work type, seniority, function, team &
-	// descriptions. A field X leaves empty is left out.
-	Job XJobGetResponseJob `json:"job" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Job         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XJobGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *XJobGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Public X job listing. A search returns the fields down to the salary, plus
 // company & account. A lookup adds work type, seniority, function, team &
 // descriptions. A field X leaves empty is left out.
-type XJobGetResponseJob struct {
+type Job struct {
 	// Job ID.
 	ID string `json:"id" api:"required"`
 	// The job page on X.
 	URL string `json:"url" api:"required"`
 	// The X account that posted a job. A job has none when X imported it from a job
 	// board or no longer shows the account.
-	Account XJobGetResponseJobAccount `json:"account"`
+	Account JobAccount `json:"account"`
 	// Where applicants apply, off X.
 	ApplyURL string `json:"applyUrl"`
 	// The company profile of a job X imported from a job board.
-	Company XJobGetResponseJobCompany `json:"company"`
+	Company JobCompany `json:"company"`
 	// Full description as plain text, 1 line per paragraph.
 	Description string `json:"description"`
 	// Full description as Markdown, with headings, lists, links, bold & italics.
@@ -173,14 +154,14 @@ type XJobGetResponseJob struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XJobGetResponseJob) RawJSON() string { return r.JSON.raw }
-func (r *XJobGetResponseJob) UnmarshalJSON(data []byte) error {
+func (r Job) RawJSON() string { return r.JSON.raw }
+func (r *Job) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The X account that posted a job. A job has none when X imported it from a job
 // board or no longer shows the account.
-type XJobGetResponseJobAccount struct {
+type JobAccount struct {
 	// X user ID of the account.
 	ID string `json:"id" api:"required"`
 	// Whether X shows a verification badge on the account.
@@ -216,13 +197,13 @@ type XJobGetResponseJobAccount struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XJobGetResponseJobAccount) RawJSON() string { return r.JSON.raw }
-func (r *XJobGetResponseJobAccount) UnmarshalJSON(data []byte) error {
+func (r JobAccount) RawJSON() string { return r.JSON.raw }
+func (r *JobAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The company profile of a job X imported from a job board.
-type XJobGetResponseJobCompany struct {
+type JobCompany struct {
 	// X company profile ID.
 	ID string `json:"id" api:"required"`
 	// Company logo URL.
@@ -240,10 +221,35 @@ type XJobGetResponseJobCompany struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XJobGetResponseJobCompany) RawJSON() string { return r.JSON.raw }
-func (r *XJobGetResponseJobCompany) UnmarshalJSON(data []byte) error {
+func (r JobCompany) RawJSON() string { return r.JSON.raw }
+func (r *JobCompany) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type XJobGetResponse struct {
+	// Public X job listing. A search returns the fields down to the salary, plus
+	// company & account. A lookup adds work type, seniority, function, team &
+	// descriptions. A field X leaves empty is left out.
+	Job Job `json:"job" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Job         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XJobGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *XJobGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type XJobGetResponseJob = Job
+
+type XJobGetResponseJobAccount = JobAccount
+
+type XJobGetResponseJobCompany = JobCompany
 
 // The places whose names match a query.
 type XJobListLocationsResponse struct {
@@ -290,9 +296,9 @@ func (r *XJobListLocationsResponseLocation) UnmarshalJSON(data []byte) error {
 // 1 page of job listings. Follow next_cursor while the response reports more
 // pages.
 type XJobSearchResponse struct {
-	HasNextPage bool                    `json:"has_next_page" api:"required"`
-	Jobs        []XJobSearchResponseJob `json:"jobs" api:"required"`
-	NextCursor  string                  `json:"next_cursor" api:"required"`
+	HasNextPage bool   `json:"has_next_page" api:"required"`
+	Jobs        []Job  `json:"jobs" api:"required"`
+	NextCursor  string `json:"next_cursor" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		HasNextPage respjson.Field
@@ -309,157 +315,11 @@ func (r *XJobSearchResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Public X job listing. A search returns the fields down to the salary, plus
-// company & account. A lookup adds work type, seniority, function, team &
-// descriptions. A field X leaves empty is left out.
-type XJobSearchResponseJob struct {
-	// Job ID.
-	ID string `json:"id" api:"required"`
-	// The job page on X.
-	URL string `json:"url" api:"required"`
-	// The X account that posted a job. A job has none when X imported it from a job
-	// board or no longer shows the account.
-	Account XJobSearchResponseJobAccount `json:"account"`
-	// Where applicants apply, off X.
-	ApplyURL string `json:"applyUrl"`
-	// The company profile of a job X imported from a job board.
-	Company XJobSearchResponseJobCompany `json:"company"`
-	// Full description as plain text, 1 line per paragraph.
-	Description string `json:"description"`
-	// Full description as Markdown, with headings, lists, links, bold & italics.
-	DescriptionMarkdown string `json:"descriptionMarkdown"`
-	// Contract type (full_time, full_time_contract, part_time or contract_to_hire).
-	EmploymentType string `json:"employmentType"`
-	// Whether X features the job.
-	Featured bool `json:"featured"`
-	// Salary as X shows it.
-	FormattedSalary string `json:"formattedSalary"`
-	// Job function, such as software_engineering.
-	JobFunction string `json:"jobFunction"`
-	// Location as the employer wrote it.
-	Location string `json:"location"`
-	// Where the work happens (onsite, remote or hybrid).
-	LocationType string `json:"locationType"`
-	// When the employer posted the job.
-	PostedAt time.Time `json:"postedAt" format:"date-time"`
-	// ISO 4217 currency code of the salary.
-	SalaryCurrencyCode string `json:"salaryCurrencyCode"`
-	// Pay period of the salary (annually or hourly).
-	SalaryInterval string `json:"salaryInterval"`
-	// Highest salary, in salaryCurrencyCode per salaryInterval.
-	SalaryMax float64 `json:"salaryMax"`
-	// Lowest salary, in salaryCurrencyCode per salaryInterval.
-	SalaryMin float64 `json:"salaryMin"`
-	// Seniority (intern, entry_level, junior, mid_level, senior, lead, manager or
-	// executive).
-	SeniorityLevel string `json:"seniorityLevel"`
-	// Short summary of the job, as plain text.
-	ShortDescription string `json:"shortDescription"`
-	// Team inside the company.
-	Team string `json:"team"`
-	// Job title.
-	Title string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                  respjson.Field
-		URL                 respjson.Field
-		Account             respjson.Field
-		ApplyURL            respjson.Field
-		Company             respjson.Field
-		Description         respjson.Field
-		DescriptionMarkdown respjson.Field
-		EmploymentType      respjson.Field
-		Featured            respjson.Field
-		FormattedSalary     respjson.Field
-		JobFunction         respjson.Field
-		Location            respjson.Field
-		LocationType        respjson.Field
-		PostedAt            respjson.Field
-		SalaryCurrencyCode  respjson.Field
-		SalaryInterval      respjson.Field
-		SalaryMax           respjson.Field
-		SalaryMin           respjson.Field
-		SeniorityLevel      respjson.Field
-		ShortDescription    respjson.Field
-		Team                respjson.Field
-		Title               respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
+type XJobSearchResponseJob = Job
 
-// Returns the unmodified JSON received from the API
-func (r XJobSearchResponseJob) RawJSON() string { return r.JSON.raw }
-func (r *XJobSearchResponseJob) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type XJobSearchResponseJobAccount = JobAccount
 
-// The X account that posted a job. A job has none when X imported it from a job
-// board or no longer shows the account.
-type XJobSearchResponseJobAccount struct {
-	// X user ID of the account.
-	ID string `json:"id" api:"required"`
-	// Whether X shows a verification badge on the account.
-	Verified bool `json:"verified" api:"required"`
-	// Bio of the account. A job lookup returns it.
-	Description string `json:"description"`
-	// Display name of the account that posted the job.
-	Name string `json:"name"`
-	// Avatar shape, such as Circle or Square.
-	ProfileImageShape string `json:"profileImageShape"`
-	// Avatar URL of the account that posted the job.
-	ProfilePicture string `json:"profilePicture"`
-	// The job account's avatar at full size.
-	ProfilePictureOriginal string `json:"profilePictureOriginal"`
-	// Handle without @.
-	Username string `json:"username"`
-	// Badge type, such as Business or Government.
-	VerifiedType string `json:"verifiedType"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                     respjson.Field
-		Verified               respjson.Field
-		Description            respjson.Field
-		Name                   respjson.Field
-		ProfileImageShape      respjson.Field
-		ProfilePicture         respjson.Field
-		ProfilePictureOriginal respjson.Field
-		Username               respjson.Field
-		VerifiedType           respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XJobSearchResponseJobAccount) RawJSON() string { return r.JSON.raw }
-func (r *XJobSearchResponseJobAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The company profile of a job X imported from a job board.
-type XJobSearchResponseJobCompany struct {
-	// X company profile ID.
-	ID string `json:"id" api:"required"`
-	// Company logo URL.
-	LogoURL string `json:"logoUrl"`
-	// Company name.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		LogoURL     respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r XJobSearchResponseJobCompany) RawJSON() string { return r.JSON.raw }
-func (r *XJobSearchResponseJobCompany) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type XJobSearchResponseJobCompany = JobCompany
 
 type XJobGetParams struct {
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
