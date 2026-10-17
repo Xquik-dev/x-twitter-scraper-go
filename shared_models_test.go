@@ -97,6 +97,7 @@ func TestUserProfileDecodesEveryField(t *testing.T) {
 		{"FastFollowersCount", int64(12)},
 		{"GeoEnabled", true},
 		{"HasExtendedProfile", true},
+		{"IdentityVerification.OverrideVerifiedYear", int64(2009)},
 		{"IsTranslationEnabled", true},
 		{"ListedCount", int64(3051)},
 		{"NormalFollowersCount", int64(92376175)},
