@@ -47,19 +47,12 @@ func (r *SupportTicketService) New(ctx context.Context, params SupportTicketNewP
 	if params.Body.Or("") == "" && len(params.Attachments) == 0 {
 		return nil, ErrTicketNeedsBodyOrAttachments
 	}
-	var body any = params
-	if len(params.Attachments) == 0 {
-		body, err = params.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
 	}
 	opts = slices.Concat(r.options, opts)
 	path := "support/tickets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -108,15 +101,8 @@ func (r *SupportTicketService) Reply(ctx context.Context, id string, params Supp
 	if params.Body.Or("") == "" && len(params.Attachments) == 0 {
 		return nil, ErrTicketNeedsBodyOrAttachments
 	}
-	var body any = params
-	if len(params.Attachments) == 0 {
-		body, err = params.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-	}
 	path := fmt.Sprintf("support/tickets/%s/messages", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -390,6 +376,10 @@ func (r *SupportTicketNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r SupportTicketNewParams) HasFiles() bool {
+	return len(r.Attachments) > 0
+}
+
 func (r SupportTicketNewParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	return apiform.MarshalMultipart(r)
 }
@@ -432,6 +422,10 @@ func (r SupportTicketReplyParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *SupportTicketReplyParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r SupportTicketReplyParams) HasFiles() bool {
+	return len(r.Attachments) > 0
 }
 
 func (r SupportTicketReplyParams) MarshalMultipart() (data []byte, contentType string, err error) {

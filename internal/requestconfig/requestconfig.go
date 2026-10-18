@@ -96,13 +96,22 @@ type PreRequestOptionFunc func(*RequestConfig) error
 func (s RequestOptionFunc) Apply(r *RequestConfig) error    { return s(r) }
 func (s PreRequestOptionFunc) Apply(r *RequestConfig) error { return s(r) }
 
+type optionalFiles interface {
+	HasFiles() bool
+}
+
+func sendsMultipart(body apiform.Marshaler) bool {
+	files, ok := body.(optionalFiles)
+	return !ok || files.HasFiles()
+}
+
 func NewRequestConfig(ctx context.Context, method string, u string, body any, dst any, opts ...RequestOption) (*RequestConfig, error) {
 	var reader io.Reader
 
 	contentType := "application/json"
 	hasSerializationFunc := false
 
-	if multipartBody, ok := body.(apiform.Marshaler); ok {
+	if multipartBody, ok := body.(apiform.Marshaler); ok && sendsMultipart(multipartBody) {
 		var (
 			content []byte
 			err     error

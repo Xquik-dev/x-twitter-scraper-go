@@ -51,29 +51,18 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 
 // Uploads media and returns an identifier for later writes.
 func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
-	hasURL := !param.IsOmitted(params.URL)
-	if hasURL && params.File != nil {
-		return nil, ErrMediaHasURLAndFile
-	}
-	if !hasURL && params.File == nil {
-		return nil, ErrMediaNeedsURLOrFile
+	if err = validateMediaUpload(params.URL, params.File); err != nil {
+		return nil, err
 	}
 	if !param.IsOmitted(params.IsLongVideo) && params.File == nil {
 		return nil, ErrLongVideoNeedsFile
-	}
-	var body any = params
-	if params.File == nil {
-		body, err = params.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
 	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
 	}
 	opts = slices.Concat(r.options, opts)
 	path := "x/media"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -444,18 +433,40 @@ func (r *XMediaUploadParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r XMediaUploadParams) HasFiles() bool {
+	return r.File != nil
+}
+
 func (r XMediaUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	if r.File == nil {
-		return apiform.MarshalMultipart(r)
-	}
-	var header [12]byte
-	n, err := io.ReadFull(r.File, header[:])
-	if err != nil && err != io.EOF && err != io.ErrUnexpectedEOF {
+	r.File, err = mediaUploadFile(r.File)
+	if err != nil {
 		return nil, "", err
 	}
-	filename, contentType := mediaUploadFileType(header[:n])
-	r.File = File(io.MultiReader(bytes.NewReader(header[:n]), r.File), filename, contentType)
 	return apiform.MarshalMultipart(r)
+}
+
+func validateMediaUpload(url param.Opt[string], file io.Reader) error {
+	hasURL := !param.IsOmitted(url)
+	if hasURL && file != nil {
+		return ErrMediaHasURLAndFile
+	}
+	if !hasURL && file == nil {
+		return ErrMediaNeedsURLOrFile
+	}
+	return nil
+}
+
+func mediaUploadFile(file io.Reader) (io.Reader, error) {
+	if file == nil {
+		return nil, nil
+	}
+	var header [12]byte
+	n, err := io.ReadFull(file, header[:])
+	if err != nil && err != io.EOF && err != io.ErrUnexpectedEOF {
+		return nil, err
+	}
+	filename, contentType := mediaUploadFileType(header[:n])
+	return File(io.MultiReader(bytes.NewReader(header[:n]), file), filename, contentType), nil
 }
 
 func mediaUploadFileType(data []byte) (string, string) {
