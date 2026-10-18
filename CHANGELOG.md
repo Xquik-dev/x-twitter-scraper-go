@@ -8,6 +8,11 @@
 - Embedded parent, quoted and retweeted posts carry every tweet field and the author.
 - `shared.UserProfileIdentityVerification` gains the optional `OverrideVerifiedYear` field for profiles and users in tweets.
 - `bin/check-local`, `bin/release-local` and their scripts remove their temp files on every exit, including a failed step, Ctrl+C and a terminate signal. `scripts/verify-release` no longer prints the path of its deleted module cache.
+- Support tickets and replies take up to 4 `Attachments`. `Body` is optional with attachments.
+- Media, avatar and banner uploads take a `File`, sent as multipart. Media uploads also take `IsLongVideo`.
+- **Breaking.** A ticket or reply needs a non-empty `Body` or 1 attachment. Otherwise the SDK returns `ErrTicketNeedsBodyOrAttachments`.
+- **Breaking.** `Body` on `SupportTicketNewParams` and `SupportTicketReplyParams` uses `param.Opt[string]`. Wrap it with `xtwitterscraper.String`.
+- **Breaking.** `URL` on the media, avatar and banner upload params uses `param.Opt[string]`. Wrap it with `xtwitterscraper.String`.
 
 ## 0.20.0 (2026-10-16)
 

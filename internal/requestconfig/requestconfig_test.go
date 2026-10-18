@@ -36,6 +36,20 @@ func (body multipartBody) MarshalMultipart() ([]byte, string, error) {
 	return body.data, body.contentType, body.err
 }
 
+type jsonMultipartBody struct {
+	jsonMarshalerBody
+	multipartBody
+}
+
+type optionalFilesBody struct {
+	jsonMultipartBody
+	files bool
+}
+
+func (body optionalFilesBody) HasFiles() bool {
+	return body.files
+}
+
 type queryBody struct {
 	values url.Values
 	err    error
@@ -120,6 +134,38 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 			path:    "/media",
 			wantErr: wantErr,
 		},
+		"multipart marshaler takes precedence over JSON": {
+			body: jsonMultipartBody{
+				jsonMarshalerBody: jsonMarshalerBody{err: wantErr},
+				multipartBody:     multipartBody{data: []byte("multipart"), contentType: "multipart/form-data; boundary=test"},
+			},
+			path:        "/media",
+			contentType: "multipart/form-data; boundary=test",
+			wantBody:    "multipart",
+		},
+		"multipart marshaler with files": {
+			body: optionalFilesBody{
+				jsonMultipartBody: jsonMultipartBody{
+					jsonMarshalerBody: jsonMarshalerBody{data: []byte(`{"body":"Please help."}`)},
+					multipartBody:     multipartBody{data: []byte("multipart"), contentType: "multipart/form-data; boundary=test"},
+				},
+				files: true,
+			},
+			path:        "/support/tickets",
+			contentType: "multipart/form-data; boundary=test",
+			wantBody:    "multipart",
+		},
+		"multipart marshaler without files": {
+			body: optionalFilesBody{
+				jsonMultipartBody: jsonMultipartBody{
+					jsonMarshalerBody: jsonMarshalerBody{data: []byte(`{"body":"Please help."}`)},
+					multipartBody:     multipartBody{err: errors.New("multipart was marshaled")},
+				},
+			},
+			path:        "/support/tickets",
+			contentType: "application/json",
+			wantBody:    `{"body":"Please help."}`,
+		},
 		"query": {
 			body:      queryBody{values: url.Values{"q": {"tweet search"}}},
 			path:      "/tweets?existing=1",
@@ -134,11 +180,11 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 			path:    "/tweets",
 			wantErr: wantErr,
 		},
-		"bytes": {
-			body:        []byte("bytes"),
-			path:        "/tweets",
+		"serialized JSON": {
+			body:        []byte(`{"body":"Please help."}`),
+			path:        "/support/tickets",
 			contentType: "application/json",
-			wantBody:    "bytes",
+			wantBody:    `{"body":"Please help."}`,
 		},
 		"reader": {
 			body:        strings.NewReader("reader"),

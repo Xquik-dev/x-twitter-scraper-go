@@ -8,11 +8,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"slices"
 	"time"
 
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
@@ -42,6 +44,9 @@ func NewSupportTicketService(opts ...option.RequestOption) (r SupportTicketServi
 
 // Creates a support ticket with an initial message.
 func (r *SupportTicketService) New(ctx context.Context, params SupportTicketNewParams, opts ...option.RequestOption) (res *SupportTicketNewResponse, err error) {
+	if err = validateTicketMessage(params.Body, params.Attachments); err != nil {
+		return nil, err
+	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
 	}
@@ -91,6 +96,9 @@ func (r *SupportTicketService) Reply(ctx context.Context, id string, params Supp
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	if err = validateTicketMessage(params.Body, params.Attachments); err != nil {
 		return nil, err
 	}
 	path := fmt.Sprintf("support/tickets/%s/messages", url.PathEscape(id))
@@ -346,11 +354,23 @@ func (r *SupportTicketReplyResponseAttachment) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+var ErrTicketNeedsBodyOrAttachments = errors.New("missing required body or attachments parameter")
+
+func validateTicketMessage(body param.Opt[string], attachments []io.Reader) error {
+	if body.Or("") == "" && len(attachments) == 0 {
+		return ErrTicketNeedsBodyOrAttachments
+	}
+	return nil
+}
+
 type SupportTicketNewParams struct {
-	// Non-empty support message text.
-	Body string `json:"body" api:"required"`
 	// Non-empty support ticket subject.
-	Subject        string            `json:"subject" api:"required"`
+	Subject string `json:"subject" api:"required"`
+	// Up to 4 image or video attachments. Each image can be up to 10 MiB and each
+	// video up to 25 MiB. The request can be up to 30 MiB.
+	Attachments []io.Reader `json:"attachments,omitzero" format:"binary"`
+	// Non-empty support message text. Optional when attachments are provided.
+	Body           param.Opt[string] `json:"body,omitzero"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
@@ -361,6 +381,14 @@ func (r SupportTicketNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *SupportTicketNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r SupportTicketNewParams) HasFiles() bool {
+	return len(r.Attachments) > 0
+}
+
+func (r SupportTicketNewParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	return apiform.MarshalMultipart(r)
 }
 
 type SupportTicketUpdateParams struct {
@@ -386,8 +414,11 @@ const (
 )
 
 type SupportTicketReplyParams struct {
-	// Non-empty support message text.
-	Body           string            `json:"body" api:"required"`
+	// Up to 4 image or video attachments. Each image can be up to 10 MiB and each
+	// video up to 25 MiB. The request can be up to 30 MiB.
+	Attachments []io.Reader `json:"attachments,omitzero" format:"binary"`
+	// Non-empty support message text. Optional when attachments are provided.
+	Body           param.Opt[string] `json:"body,omitzero"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
@@ -398,4 +429,12 @@ func (r SupportTicketReplyParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *SupportTicketReplyParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r SupportTicketReplyParams) HasFiles() bool {
+	return len(r.Attachments) > 0
+}
+
+func (r SupportTicketReplyParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	return apiform.MarshalMultipart(r)
 }

@@ -244,7 +244,7 @@ func baseSpec() map[string]any {
 				"post": map[string]any{
 					"requestBody": map[string]any{"content": map[string]any{
 						"application/json":    map[string]any{"schema": objectSchema([]string{"text"}, map[string]any{"text": str(), "media": map[string]any{"type": "array", "items": str()}})},
-						"multipart/form-data": map[string]any{"schema": objectSchema(nil, map[string]any{"file": str()})},
+						"multipart/form-data": map[string]any{"schema": objectSchema([]string{"text"}, map[string]any{"text": str(), "media": map[string]any{"type": "array", "items": str()}})},
 					}},
 					"responses": map[string]any{"201": map[string]any{"description": "Created", "content": jsonContent(objectSchema([]string{"id"}, map[string]any{"id": str(), "status": map[string]any{"type": "string", "enum": []any{"pending"}}}))}},
 				},
@@ -323,6 +323,66 @@ func expectPass(t *testing.T, root fs.FS, spec any, want string) {
 
 func TestMatchingFieldsPass(t *testing.T) {
 	expectPass(t, sdkTree("[]", nil), baseSpec(), "The SDK's fields match the API for 5 operations, and accepted-field-differences.json lists 0 accepted differences.")
+}
+
+func TestRequestBodyMediaTypes(t *testing.T) {
+	const service = `package sdk
+
+func (r *SupportTicketService) New(ctx context.Context, body SupportTicketNewParams, opts ...option.RequestOption) (res *http.Response, err error) {
+	path := "support/tickets"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+`
+	const jsonModel = `package sdk
+
+type SupportTicketNewParams struct {
+	Body string ` + "`" + `json:"body" api:"required"` + "`" + `
+	paramObj
+}
+
+type paramObj = param.APIObject
+`
+	const mergedModel = `package sdk
+
+type SupportTicketNewParams struct {
+	Body        param.Opt[string] ` + "`" + `json:"body,omitzero"` + "`" + `
+	Attachments []io.Reader       ` + "`" + `json:"attachments,omitzero"` + "`" + `
+	paramObj
+}
+
+type paramObj = param.APIObject
+`
+	for _, mediaType := range []string{"multipart/form-data", "application/x-www-form-urlencoded"} {
+		t.Run(mediaType, func(t *testing.T) {
+			spec := map[string]any{
+				"openapi": "3.1.0",
+				"paths": map[string]any{
+					"/api/v1/support/tickets": map[string]any{
+						"post": map[string]any{
+							"requestBody": map[string]any{"content": map[string]any{
+								"application/json": map[string]any{"schema": objectSchema([]string{"body"}, map[string]any{"body": str()})},
+								mediaType: map[string]any{"schema": objectSchema(nil, map[string]any{
+									"body":        str(),
+									"attachments": map[string]any{"type": "array", "items": map[string]any{"type": "string", "format": "binary"}},
+								})},
+							}},
+						},
+					},
+				},
+			}
+			t.Run("JSON-only SDK", func(t *testing.T) {
+				expectFailures(t, sdkTree("[]", map[string]string{"service.go": service, "model.go": jsonModel}), spec,
+					"POST /api/v1/support/tickets request missing attachments",
+					"POST /api/v1/support/tickets request required body",
+					"Fix each field above in the SDK, or list it in accepted-field-differences.json with a reason.")
+			})
+			t.Run("matching SDK", func(t *testing.T) {
+				expectPass(t, sdkTree("[]", map[string]string{"service.go": service, "model.go": mergedModel}), spec,
+					"The SDK's fields match the API for 1 operation, and accepted-field-differences.json lists 0 accepted differences.")
+			})
+		})
+	}
 }
 
 func TestDifferencesFail(t *testing.T) {

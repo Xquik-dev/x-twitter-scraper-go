@@ -64,18 +64,18 @@ Finding: integer overflow conversion int -> uint8
 161: 	return nil
 ```
 
-## G404 in internal/requestconfig/requestconfig.go:310
+## G404 in internal/requestconfig/requestconfig.go:318
 
 Bounded retry jitter, not a credential, key, authentication value, or security token. The arithmetic overflow was repaired and verified on ARM64 and AMD64. Cryptographic unpredictability is not a requirement for jitter.
 
-Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
+Source SHA-256: `9c0d1b9441233d5edd877cf82761e109fcbc6ebad698e2a4914a18e20c9ffc2b`
 Severity: HIGH. Confidence: MEDIUM.
 Finding: Use of weak random number generator (math/rand or math/rand/v2 instead of crypto/rand)
 
 ```go
-309: 	delay := 500 * time.Millisecond << min(max(retryCount, 0), 4)
-310: 	return delay - time.Duration(rand.Int63n(int64(delay/4)))
-311: }
+317: 	delay := 500 * time.Millisecond << min(max(retryCount, 0), 4)
+318: 	return delay - time.Duration(rand.Int63n(int64(delay/4)))
+319: }
 ```
 
 ## G404 in internal/encoding/json/scanner_upstream_test.go:292
@@ -1226,186 +1226,186 @@ Finding: Errors unhandled
 19: 	}))
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:427
+## G104 in internal/requestconfig/requestconfig_test.go:473
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-426:
-427: 	cfg.DefaultBaseURL, _ = url.Parse("https://example.com/")
-428: 	wantErr := errors.New("transport failed")
+472:
+473: 	cfg.DefaultBaseURL, _ = url.Parse("https://example.com/")
+474: 	wantErr := errors.New("transport failed")
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:395
+## G104 in internal/requestconfig/requestconfig_test.go:441
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-394: 	cfg := testConfig(t, http.MethodPost, "/resource", reader, &dst)
-395: 	cfg.BaseURL, _ = url.Parse(server.URL + "/")
-396: 	cfg.MaxRetries = 1
+440: 	cfg := testConfig(t, http.MethodPost, "/resource", reader, &dst)
+441: 	cfg.BaseURL, _ = url.Parse(server.URL + "/")
+442: 	cfg.MaxRetries = 1
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:385
+## G104 in internal/requestconfig/requestconfig_test.go:431
 
 Local test HTTP handler writes fixture output. Client-side response/result assertions cover delivered bytes; this call is not a production sink.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-384: 		w.Header().Set("Content-Type", "application/json")
-385: 		_, _ = io.WriteString(w, "{}")
-386: 	}))
+430: 		w.Header().Set("Content-Type", "application/json")
+431: 		_, _ = io.WriteString(w, "{}")
+432: 	}))
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:351
+## G104 in internal/requestconfig/requestconfig_test.go:397
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-350: 		cfg := testConfig(t, http.MethodGet, "/resource", nil, &dst)
-351: 		cfg.BaseURL, _ = url.Parse("https://example.com/")
-352: 		cfg.MaxRetries = 0
+396: 		cfg := testConfig(t, http.MethodGet, "/resource", nil, &dst)
+397: 		cfg.BaseURL, _ = url.Parse("https://example.com/")
+398: 		cfg.MaxRetries = 0
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:341
+## G104 in internal/requestconfig/requestconfig_test.go:387
 
 Local test HTTP handler writes fixture output. Client-side response/result assertions cover delivered bytes; this call is not a production sink.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-340: 			w.WriteHeader(http.StatusBadRequest)
-341: 			_, _ = io.WriteString(w, "{")
-342: 		}, http.MethodGet, nil, nil)
+386: 			w.WriteHeader(http.StatusBadRequest)
+387: 			_, _ = io.WriteString(w, "{")
+388: 		}, http.MethodGet, nil, nil)
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:327
+## G104 in internal/requestconfig/requestconfig_test.go:373
 
 Local test HTTP handler writes fixture output. Client-side response/result assertions cover delivered bytes; this call is not a production sink.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-326: 			w.WriteHeader(http.StatusBadRequest)
-327: 			_, _ = io.WriteString(w, `{"message":"bad request"}`)
-328: 		}, http.MethodGet, nil, nil)
+372: 			w.WriteHeader(http.StatusBadRequest)
+373: 			_, _ = io.WriteString(w, `{"message":"bad request"}`)
+374: 		}, http.MethodGet, nil, nil)
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:311
+## G104 in internal/requestconfig/requestconfig_test.go:357
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-310: 		cfg := testConfig(t, http.MethodGet, "/resource", nil, &responseBody)
-311: 		cfg.BaseURL, _ = url.Parse(server.URL + "/")
-312: 		cfg.MaxRetries = 0
+356: 		cfg := testConfig(t, http.MethodGet, "/resource", nil, &responseBody)
+357: 		cfg.BaseURL, _ = url.Parse(server.URL + "/")
+358: 		cfg.MaxRetries = 0
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:284
+## G104 in internal/requestconfig/requestconfig_test.go:330
 
 Local test HTTP handler writes fixture output. Client-side response/result assertions cover delivered bytes; this call is not a production sink.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-283: 				w.Header().Set("Content-Type", test.contentType)
-284: 				_, _ = io.WriteString(w, test.body)
-285: 			}, http.MethodGet, nil, test.dst)
+329: 				w.Header().Set("Content-Type", test.contentType)
+330: 				_, _ = io.WriteString(w, test.body)
+331: 			}, http.MethodGet, nil, test.dst)
 ```
 
-## G104 in internal/requestconfig/requestconfig_test.go:86
+## G104 in internal/requestconfig/requestconfig_test.go:100
 
 Literal valid method/URL or httptest-generated local URL. No untrusted input; the resulting request/URL is used by assertions.
 
-Source SHA-256: `5076abbd4b0b83fd2113c3e0d3793910b137d315a462f8425bccb244fc55ea24`
+Source SHA-256: `6bc9fbc9ee40fcabf1db6c8e9b380a060ad5c3ca533ca06bf4045bb2ff103959`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-85: 	cfg := testConfig(t, method, "/resource", body, dst)
-86: 	cfg.BaseURL, _ = url.Parse(server.URL + "/")
-87: 	cfg.MaxRetries = 0
+99: 	cfg := testConfig(t, method, "/resource", body, dst)
+100: 	cfg.BaseURL, _ = url.Parse(server.URL + "/")
+101: 	cfg.MaxRetries = 0
 ```
 
-## G104 in internal/requestconfig/requestconfig.go:441
+## G104 in internal/requestconfig/requestconfig.go:449
 
 Media type classification intentionally ignores parameter parse errors. A valid media type remains usable when parameters fail; invalid types fall through to typed plaintext handling rather than accepting arbitrary structured data.
 
-Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
+Source SHA-256: `9c0d1b9441233d5edd877cf82761e109fcbc6ebad698e2a4914a18e20c9ffc2b`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-440: 	contentType := res.Header.Get("content-type")
-441: 	mediaType, _, _ := mime.ParseMediaType(contentType)
-442: 	isJSON := strings.Contains(mediaType, "application/json") || strings.HasSuffix(mediaType, "+json")
+448: 	contentType := res.Header.Get("content-type")
+449: 	mediaType, _, _ := mime.ParseMediaType(contentType)
+450: 	isJSON := strings.Contains(mediaType, "application/json") || strings.HasSuffix(mediaType, "+json")
 ```
 
-## G104 in internal/requestconfig/requestconfig.go:435
+## G104 in internal/requestconfig/requestconfig.go:443
 
 Response cleanup after read or before retry. Read/request errors are handled separately; cleanup error does not replace the primary request result. Close is still invoked, and raw-response ownership is transferred explicitly elsewhere.
 
-Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
+Source SHA-256: `9c0d1b9441233d5edd877cf82761e109fcbc6ebad698e2a4914a18e20c9ffc2b`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-434: 	contents, err := io.ReadAll(res.Body)
-435: 	_ = res.Body.Close()
-436: 	if err != nil {
+442: 	contents, err := io.ReadAll(res.Body)
+443: 	_ = res.Body.Close()
+444: 	if err != nil {
 ```
 
-## G104 in internal/requestconfig/requestconfig.go:410
+## G104 in internal/requestconfig/requestconfig.go:418
 
 Response cleanup after read or before retry. Read/request errors are handled separately; cleanup error does not replace the primary request result. Close is still invoked, and raw-response ownership is transferred explicitly elsewhere.
 
-Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
+Source SHA-256: `9c0d1b9441233d5edd877cf82761e109fcbc6ebad698e2a4914a18e20c9ffc2b`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-409: 		contents, err := io.ReadAll(res.Body)
-410: 		_ = res.Body.Close()
-411: 		if err != nil {
+417: 		contents, err := io.ReadAll(res.Body)
+418: 		_ = res.Body.Close()
+419: 		if err != nil {
 ```
 
-## G104 in internal/requestconfig/requestconfig.go:387
+## G104 in internal/requestconfig/requestconfig.go:395
 
 Response cleanup after read or before retry. Read/request errors are handled separately; cleanup error does not replace the primary request result. Close is still invoked, and raw-response ownership is transferred explicitly elsewhere.
 
-Source SHA-256: `38eb76cde02d28e4120d542130b8d00d950a1d187ef4516a2d57943112e2ad03`
+Source SHA-256: `9c0d1b9441233d5edd877cf82761e109fcbc6ebad698e2a4914a18e20c9ffc2b`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-386: 		if res != nil && res.Body != nil {
-387: 			_ = res.Body.Close()
-388: 		}
+394: 		if res != nil && res.Body != nil {
+395: 			_ = res.Body.Close()
+396: 		}
 ```
 
 ## G104 in internal/requestconfig/helpers_test.go:229

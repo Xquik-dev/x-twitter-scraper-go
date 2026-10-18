@@ -5,12 +5,17 @@
 package xtwitterscraper
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"path"
 	"slices"
 	"time"
 
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
@@ -47,6 +52,12 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 
 // Uploads media and returns an identifier for later writes.
 func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
+	if err = validateMediaUpload(params.URL, params.File); err != nil {
+		return nil, err
+	}
+	if !param.IsOmitted(params.IsLongVideo) && params.File == nil {
+		return nil, ErrLongVideoNeedsFile
+	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
 	}
@@ -396,12 +407,22 @@ func (r *XMediaDownloadParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+var (
+	ErrMediaNeedsURLOrFile = errors.New("missing required url or file parameter")
+	ErrMediaHasURLAndFile  = errors.New("cannot use url and file parameters together")
+	ErrLongVideoNeedsFile  = errors.New("is_long_video parameter requires a file parameter")
+)
+
 type XMediaUploadParams struct {
-	// X account (@username or ID) uploading media from URL
+	// X account (@username or ID) uploading media
 	Account string `json:"account" api:"required"`
+	// Media file to upload, up to 15 MB. Required when is_long_video is provided.
+	File io.Reader `json:"file,omitzero" format:"binary"`
+	// Set true only for video/mp4 multipart uploads longer than 140 seconds.
+	IsLongVideo param.Opt[bool] `json:"is_long_video,omitzero"`
 	// HTTPS URL to download and upload as media
-	URL            string `json:"url" api:"required" format:"uri"`
-	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
+	URL            param.Opt[string] `json:"url,omitzero" format:"uri"`
+	IdempotencyKey string            `header:"Idempotency-Key" api:"required" json:"-"`
 	paramObj
 }
 
@@ -411,4 +432,77 @@ func (r XMediaUploadParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *XMediaUploadParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r XMediaUploadParams) HasFiles() bool {
+	return r.File != nil
+}
+
+func (r XMediaUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	r.File, err = mediaUploadFile(r.File)
+	if err != nil {
+		return nil, "", err
+	}
+	return apiform.MarshalMultipart(r)
+}
+
+func validateMediaUpload(url param.Opt[string], file io.Reader) error {
+	hasURL := !param.IsOmitted(url)
+	if hasURL && file != nil {
+		return ErrMediaHasURLAndFile
+	}
+	if !hasURL && file == nil {
+		return ErrMediaNeedsURLOrFile
+	}
+	return nil
+}
+
+func mediaUploadFile(file io.Reader) (io.Reader, error) {
+	if file == nil {
+		return nil, nil
+	}
+	if typed, ok := file.(interface{ ContentType() string }); ok && typed.ContentType() != "" {
+		return file, nil
+	}
+	var header [12]byte
+	n, err := io.ReadFull(file, header[:])
+	if err != nil && err != io.EOF && err != io.ErrUnexpectedEOF {
+		return nil, err
+	}
+	filename, contentType := mediaUploadFileType(header[:n])
+	if name := uploadFilename(file); name != "" {
+		filename = name
+	}
+	return File(io.MultiReader(bytes.NewReader(header[:n]), file), filename, contentType), nil
+}
+
+func uploadFilename(file io.Reader) string {
+	if named, ok := file.(interface{ Filename() string }); ok && named.Filename() != "" {
+		return named.Filename()
+	}
+	if named, ok := file.(interface{ Name() string }); ok && named.Name() != "" {
+		return path.Base(named.Name())
+	}
+	return ""
+}
+
+func mediaUploadFileType(data []byte) (string, string) {
+	switch {
+	case bytes.HasPrefix(data, []byte("\x89PNG\r\n\x1a\n")):
+		return "upload.png", "image/png"
+	case bytes.HasPrefix(data, []byte("\xff\xd8\xff")):
+		return "upload.jpg", "image/jpeg"
+	case bytes.HasPrefix(data, []byte("GIF87a")), bytes.HasPrefix(data, []byte("GIF89a")):
+		return "upload.gif", "image/gif"
+	case len(data) >= 12 && string(data[:4]) == "RIFF" && string(data[8:12]) == "WEBP":
+		return "upload.webp", "image/webp"
+	case len(data) >= 12 && string(data[4:8]) == "ftyp":
+		switch string(data[8:12]) {
+		case "avif", "avis":
+			return "upload.avif", "image/avif"
+		case "isom", "iso2", "mp41", "mp42", "avc1", "M4V ":
+			return "upload.mp4", "video/mp4"
+		}
+	}
+	return "upload", "application/octet-stream"
 }

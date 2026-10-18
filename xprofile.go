@@ -7,10 +7,12 @@ package xtwitterscraper
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"slices"
 	"time"
 
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
@@ -52,6 +54,9 @@ func (r *XProfileService) Update(ctx context.Context, params XProfileUpdateParam
 
 // Replaces the avatar on a connected X profile.
 func (r *XProfileService) UpdateAvatar(ctx context.Context, params XProfileUpdateAvatarParams, opts ...option.RequestOption) (res *XProfileUpdateAvatarResponse, err error) {
+	if err = validateMediaUpload(params.URL, params.File); err != nil {
+		return nil, err
+	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
 	}
@@ -63,6 +68,9 @@ func (r *XProfileService) UpdateAvatar(ctx context.Context, params XProfileUpdat
 
 // Replaces the banner on a connected X profile.
 func (r *XProfileService) UpdateBanner(ctx context.Context, params XProfileUpdateBannerParams, opts ...option.RequestOption) (res *XProfileUpdateBannerResponse, err error) {
+	if err = validateMediaUpload(params.URL, params.File); err != nil {
+		return nil, err
+	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
 	}
@@ -983,11 +991,13 @@ func (r *XProfileUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type XProfileUpdateAvatarParams struct {
-	// X account (@username or ID) receiving avatar from URL
+	// X account (@username or ID) receiving avatar
 	Account string `json:"account" api:"required"`
+	// Avatar image to upload, up to 15 MiB.
+	File io.Reader `json:"file,omitzero" format:"binary"`
 	// HTTPS URL to the avatar image to download
-	URL            string `json:"url" api:"required" format:"uri"`
-	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
+	URL            param.Opt[string] `json:"url,omitzero" format:"uri"`
+	IdempotencyKey string            `header:"Idempotency-Key" api:"required" json:"-"`
 	paramObj
 }
 
@@ -999,12 +1009,26 @@ func (r *XProfileUpdateAvatarParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r XProfileUpdateAvatarParams) HasFiles() bool {
+	return r.File != nil
+}
+
+func (r XProfileUpdateAvatarParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	r.File, err = mediaUploadFile(r.File)
+	if err != nil {
+		return nil, "", err
+	}
+	return apiform.MarshalMultipart(r)
+}
+
 type XProfileUpdateBannerParams struct {
-	// X account (@username or ID) receiving banner from URL
+	// X account (@username or ID) receiving banner
 	Account string `json:"account" api:"required"`
+	// Banner image to upload, up to 15 MiB.
+	File io.Reader `json:"file,omitzero" format:"binary"`
 	// HTTPS URL to the banner image to download
-	URL            string `json:"url" api:"required" format:"uri"`
-	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
+	URL            param.Opt[string] `json:"url,omitzero" format:"uri"`
+	IdempotencyKey string            `header:"Idempotency-Key" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1014,4 +1038,16 @@ func (r XProfileUpdateBannerParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *XProfileUpdateBannerParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r XProfileUpdateBannerParams) HasFiles() bool {
+	return r.File != nil
+}
+
+func (r XProfileUpdateBannerParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	r.File, err = mediaUploadFile(r.File)
+	if err != nil {
+		return nil, "", err
+	}
+	return apiform.MarshalMultipart(r)
 }
