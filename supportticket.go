@@ -44,8 +44,8 @@ func NewSupportTicketService(opts ...option.RequestOption) (r SupportTicketServi
 
 // Creates a support ticket with an initial message.
 func (r *SupportTicketService) New(ctx context.Context, params SupportTicketNewParams, opts ...option.RequestOption) (res *SupportTicketNewResponse, err error) {
-	if params.Body.Or("") == "" && len(params.Attachments) == 0 {
-		return nil, ErrTicketNeedsBodyOrAttachments
+	if err = validateTicketMessage(params.Body, params.Attachments); err != nil {
+		return nil, err
 	}
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
@@ -98,8 +98,8 @@ func (r *SupportTicketService) Reply(ctx context.Context, id string, params Supp
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	if params.Body.Or("") == "" && len(params.Attachments) == 0 {
-		return nil, ErrTicketNeedsBodyOrAttachments
+	if err = validateTicketMessage(params.Body, params.Attachments); err != nil {
+		return nil, err
 	}
 	path := fmt.Sprintf("support/tickets/%s/messages", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
@@ -355,6 +355,13 @@ func (r *SupportTicketReplyResponseAttachment) UnmarshalJSON(data []byte) error 
 }
 
 var ErrTicketNeedsBodyOrAttachments = errors.New("missing required body or attachments parameter")
+
+func validateTicketMessage(body param.Opt[string], attachments []io.Reader) error {
+	if body.Or("") == "" && len(attachments) == 0 {
+		return ErrTicketNeedsBodyOrAttachments
+	}
+	return nil
+}
 
 type SupportTicketNewParams struct {
 	// Non-empty support ticket subject.

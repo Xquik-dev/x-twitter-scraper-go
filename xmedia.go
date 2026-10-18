@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"path"
 	"slices"
 	"time"
 
@@ -460,13 +461,29 @@ func mediaUploadFile(file io.Reader) (io.Reader, error) {
 	if file == nil {
 		return nil, nil
 	}
+	if typed, ok := file.(interface{ ContentType() string }); ok && typed.ContentType() != "" {
+		return file, nil
+	}
 	var header [12]byte
 	n, err := io.ReadFull(file, header[:])
 	if err != nil && err != io.EOF && err != io.ErrUnexpectedEOF {
 		return nil, err
 	}
 	filename, contentType := mediaUploadFileType(header[:n])
+	if name := uploadFilename(file); name != "" {
+		filename = name
+	}
 	return File(io.MultiReader(bytes.NewReader(header[:n]), file), filename, contentType), nil
+}
+
+func uploadFilename(file io.Reader) string {
+	if named, ok := file.(interface{ Filename() string }); ok && named.Filename() != "" {
+		return named.Filename()
+	}
+	if named, ok := file.(interface{ Name() string }); ok {
+		return path.Base(named.Name())
+	}
+	return ""
 }
 
 func mediaUploadFileType(data []byte) (string, string) {

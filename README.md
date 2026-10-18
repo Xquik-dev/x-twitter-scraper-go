@@ -434,7 +434,9 @@ client.X.Tweets.Search(
 ### File uploads
 
 Multipart file parameters accept `io.Reader`.
-The default filename is `anonymous_file`, and the default media type is `application/octet-stream`.
+Media, avatar and banner uploads read a PNG, JPEG, GIF, WebP, AVIF or MP4 type from the first bytes.
+An unnamed upload gets a name from that type, such as `upload.png`.
+Other files default to `anonymous_file` and `application/octet-stream`.
 Implement `Name() string` or `ContentType() string` to override either value.
 `os.File` already supplies its disk filename through `Name()`.
 Use `xtwitterscraper.File` to wrap any reader with explicit metadata.
@@ -456,7 +458,7 @@ xtwitterscraper.XMediaUploadParams{
 // Set a filename and media type.
 xtwitterscraper.XMediaUploadParams{
 	Account: "@elonmusk",
-	File:    xtwitterscraper.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
+	File:    xtwitterscraper.File(strings.NewReader("my video bytes"), "clip.mp4", "video/mp4"),
 }
 ```
 

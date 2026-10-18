@@ -21,6 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/testutil"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
 func TestXProfileUpdateWithOptionalParams(t *testing.T) {
@@ -107,33 +108,70 @@ func TestXProfileUpdateBanner(t *testing.T) {
 	}
 }
 
-func TestXProfileUpdateAvatarURLRequest(t *testing.T) {
+type profileImageParams struct {
+	URL  param.Opt[string]
+	File io.Reader
+}
+
+type profileImageUpload struct {
+	path    string
+	url     string
+	update  func(xtwitterscraper.Client, profileImageParams) error
+	marshal func(profileImageParams) ([]byte, string, error)
+}
+
+var profileImageUploads = map[string]profileImageUpload{
+	"avatar": {
+		path: "/api/v1/x/profile/avatar",
+		url:  "https://example.com/avatar.png",
+		update: func(client xtwitterscraper.Client, params profileImageParams) error {
+			_, err := client.X.Profile.UpdateAvatar(context.Background(), xtwitterscraper.XProfileUpdateAvatarParams{
+				Account:        "@elonmusk",
+				URL:            params.URL,
+				File:           params.File,
+				IdempotencyKey: "upload-request",
+			})
+			return err
+		},
+		marshal: func(params profileImageParams) ([]byte, string, error) {
+			return xtwitterscraper.XProfileUpdateAvatarParams{Account: "@elonmusk", URL: params.URL, File: params.File}.MarshalMultipart()
+		},
+	},
+	"banner": {
+		path: "/api/v1/x/profile/banner",
+		url:  "https://example.com/banner.png",
+		update: func(client xtwitterscraper.Client, params profileImageParams) error {
+			_, err := client.X.Profile.UpdateBanner(context.Background(), xtwitterscraper.XProfileUpdateBannerParams{
+				Account:        "@elonmusk",
+				URL:            params.URL,
+				File:           params.File,
+				IdempotencyKey: "upload-request",
+			})
+			return err
+		},
+		marshal: func(params profileImageParams) ([]byte, string, error) {
+			return xtwitterscraper.XProfileUpdateBannerParams{Account: "@elonmusk", URL: params.URL, File: params.File}.MarshalMultipart()
+		},
+	},
+}
+
+func profileImageClient(t *testing.T, upload profileImageUpload, check func(*http.Request)) (xtwitterscraper.Client, *bool) {
 	sent := false
 	client := xtwitterscraper.NewClient(
 		option.WithBaseURL("https://example.com/api/v1/"),
 		option.WithMaxRetries(0),
 		option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
 			sent = true
-			if req.Method != http.MethodPatch || req.URL.Path != "/api/v1/x/profile/avatar" {
+			if check == nil {
+				return nil, errors.New("unexpected request")
+			}
+			if req.Method != http.MethodPatch || req.URL.Path != upload.path {
 				t.Fatalf("request = %s %s", req.Method, req.URL.Path)
 			}
 			if got := req.Header.Get("Idempotency-Key"); got != "upload-request" {
 				t.Fatalf("Idempotency-Key = %q", got)
 			}
-			if got := req.Header.Get("Content-Type"); got != "application/json" {
-				t.Fatalf("Content-Type = %q", got)
-			}
-			var got map[string]string
-			if err := json.NewDecoder(req.Body).Decode(&got); err != nil {
-				t.Fatal(err)
-			}
-			want := map[string]string{
-				"account": "@elonmusk",
-				"url":     "https://example.com/avatar.png",
-			}
-			if !reflect.DeepEqual(got, want) {
-				t.Fatalf("JSON body = %v, want %v", got, want)
-			}
+			check(req)
 			return &http.Response{
 				StatusCode: http.StatusOK,
 				Header:     http.Header{"Content-Type": {"application/json"}},
@@ -141,21 +179,38 @@ func TestXProfileUpdateAvatarURLRequest(t *testing.T) {
 			}, nil
 		})),
 	)
-	_, err := client.X.Profile.UpdateAvatar(context.Background(), xtwitterscraper.XProfileUpdateAvatarParams{
-		Account:        "@elonmusk",
-		URL:            xtwitterscraper.String("https://example.com/avatar.png"),
-		IdempotencyKey: "upload-request",
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !sent {
-		t.Fatal("avatar request was not sent")
+	return client, &sent
+}
+
+func TestXProfileImageURLRequest(t *testing.T) {
+	for name, upload := range profileImageUploads {
+		t.Run(name, func(t *testing.T) {
+			client, sent := profileImageClient(t, upload, func(req *http.Request) {
+				if got := req.Header.Get("Content-Type"); got != "application/json" {
+					t.Fatalf("Content-Type = %q", got)
+				}
+				var got map[string]string
+				if err := json.NewDecoder(req.Body).Decode(&got); err != nil {
+					t.Fatal(err)
+				}
+				want := map[string]string{"account": "@elonmusk", "url": upload.url}
+				if !reflect.DeepEqual(got, want) {
+					t.Fatalf("JSON body = %v, want %v", got, want)
+				}
+			})
+			if err := upload.update(client, profileImageParams{URL: xtwitterscraper.String(upload.url)}); err != nil {
+				t.Fatal(err)
+			}
+			if !*sent {
+				t.Fatal("request was not sent")
+			}
+		})
 	}
 }
 
-func TestXProfileUpdateAvatarFileRequest(t *testing.T) {
+func TestXProfileImageFileRequest(t *testing.T) {
 	tests := map[string]struct {
+		file        func(content string) io.Reader
 		content     string
 		filename    string
 		contentType string
@@ -189,286 +244,27 @@ func TestXProfileUpdateAvatarFileRequest(t *testing.T) {
 			filename:    "upload",
 			contentType: "application/octet-stream",
 		},
-	}
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			sent := false
-			client := xtwitterscraper.NewClient(
-				option.WithBaseURL("https://example.com/api/v1/"),
-				option.WithMaxRetries(0),
-				option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
-					sent = true
-					if req.Method != http.MethodPatch || req.URL.Path != "/api/v1/x/profile/avatar" {
-						t.Fatalf("request = %s %s", req.Method, req.URL.Path)
-					}
-					if got := req.Header.Get("Idempotency-Key"); got != "upload-request" {
-						t.Fatalf("Idempotency-Key = %q", got)
-					}
-					mediaType, params, err := mime.ParseMediaType(req.Header.Get("Content-Type"))
-					if err != nil {
-						t.Fatal(err)
-					}
-					if mediaType != "multipart/form-data" {
-						t.Fatalf("Content-Type = %q", mediaType)
-					}
-					form, err := multipart.NewReader(req.Body, params["boundary"]).ReadForm(1 << 20)
-					if err != nil {
-						t.Fatal(err)
-					}
-					defer form.RemoveAll()
-					want := map[string][]string{"account": {"@elonmusk"}}
-					if !reflect.DeepEqual(form.Value, want) {
-						t.Fatalf("form fields = %v, want %v", form.Value, want)
-					}
-					files := form.File["file"]
-					if len(form.File) != 1 || len(files) != 1 {
-						t.Fatalf("form files = %v", form.File)
-					}
-					file := files[0]
-					if file.Filename != test.filename || file.Header.Get("Content-Type") != test.contentType {
-						t.Fatalf("file headers = %v", file.Header)
-					}
-					reader, err := file.Open()
-					if err != nil {
-						t.Fatal(err)
-					}
-					defer reader.Close()
-					content, err := io.ReadAll(reader)
-					if err != nil || string(content) != test.content {
-						t.Fatalf("file = %q, error = %v", content, err)
-					}
-					return &http.Response{
-						StatusCode: http.StatusOK,
-						Header:     http.Header{"Content-Type": {"application/json"}},
-						Body:       io.NopCloser(strings.NewReader(`{}`)),
-					}, nil
-				})),
-			)
-			_, err := client.X.Profile.UpdateAvatar(context.Background(), xtwitterscraper.XProfileUpdateAvatarParams{
-				Account:        "@elonmusk",
-				File:           iotest.OneByteReader(strings.NewReader(test.content)),
-				IdempotencyKey: "upload-request",
-			})
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !sent {
-				t.Fatal("avatar request was not sent")
-			}
-		})
-	}
-}
-
-func TestXProfileUpdateAvatarMarshalMultipart(t *testing.T) {
-	tests := map[string]xtwitterscraper.XProfileUpdateAvatarParams{
-		"without file": {
-			Account: "@elonmusk",
-			URL:     xtwitterscraper.String("https://example.com/avatar.png"),
-		},
-		"with file": {
-			Account: "@elonmusk",
-			File:    strings.NewReader("\x89PNG\r\n\x1a\nimage"),
-		},
-		"empty params": {},
-	}
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			data, contentType, err := test.MarshalMultipart()
-			if err != nil {
-				t.Fatal(err)
-			}
-			mediaType, params, err := mime.ParseMediaType(contentType)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if mediaType != "multipart/form-data" || params["boundary"] == "" {
-				t.Fatalf("Content-Type = %q", contentType)
-			}
-			form, err := multipart.NewReader(strings.NewReader(string(data)), params["boundary"]).ReadForm(1 << 20)
-			if err != nil {
-				t.Fatal(err)
-			}
-			defer form.RemoveAll()
-		})
-	}
-}
-
-func TestXProfileUpdateAvatarInvalidParams(t *testing.T) {
-	tests := map[string]struct {
-		params  xtwitterscraper.XProfileUpdateAvatarParams
-		wantErr error
-	}{
-		"url and file": {
-			params: xtwitterscraper.XProfileUpdateAvatarParams{
-				URL:  xtwitterscraper.String("https://example.com/avatar.png"),
-				File: strings.NewReader("image"),
+		"named file keeps its name": {
+			file: func(content string) io.Reader {
+				return xtwitterscraper.File(strings.NewReader(content), "me.png", "")
 			},
-			wantErr: xtwitterscraper.ErrMediaHasURLAndFile,
-		},
-		"empty url and file": {
-			params: xtwitterscraper.XProfileUpdateAvatarParams{
-				URL:  xtwitterscraper.String(""),
-				File: strings.NewReader("image"),
-			},
-			wantErr: xtwitterscraper.ErrMediaHasURLAndFile,
-		},
-		"neither url nor file": {
-			wantErr: xtwitterscraper.ErrMediaNeedsURLOrFile,
-		},
-	}
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			sent := false
-			client := xtwitterscraper.NewClient(
-				option.WithBaseURL("https://example.com/api/v1/"),
-				option.WithMaxRetries(0),
-				option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
-					sent = true
-					return nil, errors.New("unexpected request")
-				})),
-			)
-			test.params.Account = "@elonmusk"
-			test.params.IdempotencyKey = "upload-request"
-			_, err := client.X.Profile.UpdateAvatar(context.Background(), test.params)
-			if !errors.Is(err, test.wantErr) {
-				t.Fatalf("error = %v, want %v", err, test.wantErr)
-			}
-			if sent {
-				t.Fatal("invalid avatar request was sent")
-			}
-		})
-	}
-}
-
-func TestXProfileUpdateAvatarFileReadError(t *testing.T) {
-	wantErr := errors.New("file read failed")
-	tests := map[string]io.Reader{
-		"before detection": iotest.ErrReader(wantErr),
-		"after detection":  io.MultiReader(strings.NewReader("\x89PNG\r\n\x1a\nimage data"), iotest.ErrReader(wantErr)),
-	}
-	for name, file := range tests {
-		t.Run(name, func(t *testing.T) {
-			sent := false
-			client := xtwitterscraper.NewClient(
-				option.WithBaseURL("https://example.com/api/v1/"),
-				option.WithMaxRetries(0),
-				option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
-					sent = true
-					return nil, errors.New("unexpected request")
-				})),
-			)
-			_, err := client.X.Profile.UpdateAvatar(context.Background(), xtwitterscraper.XProfileUpdateAvatarParams{
-				Account:        "@elonmusk",
-				File:           file,
-				IdempotencyKey: "upload-request",
-			})
-			if !errors.Is(err, wantErr) {
-				t.Fatalf("error = %v, want %v", err, wantErr)
-			}
-			if sent {
-				t.Fatal("avatar request with unreadable file was sent")
-			}
-		})
-	}
-}
-
-func TestXProfileUpdateBannerURLRequest(t *testing.T) {
-	sent := false
-	client := xtwitterscraper.NewClient(
-		option.WithBaseURL("https://example.com/api/v1/"),
-		option.WithMaxRetries(0),
-		option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
-			sent = true
-			if req.Method != http.MethodPatch || req.URL.Path != "/api/v1/x/profile/banner" {
-				t.Fatalf("request = %s %s", req.Method, req.URL.Path)
-			}
-			if got := req.Header.Get("Idempotency-Key"); got != "upload-request" {
-				t.Fatalf("Idempotency-Key = %q", got)
-			}
-			if got := req.Header.Get("Content-Type"); got != "application/json" {
-				t.Fatalf("Content-Type = %q", got)
-			}
-			var got map[string]string
-			if err := json.NewDecoder(req.Body).Decode(&got); err != nil {
-				t.Fatal(err)
-			}
-			want := map[string]string{
-				"account": "@elonmusk",
-				"url":     "https://example.com/banner.png",
-			}
-			if !reflect.DeepEqual(got, want) {
-				t.Fatalf("JSON body = %v, want %v", got, want)
-			}
-			return &http.Response{
-				StatusCode: http.StatusOK,
-				Header:     http.Header{"Content-Type": {"application/json"}},
-				Body:       io.NopCloser(strings.NewReader(`{}`)),
-			}, nil
-		})),
-	)
-	_, err := client.X.Profile.UpdateBanner(context.Background(), xtwitterscraper.XProfileUpdateBannerParams{
-		Account:        "@elonmusk",
-		URL:            xtwitterscraper.String("https://example.com/banner.png"),
-		IdempotencyKey: "upload-request",
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !sent {
-		t.Fatal("banner request was not sent")
-	}
-}
-
-func TestXProfileUpdateBannerFileRequest(t *testing.T) {
-	tests := map[string]struct {
-		content     string
-		filename    string
-		contentType string
-	}{
-		"png": {
-			content:     "\x89PNG\r\n\x1a\n" + strings.Repeat("image data", 100),
-			filename:    "upload.png",
+			content:     "\x89PNG\r\n\x1a\nimage",
+			filename:    "me.png",
 			contentType: "image/png",
 		},
-		"jpeg": {
-			content:     "\xff\xd8\xffimage",
-			filename:    "upload.jpg",
-			contentType: "image/jpeg",
-		},
-		"webp": {
-			content:     "RIFF\x10\x00\x00\x00WEBPimage",
-			filename:    "upload.webp",
-			contentType: "image/webp",
-		},
-		"avif": {
-			content:     "\x00\x00\x00\x20ftypavifimage",
-			filename:    "upload.avif",
-			contentType: "image/avif",
-		},
-		"unknown binary": {
-			content:     "\x00\x01\x02\xffunknown",
-			filename:    "upload",
-			contentType: "application/octet-stream",
-		},
-		"empty file": {
-			filename:    "upload",
-			contentType: "application/octet-stream",
+		"typed file keeps its name and type": {
+			file: func(content string) io.Reader {
+				return xtwitterscraper.File(strings.NewReader(content), "me.heic", "image/heic")
+			},
+			content:     "\x00\x00\x00\x18ftypheicimage",
+			filename:    "me.heic",
+			contentType: "image/heic",
 		},
 	}
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			sent := false
-			client := xtwitterscraper.NewClient(
-				option.WithBaseURL("https://example.com/api/v1/"),
-				option.WithMaxRetries(0),
-				option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
-					sent = true
-					if req.Method != http.MethodPatch || req.URL.Path != "/api/v1/x/profile/banner" {
-						t.Fatalf("request = %s %s", req.Method, req.URL.Path)
-					}
-					if got := req.Header.Get("Idempotency-Key"); got != "upload-request" {
-						t.Fatalf("Idempotency-Key = %q", got)
-					}
+	for name, upload := range profileImageUploads {
+		for testName, test := range tests {
+			t.Run(name+" "+testName, func(t *testing.T) {
+				client, sent := profileImageClient(t, upload, func(req *http.Request) {
 					mediaType, params, err := mime.ParseMediaType(req.Header.Get("Content-Type"))
 					if err != nil {
 						t.Fatal(err)
@@ -502,137 +298,103 @@ func TestXProfileUpdateBannerFileRequest(t *testing.T) {
 					if err != nil || string(content) != test.content {
 						t.Fatalf("file = %q, error = %v", content, err)
 					}
-					return &http.Response{
-						StatusCode: http.StatusOK,
-						Header:     http.Header{"Content-Type": {"application/json"}},
-						Body:       io.NopCloser(strings.NewReader(`{}`)),
-					}, nil
-				})),
-			)
-			_, err := client.X.Profile.UpdateBanner(context.Background(), xtwitterscraper.XProfileUpdateBannerParams{
-				Account:        "@elonmusk",
-				File:           iotest.OneByteReader(strings.NewReader(test.content)),
-				IdempotencyKey: "upload-request",
+				})
+				var file io.Reader = iotest.OneByteReader(strings.NewReader(test.content))
+				if test.file != nil {
+					file = test.file(test.content)
+				}
+				if err := upload.update(client, profileImageParams{File: file}); err != nil {
+					t.Fatal(err)
+				}
+				if !*sent {
+					t.Fatal("request was not sent")
+				}
 			})
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !sent {
-				t.Fatal("banner request was not sent")
-			}
-		})
+		}
 	}
 }
 
-func TestXProfileUpdateBannerMarshalMultipart(t *testing.T) {
-	tests := map[string]xtwitterscraper.XProfileUpdateBannerParams{
-		"without file": {
-			Account: "@elonmusk",
-			URL:     xtwitterscraper.String("https://example.com/banner.png"),
-		},
-		"with file": {
-			Account: "@elonmusk",
-			File:    strings.NewReader("\x89PNG\r\n\x1a\nimage"),
-		},
+func TestXProfileImageMarshalMultipart(t *testing.T) {
+	tests := map[string]profileImageParams{
+		"without file": {URL: xtwitterscraper.String("https://example.com/image.png")},
+		"with file":    {File: strings.NewReader("\x89PNG\r\n\x1a\nimage")},
 		"empty params": {},
 	}
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			data, contentType, err := test.MarshalMultipart()
-			if err != nil {
-				t.Fatal(err)
-			}
-			mediaType, params, err := mime.ParseMediaType(contentType)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if mediaType != "multipart/form-data" || params["boundary"] == "" {
-				t.Fatalf("Content-Type = %q", contentType)
-			}
-			form, err := multipart.NewReader(strings.NewReader(string(data)), params["boundary"]).ReadForm(1 << 20)
-			if err != nil {
-				t.Fatal(err)
-			}
-			defer form.RemoveAll()
-		})
+	for name, upload := range profileImageUploads {
+		for testName, test := range tests {
+			t.Run(name+" "+testName, func(t *testing.T) {
+				data, contentType, err := upload.marshal(test)
+				if err != nil {
+					t.Fatal(err)
+				}
+				mediaType, params, err := mime.ParseMediaType(contentType)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if mediaType != "multipart/form-data" || params["boundary"] == "" {
+					t.Fatalf("Content-Type = %q", contentType)
+				}
+				form, err := multipart.NewReader(strings.NewReader(string(data)), params["boundary"]).ReadForm(1 << 20)
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer form.RemoveAll()
+			})
+		}
 	}
 }
 
-func TestXProfileUpdateBannerInvalidParams(t *testing.T) {
+func TestXProfileImageInvalidParams(t *testing.T) {
 	tests := map[string]struct {
-		params  xtwitterscraper.XProfileUpdateBannerParams
+		params  profileImageParams
 		wantErr error
 	}{
 		"url and file": {
-			params: xtwitterscraper.XProfileUpdateBannerParams{
-				URL:  xtwitterscraper.String("https://example.com/banner.png"),
-				File: strings.NewReader("image"),
-			},
+			params:  profileImageParams{URL: xtwitterscraper.String("https://example.com/image.png"), File: strings.NewReader("image")},
 			wantErr: xtwitterscraper.ErrMediaHasURLAndFile,
 		},
 		"empty url and file": {
-			params: xtwitterscraper.XProfileUpdateBannerParams{
-				URL:  xtwitterscraper.String(""),
-				File: strings.NewReader("image"),
-			},
+			params:  profileImageParams{URL: xtwitterscraper.String(""), File: strings.NewReader("image")},
 			wantErr: xtwitterscraper.ErrMediaHasURLAndFile,
 		},
 		"neither url nor file": {
 			wantErr: xtwitterscraper.ErrMediaNeedsURLOrFile,
 		},
 	}
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			sent := false
-			client := xtwitterscraper.NewClient(
-				option.WithBaseURL("https://example.com/api/v1/"),
-				option.WithMaxRetries(0),
-				option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
-					sent = true
-					return nil, errors.New("unexpected request")
-				})),
-			)
-			test.params.Account = "@elonmusk"
-			test.params.IdempotencyKey = "upload-request"
-			_, err := client.X.Profile.UpdateBanner(context.Background(), test.params)
-			if !errors.Is(err, test.wantErr) {
-				t.Fatalf("error = %v, want %v", err, test.wantErr)
-			}
-			if sent {
-				t.Fatal("invalid banner request was sent")
-			}
-		})
+	for name, upload := range profileImageUploads {
+		for testName, test := range tests {
+			t.Run(name+" "+testName, func(t *testing.T) {
+				client, sent := profileImageClient(t, upload, nil)
+				if err := upload.update(client, test.params); !errors.Is(err, test.wantErr) {
+					t.Fatalf("error = %v, want %v", err, test.wantErr)
+				}
+				if *sent {
+					t.Fatal("invalid request was sent")
+				}
+			})
+		}
 	}
 }
 
-func TestXProfileUpdateBannerFileReadError(t *testing.T) {
+func TestXProfileImageFileReadError(t *testing.T) {
 	wantErr := errors.New("file read failed")
-	tests := map[string]io.Reader{
-		"before detection": iotest.ErrReader(wantErr),
-		"after detection":  io.MultiReader(strings.NewReader("\x89PNG\r\n\x1a\nimage data"), iotest.ErrReader(wantErr)),
+	tests := map[string]func() io.Reader{
+		"before detection": func() io.Reader { return iotest.ErrReader(wantErr) },
+		"after detection": func() io.Reader {
+			return io.MultiReader(strings.NewReader("\x89PNG\r\n\x1a\nimage data"), iotest.ErrReader(wantErr))
+		},
 	}
-	for name, file := range tests {
-		t.Run(name, func(t *testing.T) {
-			sent := false
-			client := xtwitterscraper.NewClient(
-				option.WithBaseURL("https://example.com/api/v1/"),
-				option.WithMaxRetries(0),
-				option.WithHTTPClient(testHTTPDoer(func(req *http.Request) (*http.Response, error) {
-					sent = true
-					return nil, errors.New("unexpected request")
-				})),
-			)
-			_, err := client.X.Profile.UpdateBanner(context.Background(), xtwitterscraper.XProfileUpdateBannerParams{
-				Account:        "@elonmusk",
-				File:           file,
-				IdempotencyKey: "upload-request",
+	for name, upload := range profileImageUploads {
+		for testName, file := range tests {
+			t.Run(name+" "+testName, func(t *testing.T) {
+				client, sent := profileImageClient(t, upload, nil)
+				if err := upload.update(client, profileImageParams{File: file()}); !errors.Is(err, wantErr) {
+					t.Fatalf("error = %v, want %v", err, wantErr)
+				}
+				if *sent {
+					t.Fatal("request with unreadable file was sent")
+				}
 			})
-			if !errors.Is(err, wantErr) {
-				t.Fatalf("error = %v, want %v", err, wantErr)
-			}
-			if sent {
-				t.Fatal("banner request with unreadable file was sent")
-			}
-		})
+		}
 	}
 }
