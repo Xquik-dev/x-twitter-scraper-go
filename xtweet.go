@@ -427,7 +427,7 @@ type TweetDetail struct {
 	Type      string               `json:"type"`
 	// The author's ID when X withholds the author's profile.
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []shared.TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`

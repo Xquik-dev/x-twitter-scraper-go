@@ -1,19 +1,29 @@
 # Changelog
 
-## Unreleased
+## 0.21.0 (2026-10-18)
 
-- Communities add the analytics read with `GetAnalytics`.
-- Posts and embedded posts name the counts X did not send in `UnknownCounts`.
-- **Breaking.** `X.Accounts.BulkRetry` takes a required `XAccountBulkRetryParams` argument, so `BulkRetry(ctx)` stops compiling. Pass `x.XAccountBulkRetryParams{}` to retry every failed account as before.
+[Full changelog from v0.20.0 to v0.21.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.20.0...v0.21.0)
+
+The SDK catches up with the API. Compatibility lists the 5 changes that break callers.
+
+- Support tickets and replies take up to 4 `Attachments`. `Body` is optional with attachments.
+- `X.Media.Upload`, `X.Profile.UpdateAvatar` and `X.Profile.UpdateBanner` take a `File`, sent as multipart. `X.Media.Upload` also takes `IsLongVideo`. The SDK reads a file's type from its first bytes, unless the reader names one.
+- Requests without files still send JSON.
+- `X.Communities.GetAnalytics` reads a Community's activity for X's latest period.
 - Bulk retry can target specific accounts with `AccountIDs`.
 - Embedded parent, quoted and retweeted posts carry every tweet field and the author.
+- Posts and embedded posts name the counts X did not send in `UnknownCounts`. Each of those counts reads 0, so treat it as unknown.
 - `shared.UserProfileIdentityVerification` gains the optional `OverrideVerifiedYear` field for profiles and users in tweets.
+- The API fields check compares JSON, multipart and form request bodies.
 - `bin/check-local`, `bin/release-local` and their scripts remove their temp files on every exit, including a failed step, Ctrl+C and a terminate signal. `scripts/verify-release` no longer prints the path of its deleted module cache.
-- Support tickets and replies take up to 4 `Attachments`. `Body` is optional with attachments.
-- Media, avatar and banner uploads take a `File`, sent as multipart. Media uploads also take `IsLongVideo`.
-- **Breaking.** A ticket or reply needs a non-empty `Body` or 1 attachment. Otherwise the SDK returns `ErrTicketNeedsBodyOrAttachments`.
-- **Breaking.** `Body` on `SupportTicketNewParams` and `SupportTicketReplyParams` uses `param.Opt[string]`. Wrap it with `xtwitterscraper.String`.
-- **Breaking.** `URL` on the media, avatar and banner upload params uses `param.Opt[string]`. Wrap it with `xtwitterscraper.String`.
+
+### Compatibility
+
+- `X.Accounts.BulkRetry` takes a required `XAccountBulkRetryParams` argument, so `BulkRetry(ctx)` stops compiling. Pass `x.XAccountBulkRetryParams{}` to retry every failed account as before.
+- `Body` on `SupportTicketNewParams` and `SupportTicketReplyParams` now uses `param.Opt[string]`. Wrap body strings with `xtwitterscraper.String`.
+- Support tickets and replies need a non-empty `Body` or at least 1 attachment. Otherwise the SDK returns `ErrTicketNeedsBodyOrAttachments` before any request.
+- `URL` on `XMediaUploadParams`, `XProfileUpdateAvatarParams` and `XProfileUpdateBannerParams` now uses `param.Opt[string]`. Wrap URL strings with `xtwitterscraper.String`.
+- An upload with both `URL` and `File` returns `ErrMediaHasURLAndFile` before any request. An upload with neither returns `ErrMediaNeedsURLOrFile`. `IsLongVideo` without a file returns `ErrLongVideoNeedsFile`.
 
 ## 0.20.0 (2026-10-16)
 

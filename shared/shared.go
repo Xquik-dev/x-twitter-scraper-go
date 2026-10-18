@@ -1074,7 +1074,7 @@ type EmbeddedTweet struct {
 	Tombstone           EmbeddedTweetTombstone `json:"tombstone"`
 	Type                string                 `json:"type"`
 	UnavailableAuthorID string                 `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -2238,7 +2238,7 @@ type EmbeddedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                            `json:"type"`
 	UnavailableAuthorID string                            `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -3410,7 +3410,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                       `json:"type"`
 	UnavailableAuthorID string                                       `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -4610,7 +4610,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                  `json:"type"`
 	UnavailableAuthorID string                                                  `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -6100,7 +6100,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -7804,7 +7804,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                          `json:"type"`
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -9022,7 +9022,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -10518,7 +10518,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -12426,7 +12426,7 @@ type EmbeddedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                               `json:"type"`
 	UnavailableAuthorID string                               `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -13602,7 +13602,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                          `json:"type"`
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -14820,7 +14820,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -16316,7 +16316,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -18026,7 +18026,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                             `json:"type"`
 	UnavailableAuthorID string                                             `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -19252,7 +19252,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -20752,7 +20752,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                           `json:"type"`
 	UnavailableAuthorID string                                                           `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -23016,7 +23016,7 @@ type SearchTweet struct {
 	Type      string               `json:"type"`
 	// The author's ID when X withholds the author's profile.
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
-	// X did not send these counts for this post, so treat each 0 as unknown.
+	// X did not send these counts, so each 0 means unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
