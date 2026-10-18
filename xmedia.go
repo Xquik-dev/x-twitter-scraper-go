@@ -480,7 +480,7 @@ func uploadFilename(file io.Reader) string {
 	if named, ok := file.(interface{ Filename() string }); ok && named.Filename() != "" {
 		return named.Filename()
 	}
-	if named, ok := file.(interface{ Name() string }); ok {
+	if named, ok := file.(interface{ Name() string }); ok && named.Name() != "" {
 		return path.Base(named.Name())
 	}
 	return ""

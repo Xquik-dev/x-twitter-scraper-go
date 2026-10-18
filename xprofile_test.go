@@ -155,6 +155,13 @@ var profileImageUploads = map[string]profileImageUpload{
 	},
 }
 
+type diskReader struct {
+	io.Reader
+	name string
+}
+
+func (r diskReader) Name() string { return r.name }
+
 func profileImageClient(t *testing.T, upload profileImageUpload, check func(*http.Request)) (xtwitterscraper.Client, *bool) {
 	sent := false
 	client := xtwitterscraper.NewClient(
@@ -250,6 +257,22 @@ func TestXProfileImageFileRequest(t *testing.T) {
 			},
 			content:     "\x89PNG\r\n\x1a\nimage",
 			filename:    "me.png",
+			contentType: "image/png",
+		},
+		"disk file keeps its base name": {
+			file: func(content string) io.Reader {
+				return diskReader{Reader: strings.NewReader(content), name: "/tmp/photos/me.png"}
+			},
+			content:     "\x89PNG\r\n\x1a\nimage",
+			filename:    "me.png",
+			contentType: "image/png",
+		},
+		"file with an empty name gets the detected name": {
+			file: func(content string) io.Reader {
+				return diskReader{Reader: strings.NewReader(content)}
+			},
+			content:     "\x89PNG\r\n\x1a\nimage",
+			filename:    "upload.png",
 			contentType: "image/png",
 		},
 		"typed file keeps its name and type": {
