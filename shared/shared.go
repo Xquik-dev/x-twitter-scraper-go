@@ -993,6 +993,8 @@ type EmbeddedTweet struct {
 	Tombstone           EmbeddedTweetTombstone `json:"tombstone"`
 	Type                string                 `json:"type"`
 	UnavailableAuthorID string                 `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -1064,6 +1066,7 @@ type EmbeddedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -2154,6 +2157,8 @@ type EmbeddedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                            `json:"type"`
 	UnavailableAuthorID string                            `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -2225,6 +2230,7 @@ type EmbeddedTweetQuotedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -3323,6 +3329,8 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                       `json:"type"`
 	UnavailableAuthorID string                                       `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -3394,6 +3402,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -4520,6 +4529,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                  `json:"type"`
 	UnavailableAuthorID string                                                  `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -4589,6 +4600,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -6007,6 +6019,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -6076,6 +6090,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -7708,6 +7723,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                          `json:"type"`
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -7779,6 +7796,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -8923,6 +8941,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -8992,6 +9012,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -10416,6 +10437,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -10485,6 +10508,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -12321,6 +12345,8 @@ type EmbeddedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                               `json:"type"`
 	UnavailableAuthorID string                               `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -12392,6 +12418,7 @@ type EmbeddedTweetRetweetedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -13494,6 +13521,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                          `json:"type"`
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -13565,6 +13594,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -14709,6 +14739,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -14778,6 +14810,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -16202,6 +16235,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -16271,6 +16306,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -17909,6 +17945,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                             `json:"type"`
 	UnavailableAuthorID string                                             `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -17980,6 +18018,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -19132,6 +19171,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -19201,6 +19242,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -20629,6 +20671,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                           `json:"type"`
 	UnavailableAuthorID string                                                           `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -20698,6 +20742,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -22890,6 +22935,8 @@ type SearchTweet struct {
 	Type      string               `json:"type"`
 	// The author's ID when X withholds the author's profile.
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -22961,6 +23008,7 @@ type SearchTweet struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -24859,6 +24907,18 @@ func (r TweetMediaVideoVariant) RawJSON() string { return r.JSON.raw }
 func (r *TweetMediaVideoVariant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Count X did not send for this post.
+type TweetUnknownCount string
+
+const (
+	TweetUnknownCountRetweetCount  TweetUnknownCount = "retweetCount"
+	TweetUnknownCountReplyCount    TweetUnknownCount = "replyCount"
+	TweetUnknownCountLikeCount     TweetUnknownCount = "likeCount"
+	TweetUnknownCountQuoteCount    TweetUnknownCount = "quoteCount"
+	TweetUnknownCountViewCount     TweetUnknownCount = "viewCount"
+	TweetUnknownCountBookmarkCount TweetUnknownCount = "bookmarkCount"
+)
 
 // Public X profile.
 type UserProfile struct {

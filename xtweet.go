@@ -427,6 +427,8 @@ type TweetDetail struct {
 	Type      string               `json:"type"`
 	// The author's ID when X withholds the author's profile.
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
+	// X did not send these counts for this post, so treat each 0 as unknown.
+	UnknownCounts []shared.TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -498,6 +500,7 @@ type TweetDetail struct {
 		Tombstone              respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
+		UnknownCounts          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field

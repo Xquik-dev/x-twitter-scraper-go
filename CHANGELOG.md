@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Posts and embedded posts name the counts X did not send in `UnknownCounts`.
 - **Breaking.** `X.Accounts.BulkRetry` takes a required `XAccountBulkRetryParams` argument, so `BulkRetry(ctx)` stops compiling. Pass `x.XAccountBulkRetryParams{}` to retry every failed account as before.
 - Bulk retry can target specific accounts with `AccountIDs`.
 - Embedded parent, quoted and retweeted posts carry every tweet field and the author.
