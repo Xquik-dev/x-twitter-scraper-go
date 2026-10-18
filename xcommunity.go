@@ -85,6 +85,17 @@ func (r *XCommunityService) Find(ctx context.Context, query XCommunityFindParams
 	return res, err
 }
 
+func (r *XCommunityService) GetAnalytics(ctx context.Context, id string, query XCommunityGetAnalyticsParams, opts ...option.RequestOption) (res *shared.CommunityAnalytics, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/communities/%s/analytics", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Returns public identity and membership counts for one community.
 func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...option.RequestOption) (res *XCommunityGetInfoResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -1197,6 +1208,19 @@ func (r XCommunityDeleteParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *XCommunityDeleteParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type XCommunityGetAnalyticsParams struct {
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	Omit   param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+func (r XCommunityGetAnalyticsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type XCommunityGetMembersParams struct {

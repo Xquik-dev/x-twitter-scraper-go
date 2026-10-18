@@ -90,6 +90,62 @@ func (r *Community) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CommunityAnalytics struct {
+	ID           string                    `json:"id" api:"required"`
+	Metrics      CommunityAnalyticsMetrics `json:"metrics" api:"required"`
+	PeriodEndsAt time.Time                 `json:"periodEndsAt" api:"required" format:"date-time"`
+	JSON         struct {
+		ID           respjson.Field
+		Metrics      respjson.Field
+		PeriodEndsAt respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+func (r CommunityAnalytics) RawJSON() string { return r.JSON.raw }
+func (r *CommunityAnalytics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommunityAnalyticsMetrics struct {
+	Likes         CommunityAnalyticsMetric `json:"likes" api:"required"`
+	NewMembers    CommunityAnalyticsMetric `json:"newMembers" api:"required"`
+	Posts         CommunityAnalyticsMetric `json:"posts" api:"required"`
+	Replies       CommunityAnalyticsMetric `json:"replies" api:"required"`
+	UniquePosters CommunityAnalyticsMetric `json:"uniquePosters" api:"required"`
+	JSON          struct {
+		Likes         respjson.Field
+		NewMembers    respjson.Field
+		Posts         respjson.Field
+		Replies       respjson.Field
+		UniquePosters respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (r CommunityAnalyticsMetrics) RawJSON() string { return r.JSON.raw }
+func (r *CommunityAnalyticsMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommunityAnalyticsMetric struct {
+	ChangePercent float64 `json:"changePercent" api:"required"`
+	Count         int64   `json:"count" api:"required"`
+	JSON          struct {
+		ChangePercent respjson.Field
+		Count         respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (r CommunityAnalyticsMetric) RawJSON() string { return r.JSON.raw }
+func (r *CommunityAnalyticsMetric) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The banner X shows for a community, with its size & colors.
 type CommunityBanner struct {
 	// Banner image URL at its original size

@@ -19,6 +19,12 @@ type Error = apierror.Error
 // Public X Community, as every Community read returns it.
 type Community = shared.Community
 
+type CommunityAnalytics = shared.CommunityAnalytics
+
+type CommunityAnalyticsMetrics = shared.CommunityAnalyticsMetrics
+
+type CommunityAnalyticsMetric = shared.CommunityAnalyticsMetric
+
 // The banner X shows for a community, with its size & colors.
 type CommunityBanner = shared.CommunityBanner
 
