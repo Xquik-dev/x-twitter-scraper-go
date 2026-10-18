@@ -140,7 +140,7 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 							if got := req.Header.Get("Idempotency-Key"); got != "support-request" {
 								t.Fatalf("Idempotency-Key = %q", got)
 							}
-							mediaType, _, err := mime.ParseMediaType(req.Header.Get("Content-Type"))
+							mediaType, params, err := mime.ParseMediaType(req.Header.Get("Content-Type"))
 							if err != nil {
 								t.Fatal(err)
 							}
@@ -166,10 +166,11 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 								if mediaType != "multipart/form-data" {
 									t.Fatalf("Content-Type = %q", mediaType)
 								}
-								if err := req.ParseMultipartForm(1 << 20); err != nil {
+								form, err := multipart.NewReader(req.Body, params["boundary"]).ReadForm(1 << 20)
+								if err != nil {
 									t.Fatal(err)
 								}
-								defer req.MultipartForm.RemoveAll()
+								defer form.RemoveAll()
 								want := map[string][]string{}
 								if test.wantBody != nil {
 									want["body"] = test.wantBody
@@ -177,12 +178,12 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 								if service.subject != "" {
 									want["subject"] = []string{service.subject}
 								}
-								if !reflect.DeepEqual(req.MultipartForm.Value, want) {
-									t.Fatalf("form fields = %v, want %v", req.MultipartForm.Value, want)
+								if !reflect.DeepEqual(form.Value, want) {
+									t.Fatalf("form fields = %v, want %v", form.Value, want)
 								}
-								files := req.MultipartForm.File["attachments"]
-								if len(req.MultipartForm.File) != 1 || len(files) != len(test.wantFiles) {
-									t.Fatalf("form files = %v", req.MultipartForm.File)
+								files := form.File["attachments"]
+								if len(form.File) != 1 || len(files) != len(test.wantFiles) {
+									t.Fatalf("form files = %v", form.File)
 								}
 								for i, file := range files {
 									filename := test.filename

@@ -204,27 +204,28 @@ func TestXMediaUploadFileRequest(t *testing.T) {
 					if got := req.Header.Get("Idempotency-Key"); got != "upload-request" {
 						t.Fatalf("Idempotency-Key = %q", got)
 					}
-					mediaType, _, err := mime.ParseMediaType(req.Header.Get("Content-Type"))
+					mediaType, params, err := mime.ParseMediaType(req.Header.Get("Content-Type"))
 					if err != nil {
 						t.Fatal(err)
 					}
 					if mediaType != "multipart/form-data" {
 						t.Fatalf("Content-Type = %q", mediaType)
 					}
-					if err := req.ParseMultipartForm(1 << 20); err != nil {
+					form, err := multipart.NewReader(req.Body, params["boundary"]).ReadForm(1 << 20)
+					if err != nil {
 						t.Fatal(err)
 					}
-					defer req.MultipartForm.RemoveAll()
+					defer form.RemoveAll()
 					want := map[string][]string{"account": {"@elonmusk"}}
 					if !param.IsOmitted(test.isLongVideo) {
 						want["is_long_video"] = []string{test.isLongVideo.String()}
 					}
-					if !reflect.DeepEqual(req.MultipartForm.Value, want) {
-						t.Fatalf("form fields = %v, want %v", req.MultipartForm.Value, want)
+					if !reflect.DeepEqual(form.Value, want) {
+						t.Fatalf("form fields = %v, want %v", form.Value, want)
 					}
-					files := req.MultipartForm.File["file"]
-					if len(req.MultipartForm.File) != 1 || len(files) != 1 {
-						t.Fatalf("form files = %v", req.MultipartForm.File)
+					files := form.File["file"]
+					if len(form.File) != 1 || len(files) != 1 {
+						t.Fatalf("form files = %v", form.File)
 					}
 					file := files[0]
 					if file.Filename != test.filename || file.Header.Get("Content-Type") != test.contentType {
