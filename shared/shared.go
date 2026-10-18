@@ -90,11 +90,19 @@ func (r *Community) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Community activity & growth for X's latest period.
 type CommunityAnalytics struct {
-	ID           string                    `json:"id" api:"required"`
-	Metrics      CommunityAnalyticsMetrics `json:"metrics" api:"required"`
-	PeriodEndsAt time.Time                 `json:"periodEndsAt" api:"required" format:"date-time"`
-	JSON         struct {
+	// The community ID from your request.
+	ID string `json:"id" api:"required"`
+	// The period's activity, each metric with its count and changePercent. likes
+	// counts likes on community posts and newMembers the accounts that joined. posts
+	// counts the community posts and replies the replies to them. uniquePosters counts
+	// the distinct accounts that posted.
+	Metrics CommunityAnalyticsMetrics `json:"metrics" api:"required"`
+	// The end of X's latest period, in UTC.
+	PeriodEndsAt time.Time `json:"periodEndsAt" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
 		ID           respjson.Field
 		Metrics      respjson.Field
 		PeriodEndsAt respjson.Field
@@ -103,18 +111,29 @@ type CommunityAnalytics struct {
 	} `json:"-"`
 }
 
+// Returns the unmodified JSON received from the API
 func (r CommunityAnalytics) RawJSON() string { return r.JSON.raw }
 func (r *CommunityAnalytics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The period's activity, each metric with its count and changePercent. likes
+// counts likes on community posts and newMembers the accounts that joined. posts
+// counts the community posts and replies the replies to them. uniquePosters counts
+// the distinct accounts that posted.
 type CommunityAnalyticsMetrics struct {
-	Likes         CommunityAnalyticsMetric `json:"likes" api:"required"`
-	NewMembers    CommunityAnalyticsMetric `json:"newMembers" api:"required"`
-	Posts         CommunityAnalyticsMetric `json:"posts" api:"required"`
-	Replies       CommunityAnalyticsMetric `json:"replies" api:"required"`
+	// A community metric for X's latest period & its percent change.
+	Likes CommunityAnalyticsMetric `json:"likes" api:"required"`
+	// A community metric for X's latest period & its percent change.
+	NewMembers CommunityAnalyticsMetric `json:"newMembers" api:"required"`
+	// A community metric for X's latest period & its percent change.
+	Posts CommunityAnalyticsMetric `json:"posts" api:"required"`
+	// A community metric for X's latest period & its percent change.
+	Replies CommunityAnalyticsMetric `json:"replies" api:"required"`
+	// A community metric for X's latest period & its percent change.
 	UniquePosters CommunityAnalyticsMetric `json:"uniquePosters" api:"required"`
-	JSON          struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
 		Likes         respjson.Field
 		NewMembers    respjson.Field
 		Posts         respjson.Field
@@ -125,15 +144,20 @@ type CommunityAnalyticsMetrics struct {
 	} `json:"-"`
 }
 
+// Returns the unmodified JSON received from the API
 func (r CommunityAnalyticsMetrics) RawJSON() string { return r.JSON.raw }
 func (r *CommunityAnalyticsMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A community metric for X's latest period & its percent change.
 type CommunityAnalyticsMetric struct {
+	// Change in percent from the same figure 1 day earlier. Values stay unrounded.
 	ChangePercent float64 `json:"changePercent" api:"required"`
-	Count         int64   `json:"count" api:"required"`
-	JSON          struct {
+	// Total for this metric during X's latest period.
+	Count int64 `json:"count" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
 		ChangePercent respjson.Field
 		Count         respjson.Field
 		ExtraFields   map[string]respjson.Field
@@ -141,6 +165,7 @@ type CommunityAnalyticsMetric struct {
 	} `json:"-"`
 }
 
+// Returns the unmodified JSON received from the API
 func (r CommunityAnalyticsMetric) RawJSON() string { return r.JSON.raw }
 func (r *CommunityAnalyticsMetric) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

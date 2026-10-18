@@ -19,10 +19,16 @@ type Error = apierror.Error
 // Public X Community, as every Community read returns it.
 type Community = shared.Community
 
+// Community activity & growth for X's latest period.
 type CommunityAnalytics = shared.CommunityAnalytics
 
+// The period's activity, each metric with its count and changePercent. likes
+// counts likes on community posts and newMembers the accounts that joined. posts
+// counts the community posts and replies the replies to them. uniquePosters counts
+// the distinct accounts that posted.
 type CommunityAnalyticsMetrics = shared.CommunityAnalyticsMetrics
 
+// A community metric for X's latest period & its percent change.
 type CommunityAnalyticsMetric = shared.CommunityAnalyticsMetric
 
 // The banner X shows for a community, with its size & colors.
