@@ -11,8 +11,53 @@ import (
 	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
+
+func TestXCommunityGetAnalyticsFixture(t *testing.T) {
+	client, request := fixtureClient(t, "getCommunityAnalytics.json")
+	var response *http.Response
+	res, err := client.X.Communities.GetAnalytics(context.Background(), "1493446837214187523", xtwitterscraper.XCommunityGetAnalyticsParams{
+		Fields: xtwitterscraper.String("id,periodEndsAt,metrics"),
+		Omit:   xtwitterscraper.String("metrics.likes.changePercent"),
+	}, option.WithResponseInto(&response))
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodGet, "/api/v1/x/communities/1493446837214187523/analytics", "fields=id%2CperiodEndsAt%2Cmetrics&omit=metrics.likes.changePercent")
+	expectDecoded(t, res)
+	if res.ID != "1493446837214187523" ||
+		!res.PeriodEndsAt.Equal(time.Date(2026, time.October, 16, 23, 59, 59, 999000000, time.UTC)) ||
+		res.Metrics.Likes.Count != 15298 ||
+		res.Metrics.Likes.ChangePercent != -1.2076202776880853 ||
+		res.Metrics.NewMembers.Count != 557 ||
+		res.Metrics.NewMembers.ChangePercent != -1.5901060070671376 ||
+		res.Metrics.Posts.Count != 5108 ||
+		res.Metrics.Posts.ChangePercent != 0.5907837731390311 ||
+		res.Metrics.Replies.Count != 6851 ||
+		res.Metrics.Replies.ChangePercent != -0.8251302837290099 ||
+		res.Metrics.UniquePosters.Count != 1800 ||
+		res.Metrics.UniquePosters.ChangePercent != -0.33222591362126247 {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+	if response == nil || response.StatusCode != http.StatusOK || response.Header.Get("Content-Type") != "application/json" {
+		t.Fatalf("response = %+v", response)
+	}
+}
+
+func TestXCommunityGetAnalyticsWithoutOptionalParamsFixture(t *testing.T) {
+	client, request := fixtureClient(t, "getCommunityAnalytics.json")
+	res, err := client.X.Communities.GetAnalytics(context.Background(), "1493446837214187523", xtwitterscraper.XCommunityGetAnalyticsParams{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodGet, "/api/v1/x/communities/1493446837214187523/analytics", "")
+	expectDecoded(t, res)
+	if res.ID != "1493446837214187523" {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+}
 
 func TestXCommunityFindFixture(t *testing.T) {
 	client, request := fixtureClient(t, "findCommunities.json")

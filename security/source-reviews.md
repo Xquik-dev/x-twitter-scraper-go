@@ -750,452 +750,452 @@ Finding: Errors unhandled
 20: 	}))
 ```
 
-## G104 in shared/shared.go:24559
+## G104 in shared/shared.go:24640
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-24558: func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-24559: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-24560: 	return
+24639: func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+24640: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+24641: 	return
 ```
 
-## G104 in shared/shared.go:24554
+## G104 in shared/shared.go:24635
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-24553: func (u SearchTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-24554: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-24555: 	return
+24634: func (u SearchTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+24635: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+24636: 	return
 ```
 
-## G104 in shared/shared.go:22575
+## G104 in shared/shared.go:22656
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-22574: func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-22575: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-22576: 	return
+22655: func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+22656: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22657: 	return
 ```
 
-## G104 in shared/shared.go:22570
+## G104 in shared/shared.go:22651
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-22569: func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-22570: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-22571: 	return
+22650: func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+22651: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22652: 	return
 ```
 
-## G104 in shared/shared.go:22375
+## G104 in shared/shared.go:22456
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-22374: func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-22375: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-22376: 	return
+22455: func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+22456: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22457: 	return
 ```
 
-## G104 in shared/shared.go:22370
+## G104 in shared/shared.go:22451
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-22369: func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-22370: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-22371: 	return
+22450: func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+22451: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22452: 	return
 ```
 
-## G104 in shared/shared.go:22171
+## G104 in shared/shared.go:22252
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-22170: func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-22171: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-22172: 	return
+22251: func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+22252: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22253: 	return
 ```
 
-## G104 in shared/shared.go:22166
+## G104 in shared/shared.go:22247
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-22165: func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-22166: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-22167: 	return
+22246: func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+22247: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22248: 	return
 ```
 
-## G104 in shared/shared.go:21961
+## G104 in shared/shared.go:22042
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-21960: func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-21961: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-21962: 	return
+22041: func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+22042: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22043: 	return
 ```
 
-## G104 in shared/shared.go:21956
+## G104 in shared/shared.go:22037
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-21955: func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-21956: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-21957: 	return
+22036: func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+22037: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+22038: 	return
 ```
 
-## G104 in shared/shared.go:20457
+## G104 in shared/shared.go:20538
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-20456: func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-20457: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-20458: 	return
+20537: func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+20538: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+20539: 	return
 ```
 
-## G104 in shared/shared.go:20452
+## G104 in shared/shared.go:20533
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-20451: func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-20452: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-20453: 	return
+20532: func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+20533: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+20534: 	return
 ```
 
-## G104 in shared/shared.go:17731
+## G104 in shared/shared.go:17812
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-17730: func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-17731: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-17732: 	return
+17811: func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+17812: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+17813: 	return
 ```
 
-## G104 in shared/shared.go:17726
+## G104 in shared/shared.go:17807
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-17725: func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-17726: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-17727: 	return
+17806: func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+17807: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+17808: 	return
 ```
 
-## G104 in shared/shared.go:17521
+## G104 in shared/shared.go:17602
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-17520: func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-17521: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-17522: 	return
+17601: func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+17602: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+17603: 	return
 ```
 
-## G104 in shared/shared.go:17516
+## G104 in shared/shared.go:17597
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-17515: func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-17516: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-17517: 	return
+17596: func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+17597: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+17598: 	return
 ```
 
-## G104 in shared/shared.go:16021
+## G104 in shared/shared.go:16102
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-16020: func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-16021: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-16022: 	return
+16101: func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+16102: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+16103: 	return
 ```
 
-## G104 in shared/shared.go:16016
+## G104 in shared/shared.go:16097
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-16015: func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-16016: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-16017: 	return
+16096: func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+16097: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+16098: 	return
 ```
 
-## G104 in shared/shared.go:12137
+## G104 in shared/shared.go:12218
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-12136: func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-12137: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-12138: 	return
+12217: func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+12218: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+12219: 	return
 ```
 
-## G104 in shared/shared.go:12132
+## G104 in shared/shared.go:12213
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-12131: func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-12132: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-12133: 	return
+12212: func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+12213: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+12214: 	return
 ```
 
-## G104 in shared/shared.go:11933
+## G104 in shared/shared.go:12014
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-11932: func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-11933: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-11934: 	return
+12013: func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+12014: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+12015: 	return
 ```
 
-## G104 in shared/shared.go:11928
+## G104 in shared/shared.go:12009
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-11927: func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-11928: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-11929: 	return
+12008: func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+12009: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+12010: 	return
 ```
 
-## G104 in shared/shared.go:11723
+## G104 in shared/shared.go:11804
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-11722: func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-11723: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-11724: 	return
+11803: func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+11804: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+11805: 	return
 ```
 
-## G104 in shared/shared.go:11718
+## G104 in shared/shared.go:11799
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-11717: func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-11718: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-11719: 	return
+11798: func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+11799: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+11800: 	return
 ```
 
-## G104 in shared/shared.go:10223
+## G104 in shared/shared.go:10304
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-10222: func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-10223: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-10224: 	return
+10303: func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+10304: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+10305: 	return
 ```
 
-## G104 in shared/shared.go:10218
+## G104 in shared/shared.go:10299
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-10217: func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-10218: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-10219: 	return
+10298: func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+10299: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+10300: 	return
 ```
 
-## G104 in shared/shared.go:7511
+## G104 in shared/shared.go:7592
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-7510: func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-7511: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-7512: 	return
+7591: func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+7592: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+7593: 	return
 ```
 
-## G104 in shared/shared.go:7506
+## G104 in shared/shared.go:7587
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-7505: func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-7506: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-7507: 	return
+7586: func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+7587: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+7588: 	return
 ```
 
-## G104 in shared/shared.go:7301
+## G104 in shared/shared.go:7382
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-7300: func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-7301: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-7302: 	return
+7381: func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+7382: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+7383: 	return
 ```
 
-## G104 in shared/shared.go:7296
+## G104 in shared/shared.go:7377
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-7295: func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-7296: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-7297: 	return
+7376: func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+7377: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+7378: 	return
 ```
 
-## G104 in shared/shared.go:5807
+## G104 in shared/shared.go:5888
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-5806: func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-5807: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-5808: 	return
+5887: func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+5888: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+5889: 	return
 ```
 
-## G104 in shared/shared.go:5802
+## G104 in shared/shared.go:5883
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-5801: func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-5802: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-5803: 	return
+5882: func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+5883: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+5884: 	return
 ```
 
 ## G104 in option/requestoption_test.go:166
@@ -1817,60 +1817,60 @@ Finding: Expect WriteFile permissions to be 0600 or less
 51: 		t.Fatal(err)
 ```
 
-## G104 in shared/shared.go:698
+## G104 in shared/shared.go:779
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-697: func (u CommunityMembersFacepileUnion) AsCommunityMembersFacepileCommunityMemberPreview() (v CommunityMembersFacepileCommunityMemberPreview) {
-698: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-699: 	return
+778: func (u CommunityMembersFacepileUnion) AsCommunityMembersFacepileCommunityMemberPreview() (v CommunityMembersFacepileCommunityMemberPreview) {
+779: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+780: 	return
 ```
 
-## G104 in shared/shared.go:693
+## G104 in shared/shared.go:774
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-692: func (u CommunityMembersFacepileUnion) AsUserProfile() (v UserProfile) {
-693: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-694: 	return
+773: func (u CommunityMembersFacepileUnion) AsUserProfile() (v UserProfile) {
+774: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+775: 	return
 ```
 
-## G104 in shared/shared.go:420
+## G104 in shared/shared.go:501
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-419: func (u CommunityCreatorUnion) AsCommunityCreatorObject() (v CommunityCreatorObject) {
-420: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-421: 	return
+500: func (u CommunityCreatorUnion) AsCommunityCreatorObject() (v CommunityCreatorObject) {
+501: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+502: 	return
 ```
 
-## G104 in shared/shared.go:415
+## G104 in shared/shared.go:496
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `5eebea84a5b8583520b7cbbf98a87257aad40376ad17df235732cb72fe8d2167`
+Source SHA-256: `c826cc1887e2157ee5f92e92c044d04954b6c88f0491c25601ffde6ae89aab20`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-414: func (u CommunityCreatorUnion) AsUserProfile() (v UserProfile) {
-415: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-416: 	return
+495: func (u CommunityCreatorUnion) AsUserProfile() (v UserProfile) {
+496: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+497: 	return
 ```
 
 ## G104 in xanalysis.go:4023

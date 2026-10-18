@@ -1,0 +1,26 @@
+{
+  "id": "1493446837214187523",
+  "periodEndsAt": "2026-10-16T23:59:59.999Z",
+  "metrics": {
+    "likes": {
+      "count": 15298,
+      "changePercent": -1.2076202776880853
+    },
+    "newMembers": {
+      "count": 557,
+      "changePercent": -1.5901060070671376
+    },
+    "posts": {
+      "count": 5108,
+      "changePercent": 0.5907837731390311
+    },
+    "replies": {
+      "count": 6851,
+      "changePercent": -0.8251302837290099
+    },
+    "uniquePosters": {
+      "count": 1800,
+      "changePercent": -0.33222591362126247
+    }
+  }
+}
