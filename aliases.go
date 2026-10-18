@@ -2422,6 +2422,27 @@ type TweetMediaTag = shared.TweetMediaTag
 
 type TweetMediaVideoVariant = shared.TweetMediaVideoVariant
 
+// Count X did not send for this post.
+type TweetUnknownCount = shared.TweetUnknownCount
+
+// Equals "retweetCount"
+const TweetUnknownCountRetweetCount = shared.TweetUnknownCountRetweetCount
+
+// Equals "replyCount"
+const TweetUnknownCountReplyCount = shared.TweetUnknownCountReplyCount
+
+// Equals "likeCount"
+const TweetUnknownCountLikeCount = shared.TweetUnknownCountLikeCount
+
+// Equals "quoteCount"
+const TweetUnknownCountQuoteCount = shared.TweetUnknownCountQuoteCount
+
+// Equals "viewCount"
+const TweetUnknownCountViewCount = shared.TweetUnknownCountViewCount
+
+// Equals "bookmarkCount"
+const TweetUnknownCountBookmarkCount = shared.TweetUnknownCountBookmarkCount
+
 // Public X profile.
 type UserProfile = shared.UserProfile
 

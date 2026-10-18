@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
@@ -353,6 +354,81 @@ func TestEmbeddedTweetOptionalFields(t *testing.T) {
 				t.Fatalf("decoded %s", tweet.RawJSON())
 			}
 		})
+	}
+}
+
+func TestTweetModelsUnknownCounts(t *testing.T) {
+	cases := []struct {
+		name    string
+		raw     string
+		want    []shared.TweetUnknownCount
+		present bool
+	}{
+		{"known counts", `["bookmarkCount","viewCount"]`, []shared.TweetUnknownCount{shared.TweetUnknownCountBookmarkCount, shared.TweetUnknownCountViewCount}, true},
+		{"future count", `["futureCount"]`, []shared.TweetUnknownCount{"futureCount"}, true},
+		{"empty", `[]`, []shared.TweetUnknownCount{}, true},
+		{"absent", "", nil, false},
+	}
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			payload := `{"id":"1234567890","text":"Post","bookmarkCount":0,"likeCount":0,"quoteCount":0,"replyCount":0,"retweetCount":0,"viewCount":0}`
+			if test.present {
+				payload = strings.TrimSuffix(payload, "}") + `,"unknownCounts":` + test.raw + "}"
+			}
+			models := []interface{ UnmarshalJSON([]byte) error }{
+				&xtwitterscraper.TweetDetail{},
+				&shared.SearchTweet{},
+				&shared.EmbeddedTweet{},
+				&shared.EmbeddedTweetQuotedTweet{},
+				&shared.EmbeddedTweetQuotedTweetQuotedTweet{},
+				&shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet{},
+				&shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet{},
+				&shared.EmbeddedTweetQuotedTweetRetweetedTweet{},
+				&shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet{},
+				&shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet{},
+				&shared.EmbeddedTweetRetweetedTweet{},
+				&shared.EmbeddedTweetRetweetedTweetQuotedTweet{},
+				&shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet{},
+				&shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet{},
+				&shared.EmbeddedTweetRetweetedTweetRetweetedTweet{},
+				&shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet{},
+				&shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{},
+			}
+			for _, model := range models {
+				t.Run(reflect.TypeOf(model).Elem().Name(), func(t *testing.T) {
+					if err := model.UnmarshalJSON([]byte(payload)); err != nil {
+						t.Fatal(err)
+					}
+					expectDecoded(t, model)
+					expectValues(t, model, []fieldValue{{"UnknownCounts", test.want}})
+					metadata, ok := valueAt(model, "JSON.UnknownCounts")
+					if !ok {
+						t.Fatal("missing unknown counts metadata")
+					}
+					field := metadata.(respjson.Field)
+					if field.Valid() != test.present || field.Raw() != test.raw {
+						t.Fatalf("unknown counts metadata = %#v, want present %v and raw %q", field, test.present, test.raw)
+					}
+				})
+			}
+		})
+	}
+}
+
+func TestTweetResponseUnknownCounts(t *testing.T) {
+	payload := []byte(`{"tweet":{"id":"1234567891","text":"Repost","bookmarkCount":0,"unknownCounts":["bookmarkCount","viewCount"],"likeCount":0,"quoteCount":0,"replyCount":0,"retweetCount":0,"viewCount":0,"retweeted_tweet":{"id":"1234567890","text":"Post","bookmarkCount":0,"unknownCounts":["bookmarkCount","viewCount"],"likeCount":0,"quoteCount":0,"replyCount":0,"retweetCount":0,"viewCount":0}}}`)
+	var response xtwitterscraper.XTweetGetResponse
+	if err := response.UnmarshalJSON(payload); err != nil {
+		t.Fatal(err)
+	}
+	expectDecoded(t, response)
+	want := []shared.TweetUnknownCount{shared.TweetUnknownCountBookmarkCount, shared.TweetUnknownCountViewCount}
+	expectValues(t, response, []fieldValue{
+		{"Tweet.UnknownCounts", want},
+		{"Tweet.RetweetedTweet.UnknownCounts", want},
+	})
+	if !response.Tweet.JSON.UnknownCounts.Valid() || !response.Tweet.RetweetedTweet.JSON.UnknownCounts.Valid() {
+		t.Fatalf("missing unknown counts metadata in %s", response.RawJSON())
 	}
 }
 
