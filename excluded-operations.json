@@ -12,6 +12,8 @@
       "GET /api/v1/api-keys",
       "POST /api/v1/api-keys",
       "DELETE /api/v1/api-keys/{id}",
+      "PATCH /api/v1/api-keys/{id}",
+      "POST /api/v1/api-keys/bulk-revoke",
       "POST /api/v1/credits/quick-topup"
     ]
   }

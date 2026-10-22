@@ -269,7 +269,7 @@ res.JSON.Age.Raw() == ""               // true
 res.JSON.Age.Raw() == respjson.Omitted // true
 ```
 
-`JSON.ExtraFields` retains response properties absent from the generated struct.
+`JSON.ExtraFields` retains response properties absent from the response struct.
 
 ```go
 body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
@@ -542,7 +542,7 @@ client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name"
 ```
 
 Use `result.JSON.RawJSON()` for the full body and `.Foo.Raw()` for one field.
-`result.JSON.ExtraFields()` returns fields absent from the generated response struct.
+`result.JSON.ExtraFields()` returns fields absent from the response struct.
 
 ### Middleware
 

@@ -2407,6 +2407,15 @@ type SearchTweetTombstoneTextEntity = shared.SearchTweetTombstoneTextEntity
 
 type SearchTweetTombstoneTextEntityRef = shared.SearchTweetTombstoneTextEntityRef
 
+// The label X shows under a post whose reach it limits. It links to the page that
+// explains it.
+type SoftIntervention = shared.SoftIntervention
+
+type SoftInterventionText = shared.SoftInterventionText
+
+// The page that explains the label.
+type SoftInterventionURL = shared.SoftInterventionURL
+
 // Tweet media.
 type TweetMedia = shared.TweetMedia
 

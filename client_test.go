@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"runtime"
 	"testing"
 	"time"
 
@@ -248,6 +249,29 @@ func TestContextDeadline(t *testing.T) {
 	case <-testDone:
 		if diff := time.Since(deadline); diff < -30*time.Millisecond || 30*time.Millisecond < diff {
 			t.Fatalf("client did not return within 30ms of context deadline, got %s", diff)
+		}
+	}
+}
+func TestSDKHeaders(t *testing.T) {
+	client, request := fixtureClient(t, "getAccount.json")
+	if _, err := client.Account.Get(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{
+		"X-Xquik-SDK":                 "go",
+		"X-Stainless-Lang":            "go",
+		"X-Stainless-Runtime":         "go",
+		"X-Stainless-Package-Version": internal.PackageVersion,
+		"X-Stainless-Runtime-Version": runtime.Version(),
+	}
+	for name, value := range want {
+		if got := request.header.Get(name); got != value {
+			t.Errorf("Expected %s to be %q, but got: %q", name, value, got)
+		}
+	}
+	for _, name := range []string{"X-Stainless-OS", "X-Stainless-Arch"} {
+		if request.header.Get(name) == "" {
+			t.Errorf("Expected the %s header", name)
 		}
 	}
 }

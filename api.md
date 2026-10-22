@@ -15,6 +15,7 @@
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedTweets">PaginatedTweets</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedUsers">PaginatedUsers</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#SearchTweet">SearchTweet</a>
+- <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#SoftIntervention">SoftIntervention</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#TweetMedia">TweetMedia</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#UserProfile">UserProfile</a>
 
