@@ -232,6 +232,7 @@ type EventDetailMonitorType string
 const (
 	EventDetailMonitorTypeAccount EventDetailMonitorType = "account"
 	EventDetailMonitorTypeKeyword EventDetailMonitorType = "keyword"
+	EventDetailMonitorTypePost    EventDetailMonitorType = "post"
 )
 
 type EventListResponse struct {
