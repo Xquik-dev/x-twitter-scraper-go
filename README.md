@@ -115,7 +115,7 @@ GitHub verifies the digest, signer identity, and transparency proof.
 
 ## Requirements
 
-Use Go 1.27.2 or newer.
+Use Go 1.27.3 or newer.
 
 ## Usage
 
