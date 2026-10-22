@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.21.0 (2026-10-23)
+
+[Full changelog from v0.20.0 to v0.21.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.20.0...v0.21.0)
+
+The SDK catches up with the API, adding post monitors & football reads. It requires Go 1.27.3. Compatibility lists the 6 changes that break callers.
 
 - Monitors add post monitors under `Monitors.Posts`, with `New`, `Get`, `Update`, `List`, `Delete` and the hourly `GetMetrics`. Each returns `PostMonitor` or `PostMonitorMetrics`.
 - Events carry `PostID`, `PostURL`, `AuthorID` and `AuthorUsername` for post events, and `EventListParams` filters by `PostMonitorID`.
@@ -8,18 +12,25 @@
 - The SDK requires Go 1.27.3 or newer. Go 1.27.3 fixes GO-2026-6809, where `crypto/x509` trusted the compromised emSign intermediate certificates when it verified the API server.
 - Posts and embedded posts at every depth carry `SoftIntervention`, the label X shows under a post whose reach it limits. It is 1 shared `shared.SoftIntervention` type with `DisplayType`, `EngagementNudge`, `Text` and `URL`. `Text` is its own `shared.SoftInterventionText` type with `Text`, `Rtl` and `Entities`.
 - Every request sends `X-Xquik-SDK: go` beside the headers it already sends.
-- Communities add the analytics read with `GetAnalytics`.
-- Posts and embedded posts name the counts X did not send in `UnknownCounts`.
-- **Breaking.** `X.Accounts.BulkRetry` takes a required `XAccountBulkRetryParams` argument, so `BulkRetry(ctx)` stops compiling. Pass `x.XAccountBulkRetryParams{}` to retry every failed account as before.
+- Support tickets and replies take up to 4 `Attachments`. `Body` is optional with attachments.
+- `X.Media.Upload`, `X.Profile.UpdateAvatar` and `X.Profile.UpdateBanner` take a `File`, sent as multipart. `X.Media.Upload` also takes `IsLongVideo`. The SDK reads a file's type from its first bytes, unless the reader names one.
+- Requests without files still send JSON.
+- `X.Communities.GetAnalytics` reads a Community's activity for X's latest period.
 - Bulk retry can target specific accounts with `AccountIDs`.
 - Embedded parent, quoted and retweeted posts carry every tweet field and the author.
+- Posts and embedded posts name the counts X did not send in `UnknownCounts`. Each of those counts reads 0, so treat it as unknown.
 - `shared.UserProfileIdentityVerification` gains the optional `OverrideVerifiedYear` field for profiles and users in tweets.
+- The API fields check compares JSON, multipart and form request bodies.
 - `bin/check-local`, `bin/release-local` and their scripts remove their temp files on every exit, including a failed step, Ctrl+C and a terminate signal. `scripts/verify-release` no longer prints the path of its deleted module cache.
-- Support tickets and replies take up to 4 `Attachments`. `Body` is optional with attachments.
-- Media, avatar and banner uploads take a `File`, sent as multipart. Media uploads also take `IsLongVideo`.
-- **Breaking.** A ticket or reply needs a non-empty `Body` or 1 attachment. Otherwise the SDK returns `ErrTicketNeedsBodyOrAttachments`.
-- **Breaking.** `Body` on `SupportTicketNewParams` and `SupportTicketReplyParams` uses `param.Opt[string]`. Wrap it with `xtwitterscraper.String`.
-- **Breaking.** `URL` on the media, avatar and banner upload params uses `param.Opt[string]`. Wrap it with `xtwitterscraper.String`.
+
+### Compatibility
+
+- The SDK requires Go 1.27.3 or newer, which fixes GO-2026-6809.
+- `X.Accounts.BulkRetry` takes a required `XAccountBulkRetryParams` argument, so `BulkRetry(ctx)` stops compiling. Pass `x.XAccountBulkRetryParams{}` to retry every failed account as before.
+- `Body` on `SupportTicketNewParams` and `SupportTicketReplyParams` now uses `param.Opt[string]`. Wrap body strings with `xtwitterscraper.String`.
+- Support tickets and replies need a non-empty `Body` or at least 1 attachment. Otherwise the SDK returns `ErrTicketNeedsBodyOrAttachments` before any request.
+- `URL` on `XMediaUploadParams`, `XProfileUpdateAvatarParams` and `XProfileUpdateBannerParams` now uses `param.Opt[string]`. Wrap URL strings with `xtwitterscraper.String`.
+- An upload with both `URL` and `File` returns `ErrMediaHasURLAndFile` before any request. An upload with neither returns `ErrMediaNeedsURLOrFile`. `IsLongVideo` without a file returns `ErrLongVideoNeedsFile`.
 
 ## 0.20.0 (2026-10-16)
 
