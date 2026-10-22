@@ -24804,8 +24804,8 @@ type SoftIntervention struct {
 	// The label's kind. `Fosnr` marks a post X keeps up but shows to fewer people.
 	DisplayType string `json:"displayType"`
 	// Whether X prompts readers before they engage with the post.
-	EngagementNudge bool                        `json:"engagementNudge"`
-	Text            SearchTweetInterstitialText `json:"text"`
+	EngagementNudge bool                 `json:"engagementNudge"`
+	Text            SoftInterventionText `json:"text"`
 	// The page that explains the label.
 	URL SoftInterventionURL `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -24822,6 +24822,29 @@ type SoftIntervention struct {
 // Returns the unmodified JSON received from the API
 func (r SoftIntervention) RawJSON() string { return r.JSON.raw }
 func (r *SoftIntervention) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SoftInterventionText struct {
+	// Links inside the label, by character range.
+	Entities []SearchTweetInterstitialTextEntity `json:"entities"`
+	// Whether the label reads right to left.
+	Rtl bool `json:"rtl"`
+	// The label's text.
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Rtl         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SoftInterventionText) RawJSON() string { return r.JSON.raw }
+func (r *SoftInterventionText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

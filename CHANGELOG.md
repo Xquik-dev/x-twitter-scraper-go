@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Posts and embedded posts at every depth carry `SoftIntervention`, the label X shows under a post whose reach it limits. It is 1 shared `shared.SoftIntervention` type with `DisplayType`, `EngagementNudge`, `Text` and `URL`.
+- Posts and embedded posts at every depth carry `SoftIntervention`, the label X shows under a post whose reach it limits. It is 1 shared `shared.SoftIntervention` type with `DisplayType`, `EngagementNudge`, `Text` and `URL`. `Text` is its own `shared.SoftInterventionText` type with `Text`, `Rtl` and `Entities`.
 - Every request sends `X-Xquik-SDK: go` beside the headers it already sends.
 - Communities add the analytics read with `GetAnalytics`.
 - Posts and embedded posts name the counts X did not send in `UnknownCounts`.

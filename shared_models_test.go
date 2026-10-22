@@ -177,6 +177,7 @@ var tweetFields = []fieldValue{
 	{"SoftIntervention.Text.Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"},
 	{"SoftIntervention.Text.Entities[0].Ref.URLType", "ExternalUrl"},
 	{"SoftIntervention.Text.Entities[0].ToIndex", int64(4)},
+	{"SoftIntervention.Text.Rtl", true},
 	{"SoftIntervention.Text.Text", "This Post may violate X's rules against Abuse."},
 	{"SoftIntervention.URL.URL", "https://help.x.com/rules-and-policies/enforcement-options"},
 	{"SoftIntervention.URL.URLType", "ExternalUrl"},
@@ -211,6 +212,10 @@ var _ = []shared.SoftIntervention{
 	shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet{}.SoftIntervention,
 	shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
 }
+
+var _ shared.SoftInterventionText = shared.SoftIntervention{}.Text
+
+var _ []shared.SearchTweetInterstitialTextEntity = shared.SoftInterventionText{}.Entities
 
 func TestSearchTweetDecodesEveryField(t *testing.T) {
 	payload, err := fixtures.ReadFile("testdata/fixtures/SearchTweet.json")

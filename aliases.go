@@ -2411,6 +2411,8 @@ type SearchTweetTombstoneTextEntityRef = shared.SearchTweetTombstoneTextEntityRe
 // explains it.
 type SoftIntervention = shared.SoftIntervention
 
+type SoftInterventionText = shared.SoftInterventionText
+
 // The page that explains the label.
 type SoftInterventionURL = shared.SoftInterventionURL
 
