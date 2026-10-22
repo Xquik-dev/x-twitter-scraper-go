@@ -212,6 +212,8 @@ var _ = []shared.SoftIntervention{
 	shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
 }
 
+var _ []shared.SearchTweetInterstitialTextEntity = shared.SoftInterventionText{}.Entities
+
 func TestSearchTweetDecodesEveryField(t *testing.T) {
 	payload, err := fixtures.ReadFile("testdata/fixtures/SearchTweet.json")
 	if err != nil {
@@ -223,6 +225,12 @@ func TestSearchTweetDecodesEveryField(t *testing.T) {
 	}
 	expectDecoded(t, tweet)
 	expectValues(t, tweet, tweetFields)
+	var label shared.SoftInterventionText = tweet.SoftIntervention.Text
+	expectValues(t, label, []fieldValue{
+		{"Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"},
+		{"Rtl", true},
+		{"Text", "This Post may violate X's rules against Abuse."},
+	})
 }
 
 func TestResponsesDecodeEmbeddedTweetFields(t *testing.T) {

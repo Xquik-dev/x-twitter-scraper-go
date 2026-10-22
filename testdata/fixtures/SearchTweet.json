@@ -396,7 +396,7 @@
     "engagementNudge": true,
     "text": {
       "text": "This Post may violate X's rules against Abuse.",
-      "rtl": false,
+      "rtl": true,
       "entities": [
         {
           "fromIndex": 0,
