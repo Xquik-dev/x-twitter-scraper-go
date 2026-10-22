@@ -6,7 +6,7 @@ Follow the shared [Xquik contribution policy][contribution-policy].
 
 ## Set Up
 
-Install Go 1.27.2, Bun, jq and uv.
+Install Go 1.27.3, Bun, jq and uv.
 
 ```sh
 ./scripts/bootstrap
