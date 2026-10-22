@@ -1,0 +1,313 @@
+{
+  "id": "2055084502741811200",
+  "league": "nfl",
+  "home": {
+    "teamId": "689566294702555136",
+    "totals": {
+      "firstDowns": 20,
+      "thirdDowns": {
+        "attempts": 14,
+        "successes": 7
+      },
+      "fumbles": {
+        "lost": 1,
+        "opponentRecoveryTouchdowns": 0,
+        "ownRecoveryTouchdowns": 0
+      },
+      "passing": {
+        "attempts": 29,
+        "avgYards": 9.10345,
+        "completions": 21,
+        "interceptions": 0,
+        "netYards": 249,
+        "rating": 111.85345,
+        "sackYards": 15,
+        "sacks": 2,
+        "touchdowns": 1,
+        "yards": 264
+      },
+      "penalties": {
+        "count": 11,
+        "yards": 88
+      },
+      "rushing": {
+        "attempts": 5,
+        "avgYards": 5.6,
+        "longest": 11,
+        "touchdowns": 0,
+        "yards": 28
+      },
+      "timeOfPossessionSeconds": 1785,
+      "totalYards": 375,
+      "turnovers": 1
+    },
+    "players": [
+      {
+        "playerId": "1520565710329499648",
+        "passing": {
+          "attempts": 29,
+          "avgYards": 9.10345,
+          "completions": 21,
+          "interceptions": 0,
+          "netYards": 249,
+          "rating": 111.85345,
+          "sackYards": 15,
+          "sacks": 2,
+          "touchdowns": 1,
+          "yards": 264
+        },
+        "rushing": {
+          "attempts": 5,
+          "avgYards": 5.6,
+          "longest": 11,
+          "touchdowns": 0,
+          "yards": 28
+        },
+        "receiving": {
+          "avgYards": 3,
+          "longest": 3,
+          "receptions": 1,
+          "targets": 1,
+          "touchdowns": 0,
+          "yards": 3
+        },
+        "defense": {
+          "combined": 8,
+          "forcedFumbles": 0,
+          "interceptions": 0,
+          "passesDefended": 0,
+          "sacks": 0.5,
+          "tackles": 6,
+          "tacklesForLoss": 0
+        },
+        "fumbles": {
+          "lost": 1,
+          "opponentRecoveryTouchdowns": 0,
+          "ownRecoveryTouchdowns": 0
+        },
+        "kickReturns": {
+          "avgYards": 24,
+          "longest": 24,
+          "returns": 1,
+          "touchdowns": 0,
+          "yards": 24
+        },
+        "puntReturns": {
+          "avgYards": 24,
+          "longest": 24,
+          "returns": 1,
+          "touchdowns": 0,
+          "yards": 24
+        },
+        "interceptionReturns": {
+          "avgYards": 24,
+          "longest": 24,
+          "returns": 1,
+          "touchdowns": 0,
+          "yards": 24
+        },
+        "punts": {
+          "attempts": 4,
+          "avgNetYards": 47.8,
+          "avgYards": 47.75,
+          "inside20": 0,
+          "longest": 49,
+          "yards": 191
+        },
+        "fieldGoals": {
+          "attempts": 1,
+          "longest": 33,
+          "made": 1
+        },
+        "extraPoints": {
+          "attempts": 3,
+          "made": 2
+        },
+        "conversions": {
+          "defenseSuccesses": 0,
+          "passSuccesses": 1,
+          "rushSuccesses": 0,
+          "turnoverSuccesses": 0
+        }
+      }
+    ]
+  },
+  "away": {
+    "teamId": "689566294702555136",
+    "totals": {
+      "firstDowns": 20,
+      "thirdDowns": {
+        "attempts": 14,
+        "successes": 7
+      },
+      "fumbles": {
+        "lost": 1,
+        "opponentRecoveryTouchdowns": 0,
+        "ownRecoveryTouchdowns": 0
+      },
+      "passing": {
+        "attempts": 29,
+        "avgYards": 9.10345,
+        "completions": 21,
+        "interceptions": 0,
+        "netYards": 249,
+        "rating": 111.85345,
+        "sackYards": 15,
+        "sacks": 2,
+        "touchdowns": 1,
+        "yards": 264
+      },
+      "penalties": {
+        "count": 11,
+        "yards": 88
+      },
+      "rushing": {
+        "attempts": 5,
+        "avgYards": 5.6,
+        "longest": 11,
+        "touchdowns": 0,
+        "yards": 28
+      },
+      "timeOfPossessionSeconds": 1785,
+      "totalYards": 375,
+      "turnovers": 1
+    },
+    "players": [
+      {
+        "playerId": "1520565710329499648",
+        "passing": {
+          "attempts": 29,
+          "avgYards": 9.10345,
+          "completions": 21,
+          "interceptions": 0,
+          "netYards": 249,
+          "rating": 111.85345,
+          "sackYards": 15,
+          "sacks": 2,
+          "touchdowns": 1,
+          "yards": 264
+        },
+        "rushing": {
+          "attempts": 5,
+          "avgYards": 5.6,
+          "longest": 11,
+          "touchdowns": 0,
+          "yards": 28
+        },
+        "receiving": {
+          "avgYards": 3,
+          "longest": 3,
+          "receptions": 1,
+          "targets": 1,
+          "touchdowns": 0,
+          "yards": 3
+        },
+        "defense": {
+          "combined": 8,
+          "forcedFumbles": 0,
+          "interceptions": 0,
+          "passesDefended": 0,
+          "sacks": 0.5,
+          "tackles": 6,
+          "tacklesForLoss": 0
+        },
+        "fumbles": {
+          "lost": 1,
+          "opponentRecoveryTouchdowns": 0,
+          "ownRecoveryTouchdowns": 0
+        },
+        "kickReturns": {
+          "avgYards": 24,
+          "longest": 24,
+          "returns": 1,
+          "touchdowns": 0,
+          "yards": 24
+        },
+        "puntReturns": {
+          "avgYards": 24,
+          "longest": 24,
+          "returns": 1,
+          "touchdowns": 0,
+          "yards": 24
+        },
+        "interceptionReturns": {
+          "avgYards": 24,
+          "longest": 24,
+          "returns": 1,
+          "touchdowns": 0,
+          "yards": 24
+        },
+        "punts": {
+          "attempts": 4,
+          "avgNetYards": 47.8,
+          "avgYards": 47.75,
+          "inside20": 0,
+          "longest": 49,
+          "yards": 191
+        },
+        "fieldGoals": {
+          "attempts": 1,
+          "longest": 33,
+          "made": 1
+        },
+        "extraPoints": {
+          "attempts": 3,
+          "made": 2
+        },
+        "conversions": {
+          "defenseSuccesses": 0,
+          "passSuccesses": 1,
+          "rushSuccesses": 0,
+          "turnoverSuccesses": 0
+        }
+      }
+    ]
+  },
+  "teams": {
+    "689566294702555136": {
+      "id": "689566294702555136",
+      "name": "San Francisco 49ers",
+      "shortName": "49ers",
+      "abbreviation": "SF",
+      "alternateId": "f0e724b0-4cbf-495a-be47-013907608da9",
+      "location": "Virginia Tech",
+      "colors": [
+        {
+          "r": 170,
+          "g": 0,
+          "b": 0
+        }
+      ],
+      "logos": {
+        "default": "https://pbs.twimg.com/semantic_core_img/2094846255792873472/BUi2WqsC?format=png&name=orig",
+        "light": "https://pbs.twimg.com/semantic_core_img/2094841642129739776/YCBRBHV5?format=png&name=orig",
+        "dark": "https://pbs.twimg.com/semantic_core_img/2094848191451598848/82O7RY0H?format=png&name=orig"
+      },
+      "xUserId": "43403778"
+    }
+  },
+  "players": {
+    "1520565710329499648": {
+      "id": "1520565710329499648",
+      "teamId": "689566294702555136",
+      "name": "Brock Purdy",
+      "shortName": "B.Purdy",
+      "jersey": "13",
+      "position": "QB",
+      "college": "Iowa State",
+      "birthPlace": "Gilbert, AZ, USA",
+      "birthDate": "1999-12-27",
+      "headshots": {
+        "original": "https://ton.twimg.com/twitter-assets/sports-product/headshots/nfl/1520565710329499648_large_c96c3d47bd.png",
+        "large": "https://pbs.twimg.com/semantic_core_img/1960525277903106048/qEOJWYP6?format=png&name=orig",
+        "medium": "https://pbs.twimg.com/semantic_core_img/1960514226075602944/OZ6rz5aH?format=png&name=orig",
+        "small": "https://pbs.twimg.com/semantic_core_img/1960202905849405441/OnS0Xdd9?format=png&name=orig"
+      },
+      "xUser": {
+        "id": "723177170382647296",
+        "username": "brockpurdy13",
+        "blueVerified": true
+      }
+    }
+  }
+}

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Monitors add post monitors under `Monitors.Posts`, with `New`, `Get`, `Update`, `List`, `Delete` and the hourly `GetMetrics`. Each returns `PostMonitor` or `PostMonitorMetrics`.
+- Events carry `PostID`, `PostURL`, `AuthorID` and `AuthorUsername` for post events, and `EventListParams` filters by `PostMonitorID`.
+- `X.Sports` adds the NFL & college football reads `ListGames`, `GetScoreboard`, `GetBoxScore` and `GetPlays`.
 - Posts and embedded posts at every depth carry `SoftIntervention`, the label X shows under a post whose reach it limits. It is 1 shared `shared.SoftIntervention` type with `DisplayType`, `EngagementNudge`, `Text` and `URL`. `Text` is its own `shared.SoftInterventionText` type with `Text`, `Rtl` and `Entities`.
 - Every request sends `X-Xquik-SDK: go` beside the headers it already sends.
 - Communities add the analytics read with `GetAnalytics`.

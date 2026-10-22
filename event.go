@@ -92,7 +92,7 @@ type Event struct {
 	MonitorID string `json:"monitorId" api:"required"`
 	// Source monitor type.
 	//
-	// Any of "account", "keyword".
+	// Any of "account", "keyword", "post".
 	MonitorType EventMonitorType `json:"monitorType" api:"required"`
 	OccurredAt  time.Time        `json:"occurredAt" api:"required" format:"date-time"`
 	// Type of monitor event fired when account activity occurs.
@@ -107,11 +107,19 @@ type Event struct {
 	// "space.started", "following.added", "following.removed", "follower.added",
 	// "follower.removed", "profile.followers.changed", "profile.following.changed".
 	Type shared.EventType `json:"type" api:"required"`
+	// Permanent X user ID of the monitored post's author, present for post events.
+	AuthorID string `json:"authorId"`
+	// Username of the monitored post's author, present for post events.
+	AuthorUsername string `json:"authorUsername"`
 	// Keyword monitor ID, present for keyword monitor events.
 	KeywordMonitorID string `json:"keywordMonitorId"`
 	// Your monitor label when Xquik created the event, present when set. A rename
 	// leaves the event's label unchanged.
 	MonitorName string `json:"monitorName"`
+	// ID of the monitored post, present for post events.
+	PostID string `json:"postId"`
+	// Link to the monitored post, present for post events.
+	PostURL string `json:"postUrl" format:"uri"`
 	// Keyword query, present for keyword monitor events.
 	Query string `json:"query"`
 	// Account username, present for account monitor events.
@@ -127,8 +135,12 @@ type Event struct {
 		MonitorType      respjson.Field
 		OccurredAt       respjson.Field
 		Type             respjson.Field
+		AuthorID         respjson.Field
+		AuthorUsername   respjson.Field
 		KeywordMonitorID respjson.Field
 		MonitorName      respjson.Field
+		PostID           respjson.Field
+		PostURL          respjson.Field
 		Query            respjson.Field
 		Username         respjson.Field
 		XUserID          respjson.Field
@@ -149,6 +161,7 @@ type EventMonitorType string
 const (
 	EventMonitorTypeAccount EventMonitorType = "account"
 	EventMonitorTypeKeyword EventMonitorType = "keyword"
+	EventMonitorTypePost    EventMonitorType = "post"
 )
 
 // Full monitor event including payload data and optional X event ID.
@@ -251,6 +264,8 @@ type EventListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Account monitor ID.
 	MonitorID param.Opt[string] `query:"monitorId,omitzero" json:"-"`
+	// Post monitor ID. The post_monitor_id alias also works.
+	PostMonitorID param.Opt[string] `query:"postMonitorId,omitzero" json:"-"`
 	// Filter events by type
 	//
 	// Any of "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote",
