@@ -1065,7 +1065,10 @@ type EmbeddedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge `json:"subscriberBadge"`
@@ -1074,7 +1077,7 @@ type EmbeddedTweet struct {
 	Tombstone           EmbeddedTweetTombstone `json:"tombstone"`
 	Type                string                 `json:"type"`
 	UnavailableAuthorID string                 `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -1140,6 +1143,7 @@ type EmbeddedTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -2229,7 +2233,10 @@ type EmbeddedTweetQuotedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetQuotedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge            `json:"subscriberBadge"`
@@ -2238,7 +2245,7 @@ type EmbeddedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                            `json:"type"`
 	UnavailableAuthorID string                            `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -2304,6 +2311,7 @@ type EmbeddedTweetQuotedTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -3401,7 +3409,10 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                       `json:"subscriberBadge"`
@@ -3410,7 +3421,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                       `json:"type"`
 	UnavailableAuthorID string                                       `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -3476,6 +3487,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -4601,7 +4613,10 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                  `json:"subscriberBadge"`
@@ -4610,7 +4625,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                  `json:"type"`
 	UnavailableAuthorID string                                                  `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -4674,6 +4689,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -6091,7 +6107,10 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                     `json:"subscriberBadge"`
@@ -6100,7 +6119,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -6164,6 +6183,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -7795,7 +7815,10 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                          `json:"subscriberBadge"`
@@ -7804,7 +7827,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                          `json:"type"`
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -7870,6 +7893,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -9013,7 +9037,10 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                     `json:"subscriberBadge"`
@@ -9022,7 +9049,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -9086,6 +9113,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -10509,7 +10537,10 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                        `json:"subscriberBadge"`
@@ -10518,7 +10549,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -10582,6 +10613,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -12417,7 +12449,10 @@ type EmbeddedTweetRetweetedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetRetweetedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge               `json:"subscriberBadge"`
@@ -12426,7 +12461,7 @@ type EmbeddedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                               `json:"type"`
 	UnavailableAuthorID string                               `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -12492,6 +12527,7 @@ type EmbeddedTweetRetweetedTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -13593,7 +13629,10 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                          `json:"subscriberBadge"`
@@ -13602,7 +13641,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                          `json:"type"`
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -13668,6 +13707,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -14811,7 +14851,10 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                     `json:"subscriberBadge"`
@@ -14820,7 +14863,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                     `json:"type"`
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -14884,6 +14927,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -16307,7 +16351,10 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                        `json:"subscriberBadge"`
@@ -16316,7 +16363,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -16380,6 +16427,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -18017,7 +18065,10 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                             `json:"subscriberBadge"`
@@ -18026,7 +18077,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                             `json:"type"`
 	UnavailableAuthorID string                                             `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -18092,6 +18143,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -19243,7 +19295,10 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                        `json:"subscriberBadge"`
@@ -19252,7 +19307,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone `json:"tombstone"`
 	Type                string                                                        `json:"type"`
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -19316,6 +19371,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -20743,7 +20799,10 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext   EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext `json:"sportsContext"`
 	SubscriberBadge SearchTweetSubscriberBadge                                           `json:"subscriberBadge"`
@@ -20752,7 +20811,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	Tombstone           EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone `json:"tombstone"`
 	Type                string                                                           `json:"type"`
 	UnavailableAuthorID string                                                           `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -20816,6 +20875,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 		ReactionContext        respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -23001,7 +23061,10 @@ type SearchTweet struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention SoftIntervention `json:"softIntervention"`
+	Source           string           `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext SearchTweetSportsContext `json:"sportsContext"`
 	// The Subscriber badge X shows on a reply. The reply's author subscribes to the
@@ -23016,7 +23079,7 @@ type SearchTweet struct {
 	Type      string               `json:"type"`
 	// The author's ID when X withholds the author's profile.
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -23082,6 +23145,7 @@ type SearchTweet struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field
@@ -24731,6 +24795,75 @@ type SearchTweetTombstoneTextEntityRef struct {
 // Returns the unmodified JSON received from the API
 func (r SearchTweetTombstoneTextEntityRef) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetTombstoneTextEntityRef) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The label X shows under a post whose reach it limits. It links to the page that
+// explains it.
+type SoftIntervention struct {
+	// The label's kind. `Fosnr` marks a post X keeps up but shows to fewer people.
+	DisplayType string `json:"displayType"`
+	// Whether X prompts readers before they engage with the post.
+	EngagementNudge bool                 `json:"engagementNudge"`
+	Text            SoftInterventionText `json:"text"`
+	// The page that explains the label.
+	URL SoftInterventionURL `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayType     respjson.Field
+		EngagementNudge respjson.Field
+		Text            respjson.Field
+		URL             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SoftIntervention) RawJSON() string { return r.JSON.raw }
+func (r *SoftIntervention) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SoftInterventionText struct {
+	// Links inside the label, by character range.
+	Entities []SearchTweetInterstitialTextEntity `json:"entities"`
+	// Whether the label reads right to left.
+	Rtl bool `json:"rtl"`
+	// The label's text.
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Rtl         respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SoftInterventionText) RawJSON() string { return r.JSON.raw }
+func (r *SoftInterventionText) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The page that explains the label.
+type SoftInterventionURL struct {
+	URL     string `json:"url"`
+	URLType string `json:"urlType"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		URLType     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SoftInterventionURL) RawJSON() string { return r.JSON.raw }
+func (r *SoftInterventionURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

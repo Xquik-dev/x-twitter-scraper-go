@@ -170,6 +170,17 @@ var tweetFields = []fieldValue{
 	{"QuotedTweetPermalink.ExpandedURL", "https://x.com/NASA/status/2102761519985332000"},
 	{"QuotedTweetPermalink.URL", "https://t.co/quoted123"},
 	{"QuotedTweetUnavailable.Reason", "Protected"},
+	{"SoftIntervention.DisplayType", "Fosnr"},
+	{"SoftIntervention.EngagementNudge", true},
+	{"SoftIntervention.Text.Entities[0].FromIndex", int64(0)},
+	{"SoftIntervention.Text.Entities[0].Ref.Type", "TimelineUrl"},
+	{"SoftIntervention.Text.Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"},
+	{"SoftIntervention.Text.Entities[0].Ref.URLType", "ExternalUrl"},
+	{"SoftIntervention.Text.Entities[0].ToIndex", int64(4)},
+	{"SoftIntervention.Text.Rtl", true},
+	{"SoftIntervention.Text.Text", "This Post may violate X's rules against Abuse."},
+	{"SoftIntervention.URL.URL", "https://help.x.com/rules-and-policies/enforcement-options"},
+	{"SoftIntervention.URL.URLType", "ExternalUrl"},
 	{"SportsContext.Competitors[0].Color", "007A33"},
 	{"SportsContext.Competitors[0].IsActive", true},
 	{"SportsContext.Competitors[0].IsWinner", true},
@@ -181,6 +192,30 @@ var tweetFields = []fieldValue{
 	{"Tombstone.Text.Entities[0].Ref.Text", "Learn more"},
 	{"UnavailableAuthorID", "783214"},
 }
+
+var _ = []shared.SoftIntervention{
+	xtwitterscraper.TweetDetail{}.SoftIntervention,
+	shared.SearchTweet{}.SoftIntervention,
+	shared.EmbeddedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetQuotedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetQuotedTweetQuotedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetQuotedTweetRetweetedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetRetweetedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetRetweetedTweetQuotedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet{}.SoftIntervention,
+	shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
+}
+
+var _ shared.SoftInterventionText = shared.SoftIntervention{}.Text
+
+var _ []shared.SearchTweetInterstitialTextEntity = shared.SoftInterventionText{}.Entities
 
 func TestSearchTweetDecodesEveryField(t *testing.T) {
 	payload, err := fixtures.ReadFile("testdata/fixtures/SearchTweet.json")

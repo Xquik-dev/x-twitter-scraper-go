@@ -27,7 +27,8 @@ import (
 
 func getDefaultHeaders() map[string]string {
 	return map[string]string{
-		"User-Agent": fmt.Sprintf("XTwitterScraper/Go %s", internal.PackageVersion),
+		"User-Agent":  fmt.Sprintf("XTwitterScraper/Go %s", internal.PackageVersion),
+		"X-Xquik-SDK": "go",
 	}
 }
 

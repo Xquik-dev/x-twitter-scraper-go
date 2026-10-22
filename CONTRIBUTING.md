@@ -6,7 +6,7 @@ Follow the shared [Xquik contribution policy][contribution-policy].
 
 ## Set Up
 
-Install Go 1.27.2, Bun, jq and uv.
+Install Go 1.27.3, Bun, jq and uv.
 
 ```sh
 ./scripts/bootstrap
@@ -21,15 +21,29 @@ go mod edit \
 
 Never commit credentials or runtime environment files.
 
-## Generated Code
+## Change the SDK by hand
 
-Most SDK files come from the public OpenAPI contract.
+Maintainers write and review every file in this repository by hand.
+No code generator runs.
 
-Preserve generated method names and response contracts.
+When the API changes, the [API coverage](#api-coverage) and [API fields](#api-fields) checks fail.
+Each failure names the operation or field that the SDK lacks.
+Add each one in the style of the code around it.
 
-Avoid manual generated-file changes when a generator fix exists.
+1. Add the method to its `Service` type in the root package, such as `XTweetService` in `xtweet.go`.
+2. Add its params and response types beside it. A model that several resources share goes in `shared/shared.go`, with an alias in `aliases.go`.
+3. Give each response type a `JSON` struct with 1 `respjson.Field` per field, and the `RawJSON` and `UnmarshalJSON` methods the other models have.
+4. List the method and its types in `api.md`.
+5. Add tests that call the method against a mocked HTTP response.
+6. Add a line to the `Unreleased` section of `CHANGELOG.md`.
 
-Place stable examples outside generated directories.
+Keep every change additive.
+Never remove or rename a public method, parameter, type, field, or the `xtwitterscraper` package.
+To rename something, add the new name beside the old one and keep the old one working.
+
+Each request sends `X-Xquik-SDK: go`, which Xquik reads to count SDK requests.
+
+Publish each release from a local Mac, as [Release](#release) describes.
 
 ## Verify Changes
 

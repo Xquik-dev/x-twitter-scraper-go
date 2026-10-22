@@ -7,12 +7,10 @@
     ".devcontainer",
     ".github",
     "bin",
-    "examples",
     "scripts"
   ],
   "excludeFiles": [
     ".release-please-manifest.json",
-    ".stats.yml",
     "Brewfile",
     "CHANGELOG.md",
     "CODE_OF_CONDUCT.md",
@@ -33,7 +31,7 @@
     "Use xtweet.go for tweet search, posting, replies, retweeters, quotes, threads, and tweet retrieval workflows.",
     "Use xuser.go for user lookup, user search, profile tweets, followers, following, likes, media, and mentions workflows.",
     "Use xmedia.go, monitor.go, webhook.go, extraction.go, and draw.go for media, monitoring, webhook, bulk extraction, and giveaway draw workflows.",
-    "Use api.md for generated method coverage and pkg.go.dev for Go type signatures.",
+    "Use api.md for method coverage and pkg.go.dev for Go type signatures.",
     "Never expose API keys, bearer tokens, webhook signing values, user credentials, or local runtime secrets in examples, logs, or commits."
   ],
   "url": "https://context7.com/xquik-dev/x-twitter-scraper-go",

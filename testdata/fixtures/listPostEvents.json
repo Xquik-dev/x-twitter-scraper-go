@@ -1,0 +1,20 @@
+{
+  "events": [
+    {
+      "id": "9001",
+      "type": "post.reply.new",
+      "monitorId": "31",
+      "monitorType": "post",
+      "monitorName": "Launch post",
+      "occurredAt": "2026-10-22T11:05:00.000Z",
+      "postId": "2104984505677430978",
+      "postUrl": "https://x.com/xquik/status/2104984505677430978",
+      "authorId": "1661816432185823232",
+      "authorUsername": "xquik",
+      "data": {
+        "replyId": "2104990000000000000"
+      }
+    }
+  ],
+  "hasMore": false
+}

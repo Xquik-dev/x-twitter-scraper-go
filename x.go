@@ -60,6 +60,8 @@ type XService struct {
 	CommunityNotes XCommunityNoteService
 	// X Space details, host, and speakers
 	Spaces XSpaceService
+	// NFL & college football games, scoreboards, box scores & play-by-play
+	Sports XSportService
 }
 
 // NewXService generates a new service that applies the given options to each
@@ -86,6 +88,7 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 	r.Broadcasts = NewXBroadcastService(opts...)
 	r.CommunityNotes = NewXCommunityNoteService(opts...)
 	r.Spaces = NewXSpaceService(opts...)
+	r.Sports = NewXSportService(opts...)
 	return
 }
 

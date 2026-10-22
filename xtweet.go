@@ -412,7 +412,10 @@ type TweetDetail struct {
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
 	Scopes map[string]any `json:"scopes"`
-	Source string         `json:"source"`
+	// The label X shows under a post whose reach it limits. It links to the page
+	// that explains it.
+	SoftIntervention shared.SoftIntervention `json:"softIntervention"`
+	Source           string                  `json:"source"`
 	// Sports game context attached to the post, when available.
 	SportsContext TweetDetailSportsContext `json:"sportsContext"`
 	// The Subscriber badge X shows on a reply. The reply's author subscribes to the
@@ -427,7 +430,7 @@ type TweetDetail struct {
 	Type      string               `json:"type"`
 	// The author's ID when X withholds the author's profile.
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
-	// X did not send these counts, so each 0 means unknown.
+	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []shared.TweetUnknownCount `json:"unknownCounts"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
@@ -493,6 +496,7 @@ type TweetDetail struct {
 		RetweetedTweet         respjson.Field
 		RetweetedAt            respjson.Field
 		Scopes                 respjson.Field
+		SoftIntervention       respjson.Field
 		Source                 respjson.Field
 		SportsContext          respjson.Field
 		SubscriberBadge        respjson.Field

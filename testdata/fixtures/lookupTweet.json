@@ -346,6 +346,29 @@
           }
         ]
       }
+    },
+    "softIntervention": {
+      "displayType": "Fosnr",
+      "engagementNudge": true,
+      "text": {
+        "text": "This Post may violate X's rules against Abuse.",
+        "rtl": true,
+        "entities": [
+          {
+            "fromIndex": 0,
+            "toIndex": 4,
+            "ref": {
+              "type": "TimelineUrl",
+              "url": "https://help.x.com/rules-and-policies/public-interest",
+              "urlType": "ExternalUrl"
+            }
+          }
+        ]
+      },
+      "url": {
+        "url": "https://help.x.com/rules-and-policies/enforcement-options",
+        "urlType": "ExternalUrl"
+      }
     }
   },
   "author": {
