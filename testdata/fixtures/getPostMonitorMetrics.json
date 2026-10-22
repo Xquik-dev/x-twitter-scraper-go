@@ -1,0 +1,34 @@
+{
+  "hours": 12,
+  "buckets": [
+    {
+      "at": "2026-10-22T11:00:00.000Z",
+      "metrics": {
+        "views": {
+          "value": 541600,
+          "gain": 500
+        },
+        "likes": {
+          "value": 1890,
+          "gain": 5
+        },
+        "retweets": {
+          "value": 112,
+          "gain": 0
+        },
+        "replies": {
+          "value": 86,
+          "gain": 1
+        },
+        "quotes": {
+          "value": 87,
+          "gain": 0
+        },
+        "bookmarks": {
+          "value": 471,
+          "gain": 1
+        }
+      }
+    }
+  ]
+}

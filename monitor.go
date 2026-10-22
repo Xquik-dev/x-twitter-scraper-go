@@ -33,6 +33,8 @@ type MonitorService struct {
 	options []option.RequestOption
 	// X account monitoring with 1-second checks
 	Keywords MonitorKeywordService
+	// Post monitoring with replies, quotes, edits, deletion & 6 metrics
+	Posts MonitorPostService
 }
 
 // NewMonitorService generates a new service that applies the given options to each
@@ -42,6 +44,7 @@ func NewMonitorService(opts ...option.RequestOption) (r MonitorService) {
 	r = MonitorService{}
 	r.options = opts
 	r.Keywords = NewMonitorKeywordService(opts...)
+	r.Posts = NewMonitorPostService(opts...)
 	return
 }
 
