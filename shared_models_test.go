@@ -177,6 +177,7 @@ var tweetFields = []fieldValue{
 	{"SoftIntervention.Text.Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"},
 	{"SoftIntervention.Text.Entities[0].Ref.URLType", "ExternalUrl"},
 	{"SoftIntervention.Text.Entities[0].ToIndex", int64(4)},
+	{"SoftIntervention.Text.Rtl", true},
 	{"SoftIntervention.Text.Text", "This Post may violate X's rules against Abuse."},
 	{"SoftIntervention.URL.URL", "https://help.x.com/rules-and-policies/enforcement-options"},
 	{"SoftIntervention.URL.URLType", "ExternalUrl"},
@@ -212,6 +213,8 @@ var _ = []shared.SoftIntervention{
 	shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
 }
 
+var _ shared.SoftInterventionText = shared.SoftIntervention{}.Text
+
 var _ []shared.SearchTweetInterstitialTextEntity = shared.SoftInterventionText{}.Entities
 
 func TestSearchTweetDecodesEveryField(t *testing.T) {
@@ -225,12 +228,6 @@ func TestSearchTweetDecodesEveryField(t *testing.T) {
 	}
 	expectDecoded(t, tweet)
 	expectValues(t, tweet, tweetFields)
-	var label shared.SoftInterventionText = tweet.SoftIntervention.Text
-	expectValues(t, label, []fieldValue{
-		{"Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"},
-		{"Rtl", true},
-		{"Text", "This Post may violate X's rules against Abuse."},
-	})
 }
 
 func TestResponsesDecodeEmbeddedTweetFields(t *testing.T) {
