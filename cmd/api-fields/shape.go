@@ -5,6 +5,7 @@
 package main
 
 import (
+	"maps"
 	"slices"
 )
 
@@ -16,9 +17,12 @@ const (
 	free
 	object
 	array
+	dictionary
 	scalar
 	union
 )
+
+var suffixes = map[kind]string{array: "[]", dictionary: "{}"}
 
 type flag int8
 
@@ -84,8 +88,21 @@ func (s *shape) opaque() bool {
 	return s.kind == unknown || s.kind == cycle || s.kind == free
 }
 
+func (s *shape) container() bool {
+	_, ok := suffixes[s.kind]
+	return ok
+}
+
+func itemsOf(containers []*shape) []*shape {
+	items := make([]*shape, len(containers))
+	for index, container := range containers {
+		items[index] = container.items
+	}
+	return items
+}
+
 func intersect(parts []*shape) *shape {
-	var known, unions, rest, objects, arrays []*shape
+	var known, unions, rest, objects []*shape
 	var requires []string
 	for _, part := range parts {
 		requires = append(requires, part.requires...)
@@ -103,8 +120,6 @@ func intersect(parts []*shape) *shape {
 			continue
 		case object:
 			objects = append(objects, part)
-		case array:
-			arrays = append(arrays, part)
 		}
 		rest = append(rest, part)
 	}
@@ -116,12 +131,8 @@ func intersect(parts []*shape) *shape {
 		}
 		return &shape{kind: union, variants: variants}
 	}
-	if len(arrays) == len(known) {
-		items := make([]*shape, len(arrays))
-		for index, part := range arrays {
-			items[index] = part.items
-		}
-		return &shape{kind: array, items: intersect(items)}
+	if first := known[0]; first.container() && !slices.ContainsFunc(known, func(part *shape) bool { return part.kind != first.kind }) {
+		return &shape{kind: first.kind, items: intersect(itemsOf(known))}
 	}
 	if len(objects) == 0 {
 		return known[0]
@@ -160,8 +171,8 @@ func canonical(s *shape) *shape {
 			fields[name] = current
 		}
 		return &shape{kind: object, fields: fields, open: s.open}
-	case array:
-		return &shape{kind: array, items: canonical(s.items)}
+	case array, dictionary:
+		return &shape{kind: s.kind, items: canonical(s.items)}
 	case union:
 		variants := make([]*shape, len(s.variants))
 		for index, variant := range s.variants {
@@ -194,13 +205,13 @@ func merge(variants []*shape) *shape {
 		return opaque(free)
 	case len(groups[object]) > 0:
 		return mergeObjects(groups[object])
-	case len(groups[array]) > 0:
-		var items []*shape
-		for _, variant := range groups[array] {
-			items = append(items, variant.items)
+	}
+	for _, container := range slices.Sorted(maps.Keys(suffixes)) {
+		if group := groups[container]; len(group) > 0 {
+			return &shape{kind: container, items: merge(itemsOf(group))}
 		}
-		return &shape{kind: array, items: merge(items)}
-	case len(groups[scalar]) > 0:
+	}
+	if len(groups[scalar]) > 0 {
 		var values []string
 		for _, variant := range groups[scalar] {
 			if variant.enum == nil {

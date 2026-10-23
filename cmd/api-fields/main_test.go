@@ -478,6 +478,50 @@ func TestDifferencesFail(t *testing.T) {
 	}
 }
 
+func TestMapValueFields(t *testing.T) {
+	const next = "Fix each field above in the SDK, or list it in accepted-field-differences.json with a reason."
+	model := strings.Replace(modelSource, "Extra  map[string]any ", "Extra  map[string]TweetMedia ", 1)
+	typed := sdkTree("[]", map[string]string{"model.go": model})
+	typedWithAlt := sdkTree("[]", map[string]string{"model.go": strings.Replace(model, "type TweetMedia struct {\n", "type TweetMedia struct {\n\tAlt string `json:\"alt\"`\n", 1)})
+	withExtra := func(extra map[string]any) map[string]any {
+		spec := baseSpec()
+		lookupResponse(spec)["extra"] = extra
+		return spec
+	}
+	mapOf := func(values any) map[string]any {
+		return map[string]any{"type": "object", "additionalProperties": values}
+	}
+	media := objectSchema([]string{"url"}, map[string]any{"url": str()})
+	mediaWithAlt := objectSchema([]string{"url"}, map[string]any{"url": str(), "alt": str()})
+	t.Run("missing value field", func(t *testing.T) {
+		expectFailures(t, typed, withExtra(mapOf(mediaWithAlt)), "GET /api/v1/x/tweets/{tweetId} response missing extra{}.alt", next)
+	})
+	t.Run("extra value field", func(t *testing.T) {
+		expectFailures(t, typedWithAlt, withExtra(mapOf(media)), "GET /api/v1/x/tweets/{tweetId} response extra extra{}.alt", "GET /api/v1/x/tweets/{tweetId} response extra media[].alt", next)
+	})
+	for keyword, combine := range map[string]string{"allOf": "intersected", "anyOf": "merged"} {
+		t.Run(combine+" value fields", func(t *testing.T) {
+			expectFailures(t, typed, withExtra(map[string]any{keyword: []any{mapOf(media), mapOf(mediaWithAlt)}}), "GET /api/v1/x/tweets/{tweetId} response missing extra{}.alt", next)
+		})
+	}
+	for name, test := range map[string]struct {
+		root  fs.FS
+		extra map[string]any
+	}{
+		"matching value fields":           {typed, mapOf(media)},
+		"spec values allow anything":      {typed, mapOf(true)},
+		"spec values are an empty schema": {typed, mapOf(map[string]any{})},
+		"untyped SDK values":              {sdkTree("[]", nil), media},
+	} {
+		t.Run(name, func(t *testing.T) {
+			code, _, failures := runWith(t, test.root, productionBaseURL, writeSpec(t, withExtra(test.extra)))
+			if code != 0 || failures != "" {
+				t.Fatalf("code = %d, failures = %q", code, failures)
+			}
+		})
+	}
+}
+
 func TestSchemaRulesKeepMatchingFieldsQuiet(t *testing.T) {
 	const summary = "The SDK's fields match the API for 5 operations, and accepted-field-differences.json lists 0 accepted differences."
 	tests := []struct {
