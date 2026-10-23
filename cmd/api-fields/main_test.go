@@ -498,7 +498,7 @@ func TestMapValueFields(t *testing.T) {
 			mapOf := func(required []string, properties map[string]any) map[string]any {
 				return map[string]any{"type": "object", "additionalProperties": objectSchema(required, properties)}
 			}
-			lookupResponse(spec)["extra"] = map[string]any{keyword: []any{mapOf([]string{"url"}, map[string]any{"url": str()}), mapOf(nil, map[string]any{"alt": str()})}}
+			lookupResponse(spec)["extra"] = map[string]any{keyword: []any{mapOf([]string{"url"}, map[string]any{"url": str()}), mapOf([]string{"url"}, map[string]any{"url": str(), "alt": str()})}}
 			expectFailures(t, typed, spec, "GET /api/v1/x/tweets/{tweetId} response missing extra{}.alt", next)
 		})
 	}
