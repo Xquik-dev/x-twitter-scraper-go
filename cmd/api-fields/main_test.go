@@ -478,6 +478,28 @@ func TestDifferencesFail(t *testing.T) {
 	}
 }
 
+func TestMapValueFields(t *testing.T) {
+	const next = "Fix each field above in the SDK, or list it in accepted-field-differences.json with a reason."
+	typed := sdkTree("[]", map[string]string{"model.go": strings.Replace(modelSource, "Extra  map[string]any ", "Extra  map[string]TweetMedia ", 1)})
+	values := func(properties map[string]any) map[string]any {
+		spec := baseSpec()
+		lookupResponse(spec)["extra"] = map[string]any{"type": "object", "additionalProperties": objectSchema([]string{"url"}, properties)}
+		return spec
+	}
+	t.Run("missing value field", func(t *testing.T) {
+		expectFailures(t, typed, values(map[string]any{"url": str(), "alt": str()}), "GET /api/v1/x/tweets/{tweetId} response missing extra{}.alt", next)
+	})
+	t.Run("extra value field", func(t *testing.T) {
+		expectFailures(t, typed, values(map[string]any{}), "GET /api/v1/x/tweets/{tweetId} response extra extra{}.url", next)
+	})
+	t.Run("matching value fields", func(t *testing.T) {
+		code, _, failures := runWith(t, typed, productionBaseURL, writeSpec(t, values(map[string]any{"url": str()})))
+		if code != 0 || failures != "" {
+			t.Fatalf("code = %d, failures = %q", code, failures)
+		}
+	})
+}
+
 func TestSchemaRulesKeepMatchingFieldsQuiet(t *testing.T) {
 	const summary = "The SDK's fields match the API for 5 operations, and accepted-field-differences.json lists 0 accepted differences."
 	tests := []struct {
