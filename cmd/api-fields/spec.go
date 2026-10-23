@@ -163,6 +163,10 @@ func (r specReader) plain(schema map[string]any, stack []string) (*shape, bool) 
 	properties, _ := schema["properties"].(map[string]any)
 	if slices.Contains(names, "object") || hasProperties {
 		if len(properties) == 0 {
+			if values, ok := schema["additionalProperties"].(map[string]any); ok && schema["required"] == nil {
+				value, _ := r.shape(values, stack)
+				return &shape{kind: dictionary, values: value}, nullable
+			}
 			return opaque(free), nullable
 		}
 		return r.object(schema, properties, stack), nullable

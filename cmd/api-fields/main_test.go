@@ -492,6 +492,16 @@ func TestMapValueFields(t *testing.T) {
 	t.Run("extra value field", func(t *testing.T) {
 		expectFailures(t, typed, values(map[string]any{}), "GET /api/v1/x/tweets/{tweetId} response extra extra{}.url", next)
 	})
+	for keyword, combine := range map[string]string{"allOf": "intersected", "oneOf": "merged"} {
+		t.Run(combine+" value fields", func(t *testing.T) {
+			spec := baseSpec()
+			mapOf := func(required []string, properties map[string]any) map[string]any {
+				return map[string]any{"type": "object", "additionalProperties": objectSchema(required, properties)}
+			}
+			lookupResponse(spec)["extra"] = map[string]any{keyword: []any{mapOf([]string{"url"}, map[string]any{"url": str()}), mapOf(nil, map[string]any{"alt": str()})}}
+			expectFailures(t, typed, spec, "GET /api/v1/x/tweets/{tweetId} response missing extra{}.alt", next)
+		})
+	}
 	t.Run("matching value fields", func(t *testing.T) {
 		code, _, failures := runWith(t, typed, productionBaseURL, writeSpec(t, values(map[string]any{"url": str()})))
 		if code != 0 || failures != "" {

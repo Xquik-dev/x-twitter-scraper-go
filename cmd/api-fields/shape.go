@@ -16,6 +16,7 @@ const (
 	free
 	object
 	array
+	dictionary
 	scalar
 	union
 )
@@ -40,6 +41,7 @@ type shape struct {
 	fields   map[string]field
 	open     bool
 	items    *shape
+	values   *shape
 	enum     []string
 	variants []*shape
 	requires []string
@@ -85,7 +87,7 @@ func (s *shape) opaque() bool {
 }
 
 func intersect(parts []*shape) *shape {
-	var known, unions, rest, objects, arrays []*shape
+	var known, unions, rest, objects, arrays, dictionaries []*shape
 	var requires []string
 	for _, part := range parts {
 		requires = append(requires, part.requires...)
@@ -105,6 +107,8 @@ func intersect(parts []*shape) *shape {
 			objects = append(objects, part)
 		case array:
 			arrays = append(arrays, part)
+		case dictionary:
+			dictionaries = append(dictionaries, part)
 		}
 		rest = append(rest, part)
 	}
@@ -122,6 +126,13 @@ func intersect(parts []*shape) *shape {
 			items[index] = part.items
 		}
 		return &shape{kind: array, items: intersect(items)}
+	}
+	if len(dictionaries) == len(known) {
+		values := make([]*shape, len(dictionaries))
+		for index, part := range dictionaries {
+			values[index] = part.values
+		}
+		return &shape{kind: dictionary, values: intersect(values)}
 	}
 	if len(objects) == 0 {
 		return known[0]
@@ -162,6 +173,8 @@ func canonical(s *shape) *shape {
 		return &shape{kind: object, fields: fields, open: s.open}
 	case array:
 		return &shape{kind: array, items: canonical(s.items)}
+	case dictionary:
+		return &shape{kind: dictionary, values: canonical(s.values)}
 	case union:
 		variants := make([]*shape, len(s.variants))
 		for index, variant := range s.variants {
@@ -200,6 +213,12 @@ func merge(variants []*shape) *shape {
 			items = append(items, variant.items)
 		}
 		return &shape{kind: array, items: merge(items)}
+	case len(groups[dictionary]) > 0:
+		var values []*shape
+		for _, variant := range groups[dictionary] {
+			values = append(values, variant.values)
+		}
+		return &shape{kind: dictionary, values: merge(values)}
 	case len(groups[scalar]) > 0:
 		var values []string
 		for _, variant := range groups[scalar] {
