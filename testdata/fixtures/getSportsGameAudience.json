@@ -1,0 +1,58 @@
+{
+  "id": "2055084502741811200",
+  "league": "nfl",
+  "viewers": {
+    "count": 155,
+    "asOf": "2026-10-20T06:19:50.000Z"
+  },
+  "teamPicks": {
+    "total": 7976,
+    "teams": [
+      {
+        "teamId": "689566294702555136",
+        "count": 4998
+      },
+      {
+        "teamId": "689566304366292992",
+        "count": 2978
+      }
+    ]
+  },
+  "chat": {
+    "available": false,
+    "broadcastId": "nfl-2055084502741811200",
+    "opensIn": {
+      "days": 0,
+      "hours": 12,
+      "minutes": 2
+    }
+  },
+  "teams": {
+    "689566294702555136": {
+      "id": "689566294702555136",
+      "name": "San Francisco 49ers",
+      "shortName": "49ers",
+      "abbreviation": "SF",
+      "alternateId": "f0e724b0-4cbf-495a-be47-013907608da9",
+      "location": "Virginia Tech",
+      "colors": [
+        {
+          "r": 170,
+          "g": 0,
+          "b": 0
+        }
+      ],
+      "logos": {
+        "default": "https://pbs.twimg.com/semantic_core_img/2094846255792873472/BUi2WqsC?format=png&name=orig",
+        "light": "https://pbs.twimg.com/semantic_core_img/2094841642129739776/YCBRBHV5?format=png&name=orig",
+        "dark": "https://pbs.twimg.com/semantic_core_img/2094848191451598848/82O7RY0H?format=png&name=orig"
+      },
+      "xUserId": "43403778",
+      "record": {
+        "wins": 7,
+        "losses": 1,
+        "ties": 0
+      }
+    }
+  }
+}

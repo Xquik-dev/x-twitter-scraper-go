@@ -113,6 +113,30 @@ func TestXSportGetPlaysFixture(t *testing.T) {
 	}
 }
 
+func TestXSportGetAudienceFixture(t *testing.T) {
+	client, request := fixtureClient(t, "getSportsGameAudience.json")
+	res, err := client.X.Sports.GetAudience(context.Background(), "2055084502741811200", xtwitterscraper.XSportGetAudienceParams{
+		League: "ncaafb",
+		Fields: xtwitterscraper.String("viewers,chat"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodGet, "/api/v1/x/sports/ncaafb/games/2055084502741811200/audience", "fields=viewers%2Cchat")
+	expectDecoded(t, res)
+	team := res.Teams["689566294702555136"]
+	if res.Viewers.Count != 155 ||
+		!res.Viewers.AsOf.Equal(time.Date(2026, 10, 20, 6, 19, 50, 0, time.UTC)) ||
+		res.TeamPicks.Total != 7976 ||
+		res.TeamPicks.Teams[1].Count != 2978 ||
+		res.Chat.Available ||
+		res.Chat.OpensIn.Hours != 12 ||
+		team.Location != "Virginia Tech" ||
+		team.Record.Wins != 7 {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+}
+
 func TestXSportRejectsMissingPathParams(t *testing.T) {
 	client, _ := fixtureClient(t, "getFootballScoreboard.json")
 	ctx := context.Background()
@@ -127,5 +151,11 @@ func TestXSportRejectsMissingPathParams(t *testing.T) {
 	}
 	if _, err := client.X.Sports.GetPlays(ctx, "", xtwitterscraper.XSportGetPlaysParams{League: "nfl"}); err == nil {
 		t.Fatal("GetPlays sent a request without an id")
+	}
+	if _, err := client.X.Sports.GetAudience(ctx, "1", xtwitterscraper.XSportGetAudienceParams{}); err == nil {
+		t.Fatal("GetAudience sent a request without a league")
+	}
+	if _, err := client.X.Sports.GetAudience(ctx, "", xtwitterscraper.XSportGetAudienceParams{League: "nfl"}); err == nil {
+		t.Fatal("GetAudience sent a request without an id")
 	}
 }
