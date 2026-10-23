@@ -144,7 +144,7 @@ func (r sdkReader) shape(pkg string, expression ast.Expr, tag string, stack []st
 		return &shape{kind: array, items: r.shape(pkg, typed.Elt, tag, stack)}
 	case *ast.MapType:
 		if values := r.shape(pkg, typed.Value, tag, stack); values.kind != unknown {
-			return &shape{kind: dictionary, values: values}
+			return &shape{kind: dictionary, items: values}
 		}
 		return opaque(free)
 	case *ast.InterfaceType:

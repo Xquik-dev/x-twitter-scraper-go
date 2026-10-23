@@ -67,10 +67,8 @@ func (d differences) compare(spec, sdk *shape, wirePath, side string) {
 		d.add(side, "missing", bodyPath(wirePath))
 	case spec.kind == object:
 		d.compareFields(spec, sdk, wirePath, side)
-	case spec.kind == array:
-		d.compare(spec.items, sdk.items, wirePath+"[]", side)
-	case spec.kind == dictionary:
-		d.compare(spec.values, sdk.values, wirePath+"{}", side)
+	case spec.container():
+		d.compare(spec.items, sdk.items, wirePath+suffixes[spec.kind], side)
 	case spec.enum != nil && sdk.enum != nil && !slices.Equal(spec.enum, sdk.enum):
 		d.add(side, "enum", bodyPath(wirePath))
 	}
