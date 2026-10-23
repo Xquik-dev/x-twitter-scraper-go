@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// NFL & college football games, scoreboards, box scores & play-by-play
+// NFL & college football games, scoreboards, plays, box scores & audiences
 //
 // XSportService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -103,6 +103,23 @@ func (r *XSportService) GetPlays(ctx context.Context, id string, params XSportGe
 		return nil, err
 	}
 	path := fmt.Sprintf("x/sports/%s/games/%s/plays", url.PathEscape(params.League), url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
+	return res, err
+}
+
+// Returns who follows 1 game on X. It has live viewers, fan picks per team & the
+// game chat's state. Each request costs 1 credit.
+func (r *XSportService) GetAudience(ctx context.Context, id string, params XSportGetAudienceParams, opts ...option.RequestOption) (res *SportsGameAudience, err error) {
+	opts = slices.Concat(r.options, opts)
+	if params.League == "" {
+		err = errors.New("missing required league parameter")
+		return nil, err
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/sports/%s/games/%s/audience", url.PathEscape(params.League), url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
@@ -289,6 +306,31 @@ func (r *SportsTeamLogos) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The team's wins, losses & ties this season. X sends it only in college
+// football games.
+type SportsTeamRecord struct {
+	// Games the team won this season.
+	Wins int64 `json:"wins" api:"required"`
+	// Games the team lost this season.
+	Losses int64 `json:"losses" api:"required"`
+	// Games the team tied this season.
+	Ties int64 `json:"ties" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Wins        respjson.Field
+		Losses      respjson.Field
+		Ties        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SportsTeamRecord) RawJSON() string { return r.JSON.raw }
+func (r *SportsTeamRecord) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A team, as X's sports pages show it.
 type SportsTeam struct {
 	// The team ID that games & players refer to.
@@ -301,8 +343,8 @@ type SportsTeam struct {
 	Abbreviation string `json:"abbreviation" api:"required"`
 	// Another ID X keeps for the team.
 	AlternateID string `json:"alternateId" api:"required"`
-	// The school or place a college team plays for. X sends it only in college
-	// football schedules.
+	// The school or place the team plays for. X sends it in college football
+	// schedules & in a game's audience.
 	Location string `json:"location" api:"required"`
 	// The team's colors, as red, green & blue from 0 to 255.
 	Colors []SportsTeamColor `json:"colors" api:"required"`
@@ -310,6 +352,9 @@ type SportsTeam struct {
 	Logos SportsTeamLogos `json:"logos" api:"required"`
 	// The user ID of the team's X account.
 	XUserID string `json:"xUserId" api:"required"`
+	// The team's wins, losses & ties this season. X sends it only in college
+	// football games.
+	Record SportsTeamRecord `json:"record" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -321,6 +366,7 @@ type SportsTeam struct {
 		Colors       respjson.Field
 		Logos        respjson.Field
 		XUserID      respjson.Field
+		Record       respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1475,6 +1521,153 @@ func (r *FootballPlays) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// People watching the game on X at X's last count. Null before X counts any, as
+// before kickoff.
+type SportsGameAudienceViewers struct {
+	// How many people watched the game on X.
+	Count int64 `json:"count" api:"required"`
+	// When X counted them.
+	AsOf time.Time `json:"asOf" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		AsOf        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SportsGameAudienceViewers) RawJSON() string { return r.JSON.raw }
+func (r *SportsGameAudienceViewers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// 1 team's picks.
+type SportsGameAudienceTeamPick struct {
+	// The team ID, a key in teams.
+	TeamID string `json:"teamId" api:"required"`
+	// How many people picked this team.
+	Count int64 `json:"count" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TeamID      respjson.Field
+		Count       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SportsGameAudienceTeamPick) RawJSON() string { return r.JSON.raw }
+func (r *SportsGameAudienceTeamPick) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How many people on X picked a team to root for.
+type SportsGameAudienceTeamPicks struct {
+	// Picks for every team in the game.
+	Total int64 `json:"total" api:"required"`
+	// Picks per team.
+	Teams []SportsGameAudienceTeamPick `json:"teams" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Total       respjson.Field
+		Teams       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SportsGameAudienceTeamPicks) RawJSON() string { return r.JSON.raw }
+func (r *SportsGameAudienceTeamPicks) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Time left until the chat opens. Null while it is open & after the game.
+type SportsGameAudienceChatOpensIn struct {
+	// Whole days left.
+	Days int64 `json:"days" api:"required"`
+	// Hours left after the days.
+	Hours int64 `json:"hours" api:"required"`
+	// Minutes left after the hours.
+	Minutes int64 `json:"minutes" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Days        respjson.Field
+		Hours       respjson.Field
+		Minutes     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SportsGameAudienceChatOpensIn) RawJSON() string { return r.JSON.raw }
+func (r *SportsGameAudienceChatOpensIn) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The game's live chat on X.
+type SportsGameAudienceChat struct {
+	// Whether the chat is open now.
+	Available bool `json:"available" api:"required"`
+	// X's ID for the game's chat room.
+	BroadcastID string `json:"broadcastId" api:"required"`
+	// Time left until the chat opens. Null while it is open & after the game.
+	OpensIn SportsGameAudienceChatOpensIn `json:"opensIn" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Available   respjson.Field
+		BroadcastID respjson.Field
+		OpensIn     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SportsGameAudienceChat) RawJSON() string { return r.JSON.raw }
+func (r *SportsGameAudienceChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Who watches & roots for 1 game on X.
+type SportsGameAudience struct {
+	// The ID of the game, from your request.
+	ID string `json:"id" api:"required"`
+	// The game's league, from your request.
+	League string `json:"league" api:"required"`
+	// People watching the game on X at X's last count. Null before X counts any,
+	// as before kickoff.
+	Viewers SportsGameAudienceViewers `json:"viewers" api:"required"`
+	// How many people on X picked a team to root for.
+	TeamPicks SportsGameAudienceTeamPicks `json:"teamPicks" api:"required"`
+	// The game's live chat on X.
+	Chat SportsGameAudienceChat `json:"chat" api:"required"`
+	// The game's teams, by team ID. X's team picker sends no short name, alternate
+	// ID, X account or record, so those are null.
+	Teams map[string]SportsTeam `json:"teams" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		League      respjson.Field
+		Viewers     respjson.Field
+		TeamPicks   respjson.Field
+		Chat        respjson.Field
+		Teams       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SportsGameAudience) RawJSON() string { return r.JSON.raw }
+func (r *SportsGameAudience) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type XSportListGamesParams struct {
 	// Start of the window. Takes an ISO 8601 date or time, such as 2026-10-01, or Unix
 	// seconds. A time without a zone reads as UTC. Defaults to 7 days before to. Alias
@@ -1576,6 +1769,31 @@ type XSportGetPlaysParams struct {
 
 // URLQuery serializes [XSportGetPlaysParams]'s query parameters as `url.Values`.
 func (r XSportGetPlaysParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XSportGetAudienceParams struct {
+	// nfl for the NFL or ncaafb for college football, in any case. Another value gets
+	// a free 400 `invalid_league` before X is read.
+	League string `path:"league" api:"required" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XSportGetAudienceParams]'s query parameters as `url.Values`.
+func (r XSportGetAudienceParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

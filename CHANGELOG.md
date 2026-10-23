@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.22.0 (2026-10-23)
+
+[Full changelog from v0.21.0 to v0.22.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.21.0...v0.22.0)
+
+The SDK adds a game's audience read and each team's season record.
+
+- `X.Sports.GetAudience` returns a game's live viewers, fan picks per team & the game chat's state as `SportsGameAudience`.
+- `SportsTeam` adds `Record`, the team's wins, losses & ties this season. X sends it only in college football games.
+
 ## 0.21.0 (2026-10-23)
 
 [Full changelog from v0.20.0 to v0.21.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.20.0...v0.21.0)

@@ -283,7 +283,12 @@
         "light": "https://pbs.twimg.com/semantic_core_img/2094841642129739776/YCBRBHV5?format=png&name=orig",
         "dark": "https://pbs.twimg.com/semantic_core_img/2094848191451598848/82O7RY0H?format=png&name=orig"
       },
-      "xUserId": "43403778"
+      "xUserId": "43403778",
+      "record": {
+        "wins": 7,
+        "losses": 1,
+        "ties": 0
+      }
     }
   },
   "players": {
