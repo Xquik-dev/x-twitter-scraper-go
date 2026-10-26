@@ -26,7 +26,7 @@ func TestArchiveWorkingTree(t *testing.T) {
 	}
 	write := func(name, value string) {
 		t.Helper()
-		if err := os.WriteFile(name, []byte(value), 0o644); err != nil {
+		if err := os.WriteFile(name, []byte(value), 0o600); err != nil {
 			t.Fatal(err)
 		}
 	}

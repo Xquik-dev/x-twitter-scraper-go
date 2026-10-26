@@ -6,6 +6,7 @@ package scripttest
 import (
 	"bytes"
 	"errors"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -324,7 +325,7 @@ func TestCoverageReportsOnlyRetainedProfiles(t *testing.T) {
 			if retain {
 				want += "Coverage profile: " + filepath.Join(output, "coverage.out") + "\n"
 				for _, name := range []string{"coverage.out", "coverage.xml"} {
-					data, err := os.ReadFile(filepath.Join(output, name))
+					data, err := fs.ReadFile(os.DirFS(output), name)
 					if err != nil || string(data) != "mode: set\n" {
 						t.Fatalf("retained %s = %q, error %v", name, data, err)
 					}

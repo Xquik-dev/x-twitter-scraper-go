@@ -5,6 +5,7 @@ package main
 
 import (
 	"encoding/json"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -81,7 +82,7 @@ func TestRunAgainstGitParent(t *testing.T) {
 	if err := run(directory); err != nil {
 		t.Fatal(err)
 	}
-	report, err := os.ReadFile(filepath.Join(directory, "summary.json"))
+	report, err := fs.ReadFile(os.DirFS(directory), "summary.json")
 	if err != nil || !strings.Contains(string(report), `"Covered": 1`) {
 		t.Fatalf("summary = %s, %v", report, err)
 	}

@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -145,7 +146,7 @@ func UnreadableSpec(source string) error {
 
 func fetchSpec(source string, client *http.Client) ([]byte, error) {
 	if !strings.HasPrefix(source, "https://") && !strings.HasPrefix(source, "http://") {
-		return os.ReadFile(source)
+		return os.ReadFile(filepath.Clean(source))
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()

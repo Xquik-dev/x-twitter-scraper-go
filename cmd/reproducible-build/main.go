@@ -65,10 +65,10 @@ func run(args []string) error {
 		return fmt.Errorf("module archives differ: %x != %x", firstHash, secondHash)
 	}
 	if len(args) == 1 {
-		if err := os.MkdirAll(filepath.Dir(args[0]), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(args[0]), 0o750); err != nil {
 			return err
 		}
-		if err := os.WriteFile(args[0], first, 0o644); err != nil {
+		if err := os.WriteFile(args[0], first, 0o600); err != nil {
 			return err
 		}
 	}
