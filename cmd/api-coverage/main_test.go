@@ -379,7 +379,7 @@ func TestMainPassesOnTheRepository(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	paths := map[string]map[string]any{}
+	paths := map[string]map[string]json.RawMessage{}
 	var keys []string
 	for key := range implemented {
 		keys = append(keys, key)
@@ -390,11 +390,13 @@ func TestMainPassesOnTheRepository(t *testing.T) {
 	for _, key := range keys {
 		method, operationPath, _ := strings.Cut(key, " ")
 		if paths[operationPath] == nil {
-			paths[operationPath] = map[string]any{}
+			paths[operationPath] = map[string]json.RawMessage{}
 		}
-		paths[operationPath][strings.ToLower(method)] = map[string]any{}
+		paths[operationPath][strings.ToLower(method)] = json.RawMessage("{}")
 	}
-	document, err := json.Marshal(map[string]any{"paths": paths})
+	document, err := json.Marshal(struct {
+		Paths map[string]map[string]json.RawMessage `json:"paths"`
+	}{paths})
 	if err != nil {
 		t.Fatal(err)
 	}

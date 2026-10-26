@@ -18,7 +18,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Trending topics and hashtags by region
+// TrendService covers trending topics and hashtags by region.
 //
 // TrendService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -38,7 +38,7 @@ func NewTrendService(opts ...option.RequestOption) (r TrendService) {
 	return
 }
 
-// Returns current regional trends through the compatibility route.
+// List returns current regional trends through the compatibility route.
 func (r *TrendService) List(ctx context.Context, query TrendListParams, opts ...option.RequestOption) (res *TrendListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "trends"
@@ -60,10 +60,10 @@ type TrendListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TrendListResponse) RawJSON() string { return r.JSON.raw }
 func (r *TrendListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type TrendListResponseTrend struct {
@@ -91,10 +91,10 @@ type TrendListResponseTrend struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TrendListResponseTrend) RawJSON() string { return r.JSON.raw }
 func (r *TrendListResponseTrend) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type TrendListParams struct {

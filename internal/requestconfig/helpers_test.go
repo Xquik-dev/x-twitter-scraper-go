@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package requestconfig
@@ -6,6 +7,7 @@ package requestconfig
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"errors"
 	"io"
 	"net/http"
@@ -13,11 +15,15 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"testing/iotest"
 	"time"
 )
 
 func TestRetryHelpers(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodPost, "https://example.com", strings.NewReader("body"))
+	req, err := http.NewRequest(http.MethodPost, "https://example.com", strings.NewReader("body"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	req.GetBody = nil
 	if shouldRetry(req, nil) {
 		t.Fatal("request with an unrecoverable body was retried")
@@ -88,6 +94,13 @@ func TestRetryHelpers(t *testing.T) {
 			t.Fatalf("capped retryDelay(%d) = %s", retryCount, got)
 		}
 	}
+	reader := rand.Reader
+	rand.Reader = iotest.ErrReader(errors.New("no entropy"))
+	got := retryDelay(nil, 0)
+	rand.Reader = reader
+	if got != 500*time.Millisecond {
+		t.Fatalf("retryDelay without entropy = %s", got)
+	}
 }
 
 func TestRequestConfigUtilities(t *testing.T) {
@@ -126,8 +139,13 @@ func TestRequestConfigUtilities(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	}))
 	defer server.Close()
-	cfg := testConfig(t, http.MethodPost, "/resource", bytes.NewBufferString("body"), nil)
-	cfg.BaseURL, _ = url.Parse(server.URL + "/")
+	cfg := testConfig(t, http.MethodPost, "/resource", nil, ResponseBody{})
+	cfg.Body = bytes.NewBufferString("body")
+	baseURL, err := url.Parse(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfg.BaseURL = baseURL
 	if err := cfg.Execute(); err != nil {
 		t.Fatal(err)
 	}
@@ -165,7 +183,10 @@ func TestRequestConfigUtilities(t *testing.T) {
 }
 
 func TestSecurityOptions(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	cfg := &RequestConfig{Request: req, APIKey: "key", BearerToken: "token"}
 
 	options := []RequestOption{
@@ -226,7 +247,10 @@ func TestPlatformNormalization(t *testing.T) {
 }
 
 func TestMiddlewareAndExecuteNewRequest(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	called := false
 	handler := applyMiddleware(
 		func(req *http.Request, next middlewareNext) (*http.Response, error) {
@@ -246,7 +270,7 @@ func TestMiddlewareAndExecuteNewRequest(t *testing.T) {
 		"bad\nmethod",
 		"/resource",
 		nil,
-		nil,
+		ResponseBody{},
 	); err == nil {
 		t.Fatal("ExecuteNewRequest() accepted an invalid method")
 	}

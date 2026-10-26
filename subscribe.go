@@ -16,7 +16,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Subscription, billing, and credits
+// SubscribeService covers subscription, billing, and credits.
 //
 // SubscribeService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -36,7 +36,7 @@ func NewSubscribeService(opts ...option.RequestOption) (r SubscribeService) {
 	return
 }
 
-// Create a subscription checkout or billing-management URL only after the user
+// New creates a subscription checkout or billing-management URL only after the user
 // confirms. The request never completes payment by itself.
 func (r *SubscribeService) New(ctx context.Context, body SubscribeNewParams, opts ...option.RequestOption) (res *SubscribeNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -66,10 +66,10 @@ type SubscribeNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SubscribeNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *SubscribeNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SubscribeNewResponseStatus string
@@ -102,10 +102,10 @@ func (r SubscribeNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SubscribeNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Subscription tier to pre-select.
+// SubscribeNewParamsTier is a subscription tier to pre-select.
 type SubscribeNewParamsTier string
 
 const (

@@ -23,7 +23,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// X List followers, members, and tweets
+// XListService covers X List followers, members, and tweets.
 //
 // XListService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -43,7 +43,7 @@ func NewXListService(opts ...option.RequestOption) (r XListService) {
 	return
 }
 
-// Returns 1 public X List as its page on X shows it. Accepts the List ID or the
+// Get returns 1 public X List as its page on X shows it. Accepts the List ID or the
 // URL-encoded List URL, such as x.com/i/lists/4143408. A private List answers 404
 // list_not_found.
 func (r *XListService) Get(ctx context.Context, id string, query XListGetParams, opts ...option.RequestOption) (res *XListGetResponse, err error) {
@@ -57,7 +57,7 @@ func (r *XListService) Get(ctx context.Context, id string, query XListGetParams,
 	return res, err
 }
 
-// Returns List followers with resumable or standard pagination.
+// GetFollowers returns List followers with resumable or standard pagination.
 func (r *XListService) GetFollowers(ctx context.Context, id string, query XListGetFollowersParams, opts ...option.RequestOption) (res *XListGetFollowersResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -69,7 +69,7 @@ func (r *XListService) GetFollowers(ctx context.Context, id string, query XListG
 	return res, err
 }
 
-// Returns List members with resumable or standard pagination.
+// GetMembers returns List members with resumable or standard pagination.
 func (r *XListService) GetMembers(ctx context.Context, id string, query XListGetMembersParams, opts ...option.RequestOption) (res *XListGetMembersResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -81,7 +81,7 @@ func (r *XListService) GetMembers(ctx context.Context, id string, query XListGet
 	return res, err
 }
 
-// Returns 1 page of public Lists with member counts, banners & owner profiles. X
+// GetSearch returns 1 page of public Lists with member counts, banners & owner profiles. X
 // may rank the Lists differently per request. Pass next_cursor as cursor for the
 // next page.
 func (r *XListService) GetSearch(ctx context.Context, query XListGetSearchParams, opts ...option.RequestOption) (res *XListGetSearchResponse, err error) {
@@ -91,7 +91,7 @@ func (r *XListService) GetSearch(ctx context.Context, query XListGetSearchParams
 	return res, err
 }
 
-// Omit mode for resumable maximum coverage. Pass next_cursor unchanged. Standard
+// GetTweets returns [shared.PaginatedTweets]. Omit mode for resumable maximum coverage. Pass next_cursor unchanged. Standard
 // keeps legacy pagination.
 func (r *XListService) GetTweets(ctx context.Context, id string, query XListGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -134,24 +134,24 @@ type XListGetFollowersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XListGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XListGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCoverageResponse() (v XListGetFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCoverageResponse() (v XListGetFollowersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XListGetFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XListGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XListGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Present on the last page of a filtered automatic read that sent no maxScan, once
+// XListGetFollowersResponseScanLimit is present on the last page of a filtered automatic read that sent no maxScan, once
 // the list scanned 100,000 profiles across its pages. That page is the list's
 // last.
 type XListGetFollowersResponseScanLimit struct {
@@ -174,13 +174,13 @@ type XListGetFollowersResponseScanLimit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XListGetFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Terminal relationship coverage response with diagnostics.
+// XListGetFollowersResponseUserListCoverageResponse is a terminal relationship coverage response with diagnostics.
 type XListGetFollowersResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XListGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -199,13 +199,13 @@ type XListGetFollowersResponseUserListCoverageResponse struct {
 	shared.PaginatedUsers
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetFollowersResponseUserListCoverageResponse) RawJSON() string { return r.JSON.raw }
 func (r *XListGetFollowersResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Coverage evidence across parallel relationship strategies.
+// XListGetFollowersResponseUserListCoverageResponseDiagnostic holds coverage evidence across parallel relationship strategies.
 type XListGetFollowersResponseUserListCoverageResponseDiagnostic struct {
 	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
@@ -244,15 +244,15 @@ type XListGetFollowersResponseUserListCoverageResponseDiagnostic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetFollowersResponseUserListCoverageResponseDiagnostic) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XListGetFollowersResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Result counts and stop reason for one relationship strategy.
+// XListGetFollowersResponseUserListCoverageResponseDiagnosticStrategy holds result counts and stop reason for one relationship strategy.
 type XListGetFollowersResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
@@ -275,12 +275,12 @@ type XListGetFollowersResponseUserListCoverageResponseDiagnosticStrategy struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XListGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XListGetMembersResponseUnion contains all possible properties and values from
@@ -313,24 +313,24 @@ type XListGetMembersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XListGetMembersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XListGetMembersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageResponse() (v XListGetMembersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageResponse() (v XListGetMembersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XListGetMembersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XListGetMembersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XListGetMembersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Present on the last page of a filtered automatic read that sent no maxScan, once
+// XListGetMembersResponseScanLimit is present on the last page of a filtered automatic read that sent no maxScan, once
 // the list scanned 100,000 profiles across its pages. That page is the list's
 // last.
 type XListGetMembersResponseScanLimit struct {
@@ -353,13 +353,13 @@ type XListGetMembersResponseScanLimit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetMembersResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XListGetMembersResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Terminal relationship coverage response with diagnostics.
+// XListGetMembersResponseUserListCoverageResponse is a terminal relationship coverage response with diagnostics.
 type XListGetMembersResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XListGetMembersResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -378,13 +378,13 @@ type XListGetMembersResponseUserListCoverageResponse struct {
 	shared.PaginatedUsers
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetMembersResponseUserListCoverageResponse) RawJSON() string { return r.JSON.raw }
 func (r *XListGetMembersResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Coverage evidence across parallel relationship strategies.
+// XListGetMembersResponseUserListCoverageResponseDiagnostic holds coverage evidence across parallel relationship strategies.
 type XListGetMembersResponseUserListCoverageResponseDiagnostic struct {
 	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
@@ -423,15 +423,15 @@ type XListGetMembersResponseUserListCoverageResponseDiagnostic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetMembersResponseUserListCoverageResponseDiagnostic) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XListGetMembersResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Result counts and stop reason for one relationship strategy.
+// XListGetMembersResponseUserListCoverageResponseDiagnosticStrategy holds result counts and stop reason for one relationship strategy.
 type XListGetMembersResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
@@ -454,12 +454,12 @@ type XListGetMembersResponseUserListCoverageResponseDiagnosticStrategy struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetMembersResponseUserListCoverageResponseDiagnosticStrategy) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XListGetMembersResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XListGetResponse struct {
@@ -474,13 +474,13 @@ type XListGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public X List with its owner's public profile. Leaves out what X tells the
+// XListGetResponseList is a public X List with its owner's public profile. Leaves out what X tells the
 // reading account, such as whether it follows the List.
 type XListGetResponseList struct {
 	// Numeric ID of the List.
@@ -530,13 +530,13 @@ type XListGetResponseList struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseList) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner the owner uploaded.
+// XListGetResponseListCustomBanner is a banner the owner uploaded.
 type XListGetResponseListCustomBanner struct {
 	// Banner image URL.
 	URL string `json:"url" api:"required"`
@@ -566,10 +566,10 @@ type XListGetResponseListCustomBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListCustomBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XListGetResponseListCustomBannerPalette struct {
@@ -586,13 +586,13 @@ type XListGetResponseListCustomBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XListGetResponseListCustomBannerPaletteRgb holds the color's red, green and blue values.
 type XListGetResponseListCustomBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -607,13 +607,13 @@ type XListGetResponseListCustomBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListCustomBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XListGetResponseListCustomBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XListGetResponseListCustomBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -634,13 +634,13 @@ type XListGetResponseListCustomBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListCustomBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// XListGetResponseListDefaultBanner is a banner X shows when the owner uploaded none. X picks it per reading account, so
 // 2 calls can return different ones.
 type XListGetResponseListDefaultBanner struct {
 	// Banner image URL.
@@ -671,10 +671,10 @@ type XListGetResponseListDefaultBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XListGetResponseListDefaultBannerPalette struct {
@@ -691,13 +691,13 @@ type XListGetResponseListDefaultBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XListGetResponseListDefaultBannerPaletteRgb holds the color's red, green and blue values.
 type XListGetResponseListDefaultBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -712,13 +712,13 @@ type XListGetResponseListDefaultBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListDefaultBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XListGetResponseListDefaultBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XListGetResponseListDefaultBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -739,13 +739,13 @@ type XListGetResponseListDefaultBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetResponseListDefaultBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XListGetResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 page of public X Lists. Follow next_cursor while the response reports more
+// XListGetSearchResponse is 1 page of public X Lists. Follow next_cursor while the response reports more
 // pages. Each returned List costs 1 credit.
 type XListGetSearchResponse struct {
 	HasNextPage bool                         `json:"has_next_page" api:"required"`
@@ -761,13 +761,13 @@ type XListGetSearchResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public X List with its owner's public profile. Leaves out what X tells the
+// XListGetSearchResponseList is a public X List with its owner's public profile. Leaves out what X tells the
 // reading account, such as whether it follows the List.
 type XListGetSearchResponseList struct {
 	// Numeric ID of the List.
@@ -817,13 +817,13 @@ type XListGetSearchResponseList struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseList) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner the owner uploaded.
+// XListGetSearchResponseListCustomBanner is a banner the owner uploaded.
 type XListGetSearchResponseListCustomBanner struct {
 	// Banner image URL.
 	URL string `json:"url" api:"required"`
@@ -853,10 +853,10 @@ type XListGetSearchResponseListCustomBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListCustomBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XListGetSearchResponseListCustomBannerPalette struct {
@@ -873,13 +873,13 @@ type XListGetSearchResponseListCustomBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XListGetSearchResponseListCustomBannerPaletteRgb holds the color's red, green and blue values.
 type XListGetSearchResponseListCustomBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -894,13 +894,13 @@ type XListGetSearchResponseListCustomBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListCustomBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XListGetSearchResponseListCustomBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XListGetSearchResponseListCustomBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -921,13 +921,13 @@ type XListGetSearchResponseListCustomBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListCustomBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// XListGetSearchResponseListDefaultBanner is a banner X shows when the owner uploaded none. X picks it per reading account, so
 // 2 calls can return different ones.
 type XListGetSearchResponseListDefaultBanner struct {
 	// Banner image URL.
@@ -958,10 +958,10 @@ type XListGetSearchResponseListDefaultBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XListGetSearchResponseListDefaultBannerPalette struct {
@@ -978,13 +978,13 @@ type XListGetSearchResponseListDefaultBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XListGetSearchResponseListDefaultBannerPaletteRgb holds the color's red, green and blue values.
 type XListGetSearchResponseListDefaultBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -999,13 +999,13 @@ type XListGetSearchResponseListDefaultBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListDefaultBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XListGetSearchResponseListDefaultBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XListGetSearchResponseListDefaultBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -1026,10 +1026,10 @@ type XListGetSearchResponseListDefaultBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XListGetSearchResponseListDefaultBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XListGetSearchResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XListGetFollowersParams struct {
@@ -1113,7 +1113,7 @@ func (r XListGetFollowersParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
+// XListGetFollowersParamsMode is the type of [XListGetFollowersParams.Mode]. Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
 // Coverage returns diagnostics once and rejects cursors.
 type XListGetFollowersParamsMode string
 
@@ -1202,7 +1202,7 @@ func (r XListGetMembersParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
+// XListGetMembersParamsMode is the type of [XListGetMembersParams.Mode]. Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
 // Coverage returns diagnostics once and rejects cursors.
 type XListGetMembersParamsMode string
 
@@ -1369,7 +1369,7 @@ func (r XListGetTweetsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XListGetTweetsParamsMediaType is the type of [XListGetTweetsParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XListGetTweetsParamsMediaType string
 
 const (
@@ -1381,7 +1381,7 @@ const (
 	XListGetTweetsParamsMediaTypeNone   XListGetTweetsParamsMediaType = "none"
 )
 
-// Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
+// XListGetTweetsParamsMode is the type of [XListGetTweetsParams.Mode]. Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
 // Coverage returns diagnostics once and rejects cursors.
 type XListGetTweetsParamsMode string
 
@@ -1390,7 +1390,7 @@ const (
 	XListGetTweetsParamsModeCoverage XListGetTweetsParamsMode = "coverage"
 )
 
-// Only when the caller requests a reply mode.
+// XListGetTweetsParamsReplies applies only when the caller requests a reply mode.
 type XListGetTweetsParamsReplies string
 
 const (
@@ -1399,7 +1399,7 @@ const (
 	XListGetTweetsParamsRepliesOnly    XListGetTweetsParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XListGetTweetsParamsRetweets applies only when the caller requests a repost mode.
 type XListGetTweetsParamsRetweets string
 
 const (
@@ -1461,7 +1461,7 @@ func (r XListGetSearchParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Only when the caller requests a quote mode.
+// XListGetTweetsParamsQuotes applies only when the caller requests a quote mode.
 type XListGetTweetsParamsQuotes string
 
 const (

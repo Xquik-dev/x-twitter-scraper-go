@@ -7,6 +7,8 @@ package json
 import (
 	"reflect"
 	"time"
+
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/reflectvalue"
 )
 
 type TimeMarshaler interface {
@@ -27,8 +29,11 @@ func TimeLayout(fmt string) string {
 var timeType = reflect.TypeFor[time.Time]()
 
 func timeEncoder(e *encodeState, v reflect.Value, opts encOpts) {
-	formatted := v.Interface().(time.Time).Format(TimeLayout(opts.timefmt))
-	stringEncoder(e, reflect.ValueOf(formatted), opts)
+	t, err := reflectvalue.As[time.Time](v)
+	if err != nil {
+		e.error(err)
+	}
+	stringEncoder(e, reflect.ValueOf(t.Format(TimeLayout(opts.timefmt))), opts)
 }
 
 func continueWithTimeFmt(timefmt string, k encoderFunc) encoderFunc {

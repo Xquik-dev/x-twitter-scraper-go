@@ -8,6 +8,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/paramutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/reflectvalue"
 	"reflect"
 	"sort"
 	"strconv"
@@ -20,18 +22,18 @@ import (
 	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
 )
 
-var encoders sync.Map
+var encoders paramutil.SyncMap[encoderEntry, encoderFunc]
 
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
-func Marshal(value any) ([]byte, error) {
+func Marshal[T any](value T) ([]byte, error) {
 	e := &encoder{dateFormat: time.RFC3339}
-	return e.marshal(value)
+	return e.marshal(reflect.ValueOf(value))
 }
 
-func MarshalRoot(value any) ([]byte, error) {
+func MarshalRoot[T any](value T) ([]byte, error) {
 	e := &encoder{root: true, dateFormat: time.RFC3339}
-	return e.marshal(value)
+	return e.marshal(reflect.ValueOf(value))
 }
 
 type encoder struct {
@@ -53,8 +55,7 @@ type encoderEntry struct {
 	root       bool
 }
 
-func (e *encoder) marshal(value any) ([]byte, error) {
-	val := reflect.ValueOf(value)
+func (e *encoder) marshal(val reflect.Value) ([]byte, error) {
 	if !val.IsValid() {
 		return nil, nil
 	}
@@ -71,7 +72,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 	}
 
 	if fi, ok := encoders.Load(entry); ok {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	var (
@@ -84,7 +85,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return f(v)
 	}))
 	if loaded {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	f = e.newTypeEncoder(t)
@@ -94,11 +95,15 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 }
 
 func marshalerEncoder(v reflect.Value) ([]byte, error) {
-	return v.Interface().(json.Marshaler).MarshalJSON()
+	marshaler, ok := reflect.TypeAssert[json.Marshaler](v)
+	if !ok {
+		return nil, fmt.Errorf("apijson: %s does not implement json.Marshaler", v.Type())
+	}
+	return marshaler.MarshalJSON()
 }
 
 func indirectMarshalerEncoder(v reflect.Value) ([]byte, error) {
-	return v.Addr().Interface().(json.Marshaler).MarshalJSON()
+	return marshalerEncoder(v.Addr())
 }
 
 func (e *encoder) newTypeEncoder(t reflect.Type) encoderFunc {
@@ -256,7 +261,7 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 				return nil, err
 			}
 			if ef.tag.defaultValue != nil && (!field.IsValid() || field.IsZero()) {
-				encoded, err = shimjson.Marshal(ef.tag.defaultValue)
+				encoded, err = shimjson.Marshal(*ef.tag.defaultValue)
 				if err != nil {
 					return nil, err
 				}
@@ -282,8 +287,12 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
-	return func(value reflect.Value) (json []byte, err error) {
-		return []byte(`"` + value.Convert(reflect.TypeOf(time.Time{})).Interface().(time.Time).Format(format) + `"`), nil
+	return func(value reflect.Value) ([]byte, error) {
+		t, err := reflectvalue.As[time.Time](value)
+		if err != nil {
+			return nil, err
+		}
+		return []byte(`"` + t.Format(format) + `"`), nil
 	}
 }
 

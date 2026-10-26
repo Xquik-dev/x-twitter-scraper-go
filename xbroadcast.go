@@ -22,7 +22,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// X live video details, watch counts, and broadcaster
+// XBroadcastService covers X live video details, watch counts, and broadcaster.
 //
 // XBroadcastService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -42,7 +42,7 @@ func NewXBroadcastService(opts ...option.RequestOption) (r XBroadcastService) {
 	return
 }
 
-// Returns 1 X broadcast, the live video X hosts at x.com/i/broadcasts, live or
+// Get returns 1 X broadcast, the live video X hosts at x.com/i/broadcasts, live or
 // ended. Accepts the broadcast ID or the URL-encoded broadcast URL. Reading a
 // broadcast adds no view to it.
 func (r *XBroadcastService) Get(ctx context.Context, id string, query XBroadcastGetParams, opts ...option.RequestOption) (res *XBroadcastGetResponse, err error) {
@@ -67,13 +67,13 @@ type XBroadcastGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBroadcastGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XBroadcastGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X broadcast, a live video
+// XBroadcastGetResponseBroadcast is an X broadcast, a live video.
 type XBroadcastGetResponseBroadcast struct {
 	// Broadcast ID
 	ID string `json:"id" api:"required"`
@@ -157,13 +157,13 @@ type XBroadcastGetResponseBroadcast struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBroadcastGetResponseBroadcast) RawJSON() string { return r.JSON.raw }
 func (r *XBroadcastGetResponseBroadcast) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Broadcaster, as X's live video service names the account
+// XBroadcastGetResponseBroadcastPeriscopeUser is a broadcaster, as X's live video service names the account.
 type XBroadcastGetResponseBroadcastPeriscopeUser struct {
 	// Live video account ID
 	ID string `json:"id"`
@@ -187,10 +187,10 @@ type XBroadcastGetResponseBroadcastPeriscopeUser struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBroadcastGetResponseBroadcastPeriscopeUser) RawJSON() string { return r.JSON.raw }
 func (r *XBroadcastGetResponseBroadcastPeriscopeUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBroadcastGetParams struct {

@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Post monitoring with replies, quotes, edits, deletion & 6 metrics
+// MonitorPostService covers post monitoring with replies, quotes, edits, deletion & 6 metrics.
 //
 // MonitorPostService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewMonitorPostService(opts ...option.RequestOption) (r MonitorPostService) 
 	return
 }
 
-// Creates a monitor for 1 X post. It tracks replies, quotes, edits, deletion & 6
+// New creates a monitor for 1 X post. It tracks replies, quotes, edits, deletion & 6
 // metrics, for 30 credits an hour with events & webhook deliveries included. That
 // hourly price is a monitor's only charge. Creation needs the credits of the first
 // hour & reads the post once.
@@ -52,7 +52,7 @@ func (r *MonitorPostService) New(ctx context.Context, body MonitorPostNewParams,
 	return res, err
 }
 
-// Returns 1 post monitor with its post & the 6 metrics, each with its current
+// Get returns 1 post monitor with its post & the 6 metrics, each with its current
 // value & gain since tracking began.
 func (r *MonitorPostService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PostMonitor, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -65,7 +65,7 @@ func (r *MonitorPostService) Get(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Updates a post monitor's label, event types or active state. Turning a paused
+// Update updates a post monitor's label, event types or active state. Turning a paused
 // monitor on reads the post first, & answers 409 while X hides it.
 func (r *MonitorPostService) Update(ctx context.Context, id string, body MonitorPostUpdateParams, opts ...option.RequestOption) (res *PostMonitor, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -78,7 +78,7 @@ func (r *MonitorPostService) Update(ctx context.Context, id string, body Monitor
 	return res, err
 }
 
-// Returns post monitors with each post's 6 metrics, their current values & gains
+// List returns post monitors with each post's 6 metrics, their current values & gains
 // since tracking began.
 func (r *MonitorPostService) List(ctx context.Context, query MonitorPostListParams, opts ...option.RequestOption) (res *MonitorPostListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -87,7 +87,7 @@ func (r *MonitorPostService) List(ctx context.Context, query MonitorPostListPara
 	return res, err
 }
 
-// Stops 1 post monitor, then removes its stored events & metric history in bounded
+// Delete stops 1 post monitor, then removes its stored events & metric history in bounded
 // batches. Poll statusUrl until the monitor returns 404.
 func (r *MonitorPostService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorPostDeleteResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -100,7 +100,7 @@ func (r *MonitorPostService) Delete(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Returns 1 bucket per hour with each metric's value at the hour's end & its gain
+// GetMetrics returns 1 bucket per hour with each metric's value at the hour's end & its gain
 // over that hour. The last bucket is the current hour. Hours before tracking began
 // carry the starting values with a gain of 0.
 func (r *MonitorPostService) GetMetrics(ctx context.Context, id string, query MonitorPostGetMetricsParams, opts ...option.RequestOption) (res *PostMonitorMetrics, err error) {
@@ -114,7 +114,7 @@ func (r *MonitorPostService) GetMetrics(ctx context.Context, id string, query Mo
 	return res, err
 }
 
-// A metric's current value & its gain since tracking began. Both are null when
+// PostMetricReading is a metric's current value & its gain since tracking began. Both are null when
 // X shows no count, as for views on old posts.
 type PostMetricReading struct {
 	Current int64 `json:"current" api:"required"`
@@ -128,13 +128,13 @@ type PostMetricReading struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PostMetricReading) RawJSON() string { return r.JSON.raw }
 func (r *PostMetricReading) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The 6 metrics of a post.
+// PostMetrics holds the 6 metrics of a post.
 type PostMetrics struct {
 	// A metric's current value & its gain since tracking began. Both are null when
 	// X shows no count, as for views on old posts.
@@ -167,13 +167,13 @@ type PostMetrics struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PostMetrics) RawJSON() string { return r.JSON.raw }
 func (r *PostMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Post monitor that tracks 1 X post's replies, quotes, edits & metrics.
+// PostMonitor is a post monitor that tracks 1 X post's replies, quotes, edits & metrics.
 type PostMonitor struct {
 	ID string `json:"id" api:"required"`
 	// Customer-set label of the post monitor, when set.
@@ -242,10 +242,10 @@ type PostMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PostMonitor) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // PostMonitorAuthorVerified is the author's verified badge on X.
@@ -275,7 +275,7 @@ type PostMonitorMedia struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r PostMonitorMedia) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // PostMonitorMediaKind is the kind of media.
@@ -315,10 +315,10 @@ type PostMonitorBaseline struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r PostMonitorBaseline) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A metric's value at the hour's end & its gain over that hour. Both are null
+// PostMetricPoint is a metric's value at the hour's end & its gain over that hour. Both are null
 // when X shows no count.
 type PostMetricPoint struct {
 	Value int64 `json:"value" api:"required"`
@@ -332,10 +332,10 @@ type PostMetricPoint struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PostMetricPoint) RawJSON() string { return r.JSON.raw }
 func (r *PostMetricPoint) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type PostMonitorMetricsBucketMetrics struct {
@@ -370,10 +370,10 @@ type PostMonitorMetricsBucketMetrics struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PostMonitorMetricsBucketMetrics) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorMetricsBucketMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type PostMonitorMetricsBucket struct {
@@ -389,13 +389,13 @@ type PostMonitorMetricsBucket struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PostMonitorMetricsBucket) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorMetricsBucket) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Hourly metric buckets of 1 post monitor, oldest first.
+// PostMonitorMetrics holds hourly metric buckets of 1 post monitor, oldest first.
 type PostMonitorMetrics struct {
 	Hours   int64                      `json:"hours" api:"required"`
 	Buckets []PostMonitorMetricsBucket `json:"buckets" api:"required"`
@@ -408,10 +408,10 @@ type PostMonitorMetrics struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PostMonitorMetrics) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorPostListResponse struct {
@@ -431,10 +431,10 @@ type MonitorPostListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorPostListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorPostListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorPostDeleteResponse struct {
@@ -452,10 +452,10 @@ type MonitorPostDeleteResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorPostDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorPostDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorPostNewParams struct {
@@ -475,7 +475,7 @@ func (r MonitorPostNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorPostNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorPostUpdateParams struct {
@@ -493,7 +493,7 @@ func (r MonitorPostUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorPostUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorPostListParams struct {

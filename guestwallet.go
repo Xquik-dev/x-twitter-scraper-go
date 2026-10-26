@@ -19,7 +19,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// Accountless prepaid access for paid read endpoints
+// GuestWalletService covers accountless prepaid access for paid read endpoints.
 //
 // GuestWalletService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -39,7 +39,7 @@ func NewGuestWalletService(opts ...option.RequestOption) (r GuestWalletService) 
 	return
 }
 
-// Create a one-use hosted checkout after the user confirms $10-$250 USD. The
+// New creates a one-use hosted checkout after the user confirms $10-$250 USD. The
 // request creates no charge. It returns a paid-read API key without an Xquik
 // account. Idempotent replays return the same key.
 func (r *GuestWalletService) New(ctx context.Context, params GuestWalletNewParams, opts ...option.RequestOption) (res *GuestWalletNewResponse, err error) {
@@ -53,7 +53,7 @@ func (r *GuestWalletService) New(ctx context.Context, params GuestWalletNewParam
 	return res, err
 }
 
-// Poll after payment. Use usable to decide whether paid reads can run. An active
+// GetStatus returns [GuestWalletGetStatusResponse]. Poll after payment. Use usable to decide whether paid reads can run. An active
 // wallet can remain usable while a top-up is pending. A new wallet becomes usable
 // only after payment is verified. Send the guest key as Authorization: Bearer
 // xq\_...
@@ -65,7 +65,7 @@ func (r *GuestWalletService) GetStatus(ctx context.Context, opts ...option.Reque
 	return res, err
 }
 
-// Create a one-use hosted checkout after the user confirms a $10-$250 USD amount
+// Topup creates a one-use hosted checkout after the user confirms a $10-$250 USD amount
 // for an existing paid-read guest key. The key remains the same. This request
 // creates no charge and never redirects through Xquik.
 func (r *GuestWalletService) Topup(ctx context.Context, params GuestWalletTopupParams, opts ...option.RequestOption) (res *GuestWalletTopupResponse, err error) {
@@ -79,7 +79,7 @@ func (r *GuestWalletService) Topup(ctx context.Context, params GuestWalletTopupP
 	return res, err
 }
 
-// Confirmed USD amount for a guest wallet purchase.
+// GuestWalletAmount is a confirmed USD amount for a guest wallet purchase.
 type GuestWalletAmount struct {
 	// USD amount in cents. Accepted range is $10-$250.
 	AmountMinor int64        `json:"amount_minor" api:"required"`
@@ -93,13 +93,13 @@ type GuestWalletAmount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletAmount) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Initial guest wallet response containing the one-time key.
+// GuestWalletNewResponse is an initial guest wallet response containing the one-time key.
 type GuestWalletNewResponse struct {
 	AccountRequired bool `json:"account_required" api:"required"`
 	// Confirmed USD amount for a guest wallet purchase.
@@ -148,10 +148,10 @@ type GuestWalletNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletNewResponseAuthorization struct {
@@ -168,10 +168,10 @@ type GuestWalletNewResponseAuthorization struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletNewResponseAuthorization) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletNewResponseAuthorization) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletNewResponseStatus string
@@ -186,7 +186,7 @@ const (
 	GuestWalletNewResponseStatusDisputed GuestWalletNewResponseStatus = "disputed"
 )
 
-// Current balance, usability, and latest guest purchase state.
+// GuestWalletGetStatusResponse holds current balance, usability, and latest guest purchase state.
 type GuestWalletGetStatusResponse struct {
 	Balance string `json:"balance" api:"required"`
 	// Latest guest wallet purchase fulfillment state.
@@ -221,13 +221,13 @@ type GuestWalletGetStatusResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletGetStatusResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletGetStatusResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Latest guest wallet purchase fulfillment state.
+// GuestWalletGetStatusResponseLatestPurchase holds the latest guest wallet purchase fulfillment state.
 type GuestWalletGetStatusResponseLatestPurchase struct {
 	// Confirmed USD amount for a guest wallet purchase.
 	Amount GuestWalletAmount `json:"amount" api:"required"`
@@ -252,13 +252,13 @@ type GuestWalletGetStatusResponseLatestPurchase struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletGetStatusResponseLatestPurchase) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletGetStatusResponseLatestPurchase) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Combined wallet and pending-checkout state. A pending top-up can coexist with
+// GuestWalletGetStatusResponseStatus holds combined wallet and pending-checkout state. A pending top-up can coexist with
 // usable true. Terminal expired or failed states require a new guest wallet.
 type GuestWalletGetStatusResponseStatus string
 
@@ -271,7 +271,7 @@ const (
 	GuestWalletGetStatusResponseStatusClosed  GuestWalletGetStatusResponseStatus = "closed"
 )
 
-// Top-up action when usable and no checkout is pending.
+// GuestWalletGetStatusResponseTopUp is a top-up action when usable and no checkout is pending.
 type GuestWalletGetStatusResponseTopUp struct {
 	Method constant.Post                    `json:"method" default:"POST"`
 	Path   constant.APIV1GuestWalletsTopups `json:"path" default:"/api/v1/guest-wallets/topups"`
@@ -284,13 +284,13 @@ type GuestWalletGetStatusResponseTopUp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletGetStatusResponseTopUp) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletGetStatusResponseTopUp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Pending hosted checkout and guest wallet purchase details.
+// GuestWalletTopupResponse holds pending hosted checkout and guest wallet purchase details.
 type GuestWalletTopupResponse struct {
 	AccountRequired bool `json:"account_required" api:"required"`
 	// Confirmed USD amount for a guest wallet purchase.
@@ -341,10 +341,10 @@ type GuestWalletTopupResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletTopupResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletTopupResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletTopupResponseStatus string
@@ -373,16 +373,16 @@ type GuestWalletTopupResponseAuthorization struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r GuestWalletTopupResponseAuthorization) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletTopupResponseAuthorization) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletTopupResponseCredentialNotice string
 
 const (
-	GuestWalletTopupResponseCredentialNoticeStoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable GuestWalletTopupResponseCredentialNotice = "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
+	GuestWalletTopupResponseNoticeStoreKeysSecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable GuestWalletTopupResponseCredentialNotice = "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
 )
 
 type GuestWalletNewParams struct {
@@ -399,7 +399,7 @@ func (r GuestWalletNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GuestWalletNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type GuestWalletTopupParams struct {
@@ -416,5 +416,5 @@ func (r GuestWalletTopupParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GuestWalletTopupParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

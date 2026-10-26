@@ -1,10 +1,12 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package json
 
 import (
 	"errors"
+	"reflect"
 	"testing"
 )
 
@@ -28,4 +30,15 @@ func TestCustomTimeJSON(t *testing.T) {
 			t.Errorf("Marshal(%q) = %q, %v", test.input, got, err)
 		}
 	}
+}
+
+func TestTimeEncoderReportsOtherTypes(t *testing.T) {
+	e := &encodeState{}
+	defer func() {
+		recover()
+		if e.err == nil || e.Len() != 0 {
+			t.Fatalf("time encoder of an int wrote %q, err = %v", e.String(), e.err)
+		}
+	}()
+	timeEncoder(e, reflect.ValueOf(1), encOpts{})
 }

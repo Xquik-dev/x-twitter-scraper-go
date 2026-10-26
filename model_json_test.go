@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package xtwitterscraper
@@ -87,7 +88,10 @@ func TestGeneratedModelsPreserveRawJSON(t *testing.T) {
 		}
 		registered[modelType.Name()] = struct{}{}
 		t.Run(modelType.Name(), func(t *testing.T) {
-			model := reflect.New(modelType).Interface().(rawJSONModel)
+			model, ok := reflect.TypeAssert[rawJSONModel](reflect.New(modelType))
+			if !ok {
+				t.Fatalf("%s does not decode JSON", modelType)
+			}
 			if err := model.UnmarshalJSON(raw); err != nil {
 				t.Fatalf("UnmarshalJSON() error = %v", err)
 			}
@@ -109,11 +113,18 @@ func TestParamModelsDecodeTheirOwnJSON(t *testing.T) {
 			continue
 		}
 		t.Run(modelType.Name(), func(t *testing.T) {
-			encoded, err := reflect.New(modelType).Interface().(paramModel).MarshalJSON()
+			model, ok := reflect.TypeAssert[paramModel](reflect.New(modelType))
+			if !ok {
+				t.Fatalf("%s does not encode JSON", modelType)
+			}
+			encoded, err := model.MarshalJSON()
 			if err != nil {
 				t.Fatalf("MarshalJSON() error = %v", err)
 			}
-			decoded := reflect.New(modelType).Interface().(paramModel)
+			decoded, ok := reflect.TypeAssert[paramModel](reflect.New(modelType))
+			if !ok {
+				t.Fatalf("%s does not decode JSON", modelType)
+			}
 			if err := decoded.UnmarshalJSON(encoded); err != nil {
 				t.Fatalf("UnmarshalJSON(%s) error = %v", encoded, err)
 			}
@@ -150,16 +161,25 @@ func TestRepostTimestampStates(t *testing.T) {
 		for _, raw := range []string{`{}`, `{"retweetedAt":null}`, `{"retweetedAt":"2026-09-11T04:35:22Z"}`} {
 			t.Run(modelType.Name()+"/"+raw, func(t *testing.T) {
 				value := reflect.New(modelType)
-				model := value.Interface().(rawJSONModel)
+				model, ok := reflect.TypeAssert[rawJSONModel](value)
+				if !ok {
+					t.Fatalf("%s does not decode JSON", modelType)
+				}
 				if err := model.UnmarshalJSON([]byte(raw)); err != nil {
 					t.Fatal(err)
 				}
-				got := value.Elem().FieldByName("RetweetedAt").Interface().(time.Time)
+				got, ok := reflect.TypeAssert[time.Time](value.Elem().FieldByName("RetweetedAt"))
+				if !ok {
+					t.Fatalf("%s.RetweetedAt is not a time", modelType)
+				}
 				owner := value.Elem()
 				for _, index := range timestampField.Index[:len(timestampField.Index)-1] {
 					owner = owner.Field(index)
 				}
-				field := owner.FieldByName("JSON").FieldByName("RetweetedAt").Interface().(respjson.Field)
+				field, ok := reflect.TypeAssert[respjson.Field](owner.FieldByName("JSON").FieldByName("RetweetedAt"))
+				if !ok {
+					t.Fatalf("%s.JSON.RetweetedAt is not field metadata", modelType)
+				}
 				want := strings.TrimSuffix(strings.TrimPrefix(raw, `{"retweetedAt":`), "}")
 				if raw == `{}` {
 					want = ""
@@ -187,28 +207,31 @@ func TestNumericOrStringResponseValues(t *testing.T) {
 	for _, modelType := range rawJSONModelTypes() {
 		model, ok := reflect.New(modelType).Interface().(interface {
 			rawJSONModel
-			AsFloat() float64
-			AsString() string
+			AsFloat() (float64, error)
+			AsString() (string, error)
 		})
 		if !ok {
 			continue
 		}
 		matched++
 		for _, test := range []struct {
-			raw, text string
-			number    float64
+			raw, text   string
+			number      float64
+			numberFails bool
 		}{
 			{raw: "1789187722000", number: 1789187722000, text: "1789187722000"},
 			{raw: `"1789187722000"`, number: 1789187722000, text: "1789187722000"},
-			{raw: `"scheduled"`, text: "scheduled"},
+			{raw: `"scheduled"`, text: "scheduled", numberFails: true},
 			{raw: "null"},
 		} {
 			t.Run(modelType.Name()+"/"+test.raw, func(t *testing.T) {
 				if err := model.UnmarshalJSON([]byte(test.raw)); err != nil {
 					t.Fatal(err)
 				}
-				if model.AsFloat() != test.number || model.AsString() != test.text || model.RawJSON() != test.raw {
-					t.Fatalf("decoded number = %v, text = %q, raw = %q; want %v, %q, %q", model.AsFloat(), model.AsString(), model.RawJSON(), test.number, test.text, test.raw)
+				number, numberErr := model.AsFloat()
+				text, textErr := model.AsString()
+				if number != test.number || (numberErr != nil) != test.numberFails || text != test.text || textErr != nil || model.RawJSON() != test.raw {
+					t.Fatalf("decoded number = %v, %v, text = %q, %v, raw = %q; want %v, %q, %q", number, numberErr, text, textErr, model.RawJSON(), test.number, test.text, test.raw)
 				}
 			})
 		}
@@ -219,11 +242,11 @@ func TestNumericOrStringResponseValues(t *testing.T) {
 }
 
 func TestConnectionAttemptResponseVariants(t *testing.T) {
-	for status, want := range map[string]any{
-		"pending":             XAccountConnectionAttemptGetResponsePending{},
-		"success":             XAccountConnectionAttemptGetResponseSuccess{},
-		"failed":              XAccountConnectionAttemptGetResponseFailed{},
-		"requires_email_code": XAccountConnectionAttemptGetResponseRequiresEmailCode{},
+	for status, want := range map[string]reflect.Type{
+		"pending":             reflect.TypeFor[XAccountConnectionAttemptGetResponsePending](),
+		"success":             reflect.TypeFor[XAccountConnectionAttemptGetResponseSuccess](),
+		"failed":              reflect.TypeFor[XAccountConnectionAttemptGetResponseFailed](),
+		"requires_email_code": reflect.TypeFor[XAccountConnectionAttemptGetResponseRequiresEmailCode](),
 		"unknown":             nil,
 	} {
 		t.Run(status, func(t *testing.T) {
@@ -232,11 +255,17 @@ func TestConnectionAttemptResponseVariants(t *testing.T) {
 			if err := model.UnmarshalJSON([]byte(raw)); err != nil {
 				t.Fatal(err)
 			}
-			variant := model.AsAny()
-			if reflect.TypeOf(variant) != reflect.TypeOf(want) {
-				t.Fatalf("response variant = %T, want %T", variant, want)
+			variant, err := model.AsAny()
+			if err != nil {
+				t.Fatal(err)
 			}
-			if variant != nil && variant.(interface{ RawJSON() string }).RawJSON() != raw {
+			if reflect.TypeOf(variant) != want {
+				t.Fatalf("response variant = %T, want %v", variant, want)
+			}
+			if variant == nil {
+				return
+			}
+			if decoded, ok := variant.(interface{ RawJSON() string }); !ok || decoded.RawJSON() != raw {
 				t.Fatal("response variant lost its original payload")
 			}
 		})

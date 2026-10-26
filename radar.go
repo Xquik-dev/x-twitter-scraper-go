@@ -6,6 +6,7 @@ package xtwitterscraper
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -19,7 +20,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// AI tweet composition, drafts, writing styles, and radar
+// RadarService covers AI tweet composition, drafts, writing styles, and radar.
 //
 // RadarService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -39,7 +40,7 @@ func NewRadarService(opts ...option.RequestOption) (r RadarService) {
 	return
 }
 
-// Returns current topics and sources for writing research.
+// GetTrendingTopics returns current topics and sources for writing research.
 func (r *RadarService) GetTrendingTopics(ctx context.Context, query RadarGetTrendingTopicsParams, opts ...option.RequestOption) (res *RadarGetTrendingTopicsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "radar"
@@ -47,7 +48,7 @@ func (r *RadarService) GetTrendingTopics(ctx context.Context, query RadarGetTren
 	return res, err
 }
 
-// Trending topic with score, category, source, region, language, and
+// RadarItem is a trending topic with score, category, source, region, language, and
 // source-specific metadata.
 type RadarItem struct {
 	// Radar item identifier.
@@ -114,10 +115,10 @@ type RadarItem struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r RadarItem) RawJSON() string { return r.JSON.raw }
 func (r *RadarItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type RadarItemCategory string
@@ -133,7 +134,7 @@ const (
 	RadarItemCategoryEntertainment RadarItemCategory = "entertainment"
 )
 
-// Source fields vary:
+// RadarItemMetadata is the type of [RadarItem.Metadata]. Source fields vary:
 //
 //   - reddit: { author, authorId?, subreddit, subredditId?, subredditSubscribers?,
 //     sourceFormat, score?, upvoteRatio?, estimatedUpvotes?, estimatedDownvotes?,
@@ -165,10 +166,10 @@ type RadarItemMetadata struct {
 	// Current items use html. json and rss are retained for legacy rows.
 	//
 	// Any of "html", "json", "rss".
-	SourceFormat string         `json:"sourceFormat"`
-	Subreddit    string         `json:"subreddit"`
-	UpvoteRatio  float64        `json:"upvoteRatio"`
-	ExtraFields  map[string]any `json:"" api:"extrafields"`
+	SourceFormat string                     `json:"sourceFormat"`
+	Subreddit    string                     `json:"subreddit"`
+	UpvoteRatio  float64                    `json:"upvoteRatio"`
+	ExtraFields  map[string]json.RawMessage `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Author             respjson.Field
@@ -186,10 +187,10 @@ type RadarItemMetadata struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r RadarItemMetadata) RawJSON() string { return r.JSON.raw }
 func (r *RadarItemMetadata) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type RadarItemSource string
@@ -219,10 +220,10 @@ type RadarGetTrendingTopicsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r RadarGetTrendingTopicsResponse) RawJSON() string { return r.JSON.raw }
 func (r *RadarGetTrendingTopicsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type RadarGetTrendingTopicsParams struct {
@@ -257,7 +258,7 @@ func (r RadarGetTrendingTopicsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by category.
+// RadarGetTrendingTopicsParamsCategory is the type of [RadarGetTrendingTopicsParams.Category]. Filter by category.
 type RadarGetTrendingTopicsParamsCategory string
 
 const (
@@ -271,7 +272,7 @@ const (
 	RadarGetTrendingTopicsParamsCategoryEntertainment RadarGetTrendingTopicsParamsCategory = "entertainment"
 )
 
-// Source filter. One of: github, google_trends, hacker_news, polymarket, reddit,
+// RadarGetTrendingTopicsParamsSource is a source filter. One of: github, google_trends, hacker_news, polymarket, reddit,
 // trustmrr, wikipedia
 type RadarGetTrendingTopicsParamsSource string
 

@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package constant defines a type for each fixed string the API sends or
+// accepts, with that string as its default value.
 package constant
 
 import (

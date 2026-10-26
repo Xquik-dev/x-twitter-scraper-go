@@ -1,10 +1,13 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package xtwitterscraper_test
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -20,7 +23,9 @@ func TestClientConvenienceMethods(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		methods = append(methods, req.Method)
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = io.WriteString(w, "{}")
+		if _, err := io.WriteString(w, "{}"); err != nil {
+			t.Error(err)
+		}
 	}))
 	defer server.Close()
 
@@ -29,12 +34,16 @@ func TestClientConvenienceMethods(t *testing.T) {
 		option.WithMaxRetries(0),
 	)
 	ctx := context.Background()
-	var dst map[string]any
+	var dst json.RawMessage
 	calls := []func() error{
 		func() error { return client.Get(ctx, "/get", nil, &dst) },
-		func() error { return client.Post(ctx, "/post", strings.NewReader("{}"), &dst) },
-		func() error { return client.Put(ctx, "/put", []byte("{}"), &dst) },
-		func() error { return client.Patch(ctx, "/patch", map[string]bool{"ok": true}, &dst) },
+		func() error {
+			return client.Post(ctx, "/post", nil, &dst, option.WithRequestBody("application/json", strings.NewReader("{}")))
+		},
+		func() error {
+			return client.Put(ctx, "/put", nil, &dst, option.WithRequestBody("application/json", bytes.NewBufferString("{}")))
+		},
+		func() error { return client.Patch(ctx, "/patch", xtwitterscraper.DraftNewParams{Text: "ok"}, &dst) },
 		func() error { return client.Delete(ctx, "/delete", nil, &dst) },
 		func() error { return client.Execute(ctx, http.MethodHead, "/head", nil, nil) },
 	}

@@ -19,7 +19,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// Look up, search, and analyze individual tweets
+// XBookmarkService lets you look up, search, and analyze individual tweets.
 //
 // XBookmarkService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -39,7 +39,7 @@ func NewXBookmarkService(opts ...option.RequestOption) (r XBookmarkService) {
 	return
 }
 
-// Returns bookmarks from the connected X account.
+// List returns bookmarks from the connected X account.
 func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/bookmarks"
@@ -47,7 +47,7 @@ func (r *XBookmarkService) List(ctx context.Context, query XBookmarkListParams, 
 	return res, err
 }
 
-// Returns bookmark folders from the connected X account.
+// GetFolders returns bookmark folders from the connected X account.
 func (r *XBookmarkService) GetFolders(ctx context.Context, opts ...option.RequestOption) (res *XBookmarkGetFoldersResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/bookmarks/folders"
@@ -71,13 +71,13 @@ type XBookmarkGetFoldersResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBookmarkGetFoldersResponse) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Bookmark folder and its optional public cover image.
+// XBookmarkGetFoldersResponseFolder holds bookmark folder and its optional public cover image.
 type XBookmarkGetFoldersResponseFolder struct {
 	// Folder ID.
 	ID string `json:"id" api:"required"`
@@ -95,13 +95,13 @@ type XBookmarkGetFoldersResponseFolder struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBookmarkGetFoldersResponseFolder) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolder) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public folder cover image metadata.
+// XBookmarkGetFoldersResponseFolderMedia holds public folder cover image metadata.
 type XBookmarkGetFoldersResponseFolderMedia struct {
 	// Media object ID.
 	ID string `json:"id"`
@@ -134,10 +134,10 @@ type XBookmarkGetFoldersResponseFolderMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBookmarkGetFoldersResponseFolderMedia) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolderMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBookmarkGetFoldersResponseFolderMediaPalette struct {
@@ -152,10 +152,10 @@ type XBookmarkGetFoldersResponseFolderMediaPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBookmarkGetFoldersResponseFolderMediaPalette) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolderMediaPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBookmarkGetFoldersResponseFolderMediaPaletteRgb struct {
@@ -172,10 +172,10 @@ type XBookmarkGetFoldersResponseFolderMediaPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XBookmarkGetFoldersResponseFolderMediaPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolderMediaPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBookmarkListParams struct {

@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// AI tweet composition, drafts, writing styles, and radar
+// DraftService covers AI tweet composition, drafts, writing styles, and radar.
 //
 // DraftService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewDraftService(opts ...option.RequestOption) (r DraftService) {
 	return
 }
 
-// Saves editable post text as an account draft.
+// New saves editable post text as an account draft.
 func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...option.RequestOption) (res *DraftDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "drafts"
@@ -49,7 +49,7 @@ func (r *DraftService) New(ctx context.Context, body DraftNewParams, opts ...opt
 	return res, err
 }
 
-// Returns one saved draft owned by the authenticated account.
+// Get returns one saved draft owned by the authenticated account.
 func (r *DraftService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DraftDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -61,7 +61,7 @@ func (r *DraftService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Returns saved drafts owned by the authenticated account.
+// List returns saved drafts owned by the authenticated account.
 func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...option.RequestOption) (res *DraftListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "drafts"
@@ -69,7 +69,7 @@ func (r *DraftService) List(ctx context.Context, query DraftListParams, opts ...
 	return res, err
 }
 
-// Permanently removes one saved draft.
+// Delete permanently removes one saved draft.
 func (r *DraftService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -78,11 +78,11 @@ func (r *DraftService) Delete(ctx context.Context, id string, opts ...option.Req
 		return err
 	}
 	path := fmt.Sprintf("drafts/%s", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, requestconfig.ResponseBody{}, opts...)
 	return err
 }
 
-// Saved tweet draft with optional topic and goal.
+// Draft is a saved tweet draft with optional topic and goal.
 type Draft struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -101,13 +101,13 @@ type Draft struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r Draft) RawJSON() string { return r.JSON.raw }
 func (r *Draft) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Full tweet draft including update timestamp.
+// DraftDetail is a full tweet draft including update timestamp.
 type DraftDetail struct {
 	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
 	// Fields the request sent that this route does not read, in the order sent. They
@@ -123,10 +123,10 @@ type DraftDetail struct {
 	Draft
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r DraftDetail) RawJSON() string { return r.JSON.raw }
 func (r *DraftDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DraftListResponse struct {
@@ -143,10 +143,10 @@ type DraftListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r DraftListResponse) RawJSON() string { return r.JSON.raw }
 func (r *DraftListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DraftNewParams struct {
@@ -162,7 +162,7 @@ func (r DraftNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DraftNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type DraftNewParamsGoal string

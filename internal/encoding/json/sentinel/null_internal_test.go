@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package sentinel
@@ -30,5 +31,16 @@ func TestNullSentinelCacheAndUnsupportedKinds(t *testing.T) {
 	}
 	if IsValueNull(reflect.ValueOf(1)) {
 		t.Fatal("integer value was recognized as a null sentinel")
+	}
+}
+
+func TestNullSentinelReplacesACachedValueOfAnotherType(t *testing.T) {
+	type seeded []byte
+	nullCache.Lock()
+	nullCache.m[reflect.TypeFor[seeded]()] = reflect.ValueOf(1)
+	nullCache.Unlock()
+	null := NewNullSentinel(func() seeded { return make(seeded, 0, 1) })
+	if null == nil || !IsNull(null) || !IsNull(NewNullSentinel(func() seeded { return nil })) {
+		t.Fatalf("sentinel = %#v was not recognized as null", null)
 	}
 }

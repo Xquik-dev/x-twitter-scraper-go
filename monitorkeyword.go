@@ -22,7 +22,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// X account monitoring with 1-second checks
+// MonitorKeywordService covers X account monitoring with 1-second checks.
 //
 // MonitorKeywordService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -42,7 +42,7 @@ func NewMonitorKeywordService(opts ...option.RequestOption) (r MonitorKeywordSer
 	return
 }
 
-// Creates a keyword monitor. Keyword monitors are unlimited. Active monitors check
+// New creates a keyword monitor. Keyword monitors are unlimited. Active monitors check
 // every 1 second and cost 30 credits per hour. Events and webhook deliveries are
 // included. Creation requires available credits for the first hourly charge.
 func (r *MonitorKeywordService) New(ctx context.Context, body MonitorKeywordNewParams, opts ...option.RequestOption) (res *MonitorKeywordNewResponse, err error) {
@@ -52,7 +52,7 @@ func (r *MonitorKeywordService) New(ctx context.Context, body MonitorKeywordNewP
 	return res, err
 }
 
-// Returns configuration and status for one keyword monitor.
+// Get returns configuration and status for one keyword monitor.
 func (r *MonitorKeywordService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorKeywordGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -64,7 +64,7 @@ func (r *MonitorKeywordService) Get(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Updates mutable settings for an existing keyword monitor.
+// Update updates mutable settings for an existing keyword monitor.
 func (r *MonitorKeywordService) Update(ctx context.Context, id string, body MonitorKeywordUpdateParams, opts ...option.RequestOption) (res *MonitorKeywordUpdateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -76,7 +76,7 @@ func (r *MonitorKeywordService) Update(ctx context.Context, id string, body Moni
 	return res, err
 }
 
-// Returns keyword monitors with their current operating states.
+// List returns keyword monitors with their current operating states.
 func (r *MonitorKeywordService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorKeywordListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "monitors/keywords"
@@ -84,7 +84,7 @@ func (r *MonitorKeywordService) List(ctx context.Context, opts ...option.Request
 	return res, err
 }
 
-// Stops one keyword monitor, then removes its stored events in bounded batches.
+// Deactivate stops one keyword monitor, then removes its stored events in bounded batches.
 // Poll statusUrl until the monitor returns 404.
 func (r *MonitorKeywordService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorKeywordDeactivateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -97,7 +97,7 @@ func (r *MonitorKeywordService) Deactivate(ctx context.Context, id string, opts 
 	return res, err
 }
 
-// Keyword monitor that tracks matching public X activity.
+// MonitorKeywordNewResponse is a keyword monitor that tracks matching public X activity.
 type MonitorKeywordNewResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -130,13 +130,13 @@ type MonitorKeywordNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorKeywordNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Keyword monitor that tracks matching public X activity.
+// MonitorKeywordGetResponse is a keyword monitor that tracks matching public X activity.
 type MonitorKeywordGetResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -169,13 +169,13 @@ type MonitorKeywordGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorKeywordGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Keyword monitor that tracks matching public X activity.
+// MonitorKeywordUpdateResponse is a keyword monitor that tracks matching public X activity.
 type MonitorKeywordUpdateResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -208,10 +208,10 @@ type MonitorKeywordUpdateResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorKeywordUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorKeywordListResponse struct {
@@ -230,13 +230,13 @@ type MonitorKeywordListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorKeywordListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Keyword monitor that tracks matching public X activity.
+// MonitorKeywordListResponseMonitor is a keyword monitor that tracks matching public X activity.
 type MonitorKeywordListResponseMonitor struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -269,10 +269,10 @@ type MonitorKeywordListResponseMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorKeywordListResponseMonitor) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordListResponseMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorKeywordDeactivateResponse struct {
@@ -290,10 +290,10 @@ type MonitorKeywordDeactivateResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorKeywordDeactivateResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordDeactivateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorKeywordNewParams struct {
@@ -311,7 +311,7 @@ func (r MonitorKeywordNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorKeywordNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorKeywordUpdateParams struct {
@@ -328,5 +328,5 @@ func (r MonitorKeywordUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorKeywordUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

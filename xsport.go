@@ -23,7 +23,7 @@ import (
 )
 
 // XSportService covers NFL & college football games, scoreboards, plays, box
-// scores, audiences, rosters, player props & posts.
+// XSportService covers NFL & college football games, scoreboards, plays, box scores & audiences.
 //
 // XSportService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -43,7 +43,7 @@ func NewXSportService(opts ...option.RequestOption) (r XSportService) {
 	return
 }
 
-// Lists NFL or college football games in a time window, with teams & scores. Use
+// ListGames lists NFL or college football games in a time window, with teams & scores. Use
 // it to find game IDs & team IDs. Without from or to, X picks about 5 weeks around
 // today. Each request costs 1 credit.
 func (r *XSportService) ListGames(ctx context.Context, league string, query XSportListGamesParams, opts ...option.RequestOption) (res *FootballSchedule, err error) {
@@ -57,7 +57,7 @@ func (r *XSportService) ListGames(ctx context.Context, league string, query XSpo
 	return res, err
 }
 
-// Returns 1 game's scoreboard. It has the teams, the score by period, the status &
+// GetScoreboard returns 1 game's scoreboard. It has the teams, the score by period, the status &
 // clock, down & distance, the venue & the latest play. Each request costs 1 credit.
 func (r *XSportService) GetScoreboard(ctx context.Context, id string, params XSportGetScoreboardParams, opts ...option.RequestOption) (res *FootballScoreboard, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -74,7 +74,7 @@ func (r *XSportService) GetScoreboard(ctx context.Context, id string, params XSp
 	return res, err
 }
 
-// Returns each team's totals & each player's stats for 1 game. Stats cover passing,
+// GetBoxScore returns each team's totals & each player's stats for 1 game. Stats cover passing,
 // rushing, receiving, defense, kicking & returns. A game that has not started has
 // no stats yet. Each request costs 1 credit.
 func (r *XSportService) GetBoxScore(ctx context.Context, id string, params XSportGetBoxScoreParams, opts ...option.RequestOption) (res *FootballBoxScore, err error) {
@@ -92,7 +92,7 @@ func (r *XSportService) GetBoxScore(ctx context.Context, id string, params XSpor
 	return res, err
 }
 
-// Returns every drive & play of 1 game, by quarter. Each play has its clock, down &
+// GetPlays returns every drive & play of 1 game, by quarter. Each play has its clock, down &
 // distance, details, penalties & linked posts. Each request costs 1 credit.
 func (r *XSportService) GetPlays(ctx context.Context, id string, params XSportGetPlaysParams, opts ...option.RequestOption) (res *FootballPlays, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -109,7 +109,7 @@ func (r *XSportService) GetPlays(ctx context.Context, id string, params XSportGe
 	return res, err
 }
 
-// Returns who follows 1 game on X. It has live viewers, fan picks per team & the
+// GetAudience returns who follows 1 game on X. It has live viewers, fan picks per team & the
 // game chat's state. Each request costs 1 credit.
 func (r *XSportService) GetAudience(ctx context.Context, id string, params XSportGetAudienceParams, opts ...option.RequestOption) (res *SportsGameAudience, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -179,7 +179,7 @@ func (r *XSportService) GetPosts(ctx context.Context, id string, params XSportGe
 	return res, err
 }
 
-// A team's side of a game & its points.
+// FootballTeamScore is a team's side of a game & its points.
 type FootballTeamScore struct {
 	// The team, a key of teams.
 	TeamID string `json:"teamId" api:"required"`
@@ -194,13 +194,13 @@ type FootballTeamScore struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballTeamScore) RawJSON() string { return r.JSON.raw }
 func (r *FootballTeamScore) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A period of a listed game.
+// FootballSchedulePeriod is a period of a listed game.
 type FootballSchedulePeriod struct {
 	// X's name for the period, such as Quarter.
 	Type string `json:"type" api:"required"`
@@ -212,13 +212,13 @@ type FootballSchedulePeriod struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballSchedulePeriod) RawJSON() string { return r.JSON.raw }
 func (r *FootballSchedulePeriod) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Betting odds titles for 1 team, as X shows them.
+// FootballOdds holds betting odds titles for 1 team, as X shows them.
 type FootballOdds struct {
 	// The money line. X sends it for the away team only.
 	MoneyLine string `json:"moneyLine" api:"required"`
@@ -236,13 +236,13 @@ type FootballOdds struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballOdds) RawJSON() string { return r.JSON.raw }
 func (r *FootballOdds) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Betting odds for each team, or null when X has none.
+// FootballScheduleGameOdds holds betting odds for each team, or null when X has none.
 type FootballScheduleGameOdds struct {
 	// Betting odds titles for 1 team, as X shows them.
 	Home FootballOdds `json:"home" api:"required"`
@@ -257,13 +257,13 @@ type FootballScheduleGameOdds struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballScheduleGameOdds) RawJSON() string { return r.JSON.raw }
 func (r *FootballScheduleGameOdds) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A listed game, with its teams & score.
+// FootballScheduleGame is a listed game, with its teams & score.
 type FootballScheduleGame struct {
 	// The game ID the other sports routes take.
 	ID string `json:"id" api:"required"`
@@ -308,10 +308,10 @@ type FootballScheduleGame struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballScheduleGame) RawJSON() string { return r.JSON.raw }
 func (r *FootballScheduleGame) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SportsTeamColor struct {
@@ -331,13 +331,13 @@ type SportsTeamColor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsTeamColor) RawJSON() string { return r.JSON.raw }
 func (r *SportsTeamColor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The team's logo images.
+// SportsTeamLogos holds the team's logo images.
 type SportsTeamLogos struct {
 	// The logo X shows by default.
 	Default string `json:"default" api:"required"`
@@ -355,13 +355,13 @@ type SportsTeamLogos struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsTeamLogos) RawJSON() string { return r.JSON.raw }
 func (r *SportsTeamLogos) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The team's wins, losses & ties this season. X sends it only in college
+// SportsTeamRecord holds the team's wins, losses & ties this season. X sends it only in college
 // football games.
 type SportsTeamRecord struct {
 	// Games the team won this season.
@@ -380,13 +380,13 @@ type SportsTeamRecord struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsTeamRecord) RawJSON() string { return r.JSON.raw }
 func (r *SportsTeamRecord) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A team, as X's sports pages show it.
+// SportsTeam is a team, as X's sports pages show it.
 type SportsTeam struct {
 	// The team ID that games & players refer to.
 	ID string `json:"id" api:"required"`
@@ -432,10 +432,10 @@ type SportsTeam struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsTeam) RawJSON() string { return r.JSON.raw }
 func (r *SportsTeam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // SportsTeamGame holds a recent game of a team, as X lists it with the team.
@@ -474,10 +474,10 @@ type SportsTeamGame struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r SportsTeamGame) RawJSON() string { return r.JSON.raw }
 func (r *SportsTeamGame) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A league's games in a time window.
+// FootballSchedule is a league's games in a time window.
 type FootballSchedule struct {
 	// The league whose games this list holds.
 	League string `json:"league" api:"required"`
@@ -495,13 +495,13 @@ type FootballSchedule struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballSchedule) RawJSON() string { return r.JSON.raw }
 func (r *FootballSchedule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Down & distance now, or null before kickoff.
+// FootballScoreboardSituation holds down & distance now, or null before kickoff.
 type FootballScoreboardSituation struct {
 	// The current down, from 1 to 4.
 	Down int64 `json:"down" api:"required"`
@@ -525,13 +525,13 @@ type FootballScoreboardSituation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballScoreboardSituation) RawJSON() string { return r.JSON.raw }
 func (r *FootballScoreboardSituation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A team's side of a scoreboard.
+// FootballSide is a team's side of a scoreboard.
 type FootballSide struct {
 	// The team, a key of teams.
 	TeamID string `json:"teamId" api:"required"`
@@ -549,13 +549,13 @@ type FootballSide struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballSide) RawJSON() string { return r.JSON.raw }
 func (r *FootballSide) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A period of a game & its points.
+// FootballPeriod is a period of a game & its points.
 type FootballPeriod struct {
 	// X's name for the period, such as Quarter.
 	Type string `json:"type" api:"required"`
@@ -579,13 +579,13 @@ type FootballPeriod struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPeriod) RawJSON() string { return r.JSON.raw }
 func (r *FootballPeriod) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The points a scoring play added, or null.
+// FootballPlayScore holds the points a scoring play added, or null.
 type FootballPlayScore struct {
 	// The home team's score once this scoring play counted.
 	HomePoints int64 `json:"homePoints" api:"required"`
@@ -603,13 +603,13 @@ type FootballPlayScore struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayScore) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayScore) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Down & distance when the play started, or null.
+// FootballPlayStart holds down & distance when the play started, or null.
 type FootballPlayStart struct {
 	// The down, from 1 to 4.
 	Down int64 `json:"down" api:"required"`
@@ -635,13 +635,13 @@ type FootballPlayStart struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayStart) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayStart) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Flags X shows on the field for the play, or null.
+// FootballPlayOnField holds flags X shows on the field for the play, or null.
 type FootballPlayOnField struct {
 	// Whether a penalty called the play back.
 	CalledBack bool `json:"calledBack" api:"required"`
@@ -662,10 +662,10 @@ type FootballPlayOnField struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayOnField) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayOnField) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type FootballPlayDetailPlayer struct {
@@ -682,13 +682,13 @@ type FootballPlayDetailPlayer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayDetailPlayer) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayDetailPlayer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The penalty this step called, or null.
+// FootballPlayDetailPenalty is the penalty this step called, or null.
 type FootballPlayDetailPenalty struct {
 	// The penalty's name.
 	Description string `json:"description" api:"required"`
@@ -712,13 +712,13 @@ type FootballPlayDetailPenalty struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayDetailPenalty) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayDetailPenalty) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 step of a play, such as a pass, a tackle or a penalty.
+// FootballPlayDetail is 1 step of a play, such as a pass, a tackle or a penalty.
 type FootballPlayDetail struct {
 	// The step's place in the play, from 1.
 	Sequence int64 `json:"sequence" api:"required"`
@@ -748,13 +748,13 @@ type FootballPlayDetail struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayDetail) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The post X links to the play, or null.
+// FootballPlayPost is the post X links to the play, or null.
 type FootballPlayPost struct {
 	// The post's ID.
 	ID string `json:"id" api:"required"`
@@ -769,13 +769,13 @@ type FootballPlayPost struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayPost) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayPost) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A play, with its situation, steps & linked posts.
+// FootballPlay is a play, with its situation, steps & linked posts.
 type FootballPlay struct {
 	// X's ID for the play within the game.
 	ID string `json:"id" api:"required"`
@@ -832,13 +832,13 @@ type FootballPlay struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlay) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlay) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Photos of the player. Any of them can be null.
+// FootballPlayerHeadshots holds photos of the player. Any of them can be null.
 type FootballPlayerHeadshots struct {
 	// The photo X shows on the player's card.
 	Original string `json:"original" api:"required"`
@@ -859,13 +859,13 @@ type FootballPlayerHeadshots struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerHeadshots) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerHeadshots) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The player's X account, or null without one.
+// FootballPlayerXUser is the player's X account, or null without one.
 type FootballPlayerXUser struct {
 	// The account's user ID.
 	ID string `json:"id" api:"required"`
@@ -893,13 +893,13 @@ type FootballPlayerXUser struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerXUser) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerXUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A football player, as X's sports pages show them.
+// FootballPlayer is a football player, as X's sports pages show them.
 type FootballPlayer struct {
 	// The player ID that plays & stats refer to.
 	ID string `json:"id" api:"required"`
@@ -941,13 +941,13 @@ type FootballPlayer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayer) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 game's scoreboard.
+// FootballScoreboard is 1 game's scoreboard.
 type FootballScoreboard struct {
 	// The game ID from your request.
 	ID string `json:"id" api:"required"`
@@ -1007,13 +1007,13 @@ type FootballScoreboard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballScoreboard) RawJSON() string { return r.JSON.raw }
 func (r *FootballScoreboard) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Third downs tried & converted.
+// FootballTeamTotalsThirdDowns holds third downs tried & converted.
 type FootballTeamTotalsThirdDowns struct {
 	// Third downs tried.
 	Attempts int64 `json:"attempts" api:"required"`
@@ -1028,13 +1028,13 @@ type FootballTeamTotalsThirdDowns struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballTeamTotalsThirdDowns) RawJSON() string { return r.JSON.raw }
 func (r *FootballTeamTotalsThirdDowns) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Fumble stats.
+// FootballFumbleStats holds fumble stats.
 type FootballFumbleStats struct {
 	// Fumbles the other team recovered.
 	Lost int64 `json:"lost" api:"required"`
@@ -1052,13 +1052,13 @@ type FootballFumbleStats struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballFumbleStats) RawJSON() string { return r.JSON.raw }
 func (r *FootballFumbleStats) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Passing stats.
+// FootballPassingStats holds passing stats.
 type FootballPassingStats struct {
 	// Passes thrown.
 	Attempts int64 `json:"attempts" api:"required"`
@@ -1097,13 +1097,13 @@ type FootballPassingStats struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPassingStats) RawJSON() string { return r.JSON.raw }
 func (r *FootballPassingStats) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Penalties against the team.
+// FootballTeamTotalsPenalties holds penalties against the team.
 type FootballTeamTotalsPenalties struct {
 	// Penalties.
 	Count int64 `json:"count" api:"required"`
@@ -1118,13 +1118,13 @@ type FootballTeamTotalsPenalties struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballTeamTotalsPenalties) RawJSON() string { return r.JSON.raw }
 func (r *FootballTeamTotalsPenalties) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Rushing stats.
+// FootballRushingStats holds rushing stats.
 type FootballRushingStats struct {
 	// Rushes.
 	Attempts int64 `json:"attempts" api:"required"`
@@ -1148,13 +1148,13 @@ type FootballRushingStats struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballRushingStats) RawJSON() string { return r.JSON.raw }
 func (r *FootballRushingStats) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A team's totals for 1 game.
+// FootballTeamTotals is a team's totals for 1 game.
 type FootballTeamTotals struct {
 	// First downs.
 	FirstDowns int64 `json:"firstDowns" api:"required"`
@@ -1190,13 +1190,13 @@ type FootballTeamTotals struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballTeamTotals) RawJSON() string { return r.JSON.raw }
 func (r *FootballTeamTotals) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Receiving stats.
+// FootballPlayerStatsReceiving holds receiving stats.
 type FootballPlayerStatsReceiving struct {
 	// Yards per catch.
 	AvgYards float64 `json:"avgYards" api:"required"`
@@ -1223,13 +1223,13 @@ type FootballPlayerStatsReceiving struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerStatsReceiving) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerStatsReceiving) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Defensive stats.
+// FootballPlayerStatsDefense holds defensive stats.
 type FootballPlayerStatsDefense struct {
 	// Solo & assisted tackles together.
 	Combined float64 `json:"combined" api:"required"`
@@ -1259,13 +1259,13 @@ type FootballPlayerStatsDefense struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerStatsDefense) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerStatsDefense) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Kick, punt or interception return stats.
+// FootballReturnStats holds kick, punt or interception return stats.
 type FootballReturnStats struct {
 	// Yards per return.
 	AvgYards float64 `json:"avgYards" api:"required"`
@@ -1289,13 +1289,13 @@ type FootballReturnStats struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballReturnStats) RawJSON() string { return r.JSON.raw }
 func (r *FootballReturnStats) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Punting stats.
+// FootballPlayerStatsPunts holds punting stats.
 type FootballPlayerStatsPunts struct {
 	// Punts.
 	Attempts int64 `json:"attempts" api:"required"`
@@ -1322,13 +1322,13 @@ type FootballPlayerStatsPunts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerStatsPunts) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerStatsPunts) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Field goal stats.
+// FootballPlayerStatsFieldGoals holds field goal stats.
 type FootballPlayerStatsFieldGoals struct {
 	// Field goals tried.
 	Attempts int64 `json:"attempts" api:"required"`
@@ -1346,13 +1346,13 @@ type FootballPlayerStatsFieldGoals struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerStatsFieldGoals) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerStatsFieldGoals) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Extra point kicks.
+// FootballPlayerStatsExtraPoints holds extra point kicks.
 type FootballPlayerStatsExtraPoints struct {
 	// Extra points tried.
 	Attempts int64 `json:"attempts" api:"required"`
@@ -1367,13 +1367,13 @@ type FootballPlayerStatsExtraPoints struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerStatsExtraPoints) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerStatsExtraPoints) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 2-point conversions.
+// FootballPlayerStatsConversions holds 2-point conversions.
 type FootballPlayerStatsConversions struct {
 	// Defensive 2-point returns.
 	DefenseSuccesses int64 `json:"defenseSuccesses" api:"required"`
@@ -1394,13 +1394,13 @@ type FootballPlayerStatsConversions struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerStatsConversions) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerStatsConversions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 player's stats for 1 game. Only the stat groups X sent are present.
+// FootballPlayerStats holds 1 player's stats for 1 game. Only the stat groups X sent are present.
 type FootballPlayerStats struct {
 	// The player these stats belong to, a key of players.
 	PlayerID string `json:"playerId" api:"required"`
@@ -1448,13 +1448,13 @@ type FootballPlayerStats struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerStats) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerStats) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 team's totals & player stats.
+// FootballTeamBox holds 1 team's totals & player stats.
 type FootballTeamBox struct {
 	// The team these totals belong to, a key of teams.
 	TeamID string `json:"teamId" api:"required"`
@@ -1472,13 +1472,13 @@ type FootballTeamBox struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballTeamBox) RawJSON() string { return r.JSON.raw }
 func (r *FootballTeamBox) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 game's team totals & player stats.
+// FootballBoxScore holds 1 game's team totals & player stats.
 type FootballBoxScore struct {
 	// The ID of the game this box score covers.
 	ID string `json:"id" api:"required"`
@@ -1505,13 +1505,13 @@ type FootballBoxScore struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballBoxScore) RawJSON() string { return r.JSON.raw }
 func (r *FootballBoxScore) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A drive, with its result & plays.
+// FootballDrive is a drive, with its result & plays.
 type FootballDrive struct {
 	// X's ID for the drive within the game.
 	ID string `json:"id" api:"required"`
@@ -1561,13 +1561,13 @@ type FootballDrive struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballDrive) RawJSON() string { return r.JSON.raw }
 func (r *FootballDrive) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A quarter & its drives.
+// FootballQuarter is a quarter & its drives.
 type FootballQuarter struct {
 	// X's ID for the quarter within the game.
 	ID string `json:"id" api:"required"`
@@ -1588,13 +1588,13 @@ type FootballQuarter struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballQuarter) RawJSON() string { return r.JSON.raw }
 func (r *FootballQuarter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 game's drives & plays, by quarter.
+// FootballPlays holds 1 game's drives & plays, by quarter.
 type FootballPlays struct {
 	// The ID of the game these plays come from.
 	ID string `json:"id" api:"required"`
@@ -1624,13 +1624,13 @@ type FootballPlays struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlays) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlays) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// People watching the game on X at X's last count. Null before X counts any, as
+// SportsGameAudienceViewers holds people watching the game on X at X's last count. Null before X counts any, as
 // before kickoff.
 type SportsGameAudienceViewers struct {
 	// How many people watched the game on X.
@@ -1646,13 +1646,13 @@ type SportsGameAudienceViewers struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsGameAudienceViewers) RawJSON() string { return r.JSON.raw }
 func (r *SportsGameAudienceViewers) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 team's picks.
+// SportsGameAudienceTeamPick is an item in [SportsGameAudienceTeamPicks.Teams]. 1 team's picks.
 type SportsGameAudienceTeamPick struct {
 	// The team ID, a key in teams.
 	TeamID string `json:"teamId" api:"required"`
@@ -1667,13 +1667,13 @@ type SportsGameAudienceTeamPick struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsGameAudienceTeamPick) RawJSON() string { return r.JSON.raw }
 func (r *SportsGameAudienceTeamPick) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// How many people on X picked a team to root for.
+// SportsGameAudienceTeamPicks describes how many people on X picked a team to root for.
 type SportsGameAudienceTeamPicks struct {
 	// Picks for every team in the game.
 	Total int64 `json:"total" api:"required"`
@@ -1688,13 +1688,13 @@ type SportsGameAudienceTeamPicks struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsGameAudienceTeamPicks) RawJSON() string { return r.JSON.raw }
 func (r *SportsGameAudienceTeamPicks) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Time left until the chat opens. Null while it is open & after the game.
+// SportsGameAudienceChatOpensIn is the time left until the chat opens. Null while it is open & after the game.
 type SportsGameAudienceChatOpensIn struct {
 	// Whole days left.
 	Days int64 `json:"days" api:"required"`
@@ -1712,13 +1712,13 @@ type SportsGameAudienceChatOpensIn struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsGameAudienceChatOpensIn) RawJSON() string { return r.JSON.raw }
 func (r *SportsGameAudienceChatOpensIn) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The game's live chat on X.
+// SportsGameAudienceChat is the game's live chat on X.
 type SportsGameAudienceChat struct {
 	// Whether the chat is open now.
 	Available bool `json:"available" api:"required"`
@@ -1736,13 +1736,13 @@ type SportsGameAudienceChat struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsGameAudienceChat) RawJSON() string { return r.JSON.raw }
 func (r *SportsGameAudienceChat) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Who watches & roots for 1 game on X.
+// SportsGameAudience describes who watches & roots for 1 game on X.
 type SportsGameAudience struct {
 	// The ID of the game, from your request.
 	ID string `json:"id" api:"required"`
@@ -1771,10 +1771,10 @@ type SportsGameAudience struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SportsGameAudience) RawJSON() string { return r.JSON.raw }
 func (r *SportsGameAudience) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // FootballRosterTeam is 1 team's roster.
@@ -1795,7 +1795,7 @@ type FootballRosterTeam struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r FootballRosterTeam) RawJSON() string { return r.JSON.raw }
 func (r *FootballRosterTeam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // FootballRoster holds both teams' rosters for 1 NFL game.
@@ -1826,7 +1826,7 @@ type FootballRoster struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r FootballRoster) RawJSON() string { return r.JSON.raw }
 func (r *FootballRoster) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // FootballPlayerProp is 1 player's line & odds in a prop category.
@@ -1860,7 +1860,7 @@ type FootballPlayerProp struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r FootballPlayerProp) RawJSON() string { return r.JSON.raw }
 func (r *FootballPlayerProp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // FootballPropCategory is 1 kind of player prop & its lines.
@@ -1887,7 +1887,7 @@ type FootballPropCategory struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r FootballPropCategory) RawJSON() string { return r.JSON.raw }
 func (r *FootballPropCategory) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // FootballProps holds the player props X shows for 1 NFL game.
@@ -1919,7 +1919,7 @@ type FootballProps struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r FootballProps) RawJSON() string { return r.JSON.raw }
 func (r *FootballProps) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // SportsGamePosts is a page of 1 game's posts, in Xquik's post shape. Pass
@@ -1942,7 +1942,7 @@ type SportsGamePosts struct {
 // RawJSON returns the unmodified JSON received from the API.
 func (r SportsGamePosts) RawJSON() string { return r.JSON.raw }
 func (r *SportsGamePosts) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSportListGamesParams struct {

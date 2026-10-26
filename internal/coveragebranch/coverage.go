@@ -1,6 +1,9 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
+// Package coveragebranch counts the covered and total branches in a branch
+// report, using a Go coverage profile.
 package coveragebranch
 
 import (

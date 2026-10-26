@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package apiquery encodes request params as URL query values.
 package apiquery
 
 import (
@@ -10,7 +11,7 @@ import (
 	"time"
 )
 
-func MarshalWithSettings(value any, settings QuerySettings) (url.Values, error) {
+func MarshalWithSettings[T any](value T, settings QuerySettings) (url.Values, error) {
 	e := encoder{time.RFC3339, true, settings}
 	kv := url.Values{}
 	val := reflect.ValueOf(value)
@@ -29,7 +30,7 @@ func MarshalWithSettings(value any, settings QuerySettings) (url.Values, error) 
 	return kv, nil
 }
 
-func Marshal(value any) (url.Values, error) {
+func Marshal[T any](value T) (url.Values, error) {
 	return MarshalWithSettings(value, QuerySettings{})
 }
 

@@ -18,7 +18,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Subscription, billing, and credits
+// CreditService covers subscription, billing, and credits.
 //
 // CreditService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -38,17 +38,17 @@ func NewCreditService(opts ...option.RequestOption) (r CreditService) {
 	return
 }
 
-// Redirects to the active hosted top-up checkout.
+// RedirectTopupCheckout redirects to the active hosted top-up checkout.
 func (r *CreditService) RedirectTopupCheckout(ctx context.Context, query CreditRedirectTopupCheckoutParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "credits/topup/redirect"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, requestconfig.ResponseBody{}, opts...)
 	return err
 }
 
-// Returns the account credit balance and usage context.
+// GetBalance returns the account credit balance and usage context.
 func (r *CreditService) GetBalance(ctx context.Context, opts ...option.RequestOption) (res *CreditGetBalanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "credits"
@@ -56,7 +56,7 @@ func (r *CreditService) GetBalance(ctx context.Context, opts ...option.RequestOp
 	return res, err
 }
 
-// Returns verification status for a credit top-up.
+// GetTopupStatus returns verification status for a credit top-up.
 func (r *CreditService) GetTopupStatus(ctx context.Context, query CreditGetTopupStatusParams, opts ...option.RequestOption) (res *CreditGetTopupStatusResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "credits/topup/status"
@@ -64,7 +64,7 @@ func (r *CreditService) GetTopupStatus(ctx context.Context, query CreditGetTopup
 	return res, err
 }
 
-// Create a hosted checkout only after the user confirms. The request never
+// TopupBalance creates a hosted checkout only after the user confirms. The request never
 // completes payment or adds credits.
 func (r *CreditService) TopupBalance(ctx context.Context, body CreditTopupBalanceParams, opts ...option.RequestOption) (res *CreditTopupBalanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -105,10 +105,10 @@ type CreditGetBalanceResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CreditGetBalanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *CreditGetBalanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type CreditGetTopupStatusResponse struct {
@@ -138,10 +138,10 @@ type CreditGetTopupStatusResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CreditGetTopupStatusResponse) RawJSON() string { return r.JSON.raw }
 func (r *CreditGetTopupStatusResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type CreditGetTopupStatusResponseStatus string
@@ -178,10 +178,10 @@ type CreditTopupBalanceResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CreditTopupBalanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *CreditTopupBalanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type CreditRedirectTopupCheckoutParams struct {
@@ -236,7 +236,7 @@ func (r CreditTopupBalanceParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CreditTopupBalanceParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Currency is an ISO 4217 code of 1 of the 10 currencies Xquik charges in.

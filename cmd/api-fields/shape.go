@@ -80,8 +80,12 @@ func unionOf(variants []*shape) *shape {
 	return &shape{kind: union, variants: variants}
 }
 
+func (s *shape) unread() bool {
+	return s.kind == unknown || s.kind == cycle
+}
+
 func (s *shape) opaque() bool {
-	return s.kind == unknown || s.kind == cycle || s.kind == free
+	return s.unread() || s.kind == free
 }
 
 func intersect(parts []*shape) *shape {

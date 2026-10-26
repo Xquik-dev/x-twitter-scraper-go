@@ -1,0 +1,15 @@
+#!/bin/sh
+printf '%s\n' "$*" | sed -e "s|$TMPDIR/xquik-codeql\.[^/ ]*|\$REPORT|g" -e "s|$PWD|\$REPO|g" >> "$FAKE_CALLS"
+case "$1 $2" in
+  "version --format=terse") echo 2.27.2 ;;
+  "pack install") ;;
+  "test run")
+    fixtures="$(find "$3" -name '*.fixture' | wc -l | tr -d ' ')"
+    echo "test run saw extract tests $CODEQL_EXTRACTOR_GO_OPTION_EXTRACT_TESTS and $fixtures fixture files" >> "$FAKE_CALLS" ;;
+  "database create") ;;
+  "database analyze")
+    for argument; do
+      case "$argument" in --output=*) cp "$FAKE_REPORT" "${argument#--output=}" ;; esac
+    done ;;
+  *) echo "unexpected codeql call $*" >&2; exit 97 ;;
+esac

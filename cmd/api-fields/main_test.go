@@ -7,6 +7,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/fs"
 	"net/http"
@@ -63,6 +64,8 @@ type paramObj = param.APIObject
 
 type UserProfile = shared.UserProfile
 
+type PublicMetadata = shared.PublicMetadata
+
 type XTweetGetParams struct {
 	Q      string              ` + "`" + `query:"q" api:"required" json:"-"` + "`" + `
 	Cursor param.Opt[string]   ` + "`" + `query:"cursor,omitzero" json:"-"` + "`" + `
@@ -93,8 +96,8 @@ type XTweetGetResponse struct {
 	Tweet  Tweet                        ` + "`" + `json:"tweet" api:"required"` + "`" + `
 	Author UserProfile                  ` + "`" + `json:"author"` + "`" + `
 	Media  []TweetMedia                 ` + "`" + `json:"media"` + "`" + `
-	Extra  map[string]any               ` + "`" + `json:"extra"` + "`" + `
-	Raw    any                          ` + "`" + `json:"raw"` + "`" + `
+	Extra  shared.PublicMetadata        ` + "`" + `json:"extra"` + "`" + `
+	Raw    json.RawMessage              ` + "`" + `json:"raw"` + "`" + `
 	Answer XTweetGetResponseAnswerUnion ` + "`" + `json:"answer"` + "`" + `
 	Result XTweetGetResponseResultUnion ` + "`" + `json:"result"` + "`" + `
 	JSON   struct {
@@ -129,6 +132,8 @@ type XTweetGetResponseResultUnion struct {
 `
 
 const sharedSource = `package shared
+
+type PublicMetadata map[string]json.RawMessage
 
 type UserProfile struct {
 	ID   string ` + "`" + `json:"id" api:"required"` + "`" + `
@@ -179,113 +184,151 @@ func sdkTree(accepted string, overrides map[string]string) fstest.MapFS {
 	return tree
 }
 
-func objectSchema(required []string, properties map[string]any) map[string]any {
-	schema := map[string]any{"type": "object", "properties": properties}
+type node interface{ json.Marshaler }
+
+type (
+	obj     map[string]node
+	arr     []node
+	text    string
+	num     float64
+	boolean bool
+	null    struct{}
+)
+
+func (o obj) MarshalJSON() ([]byte, error)     { return json.Marshal(map[string]node(o)) }
+func (a arr) MarshalJSON() ([]byte, error)     { return json.Marshal([]node(a)) }
+func (s text) MarshalJSON() ([]byte, error)    { return json.Marshal(string(s)) }
+func (n num) MarshalJSON() ([]byte, error)     { return json.Marshal(float64(n)) }
+func (b boolean) MarshalJSON() ([]byte, error) { return json.Marshal(bool(b)) }
+func (null) MarshalJSON() ([]byte, error)      { return []byte("null"), nil }
+
+func asObj(value node) obj {
+	object, ok := value.(obj)
+	if !ok {
+		panic(fmt.Sprintf("the test spec holds %T where it needs an object", value))
+	}
+	return object
+}
+
+func asArr(value node) arr {
+	list, ok := value.(arr)
+	if !ok {
+		panic(fmt.Sprintf("the test spec holds %T where it needs a list", value))
+	}
+	return list
+}
+
+func objectSchema(required []string, properties obj) obj {
+	schema := obj{"type": text("object"), "properties": properties}
 	if required != nil {
-		schema["required"] = required
+		names := arr{}
+		for _, name := range required {
+			names = append(names, text(name))
+		}
+		schema["required"] = names
 	}
 	return schema
 }
 
-func jsonContent(schema any) map[string]any {
-	return map[string]any{"application/json": map[string]any{"schema": schema}}
+func jsonContent(schema node) obj {
+	return obj{"application/json": obj{"schema": schema}}
 }
 
-func str() map[string]any { return map[string]any{"type": "string"} }
+func str() obj { return obj{"type": text("string")} }
 
-func baseSpec() map[string]any {
-	tweet := objectSchema([]string{"id"}, map[string]any{
+func baseSpec() obj {
+	tweet := objectSchema([]string{"id"}, obj{
 		"id":     str(),
 		"text":   str(),
-		"note":   map[string]any{"type": []any{"string", "null"}},
-		"type":   map[string]any{"type": "string", "const": "Point"},
-		"quoted": map[string]any{"$ref": "#/components/schemas/Tweet"},
-		"tags":   map[string]any{"type": "array", "items": str()},
+		"note":   obj{"type": arr{text("string"), text("null")}},
+		"type":   obj{"type": text("string"), "const": text("Point")},
+		"quoted": obj{"$ref": text("#/components/schemas/Tweet")},
+		"tags":   obj{"type": text("array"), "items": str()},
 	})
-	profile := objectSchema([]string{"id"}, map[string]any{"id": str(), "name": str()})
-	response := objectSchema([]string{"tweet"}, map[string]any{
-		"tweet":  map[string]any{"$ref": "#/components/schemas/Tweet", "description": "The tweet."},
-		"author": map[string]any{"$ref": "#/components/schemas/UserProfile"},
-		"media":  map[string]any{"type": "array", "items": objectSchema([]string{"url"}, map[string]any{"url": str()})},
-		"extra":  map[string]any{"type": "object", "additionalProperties": true},
-		"raw":    objectSchema(nil, map[string]any{"anything": str()}),
-		"answer": map[string]any{"oneOf": []any{map[string]any{"type": "number"}, str(), map[string]any{"type": "null"}}},
-		"result": map[string]any{"oneOf": []any{
-			objectSchema([]string{"kind", "score"}, map[string]any{"kind": str(), "score": map[string]any{"type": "number"}}),
-			objectSchema([]string{"kind"}, map[string]any{"kind": str()}),
+	profile := objectSchema([]string{"id"}, obj{"id": str(), "name": str()})
+	response := objectSchema([]string{"tweet"}, obj{
+		"tweet":  obj{"$ref": text("#/components/schemas/Tweet"), "description": text("The tweet.")},
+		"author": obj{"$ref": text("#/components/schemas/UserProfile")},
+		"media":  obj{"type": text("array"), "items": objectSchema([]string{"url"}, obj{"url": str()})},
+		"extra":  obj{"type": text("object"), "additionalProperties": boolean(true)},
+		"raw":    objectSchema(nil, obj{"anything": str()}),
+		"answer": obj{"oneOf": arr{obj{"type": text("number")}, str(), obj{"type": text("null")}}},
+		"result": obj{"oneOf": arr{
+			objectSchema([]string{"kind", "score"}, obj{"kind": str(), "score": obj{"type": text("number")}}),
+			objectSchema([]string{"kind"}, obj{"kind": str()}),
 		}},
 	})
-	return map[string]any{
-		"openapi": "3.1.0",
-		"servers": []any{map[string]any{"url": "https://xquik.com"}},
-		"components": map[string]any{
-			"schemas":    map[string]any{"Tweet": tweet, "UserProfile": profile},
-			"parameters": map[string]any{"Cursor": map[string]any{"name": "cursor", "in": "query", "schema": str()}},
+	return obj{
+		"openapi": text("3.1.0"),
+		"servers": arr{obj{"url": text("https://xquik.com")}},
+		"components": obj{
+			"schemas":    obj{"Tweet": tweet, "UserProfile": profile},
+			"parameters": obj{"Cursor": obj{"name": text("cursor"), "in": text("query"), "schema": str()}},
 		},
-		"paths": map[string]any{
-			"/api/v1/x/tweets/{tweetId}": map[string]any{
-				"parameters": []any{map[string]any{"name": "tweetId", "in": "path", "required": true, "schema": str()}},
-				"get": map[string]any{
-					"operationId": "getTweet",
-					"parameters": []any{
-						map[string]any{"name": "q", "in": "query", "required": true, "schema": str()},
-						map[string]any{"$ref": "#/components/parameters/Cursor"},
-						map[string]any{"name": "mode", "in": "query", "schema": map[string]any{"type": "string", "enum": []any{"latest", "top"}}},
-						map[string]any{"name": "Accept-Language", "in": "header", "schema": str()},
+		"paths": obj{
+			"/api/v1/x/tweets/{tweetId}": obj{
+				"parameters": arr{obj{"name": text("tweetId"), "in": text("path"), "required": boolean(true), "schema": str()}},
+				"get": obj{
+					"operationId": text("getTweet"),
+					"parameters": arr{
+						obj{"name": text("q"), "in": text("query"), "required": boolean(true), "schema": str()},
+						obj{"$ref": text("#/components/parameters/Cursor")},
+						obj{"name": text("mode"), "in": text("query"), "schema": obj{"type": text("string"), "enum": arr{text("latest"), text("top")}}},
+						obj{"name": text("Accept-Language"), "in": text("header"), "schema": str()},
 					},
-					"responses": map[string]any{
-						"200":     map[string]any{"description": "OK", "content": jsonContent(response)},
-						"404":     map[string]any{"description": "Missing", "content": jsonContent(objectSchema(nil, map[string]any{"error": str()}))},
-						"default": map[string]any{"description": "Error"},
+					"responses": obj{
+						"200":     obj{"description": text("OK"), "content": jsonContent(response)},
+						"404":     obj{"description": text("Missing"), "content": jsonContent(objectSchema(nil, obj{"error": str()}))},
+						"default": obj{"description": text("Error")},
 					},
 				},
 			},
-			"/api/v1/x/tweets": map[string]any{
-				"post": map[string]any{
-					"requestBody": map[string]any{"content": map[string]any{
-						"application/json":    map[string]any{"schema": objectSchema([]string{"text"}, map[string]any{"text": str(), "media": map[string]any{"type": "array", "items": str()}})},
-						"multipart/form-data": map[string]any{"schema": objectSchema([]string{"text"}, map[string]any{"text": str(), "media": map[string]any{"type": "array", "items": str()}})},
+			"/api/v1/x/tweets": obj{
+				"post": obj{
+					"requestBody": obj{"content": obj{
+						"application/json":    obj{"schema": objectSchema([]string{"text"}, obj{"text": str(), "media": obj{"type": text("array"), "items": str()}})},
+						"multipart/form-data": obj{"schema": objectSchema([]string{"text"}, obj{"text": str(), "media": obj{"type": text("array"), "items": str()}})},
 					}},
-					"responses": map[string]any{"201": map[string]any{"description": "Created", "content": jsonContent(objectSchema([]string{"id"}, map[string]any{"id": str(), "status": map[string]any{"type": "string", "enum": []any{"pending"}}}))}},
+					"responses": obj{"201": obj{"description": text("Created"), "content": jsonContent(objectSchema([]string{"id"}, obj{"id": str(), "status": obj{"type": text("string"), "enum": arr{text("pending")}}}))}},
 				},
 			},
-			"/api/v1/x/tweets/{id}/export": map[string]any{
-				"get": map[string]any{"responses": map[string]any{"200": map[string]any{"description": "CSV", "content": map[string]any{"text/csv": map[string]any{"schema": str()}}}}},
+			"/api/v1/x/tweets/{id}/export": obj{
+				"get": obj{"responses": obj{"200": obj{"description": text("CSV"), "content": obj{"text/csv": obj{"schema": str()}}}}},
 			},
-			"/api/v1/x/media": map[string]any{
-				"post": map[string]any{
-					"requestBody": map[string]any{"content": map[string]any{"multipart/form-data": map[string]any{"schema": objectSchema([]string{"file"}, map[string]any{"file": map[string]any{"type": "string", "format": "binary"}})}}},
-					"responses":   map[string]any{"200": map[string]any{"description": "OK", "content": jsonContent(map[string]any{"$ref": "#/components/schemas/UserProfile"})}},
+			"/api/v1/x/media": obj{
+				"post": obj{
+					"requestBody": obj{"content": obj{"multipart/form-data": obj{"schema": objectSchema([]string{"file"}, obj{"file": obj{"type": text("string"), "format": text("binary")}})}}},
+					"responses":   obj{"200": obj{"description": text("OK"), "content": jsonContent(obj{"$ref": text("#/components/schemas/UserProfile")})}},
 				},
 			},
-			"/api/v1/events/stream": map[string]any{
-				"get": map[string]any{"responses": map[string]any{"200": map[string]any{"description": "Stream", "content": map[string]any{"text/event-stream": map[string]any{"schema": str()}}}}},
+			"/api/v1/events/stream": obj{
+				"get": obj{"responses": obj{"200": obj{"description": text("Stream"), "content": obj{"text/event-stream": obj{"schema": str()}}}}},
 			},
 		},
 	}
 }
 
-func path(spec map[string]any, keys ...string) map[string]any {
+func path(spec obj, keys ...string) obj {
 	current := spec
 	for _, key := range keys {
-		current = current[key].(map[string]any)
+		current = asObj(current[key])
 	}
 	return current
 }
 
-func lookupResponse(spec map[string]any) map[string]any {
+func lookupResponse(spec obj) obj {
 	return path(spec, "paths", "/api/v1/x/tweets/{tweetId}", "get", "responses", "200", "content", "application/json", "schema", "properties")
 }
 
-func lookupParameters(spec map[string]any) []any {
-	return path(spec, "paths", "/api/v1/x/tweets/{tweetId}", "get")["parameters"].([]any)
+func lookupParameters(spec obj) arr {
+	return asArr(path(spec, "paths", "/api/v1/x/tweets/{tweetId}", "get")["parameters"])
 }
 
-func tweetSchema(spec map[string]any) map[string]any {
+func tweetSchema(spec obj) obj {
 	return path(spec, "components", "schemas", "Tweet")
 }
 
-func writeSpec(t *testing.T, spec any) string {
+func writeSpec(t *testing.T, spec node) string {
 	t.Helper()
 	data, err := json.Marshal(spec)
 	if err != nil {
@@ -305,7 +348,7 @@ func runWith(t *testing.T, root fs.FS, baseURL option.RequestOption, source stri
 	return code, out.String(), failures.String()
 }
 
-func expectFailures(t *testing.T, root fs.FS, spec any, want ...string) {
+func expectFailures(t *testing.T, root fs.FS, spec node, want ...string) {
 	t.Helper()
 	code, out, failures := runWith(t, root, productionBaseURL, writeSpec(t, spec))
 	if expected := strings.Join(want, "\n") + "\n"; code != 1 || out != "" || failures != expected {
@@ -313,7 +356,7 @@ func expectFailures(t *testing.T, root fs.FS, spec any, want ...string) {
 	}
 }
 
-func expectPass(t *testing.T, root fs.FS, spec any, want string) {
+func expectPass(t *testing.T, root fs.FS, spec node, want string) {
 	t.Helper()
 	code, out, failures := runWith(t, root, productionBaseURL, writeSpec(t, spec))
 	if code != 0 || out != want+"\n" || failures != "" {
@@ -355,16 +398,16 @@ type paramObj = param.APIObject
 `
 	for _, mediaType := range []string{"multipart/form-data", "application/x-www-form-urlencoded"} {
 		t.Run(mediaType, func(t *testing.T) {
-			spec := map[string]any{
-				"openapi": "3.1.0",
-				"paths": map[string]any{
-					"/api/v1/support/tickets": map[string]any{
-						"post": map[string]any{
-							"requestBody": map[string]any{"content": map[string]any{
-								"application/json": map[string]any{"schema": objectSchema([]string{"body"}, map[string]any{"body": str()})},
-								mediaType: map[string]any{"schema": objectSchema(nil, map[string]any{
+			spec := obj{
+				"openapi": text("3.1.0"),
+				"paths": obj{
+					"/api/v1/support/tickets": obj{
+						"post": obj{
+							"requestBody": obj{"content": obj{
+								"application/json": obj{"schema": objectSchema([]string{"body"}, obj{"body": str()})},
+								mediaType: obj{"schema": objectSchema(nil, obj{
 									"body":        str(),
-									"attachments": map[string]any{"type": "array", "items": map[string]any{"type": "string", "format": "binary"}},
+									"attachments": obj{"type": text("array"), "items": obj{"type": text("string"), "format": text("binary")}},
 								})},
 							}},
 						},
@@ -389,84 +432,93 @@ func TestDifferencesFail(t *testing.T) {
 	const next = "Fix each field above in the SDK, or list it in accepted-field-differences.json with a reason."
 	tests := []struct {
 		name   string
-		change func(map[string]any)
+		change func(obj)
 		want   []string
 	}{
-		{"missing query param", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/tweets/{tweetId}", "get")["parameters"] = append(lookupParameters(spec), map[string]any{"name": "limit", "in": "query", "schema": map[string]any{"type": "integer"}})
+		{"missing query param", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/tweets/{tweetId}", "get")["parameters"] = append(lookupParameters(spec), obj{"name": text("limit"), "in": text("query"), "schema": obj{"type": text("integer")}})
 		}, []string{"GET /api/v1/x/tweets/{tweetId} request missing limit"}},
-		{"extra query param", func(spec map[string]any) {
+		{"extra query param", func(spec obj) {
 			path(spec, "paths", "/api/v1/x/tweets/{tweetId}", "get")["parameters"] = lookupParameters(spec)[:1]
 		}, []string{"GET /api/v1/x/tweets/{tweetId} request extra cursor", "GET /api/v1/x/tweets/{tweetId} request extra mode"}},
-		{"query enum", func(spec map[string]any) {
-			lookupParameters(spec)[2].(map[string]any)["schema"] = map[string]any{"type": "string", "enum": []any{"latest", "top", "live"}}
+		{"query enum", func(spec obj) {
+			asObj(lookupParameters(spec)[2])["schema"] = obj{"type": text("string"), "enum": arr{text("latest"), text("top"), text("live")}}
 		}, []string{"GET /api/v1/x/tweets/{tweetId} request enum mode"}},
-		{"query required", func(spec map[string]any) {
-			lookupParameters(spec)[0].(map[string]any)["required"] = false
+		{"query required", func(spec obj) {
+			asObj(lookupParameters(spec)[0])["required"] = boolean(false)
 		}, []string{"GET /api/v1/x/tweets/{tweetId} request required q"}},
-		{"nullable", func(spec map[string]any) {
+		{"nullable", func(spec obj) {
 			path(tweetSchema(spec), "properties")["note"] = str()
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response nullable tweet.note"}},
-		{"response required", func(spec map[string]any) {
-			tweetSchema(spec)["required"] = []any{}
+		{"response required", func(spec obj) {
+			tweetSchema(spec)["required"] = arr{}
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response required tweet.id"}},
-		{"missing nested object counts once", func(spec map[string]any) {
-			path(tweetSchema(spec), "properties")["entities"] = objectSchema(nil, map[string]any{"urls": map[string]any{"type": "array", "items": objectSchema(nil, map[string]any{"url": str()})}})
+		{"missing nested object counts once", func(spec obj) {
+			path(tweetSchema(spec), "properties")["entities"] = objectSchema(nil, obj{"urls": obj{"type": text("array"), "items": objectSchema(nil, obj{"url": str()})}})
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing tweet.entities"}},
-		{"missing array item field", func(spec map[string]any) {
+		{"missing array item field", func(spec obj) {
 			path(lookupResponse(spec), "media", "items", "properties")["alt"] = str()
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing media[].alt"}},
-		{"extra response field", func(spec map[string]any) {
+		{"extra response field", func(spec obj) {
 			delete(path(tweetSchema(spec), "properties"), "tags")
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response extra tweet.tags"}},
-		{"another kind counts as missing", func(spec map[string]any) {
-			path(tweetSchema(spec), "properties")["text"] = objectSchema(nil, map[string]any{"value": str()})
+		{"another kind counts as missing", func(spec obj) {
+			path(tweetSchema(spec), "properties")["text"] = objectSchema(nil, obj{"value": str()})
 			path(tweetSchema(spec), "properties")["tags"] = str()
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing tweet.tags", "GET /api/v1/x/tweets/{tweetId} response missing tweet.text"}},
-		{"response enum", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/tweets", "post", "responses", "201", "content", "application/json", "schema", "properties")["status"] = map[string]any{"type": "string", "enum": []any{"pending", "sent"}}
+		{"response enum", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/tweets", "post", "responses", "201", "content", "application/json", "schema", "properties")["status"] = obj{"type": text("string"), "enum": arr{text("pending"), text("sent")}}
 		}, []string{"POST /api/v1/x/tweets response enum status"}},
-		{"several 2xx bodies merge", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/tweets", "post", "responses")["202"] = map[string]any{"description": "Queued", "content": jsonContent(objectSchema([]string{"jobId"}, map[string]any{"jobId": str()}))}
+		{"several 2xx bodies merge", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/tweets", "post", "responses")["202"] = obj{"description": text("Queued"), "content": jsonContent(objectSchema([]string{"jobId"}, obj{"jobId": str()}))}
 		}, []string{"POST /api/v1/x/tweets response missing jobId", "POST /api/v1/x/tweets response required id"}},
-		{"untyped JSON response", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/tweets/{id}/export", "get", "responses", "200")["content"] = jsonContent(objectSchema(nil, map[string]any{"rows": str(), "total": str()}))
+		{"untyped JSON response", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/tweets/{id}/export", "get", "responses", "200")["content"] = jsonContent(objectSchema(nil, obj{"rows": str(), "total": str()}))
 		}, []string{"GET /api/v1/x/tweets/{id}/export response missing rows", "GET /api/v1/x/tweets/{id}/export response missing total"}},
-		{"untyped scalar response", func(spec map[string]any) {
+		{"untyped scalar response", func(spec obj) {
 			path(spec, "paths", "/api/v1/x/tweets/{id}/export", "get", "responses", "200")["content"] = jsonContent(str())
 		}, []string{"GET /api/v1/x/tweets/{id}/export response missing (body)"}},
-		{"response root of another kind", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/media", "post", "responses", "200")["content"] = jsonContent(map[string]any{"type": "array", "items": str()})
+		{"response root of another kind", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/media", "post", "responses", "200")["content"] = jsonContent(obj{"type": text("array"), "items": str()})
 		}, []string{"POST /api/v1/x/media response missing (body)"}},
-		{"missing body field", func(spec map[string]any) {
+		{"missing body field", func(spec obj) {
 			path(spec, "paths", "/api/v1/x/tweets", "post", "requestBody", "content", "application/json", "schema", "properties")["replyTo"] = str()
 		}, []string{"POST /api/v1/x/tweets request missing replyTo"}},
-		{"body the SDK does not send", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/tweets/{id}/export", "get")["requestBody"] = map[string]any{"content": jsonContent(objectSchema(nil, map[string]any{"format": str()}))}
+		{"body the SDK does not send", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/tweets/{id}/export", "get")["requestBody"] = obj{"content": jsonContent(objectSchema(nil, obj{"format": str()}))}
 		}, []string{"GET /api/v1/x/tweets/{id}/export request missing format"}},
-		{"body the spec does not take", func(spec map[string]any) {
+		{"body the spec does not take", func(spec obj) {
 			delete(path(spec, "paths", "/api/v1/x/tweets", "post"), "requestBody")
 		}, []string{"POST /api/v1/x/tweets request extra media", "POST /api/v1/x/tweets request extra text"}},
-		{"array body the SDK does not send", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/tweets/{id}/export", "get")["requestBody"] = map[string]any{"content": jsonContent(map[string]any{"type": "array", "items": str()})}
+		{"array body the SDK does not send", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/tweets/{id}/export", "get")["requestBody"] = obj{"content": jsonContent(obj{"type": text("array"), "items": str()})}
 		}, []string{"GET /api/v1/x/tweets/{id}/export request missing (body)"}},
-		{"multipart body when there is no JSON body", func(spec map[string]any) {
+		{"multipart body when there is no JSON body", func(spec obj) {
 			path(spec, "paths", "/api/v1/x/media", "post", "requestBody", "content", "multipart/form-data", "schema", "properties")["alt"] = str()
 		}, []string{"POST /api/v1/x/media request missing alt"}},
-		{"closed object rejects extra SDK fields", func(spec map[string]any) {
+		{"closed object rejects extra SDK fields", func(spec obj) {
 			delete(path(tweetSchema(spec), "properties"), "tags")
-			tweetSchema(spec)["additionalProperties"] = false
+			tweetSchema(spec)["additionalProperties"] = boolean(false)
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response extra tweet.tags"}},
-		{"typed response the spec does not document", func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/media", "post", "responses", "200")["content"] = map[string]any{"text/csv": map[string]any{"schema": str()}}
+		{"typed response the spec does not document", func(spec obj) {
+			path(spec, "paths", "/api/v1/x/media", "post", "responses", "200")["content"] = obj{"text/csv": obj{"schema": str()}}
 		}, []string{"POST /api/v1/x/media response extra id", "POST /api/v1/x/media response extra name"}},
-		{"vendor JSON response", func(spec map[string]any) {
+		{"vendor JSON response", func(spec obj) {
 			responses := path(spec, "paths", "/api/v1/x/media", "post", "responses", "200")
-			schema := objectSchema([]string{"id"}, map[string]any{"id": str(), "name": str(), "bio": str()})
-			responses["content"] = map[string]any{"application/vnd.xquik+json; charset=utf-8": map[string]any{"schema": schema}}
+			schema := objectSchema([]string{"id"}, obj{"id": str(), "name": str(), "bio": str()})
+			responses["content"] = obj{"application/vnd.xquik+json; charset=utf-8": obj{"schema": schema}}
 		}, []string{"POST /api/v1/x/media response missing bio"}},
-		{"union field required only when every variant requires it", func(spec map[string]any) {
-			path(lookupResponse(spec), "result")["oneOf"] = []any{objectSchema([]string{"kind"}, map[string]any{"kind": str(), "label": str()})}
+		{"typed object against a free-form SDK field", func(spec obj) {
+			lookupResponse(spec)["extra"] = objectSchema(nil, obj{"value": str()})
+		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing extra"}},
+		{"free-form object against an SDK array", func(spec obj) {
+			lookupResponse(spec)["media"] = obj{"type": text("object"), "additionalProperties": boolean(true)}
+		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing media"}},
+		{"free-form union against an SDK scalar union", func(spec obj) {
+			lookupResponse(spec)["answer"] = obj{"anyOf": arr{obj{"type": text("object")}, str()}}
+		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing answer"}},
+		{"union field required only when every variant requires it", func(spec obj) {
+			path(lookupResponse(spec), "result")["oneOf"] = arr{objectSchema([]string{"kind"}, obj{"kind": str(), "label": str()})}
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response extra result.score", "GET /api/v1/x/tweets/{tweetId} response missing result.label"}},
 	}
 	for _, test := range tests {
@@ -482,93 +534,98 @@ func TestSchemaRulesKeepMatchingFieldsQuiet(t *testing.T) {
 	const summary = "The SDK's fields match the API for 5 operations, and accepted-field-differences.json lists 0 accepted differences."
 	tests := []struct {
 		name   string
-		change func(map[string]any)
+		change func(obj)
 	}{
-		{"open object allows extra SDK fields", func(spec map[string]any) {
+		{"open object allows extra SDK fields", func(spec obj) {
 			delete(path(tweetSchema(spec), "properties"), "tags")
-			tweetSchema(spec)["additionalProperties"] = map[string]any{"type": "string"}
+			tweetSchema(spec)["additionalProperties"] = obj{"type": text("string")}
 		}},
-		{"allOf merges parts and a required list", func(spec map[string]any) {
+		{"allOf merges parts and a required list", func(spec obj) {
 			schemas := path(spec, "components", "schemas")
-			profile := schemas["UserProfile"].(map[string]any)
+			profile := asObj(schemas["UserProfile"])
 			delete(profile, "required")
-			schemas["UserProfile"] = map[string]any{"allOf": []any{profile, map[string]any{"required": []any{"id"}}}}
+			schemas["UserProfile"] = obj{"allOf": arr{profile, obj{"required": arr{text("id")}}}}
 		}},
-		{"required list beside allOf", func(spec map[string]any) {
+		{"required list beside allOf", func(spec obj) {
 			schemas := path(spec, "components", "schemas")
-			profile := schemas["UserProfile"].(map[string]any)
+			profile := asObj(schemas["UserProfile"])
 			delete(profile, "required")
-			schemas["UserProfile"] = map[string]any{"allOf": []any{profile}, "required": []any{"id"}}
+			schemas["UserProfile"] = obj{"allOf": arr{profile}, "required": arr{text("id")}}
 		}},
-		{"allOf of arrays intersects items", func(spec map[string]any) {
-			media := lookupResponse(spec)["media"].(map[string]any)
-			lookupResponse(spec)["media"] = map[string]any{"allOf": []any{media, map[string]any{"type": "array", "items": map[string]any{"required": []any{"url"}}}}}
-			path(media, "items")["required"] = []any{}
+		{"allOf of arrays intersects items", func(spec obj) {
+			media := asObj(lookupResponse(spec)["media"])
+			lookupResponse(spec)["media"] = obj{"allOf": arr{media, obj{"type": text("array"), "items": obj{"required": arr{text("url")}}}}}
+			path(media, "items")["required"] = arr{}
 		}},
-		{"ref with siblings", func(spec map[string]any) {
-			lookupResponse(spec)["author"] = map[string]any{"$ref": "#/components/schemas/UserProfile", "type": []any{"object", "null"}, "description": "Author."}
+		{"ref with siblings", func(spec obj) {
+			lookupResponse(spec)["author"] = obj{"$ref": text("#/components/schemas/UserProfile"), "type": arr{text("object"), text("null")}, "description": text("Author.")}
 		}},
-		{"ref with schema siblings", func(spec map[string]any) {
-			lookupResponse(spec)["author"] = map[string]any{"$ref": "#/components/schemas/UserProfile", "properties": map[string]any{"name": str()}}
+		{"ref with schema siblings", func(spec obj) {
+			lookupResponse(spec)["author"] = obj{"$ref": text("#/components/schemas/UserProfile"), "properties": obj{"name": str()}}
 		}},
-		{"oneOf with shared properties", func(spec map[string]any) {
-			lookupResponse(spec)["result"] = map[string]any{
-				"properties": map[string]any{"kind": str()},
-				"required":   []any{"kind"},
-				"anyOf":      []any{objectSchema(nil, map[string]any{"score": map[string]any{"type": "number"}}), map[string]any{"enum": []any{nil}}, objectSchema(nil, map[string]any{})},
+		{"oneOf with shared properties", func(spec obj) {
+			lookupResponse(spec)["result"] = obj{
+				"properties": obj{"kind": str()},
+				"required":   arr{text("kind")},
+				"anyOf":      arr{objectSchema(nil, obj{"score": obj{"type": text("number")}}), obj{"enum": arr{null{}}}, objectSchema(nil, obj{})},
 			}
 		}},
-		{"oneOf of 1 object", func(spec map[string]any) {
-			lookupResponse(spec)["author"] = map[string]any{"oneOf": []any{map[string]any{"$ref": "#/components/schemas/UserProfile"}, map[string]any{"type": "null"}}}
+		{"oneOf of 1 object", func(spec obj) {
+			lookupResponse(spec)["author"] = obj{"oneOf": arr{obj{"$ref": text("#/components/schemas/UserProfile")}, obj{"type": text("null")}}}
 		}},
-		{"oneOf of only null", func(spec map[string]any) {
-			lookupResponse(spec)["raw"] = map[string]any{"oneOf": []any{map[string]any{"type": "null"}}}
+		{"oneOf of only null", func(spec obj) {
+			lookupResponse(spec)["raw"] = obj{"oneOf": arr{obj{"type": text("null")}}}
 		}},
-		{"null type and nullable flag", func(spec map[string]any) {
-			lookupResponse(spec)["raw"] = map[string]any{"type": "null"}
-			path(tweetSchema(spec), "properties")["note"] = map[string]any{"type": "string", "nullable": true}
+		{"null type and nullable flag", func(spec obj) {
+			lookupResponse(spec)["raw"] = obj{"type": text("null")}
+			path(tweetSchema(spec), "properties")["note"] = obj{"type": text("string"), "nullable": boolean(true)}
 		}},
-		{"enum with null", func(spec map[string]any) {
-			path(tweetSchema(spec), "properties")["note"] = map[string]any{"type": "string", "enum": []any{"a", nil}}
+		{"enum with null", func(spec obj) {
+			path(tweetSchema(spec), "properties")["note"] = obj{"type": text("string"), "enum": arr{text("a"), null{}}}
 		}},
-		{"free-form and tuple shapes stop the walk", func(spec map[string]any) {
-			lookupResponse(spec)["media"] = map[string]any{"type": "object"}
-			path(tweetSchema(spec), "properties")["tags"] = map[string]any{"type": "array", "prefixItems": []any{str()}}
-			lookupResponse(spec)["answer"] = map[string]any{"anyOf": []any{map[string]any{"type": "object"}, str()}}
+		{"free-form on both sides and tuple shapes stop the walk", func(spec obj) {
+			lookupResponse(spec)["extra"] = obj{"anyOf": arr{obj{"type": text("object")}, str()}}
+			path(tweetSchema(spec), "properties")["tags"] = obj{"type": text("array"), "prefixItems": arr{str()}}
 		}},
-		{"non-object schemas stay unknown", func(spec map[string]any) {
-			lookupResponse(spec)["raw"] = true
-			path(tweetSchema(spec), "properties")["tags"] = map[string]any{"oneOf": []any{map[string]any{"type": "array", "items": str()}, map[string]any{"type": "array", "items": map[string]any{"type": "integer"}}}}
+		{"non-object schemas stay unknown", func(spec obj) {
+			lookupResponse(spec)["raw"] = boolean(true)
+			path(tweetSchema(spec), "properties")["tags"] = obj{"oneOf": arr{obj{"type": text("array"), "items": str()}, obj{"type": text("array"), "items": obj{"type": text("integer")}}}}
 		}},
-		{"allOf requires a field any part requires", func(spec map[string]any) {
+		{"allOf requires a field any part requires", func(spec obj) {
 			schemas := path(spec, "components", "schemas")
-			schemas["UserProfile"] = map[string]any{"allOf": []any{
-				objectSchema([]string{"id"}, map[string]any{"id": str(), "name": str()}),
-				objectSchema(nil, map[string]any{"id": str()}),
+			schemas["UserProfile"] = obj{"allOf": arr{
+				objectSchema([]string{"id"}, obj{"id": str(), "name": str()}),
+				objectSchema(nil, obj{"id": str()}),
 			}}
 		}},
-		{"allOf of 2 unions distributes over both", func(spec map[string]any) {
-			lookupResponse(spec)["result"] = map[string]any{"allOf": []any{
-				map[string]any{"oneOf": []any{objectSchema([]string{"kind"}, map[string]any{"kind": str()}), objectSchema(nil, map[string]any{"kind": str()})}},
-				map[string]any{"oneOf": []any{objectSchema(nil, map[string]any{"score": map[string]any{"type": "number"}}), objectSchema(nil, map[string]any{})}},
+		{"allOf of 2 unions distributes over both", func(spec obj) {
+			lookupResponse(spec)["result"] = obj{"allOf": arr{
+				obj{"oneOf": arr{objectSchema([]string{"kind"}, obj{"kind": str()}), objectSchema(nil, obj{"kind": str()})}},
+				obj{"oneOf": arr{objectSchema(nil, obj{"score": obj{"type": text("number")}}), objectSchema(nil, obj{})}},
 			}}
 		}},
-		{"oneOf beside allOf", func(spec map[string]any) {
-			lookupResponse(spec)["result"] = map[string]any{
-				"allOf": []any{objectSchema([]string{"kind"}, map[string]any{"kind": str()})},
-				"oneOf": []any{objectSchema(nil, map[string]any{"score": map[string]any{"type": "number"}}), objectSchema(nil, map[string]any{})},
+		{"oneOf beside allOf", func(spec obj) {
+			lookupResponse(spec)["result"] = obj{
+				"allOf": arr{objectSchema([]string{"kind"}, obj{"kind": str()})},
+				"oneOf": arr{objectSchema(nil, obj{"score": obj{"type": text("number")}}), objectSchema(nil, obj{})},
 			}
 		}},
-		{"null type beside a ref with other siblings", func(spec map[string]any) {
+		{"null type beside a ref with other siblings", func(spec obj) {
 			path(spec, "components", "schemas")["Note"] = str()
-			path(tweetSchema(spec), "properties")["note"] = map[string]any{"$ref": "#/components/schemas/Note", "type": []any{"string", "null"}, "format": "text"}
+			path(tweetSchema(spec), "properties")["note"] = obj{"$ref": text("#/components/schemas/Note"), "type": arr{text("string"), text("null")}, "format": text("text")}
 		}},
-		{"operation params override path item params", func(spec map[string]any) {
+		{"operation params override path item params", func(spec obj) {
 			item := path(spec, "paths", "/api/v1/x/tweets/{tweetId}")
-			item["parameters"] = append(item["parameters"].([]any), map[string]any{"name": "q", "in": "query", "required": false, "schema": str()})
+			item["parameters"] = append(asArr(item["parameters"]), obj{"name": text("q"), "in": text("query"), "required": boolean(false), "schema": str()})
 		}},
-		{"numeric and boolean enums", func(spec map[string]any) {
-			lookupResponse(spec)["answer"] = map[string]any{"oneOf": []any{map[string]any{"enum": []any{1.5, true}}, map[string]any{"enum": []any{map[string]any{}}}}}
+		{"numeric and boolean enums", func(spec obj) {
+			lookupResponse(spec)["answer"] = obj{"oneOf": arr{obj{"enum": arr{num(1.5), boolean(true)}}, obj{"enum": arr{obj{}}}, obj{"const": null{}}}}
+		}},
+		{"free-form object accepts a typed SDK struct", func(spec obj) {
+			lookupResponse(spec)["author"] = obj{"type": text("object"), "additionalProperties": boolean(true)}
+		}},
+		{"a keyword of another JSON type reads as absent", func(spec obj) {
+			path(tweetSchema(spec), "properties")["text"] = obj{"type": text("string"), "required": text("text")}
 		}},
 	}
 	for _, test := range tests {
@@ -629,19 +686,17 @@ func TestUnreadableInputsFail(t *testing.T) {
 	}
 
 	spec := baseSpec()
-	lookupResponse(spec)["author"] = map[string]any{"$ref": "#/components/schemas/Missing"}
+	lookupResponse(spec)["author"] = obj{"$ref": text("#/components/schemas/Missing")}
 	expectFailures(t, sdkTree("[]", nil), spec, "The field check cannot resolve #/components/schemas/Missing in the API spec. Fix the reference in the spec.")
 
 	broken := strings.Replace(modelSource, "Media  []TweetMedia ", "Media  []TweetMedium", 1)
-	broken = strings.Replace(broken, "Extra  map[string]any ", "Extra  chan int       ", 1)
-	broken = strings.Replace(broken, "Raw    any  ", "Raw    json.RawMessage", 1)
+	broken = strings.Replace(broken, "Extra  shared.PublicMetadata ", "Extra  chan int ", 1)
 	broken += "\ntype Other struct {\n\tValue *param.Field[string] `json:\"value\"`\n\tOdd (string) `json:\"odd\"`\n\tPicked pkg.Generic[string] `json:\"picked\"`\n}\n"
 	broken = strings.Replace(broken, "Result XTweetGetResponseResultUnion ", "Result Other                        ", 1)
 	expectFailures(t, sdkTree("[]", map[string]string{"model.go": broken}), baseSpec(),
 		"The field check cannot resolve the Go type (string). Use a type from the SDK, shared, shared/constant, time or io packages.",
 		"The field check cannot resolve the Go type TweetMedium. Use a type from the SDK, shared, shared/constant, time or io packages.",
 		"The field check cannot resolve the Go type chan int. Use a type from the SDK, shared, shared/constant, time or io packages.",
-		"The field check cannot resolve the Go type json.RawMessage. Use a type from the SDK, shared, shared/constant, time or io packages.",
 		"The field check cannot resolve the Go type param.Field[string]. Use a type from the SDK, shared, shared/constant, time or io packages.",
 		"The field check cannot resolve the Go type pkg.Generic[string]. Use a type from the SDK, shared, shared/constant, time or io packages.")
 
@@ -671,6 +726,39 @@ func TestUnreadableInputsFail(t *testing.T) {
 	code, out, failures = runWith(t, sdkTree("[]", nil), requestconfig.WithDefaultBaseURL("://bad"), writeSpec(t, baseSpec()))
 	if code != 1 || out != "" || failures != "The field check could not read the default base URL from option.WithEnvironmentProduction. Fix that option.\n" {
 		t.Fatalf("code = %d, out = %q, failures = %q", code, out, failures)
+	}
+}
+
+func TestFreeFormFields(t *testing.T) {
+	const reject = "The field check rejects the Go type %s. Use shared.PublicMetadata for a free-form object and json.RawMessage for a free-form value."
+	for _, test := range []struct {
+		goType   string
+		failures []string
+	}{
+		{"shared.PublicMetadata", nil},
+		{"PublicMetadata", nil},
+		{"map[string]json.RawMessage", nil},
+		{"json.RawMessage", nil},
+		{"map[string]string", nil},
+		{"[]json.RawMessage", []string{"GET /api/v1/x/tweets/{tweetId} response missing extra", nextStep}},
+		{"map[string]any", []string{fmt.Sprintf(reject, "map[string]any")}},
+		{"map[string]interface{}", []string{fmt.Sprintf(reject, "map[string]interface{}")}},
+		{"any", []string{fmt.Sprintf(reject, "any")}},
+		{"interface{}", []string{fmt.Sprintf(reject, "interface{}")}},
+		{"[]any", []string{fmt.Sprintf(reject, "any")}},
+	} {
+		t.Run(test.goType, func(t *testing.T) {
+			model := strings.Replace(modelSource, "Extra  shared.PublicMetadata ", "Extra  "+test.goType+" ", 1)
+			if !strings.Contains(model, "Extra  "+test.goType+" ") {
+				t.Fatal("the model has no Extra field to retype")
+			}
+			root := sdkTree("[]", map[string]string{"model.go": model})
+			if test.failures == nil {
+				expectPass(t, root, baseSpec(), "The SDK's fields match the API for 5 operations, and accepted-field-differences.json lists 0 accepted differences.")
+				return
+			}
+			expectFailures(t, root, baseSpec(), test.failures...)
+		})
 	}
 }
 
@@ -740,7 +828,7 @@ func (c *EdgeKind) Default() EdgeKind { return 1 }
 func (c EdgeKind) Default() EdgeKind  { return c }
 
 type EdgeResponse struct {
-	Raw     interface{} ` + "`" + `json:"raw"` + "`" + `
+	Raw     interface{ implRaw() } ` + "`" + `json:"raw"` + "`" + `
 	Inline  struct {
 		A string ` + "`" + `json:"a"` + "`" + `
 	} ` + "`" + `json:"inline"` + "`" + `
@@ -791,32 +879,32 @@ type EdgeNewParamsSecond struct {
 }
 `
 
-func edgeSpec() map[string]any {
-	response := objectSchema(nil, map[string]any{
-		"raw":    objectSchema(nil, map[string]any{"z": str()}),
-		"inline": objectSchema(nil, map[string]any{"a": str()}),
-		"variant": map[string]any{"allOf": []any{
-			objectSchema([]string{"kind"}, map[string]any{"kind": str()}),
-			map[string]any{"oneOf": []any{objectSchema(nil, map[string]any{"x": str()}), objectSchema(nil, map[string]any{"y": str()})}},
+func edgeSpec() obj {
+	response := objectSchema(nil, obj{
+		"raw":    objectSchema(nil, obj{"z": str()}),
+		"inline": objectSchema(nil, obj{"a": str()}),
+		"variant": obj{"allOf": arr{
+			objectSchema([]string{"kind"}, obj{"kind": str()}),
+			obj{"oneOf": arr{objectSchema(nil, obj{"x": str()}), objectSchema(nil, obj{"y": str()})}},
 		}},
-		"blank":   map[string]any{"oneOf": []any{true, true}},
-		"req":     map[string]any{"allOf": []any{map[string]any{"required": []any{"a"}}}},
+		"blank":   obj{"oneOf": arr{boolean(true), boolean(true)}},
+		"req":     obj{"allOf": arr{obj{"required": arr{text("a")}}}},
 		"shared":  str(),
-		"skipped": objectSchema(nil, map[string]any{"hidden": str()}),
+		"skipped": objectSchema(nil, obj{"hidden": str()}),
 	})
-	point := map[string]any{"type": "string", "const": "Point"}
-	body := map[string]any{"oneOf": []any{
-		objectSchema([]string{"kind"}, map[string]any{"kind": point, "note": map[string]any{"type": []any{"string", "null"}}}),
-		objectSchema(nil, map[string]any{"kind": point, "note": str()}),
+	point := obj{"type": text("string"), "const": text("Point")}
+	body := obj{"oneOf": arr{
+		objectSchema([]string{"kind"}, obj{"kind": point, "note": obj{"type": arr{text("string"), text("null")}}}),
+		objectSchema(nil, obj{"kind": point, "note": str()}),
 	}}
-	ok := map[string]any{"200": map[string]any{"description": "OK", "content": jsonContent(response)}}
-	return map[string]any{
-		"servers": []any{map[string]any{"url": "https://xquik.com"}},
-		"paths": map[string]any{
-			"/api/v1/x/edge": map[string]any{
-				"servers": []any{},
-				"get":     map[string]any{"servers": []any{}, "responses": ok},
-				"post":    map[string]any{"requestBody": map[string]any{"content": jsonContent(body)}, "responses": ok},
+	ok := obj{"200": obj{"description": text("OK"), "content": jsonContent(response)}}
+	return obj{
+		"servers": arr{obj{"url": text("https://xquik.com")}},
+		"paths": obj{
+			"/api/v1/x/edge": obj{
+				"servers": arr{},
+				"get":     obj{"servers": arr{}, "responses": ok},
+				"post":    obj{"requestBody": obj{"content": jsonContent(body)}, "responses": ok},
 			},
 		},
 	}
@@ -843,10 +931,10 @@ func TestReaderEdgeShapes(t *testing.T) {
 }
 
 func TestUnreadableSpecShapesFail(t *testing.T) {
-	for name, change := range map[string]func(map[string]any){
-		"servers not a list": func(spec map[string]any) { spec["servers"] = "https://xquik.com" },
-		"method not an object": func(spec map[string]any) {
-			path(spec, "paths", "/api/v1/x/edge")["get"] = "GET"
+	for name, change := range map[string]func(obj){
+		"servers not a list": func(spec obj) { spec["servers"] = text("https://xquik.com") },
+		"method not an object": func(spec obj) {
+			path(spec, "paths", "/api/v1/x/edge")["get"] = text("GET")
 		},
 	} {
 		t.Run(name, func(t *testing.T) {

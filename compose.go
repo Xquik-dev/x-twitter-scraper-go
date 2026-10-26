@@ -18,7 +18,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// AI tweet composition, drafts, writing styles, and radar
+// ComposeService covers AI tweet composition, drafts, writing styles, and radar.
 //
 // ComposeService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -38,7 +38,7 @@ func NewComposeService(opts ...option.RequestOption) (r ComposeService) {
 	return
 }
 
-// Uses xai-org/x-algorithm facts to compose and refine text. Score checks text. It
+// New uses xai-org/x-algorithm facts to compose and refine text. Score checks text. It
 // never predicts reach or engagement.
 func (r *ComposeService) New(ctx context.Context, body ComposeNewParams, opts ...option.RequestOption) (res *ComposeNewResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -116,29 +116,29 @@ type ComposeNewResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u ComposeNewResponseUnion) AsComposeNewResponseComposePrepareResult() (v ComposeNewResponseComposePrepareResult) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u ComposeNewResponseUnion) AsComposeNewResponseComposePrepareResult() (v ComposeNewResponseComposePrepareResult, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u ComposeNewResponseUnion) AsComposeNewResponseComposeRefineResult() (v ComposeNewResponseComposeRefineResult) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u ComposeNewResponseUnion) AsComposeNewResponseComposeRefineResult() (v ComposeNewResponseComposeRefineResult, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u ComposeNewResponseUnion) AsComposeNewResponseComposeScoreResult() (v ComposeNewResponseComposeScoreResult) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u ComposeNewResponseUnion) AsComposeNewResponseComposeScoreResult() (v ComposeNewResponseComposeScoreResult, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u ComposeNewResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *ComposeNewResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *ComposeNewResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Rules, questions, and research guidance for drafting a post.
+// ComposeNewResponseComposePrepareResult holds rules, questions, and research guidance for drafting a post.
 type ComposeNewResponseComposePrepareResult struct {
 	// Facts derived only from xai-org/x-algorithm.
 	ContentRules []ComposeNewResponseComposePrepareResultContentRule `json:"contentRules" api:"required"`
@@ -186,13 +186,13 @@ type ComposeNewResponseComposePrepareResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposePrepareResult) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// One source-backed ranking fact returned during preparation.
+// ComposeNewResponseComposePrepareResultContentRule is one source-backed ranking fact returned during preparation.
 type ComposeNewResponseComposePrepareResultContentRule struct {
 	Rule string `json:"rule" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -203,13 +203,13 @@ type ComposeNewResponseComposePrepareResultContentRule struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposePrepareResultContentRule) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResultContentRule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// One ranking signal and its source-value limit.
+// ComposeNewResponseComposePrepareResultEngagementMultiplier holds one ranking signal and its source-value limit.
 type ComposeNewResponseComposePrepareResultEngagementMultiplier struct {
 	// Human-readable published signal name.
 	Action     string                                       `json:"action" api:"required"`
@@ -223,15 +223,15 @@ type ComposeNewResponseComposePrepareResultEngagementMultiplier struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposePrepareResultEngagementMultiplier) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *ComposeNewResponseComposePrepareResultEngagementMultiplier) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Deprecated compatibility schema. The response array is empty.
+// ComposeNewResponseComposePrepareResultRadarRecommendation is a deprecated compatibility schema. The response array is empty.
 //
 // Deprecated: deprecated
 type ComposeNewResponseComposePrepareResultRadarRecommendation struct {
@@ -255,22 +255,22 @@ type ComposeNewResponseComposePrepareResultRadarRecommendation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposePrepareResultRadarRecommendation) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *ComposeNewResponseComposePrepareResultRadarRecommendation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// One source ranking signal without a production claim.
+// ComposeNewResponseComposePrepareResultScorerWeight is one source ranking signal without a production claim.
 type ComposeNewResponseComposePrepareResultScorerWeight struct {
 	// Signal direction and production limit.
 	Context string `json:"context" api:"required"`
 	// Signal name from X's public ranking repository.
 	Signal string `json:"signal" api:"required"`
 	// Null prevents source defaults becoming production claims.
-	Weight any `json:"weight" api:"required"`
+	Weight json.RawMessage `json:"weight" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Context     respjson.Field
@@ -281,13 +281,13 @@ type ComposeNewResponseComposePrepareResultScorerWeight struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposePrepareResultScorerWeight) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResultScorerWeight) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A saved username style and analyzed post count.
+// ComposeNewResponseComposePrepareResultSavedStyle is a saved username style and analyzed post count.
 type ComposeNewResponseComposePrepareResultSavedStyle struct {
 	TweetCount int64  `json:"tweetCount" api:"required"`
 	Username   string `json:"username" api:"required"`
@@ -300,13 +300,13 @@ type ComposeNewResponseComposePrepareResultSavedStyle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposePrepareResultSavedStyle) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResultSavedStyle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Source-backed guidance for refining a post.
+// ComposeNewResponseComposeRefineResult holds source-backed guidance for refining a post.
 type ComposeNewResponseComposeRefineResult struct {
 	// Request context and xai-org/x-algorithm guidance.
 	CompositionGuidance []string `json:"compositionGuidance" api:"required"`
@@ -326,13 +326,13 @@ type ComposeNewResponseComposeRefineResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposeRefineResult) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeRefineResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Deprecated example-pattern schema. The response array is empty.
+// ComposeNewResponseComposeRefineResultExamplePattern is a deprecated example-pattern schema. The response array is empty.
 //
 // Deprecated: deprecated
 type ComposeNewResponseComposeRefineResultExamplePattern struct {
@@ -347,13 +347,13 @@ type ComposeNewResponseComposeRefineResultExamplePattern struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposeRefineResultExamplePattern) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeRefineResultExamplePattern) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posting validation without a fabricated ranking score.
+// ComposeNewResponseComposeScoreResult is a posting validation without a fabricated ranking score.
 type ComposeNewResponseComposeScoreResult struct {
 	// Deterministic input validation. Not a reach prediction.
 	Checklist     []ComposeNewResponseComposeScoreResultChecklist `json:"checklist" api:"required"`
@@ -378,13 +378,13 @@ type ComposeNewResponseComposeScoreResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposeScoreResult) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeScoreResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// One deterministic draft check.
+// ComposeNewResponseComposeScoreResultChecklist is one deterministic draft check.
 type ComposeNewResponseComposeScoreResultChecklist struct {
 	Factor string `json:"factor" api:"required"`
 	Passed bool   `json:"passed" api:"required"`
@@ -400,10 +400,10 @@ type ComposeNewResponseComposeScoreResultChecklist struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ComposeNewResponseComposeScoreResultChecklist) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeScoreResultChecklist) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type ComposeNewParams struct {
@@ -421,14 +421,14 @@ type ComposeNewParams struct {
 	paramObj
 }
 
-func (u ComposeNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfComposePrepareRequest, u.OfComposeRefineRequest, u.OfComposeScoreRequest)
+func (r ComposeNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(r, r.OfComposePrepareRequest, r.OfComposeRefineRequest, r.OfComposeScoreRequest)
 }
 func (r *ComposeNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Inputs for preparing source-backed post guidance.
+// ComposeNewParamsBodyComposePrepareRequest holds inputs for preparing source-backed post guidance.
 //
 // The properties Step, Topic are required.
 type ComposeNewParamsBodyComposePrepareRequest struct {
@@ -441,8 +441,8 @@ type ComposeNewParamsBodyComposePrepareRequest struct {
 	// Any of "engagement", "followers", "authority", "conversation".
 	Goal string `json:"goal,omitzero"`
 	// This field can be elided, and will marshal its zero value as "compose".
-	Step        constant.Compose `json:"step" default:"compose"`
-	ExtraFields map[string]any   `json:"-"`
+	Step        constant.Compose           `json:"step" default:"compose"`
+	ExtraFields map[string]json.RawMessage `json:"-"`
 	paramObj
 }
 
@@ -451,7 +451,7 @@ func (r ComposeNewParamsBodyComposePrepareRequest) MarshalJSON() (data []byte, e
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *ComposeNewParamsBodyComposePrepareRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -460,7 +460,7 @@ func init() {
 	)
 }
 
-// Inputs for refining a post plan.
+// ComposeNewParamsBodyComposeRefineRequest holds inputs for refining a post plan.
 //
 // The properties Goal, Step, Tone, Topic are required.
 type ComposeNewParamsBodyComposeRefineRequest struct {
@@ -481,8 +481,8 @@ type ComposeNewParamsBodyComposeRefineRequest struct {
 	// Any of "photo", "video", "none".
 	MediaType string `json:"mediaType,omitzero"`
 	// This field can be elided, and will marshal its zero value as "refine".
-	Step        constant.Refine `json:"step" default:"refine"`
-	ExtraFields map[string]any  `json:"-"`
+	Step        constant.Refine            `json:"step" default:"refine"`
+	ExtraFields map[string]json.RawMessage `json:"-"`
 	paramObj
 }
 
@@ -491,7 +491,7 @@ func (r ComposeNewParamsBodyComposeRefineRequest) MarshalJSON() (data []byte, er
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *ComposeNewParamsBodyComposeRefineRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -503,7 +503,7 @@ func init() {
 	)
 }
 
-// Inputs for checking a post draft.
+// ComposeNewParamsBodyComposeScoreRequest holds inputs for checking a post draft.
 //
 // The properties Draft, Step are required.
 type ComposeNewParamsBodyComposeScoreRequest struct {
@@ -518,8 +518,8 @@ type ComposeNewParamsBodyComposeScoreRequest struct {
 	// Deprecated: Ignored. Remove this field.
 	HasMedia param.Opt[bool] `json:"hasMedia,omitzero"`
 	// This field can be elided, and will marshal its zero value as "score".
-	Step        constant.Score `json:"step" default:"score"`
-	ExtraFields map[string]any `json:"-"`
+	Step        constant.Score             `json:"step" default:"score"`
+	ExtraFields map[string]json.RawMessage `json:"-"`
 	paramObj
 }
 
@@ -528,5 +528,5 @@ func (r ComposeNewParamsBodyComposeScoreRequest) MarshalJSON() (data []byte, err
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *ComposeNewParamsBodyComposeScoreRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

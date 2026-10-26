@@ -21,7 +21,7 @@ type StructWithNullExtraField struct {
 }
 
 func (r *StructWithNullExtraField) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 func TestDecodeWithNullExtraField(t *testing.T) {

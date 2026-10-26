@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// X write actions (tweets, likes, follows, DMs)
+// XUserFollowService covers X write actions (tweets, likes, follows, DMs).
 //
 // XUserFollowService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewXUserFollowService(opts ...option.RequestOption) (r XUserFollowService) 
 	return
 }
 
-// Follows a user through a connected X account.
+// New follows a user through a connected X account.
 func (r *XUserFollowService) New(ctx context.Context, id string, params XUserFollowNewParams, opts ...option.RequestOption) (res *XUserFollowNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -56,7 +56,7 @@ func (r *XUserFollowService) New(ctx context.Context, id string, params XUserFol
 	return res, err
 }
 
-// Unfollows a user through a connected X account.
+// DeleteAll unfollows a user through a connected X account.
 func (r *XUserFollowService) DeleteAll(ctx context.Context, id string, params XUserFollowDeleteAllParams, opts ...option.RequestOption) (res *XUserFollowDeleteAllResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -71,7 +71,7 @@ func (r *XUserFollowService) DeleteAll(ctx context.Context, id string, params XU
 	return res, err
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XUserFollowNewResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XUserFollowNewResponse struct {
@@ -121,14 +121,14 @@ type XUserFollowNewResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -195,13 +195,13 @@ type XUserFollowNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XUserFollowNewResponseAccount is a connected account selected for the write.
 type XUserFollowNewResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -214,10 +214,10 @@ type XUserFollowNewResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowNewResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowNewResponseAction string
@@ -244,7 +244,7 @@ const (
 	XUserFollowNewResponseActionLeaveCommunity  XUserFollowNewResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XUserFollowNewResponseBilling is the type of [XUserFollowNewResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XUserFollowNewResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -263,13 +263,13 @@ type XUserFollowNewResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowNewResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XUserFollowNewResponseNextAction is the type of [XUserFollowNewResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XUserFollowNewResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -287,18 +287,18 @@ type XUserFollowNewResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowNewResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XUserFollowNewResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XUserFollowNewResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -308,13 +308,13 @@ type XUserFollowNewResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowNewResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XUserFollowNewResponseResult is a confirmed result produced by the write, when available.
 type XUserFollowNewResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -330,10 +330,10 @@ type XUserFollowNewResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowNewResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowNewResponseStatus string
@@ -347,7 +347,7 @@ const (
 	XUserFollowNewResponseStatusExpired             XUserFollowNewResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XUserFollowNewResponseTarget is an existing X resource targeted by the write, when applicable.
 type XUserFollowNewResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -361,13 +361,13 @@ type XUserFollowNewResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowNewResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XUserFollowDeleteAllResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XUserFollowDeleteAllResponse struct {
@@ -417,14 +417,14 @@ type XUserFollowDeleteAllResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -491,13 +491,13 @@ type XUserFollowDeleteAllResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowDeleteAllResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XUserFollowDeleteAllResponseAccount is a connected account selected for the write.
 type XUserFollowDeleteAllResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -510,10 +510,10 @@ type XUserFollowDeleteAllResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowDeleteAllResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowDeleteAllResponseAction string
@@ -540,7 +540,7 @@ const (
 	XUserFollowDeleteAllResponseActionLeaveCommunity  XUserFollowDeleteAllResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XUserFollowDeleteAllResponseBilling is the type of [XUserFollowDeleteAllResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XUserFollowDeleteAllResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -559,13 +559,13 @@ type XUserFollowDeleteAllResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowDeleteAllResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XUserFollowDeleteAllResponseNextAction is the type of [XUserFollowDeleteAllResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XUserFollowDeleteAllResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -583,18 +583,18 @@ type XUserFollowDeleteAllResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowDeleteAllResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XUserFollowDeleteAllResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XUserFollowDeleteAllResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -604,13 +604,13 @@ type XUserFollowDeleteAllResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowDeleteAllResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XUserFollowDeleteAllResponseResult is a confirmed result produced by the write, when available.
 type XUserFollowDeleteAllResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -626,10 +626,10 @@ type XUserFollowDeleteAllResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowDeleteAllResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowDeleteAllResponseStatus string
@@ -643,7 +643,7 @@ const (
 	XUserFollowDeleteAllResponseStatusExpired             XUserFollowDeleteAllResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XUserFollowDeleteAllResponseTarget is an existing X resource targeted by the write, when applicable.
 type XUserFollowDeleteAllResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -657,10 +657,10 @@ type XUserFollowDeleteAllResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserFollowDeleteAllResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowNewParams struct {
@@ -675,7 +675,7 @@ func (r XUserFollowNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XUserFollowNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XUserFollowDeleteAllParams struct {
@@ -690,5 +690,5 @@ func (r XUserFollowDeleteAllParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XUserFollowDeleteAllParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

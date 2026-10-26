@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -19,37 +20,41 @@ func buildArchive() ([]byte, int, error) {
 		return nil, 0, err
 	}
 	defer os.RemoveAll(directory)
-	git := func(args ...string) ([]byte, error) {
-		command := exec.Command("git", args...)
-		command.Env = append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(directory, "index"), "TZ=UTC")
+	git := func(command *exec.Cmd, env ...string) ([]byte, error) {
+		command.Env = append(append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(directory, "index"), "TZ=UTC"), env...)
 		var diagnostic bytes.Buffer
 		command.Stderr = &diagnostic
 		output, err := command.Output()
 		if err != nil {
-			return nil, fmt.Errorf("git %s: %w: %s", args[0], err, diagnostic.String())
+			return nil, fmt.Errorf("git %s: %w: %s", command.Args[1], err, diagnostic.String())
 		}
 		return output, nil
 	}
-	for _, args := range [][]string{{"read-tree", "HEAD"}, {"add", "--all", "--", "."}} {
-		if _, err := git(args...); err != nil {
+	var outputs [4][]byte
+	for i, command := range []*exec.Cmd{
+		exec.Command("git", "read-tree", "HEAD"),
+		exec.Command("git", "add", "--all", "--", "."),
+		exec.Command("git", "write-tree"),
+		exec.Command("git", "rev-parse", "--path-format=absolute", "--git-common-dir"),
+	} {
+		if outputs[i], err = git(command); err != nil {
 			return nil, 0, err
 		}
 	}
-	tree, err := git("write-tree")
+	if err := os.WriteFile(filepath.Join(directory, "HEAD"), outputs[2], 0o600); err != nil {
+		return nil, 0, err
+	}
+	snapshot := []string{"GIT_DIR=" + directory, "GIT_COMMON_DIR=" + strings.TrimSpace(string(outputs[3]))}
+	paths, err := git(exec.Command("git", "ls-tree", "-rz", "--name-only", "HEAD"), snapshot...)
 	if err != nil {
 		return nil, 0, err
 	}
-	revision := strings.TrimSpace(string(tree))
-	paths, err := git("ls-tree", "-rz", "--name-only", revision)
-	if err != nil {
-		return nil, 0, err
-	}
-	archive, err := git("archive", "--format=zip", "--prefix=x-twitter-scraper-go/", "--mtime=1980-01-01T00:00:00Z", "-0", revision)
+	archive, err := git(exec.Command("git", "archive", "--format=zip", "--prefix=x-twitter-scraper-go/", "--mtime=1980-01-01T00:00:00Z", "-0", "HEAD"), snapshot...)
 	return archive, bytes.Count(paths, []byte{0}), err
 }
 
 func run(args []string) error {
-	if len(args) > 1 {
+	if len(args) > 1 || len(args) == 1 && args[0] != "--archive" {
 		return fmt.Errorf("usage: ./scripts/reproducible-build [output.zip]")
 	}
 	first, count, err := buildArchive()
@@ -65,14 +70,11 @@ func run(args []string) error {
 		return fmt.Errorf("module archives differ: %x != %x", firstHash, secondHash)
 	}
 	if len(args) == 1 {
-		if err := os.MkdirAll(filepath.Dir(args[0]), 0o755); err != nil {
-			return err
-		}
-		if err := os.WriteFile(args[0], first, 0o644); err != nil {
+		if _, err := os.Stdout.Write(first); err != nil {
 			return err
 		}
 	}
-	fmt.Printf("reproducible module archive: %d files, sha256:%x\n", count, firstHash)
+	fmt.Fprintf(os.Stderr, "reproducible module archive: %d files, sha256:%x\n", count, firstHash)
 	return nil
 }
 

@@ -322,7 +322,7 @@ func TestXProfileImageFileRequest(t *testing.T) {
 						t.Fatalf("file = %q, error = %v", content, err)
 					}
 				})
-				var file io.Reader = iotest.OneByteReader(strings.NewReader(test.content))
+				file := iotest.OneByteReader(strings.NewReader(test.content))
 				if test.file != nil {
 					file = test.file(test.content)
 				}

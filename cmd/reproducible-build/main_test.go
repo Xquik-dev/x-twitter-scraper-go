@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -16,47 +17,46 @@ import (
 func TestArchiveWorkingTree(t *testing.T) {
 	t.Chdir(t.TempDir())
 	t.Setenv("TZ", "Pacific/Honolulu")
-	git := func(args ...string) []byte {
+	git := func(command *exec.Cmd) []byte {
 		t.Helper()
-		data, err := exec.Command("git", args...).CombinedOutput()
+		data, err := command.CombinedOutput()
 		if err != nil {
-			t.Fatalf("git %v: %v\n%s", args, err, data)
+			t.Fatalf("%v: %v\n%s", command.Args, err, data)
 		}
 		return data
 	}
 	write := func(name, value string) {
 		t.Helper()
-		if err := os.WriteFile(name, []byte(value), 0o644); err != nil {
+		if err := os.WriteFile(name, []byte(value), 0o600); err != nil {
 			t.Fatal(err)
 		}
 	}
-	git("init", "-q")
+	git(exec.Command("git", "init", "-q"))
+	git(exec.Command("git", "config", "core.fileMode", "false"))
 	for name, value := range map[string]string{".gitignore": "ignored.dat\n", "plain": "initial", "executable": "executable", "obsolete": "remove"} {
 		write(name, value)
-	}
-	if err := os.Chmod("executable", 0o755); err != nil {
-		t.Fatal(err)
 	}
 	if err := os.Symlink("plain", "link"); err != nil {
 		t.Fatal(err)
 	}
-	git("add", ".")
-	git("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "-c", "commit.gpgsign=false", "commit", "-qm", "fixture")
+	git(exec.Command("git", "add", "."))
+	git(exec.Command("git", "update-index", "--chmod=+x", "executable"))
+	git(exec.Command("git", "-c", "user.name=Test", "-c", "user.email=test@example.invalid", "-c", "commit.gpgsign=false", "commit", "-qm", "fixture"))
 	write("plain", "staged")
-	git("add", "plain")
+	git(exec.Command("git", "add", "plain"))
 	write("plain", "current")
 	write("new", "untracked")
 	write("ignored.dat", "excluded")
 	if err := os.Remove("obsolete"); err != nil {
 		t.Fatal(err)
 	}
-	index := git("diff", "--cached", "--raw")
+	index := git(exec.Command("git", "diff", "--cached", "--raw"))
 	first, count, err := buildArchive()
 	if err != nil || count != 5 {
 		t.Fatalf("buildArchive: %d files, %v", count, err)
 	}
 	second, _, err := buildArchive()
-	if err != nil || !bytes.Equal(first, second) || !bytes.Equal(index, git("diff", "--cached", "--raw")) {
+	if err != nil || !bytes.Equal(first, second) || !bytes.Equal(index, git(exec.Command("git", "diff", "--cached", "--raw"))) {
 		t.Fatalf("archive differs or index changed: %v", err)
 	}
 	reader, err := zip.NewReader(bytes.NewReader(first), int64(len(first)))

@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// Connected X account management
+// XAccountConnectionChallengeService covers connected X account management.
 //
 // XAccountConnectionChallengeService contains methods and other services that help
 // with interacting with the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewXAccountConnectionChallengeService(opts ...option.RequestOption) (r XAcc
 	return
 }
 
-// Submits the email code requested during X account connection.
+// Submit submits the email code requested during X account connection.
 func (r *XAccountConnectionChallengeService) Submit(ctx context.Context, id string, body XAccountConnectionChallengeSubmitParams, opts ...option.RequestOption) (res *XAccountConnectionChallengeSubmitResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -53,7 +53,7 @@ func (r *XAccountConnectionChallengeService) Submit(ctx context.Context, id stri
 	return res, err
 }
 
-// Sanitized X account summary returned by connect and reauth.
+// XAccountConnectionChallengeSubmitResponse is a sanitized X account summary returned by connect and reauth.
 type XAccountConnectionChallengeSubmitResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
@@ -84,10 +84,10 @@ type XAccountConnectionChallengeSubmitResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountConnectionChallengeSubmitResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountConnectionChallengeSubmitResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAccountConnectionChallengeSubmitResponseHealth string
@@ -112,5 +112,5 @@ func (r XAccountConnectionChallengeSubmitParams) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAccountConnectionChallengeSubmitParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

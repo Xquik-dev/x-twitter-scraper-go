@@ -1,10 +1,12 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package apiquery
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -69,7 +71,7 @@ func TestMarshalEntryPointAndJSONFallback(t *testing.T) {
 		t.Fatalf("marshal error = %v", err)
 	}
 
-	values, err = Marshal(nil)
+	values, err = Marshal(Queryer(nil))
 	if err != nil || values != nil {
 		t.Fatalf("Marshal(nil) = %v, %v", values, err)
 	}
@@ -104,10 +106,12 @@ func TestMarshalAdditionalKindsAndInvalidSettings(t *testing.T) {
 					t.Fatal("invalid array format did not panic")
 				}
 			}()
-			_, _ = MarshalWithSettings(
+			if _, err := MarshalWithSettings(
 				[]string{"tweet"},
 				QuerySettings{ArrayFormat: format},
-			)
+			); err != nil {
+				t.Fatal(err)
+			}
 		})
 	}
 }
@@ -115,13 +119,14 @@ func TestMarshalAdditionalKindsAndInvalidSettings(t *testing.T) {
 func TestEncoderBranchContracts(t *testing.T) {
 	values, err := MarshalWithSettings(queryCoverage{
 		QueryCoverageEmbedded: QueryCoverageEmbedded{Embedded: "tweet"},
+		hidden:                "secret",
 		Rich:                  param.Null[string](),
 		Array:                 [2]string{"search", "timeline"},
 	}, QuerySettings{ArrayFormat: ArrayQueryFormatRepeat})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if values.Get("rich") != "null" || len(values["array"]) != 2 {
+	if values.Get("rich") != "null" || len(values["array"]) != 2 || values.Has("hidden") {
 		t.Fatalf("values = %v", values)
 	}
 
@@ -151,7 +156,7 @@ func TestEncoderBranchContracts(t *testing.T) {
 		t.Fatalf("unsupported primitive = %v, %v", pairs, err)
 	}
 
-	var value any
+	var value fmt.Stringer
 	encodeInterface := (encoder{}).newInterfaceEncoder()
 	if pairs, err := encodeInterface("value", reflect.ValueOf(&value).Elem()); err != nil || pairs != nil {
 		t.Fatalf("nil interface = %v, %v", pairs, err)
@@ -169,5 +174,14 @@ func TestQueryTagBranches(t *testing.T) {
 	}
 	if format, ok := parseFormatStructTag(typ.Field(2)); !ok || format != "date-time" {
 		t.Fatalf("format = %q, %t", format, ok)
+	}
+}
+
+func TestMarshalerEncoderRejectsOtherTypes(t *testing.T) {
+	if _, err := marshalerEncoder("value", reflect.ValueOf(1)); err == nil {
+		t.Fatal("marshalerEncoder() accepted a type without MarshalJSON")
+	}
+	if pairs, err := (&encoder{}).newTimeTypeEncoder(nil)("value", reflect.ValueOf(1)); err == nil || pairs != nil {
+		t.Fatalf("time encoder of an int = %v, %v", pairs, err)
 	}
 }

@@ -6,6 +6,7 @@ package xtwitterscraper_test
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"testing"
 
@@ -51,15 +52,23 @@ func TestXAnalysisSentimentFixture(t *testing.T) {
 	}
 	result := res.Results[0]
 	answer := result.Analysis.Answers[0]
+	sentiment, sentimentErr := result.Answers["sentiment"].AsString()
+	intensity, intensityErr := result.Answers["intensity"].AsFloat()
+	sarcasm, sarcasmErr := result.Answers["sarcasm"].AsFloat()
+	value, valueErr := answer.Value.AsString()
+	score, scoreErr := result.Analysis.Answers[1].Value.AsFloat()
+	if err := errors.Join(sentimentErr, intensityErr, sarcasmErr, valueErr, scoreErr); err != nil {
+		t.Fatal(err)
+	}
 	if result.Tweet.ID != "1893456789012345678" ||
-		result.Answers["sentiment"].AsString() != "mixed" ||
-		result.Answers["intensity"].AsFloat() != 1 ||
-		result.Answers["sarcasm"].AsFloat() != 0.03 ||
+		sentiment != "mixed" ||
+		intensity != 1 ||
+		sarcasm != 0.03 ||
 		answer.QuestionID != "sentiment" ||
-		answer.Value.AsString() != "mixed" ||
+		value != "mixed" ||
 		answer.Confidence != 0.88 ||
 		answer.Probabilities["mixed"] != 0.88 ||
-		result.Analysis.Answers[1].Value.AsFloat() != 1 ||
+		score != 1 ||
 		result.Analysis.ContextBytes != 612 ||
 		result.Analysis.ContextAvailability.Author != "available" ||
 		result.Monitor.Status != "changed" ||
@@ -94,11 +103,11 @@ func TestXAnalysisViralScoreFixture(t *testing.T) {
 		result.ViralVerdict != "send_it" ||
 		result.ViralAlgorithmScore != 18.4 ||
 		result.ViralActualEngagementRate != 1.2874 ||
-		result.Viral["score"] != float64(72) ||
-		result.Viral["weights"] != "viral_lite:1" ||
+		string(result.Viral["score"]) != "72" ||
+		string(result.Viral["weights"]) != `"viral_lite:1"` ||
 		summary.JSON.Monitor.Valid() ||
 		summary.JSON.Monitor.Raw() != "null" ||
-		summary.Viral["averageScore"] != float64(58) ||
+		string(summary.Viral["averageScore"]) != "58" ||
 		summary.Cashtags[0].Cashtag != "$NVDA" ||
 		summary.Cashtags[0].Rows != 3 ||
 		summary.Cashtags[0].Signal.Bullish != 2 ||

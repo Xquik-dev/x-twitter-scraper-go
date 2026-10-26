@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// Webhook endpoint management and delivery
+// WebhookService covers webhook endpoint management and delivery.
 //
 // WebhookService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 	return
 }
 
-// Registers an endpoint for signed event deliveries.
+// New registers an endpoint for signed event deliveries.
 func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *WebhookNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "webhooks"
@@ -49,7 +49,7 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 	return res, err
 }
 
-// Updates an endpoint, event selection, or delivery settings.
+// Update updates an endpoint, event selection, or delivery settings.
 func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpdateParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -61,7 +61,7 @@ func (r *WebhookService) Update(ctx context.Context, id string, body WebhookUpda
 	return res, err
 }
 
-// Returns configured webhook endpoints and delivery states.
+// List returns configured webhook endpoints and delivery states.
 func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption) (res *WebhookListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "webhooks"
@@ -69,7 +69,7 @@ func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption)
 	return res, err
 }
 
-// Stops future deliveries to the selected webhook.
+// Deactivate stops future deliveries to the selected webhook.
 func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookDeactivateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -81,7 +81,7 @@ func (r *WebhookService) Deactivate(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Returns recent delivery attempts and response outcomes.
+// ListDeliveries returns recent delivery attempts and response outcomes.
 func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookListDeliveriesResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -93,7 +93,7 @@ func (r *WebhookService) ListDeliveries(ctx context.Context, id string, opts ...
 	return res, err
 }
 
-// Returns a t.me link to @XquikBot that connects a Telegram chat to the account's
+// NewTelegramLink returns a t.me link to @XquikBot that connects a Telegram chat to the account's
 // monitor events. Opening it & pressing Start connects the chat, which then gets
 // each alert as a message. Alerts that wait together come as 1 digest. A busy chat
 // gets 5 quick messages, then 1 every 30 s. Only 1 message a minute rings. The
@@ -107,7 +107,7 @@ func (r *WebhookService) NewTelegramLink(ctx context.Context, body WebhookNewTel
 	return res, err
 }
 
-// Tests the endpoint before resuming a manually paused webhook.
+// Resume tests the endpoint before resuming a manually paused webhook.
 func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookResumeResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -119,7 +119,7 @@ func (r *WebhookService) Resume(ctx context.Context, id string, opts ...option.R
 	return res, err
 }
 
-// Sends a signed test event to the configured endpoint.
+// Test sends a signed test event to the configured endpoint.
 func (r *WebhookService) Test(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookTestResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -131,7 +131,7 @@ func (r *WebhookService) Test(ctx context.Context, id string, opts ...option.Req
 	return res, err
 }
 
-// Webhook delivery attempt record with status and retry count.
+// Delivery is a webhook delivery attempt record with status and retry count.
 type Delivery struct {
 	ID             string    `json:"id" api:"required"`
 	Attempts       int64     `json:"attempts" api:"required"`
@@ -156,10 +156,10 @@ type Delivery struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r Delivery) RawJSON() string { return r.JSON.raw }
 func (r *Delivery) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Webhook endpoint registered to receive event deliveries.
@@ -194,13 +194,13 @@ type Webhook struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r Webhook) RawJSON() string { return r.JSON.raw }
 func (r *Webhook) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Endpoint delivery state. paused means the user paused delivery. needs_attention
+// WebhookDeliveryStatus holds endpoint delivery state. paused means the user paused delivery. needs_attention
 // marks repeated failures. Delivery attempts continue.
 type WebhookDeliveryStatus string
 
@@ -234,10 +234,10 @@ type WebhookNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r WebhookNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookListResponse struct {
@@ -254,10 +254,10 @@ type WebhookListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r WebhookListResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookDeactivateResponse struct {
@@ -270,10 +270,10 @@ type WebhookDeactivateResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r WebhookDeactivateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookDeactivateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookListDeliveriesResponse struct {
@@ -290,10 +290,10 @@ type WebhookListDeliveriesResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r WebhookListDeliveriesResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookListDeliveriesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookResumeResponse struct {
@@ -311,10 +311,10 @@ type WebhookResumeResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r WebhookResumeResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookResumeResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookTestResponse struct {
@@ -331,10 +331,10 @@ type WebhookTestResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r WebhookTestResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookTestResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookNewTelegramLinkResponse struct {
@@ -351,10 +351,10 @@ type WebhookNewTelegramLinkResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r WebhookNewTelegramLinkResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookNewTelegramLinkResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookNewParams struct {
@@ -370,7 +370,7 @@ func (r WebhookNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type WebhookUpdateParams struct {
@@ -386,7 +386,7 @@ func (r WebhookUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type WebhookNewTelegramLinkParams struct {
@@ -400,5 +400,5 @@ func (r WebhookNewTelegramLinkParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookNewTelegramLinkParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

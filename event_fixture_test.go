@@ -57,7 +57,7 @@ func TestEventStreamStreamingFixture(t *testing.T) {
 		!events[0].OccurredAt.Equal(time.Date(2025, time.January, 15, 12, 0, 0, 0, time.UTC)) ||
 		events[1].ID != "43" ||
 		events[1].Type != "tweet.reply" ||
-		events[1].Data["tweetId"] != "1893456789012345678" {
+		events[1].Data.JSON.ExtraFields["tweetId"].Raw() != `"1893456789012345678"` {
 		t.Fatalf("events = %+v", events)
 	}
 }

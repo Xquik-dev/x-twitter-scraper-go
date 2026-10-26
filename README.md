@@ -155,7 +155,7 @@ Request structs follow Go's [`omitzero`](https://tip.golang.org/doc/go1.24#encod
 Fields tagged <code>\`api:"required"\`</code> serialize even when their value is zero.
 Optional primitives use `param.Opt[T]` and constructors such as `xtwitterscraper.String`.
 Maps, slices, structs & enums tagged <code>\`json:"...,omitzero"\`</code> omit zero values.
-Use `param.IsOmitted(any)` to test any `omitzero` field.
+Use `param.IsOmitted(field)` to test any `omitzero` field.
 
 ```go
 p := xtwitterscraper.ExampleParams{
@@ -182,19 +182,19 @@ param.IsNull(p.Name)  // true
 param.IsNull(p.Point) // true
 ```
 
-Use `.SetExtraFields(map[string]any)` only with trusted data.
+Use `.SetExtraFields(map[string]json.RawMessage)` only with trusted data.
 Extra fields can overwrite matching struct fields.
 
 To send a custom value instead of a struct, use `param.Override[T](value)`.
 
 ```go
 // Override the documented integer type.
-p.SetExtraFields(map[string]any{
-	"x": 0.01,
+p.SetExtraFields(map[string]json.RawMessage{
+	"x": json.RawMessage(`0.01`),
 })
 
 // Send a number instead of an object.
-custom := param.Override[xtwitterscraper.FooParams](12)
+custom := param.Override[xtwitterscraper.FooParams](json.RawMessage(`12`))
 ```
 
 ### Request unions
@@ -303,7 +303,11 @@ if animal.Owner.Address.ZipCode == "" {
 }
 
 // Select the variant.
-switch variant := animal.AsAny().(type) {
+variant, err := animal.AsAny()
+if err != nil {
+	panic(err)
+}
+switch variant := variant.(type) {
 case Dog:
 case Cat:
 default:
@@ -514,16 +518,12 @@ fmt.Printf("Headers: %+#v\n", response.Header)
 
 Use `client.Get`, `client.Post`, or another verb for undocumented endpoints.
 These methods retain client options such as retries.
+They take SDK params or nil, and decode the response into a pointer to an SDK model or `*json.RawMessage`.
+`option.WithRequestBody` sends an `io.Reader`, such as `bytes.NewReader(data)`, as the body instead.
 
 ```go
-var (
-	// Accepts io.Reader, []byte, JSON-compatible values, or SDK params.
-	params map[string]any
-
-	// Accepts []byte, *http.Response, JSON-compatible values, or SDK models.
-	result *http.Response
-)
-err := client.Post(context.Background(), "/unspecified", params, &result)
+var result json.RawMessage
+err := client.Get(context.Background(), "/unspecified", nil, &result)
 if err != nil {
 	panic(err)
 }

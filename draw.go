@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Giveaway draws from tweet replies
+// DrawService covers giveaway draws from tweet replies.
 //
 // DrawService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewDrawService(opts ...option.RequestOption) (r DrawService) {
 	return
 }
 
-// Returns draw rules, status, candidates, and selected winners.
+// Get returns draw rules, status, candidates, and selected winners.
 func (r *DrawService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DrawGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -53,7 +53,7 @@ func (r *DrawService) Get(ctx context.Context, id string, opts ...option.Request
 	return res, err
 }
 
-// Returns giveaway draws owned by the authenticated account.
+// List returns giveaway draws owned by the authenticated account.
 func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...option.RequestOption) (res *DrawListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "draws"
@@ -61,7 +61,7 @@ func (r *DrawService) List(ctx context.Context, query DrawListParams, opts ...op
 	return res, err
 }
 
-// Downloads draw evidence in the requested format.
+// Export downloads draw evidence in the requested format.
 func (r *DrawService) Export(ctx context.Context, id string, query DrawExportParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
@@ -74,7 +74,7 @@ func (r *DrawService) Export(ctx context.Context, id string, query DrawExportPar
 	return res, err
 }
 
-// Checks credits, then draws winners from inspected replies and reposters.
+// Run checks credits, then draws winners from inspected replies and reposters.
 // Remaining credits cap inspected candidates.
 func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...option.RequestOption) (res *DrawRunResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -83,7 +83,7 @@ func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...optio
 	return res, err
 }
 
-// Full giveaway draw with tweet metrics, entries, and timing.
+// DrawDetail is a full giveaway draw with tweet metrics, entries, and timing.
 type DrawDetail struct {
 	TweetAuthorUsername string `json:"tweetAuthorUsername" api:"required"`
 	TweetID             string `json:"tweetId" api:"required"`
@@ -107,13 +107,13 @@ type DrawDetail struct {
 	DrawListItem
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r DrawDetail) RawJSON() string { return r.JSON.raw }
 func (r *DrawDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Giveaway draw summary with entry counts and status.
+// DrawListItem is a giveaway draw summary with entry counts and status.
 type DrawListItem struct {
 	// Draw public ID for detail responses.
 	ID           string    `json:"id" api:"required"`
@@ -137,13 +137,13 @@ type DrawListItem struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r DrawListItem) RawJSON() string { return r.JSON.raw }
 func (r *DrawListItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Giveaway draw winner with position and backup flag.
+// Winner is a giveaway draw winner with position and backup flag.
 type Winner struct {
 	AuthorUsername string `json:"authorUsername" api:"required"`
 	IsBackup       bool   `json:"isBackup" api:"required"`
@@ -160,10 +160,10 @@ type Winner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r Winner) RawJSON() string { return r.JSON.raw }
 func (r *Winner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawGetResponse struct {
@@ -179,10 +179,10 @@ type DrawGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r DrawGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *DrawGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawListResponse struct {
@@ -199,10 +199,10 @@ type DrawListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r DrawListResponse) RawJSON() string { return r.JSON.raw }
 func (r *DrawListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawRunResponse struct {
@@ -227,10 +227,10 @@ type DrawRunResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r DrawRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *DrawRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawListParams struct {
@@ -271,13 +271,13 @@ func (r DrawExportParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Export output format. PDF entry exports include up to 10,000 rows. Other entry
+// DrawExportParamsFormat is an export output format. PDF entry exports include up to 10,000 rows. Other entry
 // formats include up to 100,000 rows.
 type DrawExportParamsFormat string
 
 const (
 	DrawExportParamsFormatCsv        DrawExportParamsFormat = "csv"
-	DrawExportParamsFormatJson       DrawExportParamsFormat = "json"
+	DrawExportParamsFormatJSON       DrawExportParamsFormat = "json"
 	DrawExportParamsFormatMd         DrawExportParamsFormat = "md"
 	DrawExportParamsFormatMdDocument DrawExportParamsFormat = "md-document"
 	DrawExportParamsFormatPdf        DrawExportParamsFormat = "pdf"
@@ -285,7 +285,7 @@ const (
 	DrawExportParamsFormatXlsx       DrawExportParamsFormat = "xlsx"
 )
 
-// Export winners or all entries
+// DrawExportParamsType is the type of [DrawExportParams.Type]. Export winners or all entries.
 type DrawExportParamsType string
 
 const (
@@ -314,5 +314,5 @@ func (r DrawRunParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DrawRunParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

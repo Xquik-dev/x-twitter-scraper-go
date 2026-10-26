@@ -20,7 +20,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// X write actions (tweets, likes, follows, DMs)
+// XWriteActionService covers X write actions (tweets, likes, follows, DMs).
 //
 // XWriteActionService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -40,7 +40,7 @@ func NewXWriteActionService(opts ...option.RequestOption) (r XWriteActionService
 	return
 }
 
-// Returns the current state of an asynchronous write action.
+// Get returns the current state of an asynchronous write action.
 func (r *XWriteActionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XWriteActionGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -52,7 +52,7 @@ func (r *XWriteActionService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XWriteActionGetResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XWriteActionGetResponse struct {
@@ -102,14 +102,14 @@ type XWriteActionGetResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -176,13 +176,13 @@ type XWriteActionGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XWriteActionGetResponseAccount is a connected account selected for the write.
 type XWriteActionGetResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -195,10 +195,10 @@ type XWriteActionGetResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XWriteActionGetResponseAction string
@@ -225,7 +225,7 @@ const (
 	XWriteActionGetResponseActionLeaveCommunity  XWriteActionGetResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XWriteActionGetResponseBilling is the type of [XWriteActionGetResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XWriteActionGetResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -244,13 +244,13 @@ type XWriteActionGetResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XWriteActionGetResponseNextAction is the type of [XWriteActionGetResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XWriteActionGetResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -268,18 +268,18 @@ type XWriteActionGetResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XWriteActionGetResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XWriteActionGetResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -289,13 +289,13 @@ type XWriteActionGetResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XWriteActionGetResponseResult is a confirmed result produced by the write, when available.
 type XWriteActionGetResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -311,10 +311,10 @@ type XWriteActionGetResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XWriteActionGetResponseStatus string
@@ -328,7 +328,7 @@ const (
 	XWriteActionGetResponseStatusExpired             XWriteActionGetResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XWriteActionGetResponseTarget is an existing X resource targeted by the write, when applicable.
 type XWriteActionGetResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -342,8 +342,8 @@ type XWriteActionGetResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }

@@ -59,8 +59,11 @@ func join(parent, name string) string {
 }
 
 func (d differences) compare(spec, sdk *shape, wirePath, side string) {
-	if spec.opaque() || sdk.opaque() {
+	if spec.unread() || sdk.unread() {
 		return
+	}
+	if spec.kind == free && sdk.kind == object {
+		spec = &shape{kind: object, open: true}
 	}
 	switch {
 	case spec.kind != sdk.kind:
@@ -151,7 +154,7 @@ func check(root fs.FS, baseURL option.RequestOption, source string, client *http
 	if err != nil {
 		return nil, "", err
 	}
-	reader := specReader{document: spec.Document, problems: map[string]bool{}}
+	reader := newSpecReader(spec.Document)
 	found := map[string]string{}
 	compared := 0
 	var problems []string

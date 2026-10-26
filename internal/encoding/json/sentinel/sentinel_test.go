@@ -18,9 +18,9 @@ type Pair struct {
 }
 
 func TestNullSlice(t *testing.T) {
-	var nilSlice []int = nil
-	var nonNilSlice []int = []int{1, 2, 3}
-	var nullSlice []int = param.NullSlice[[]int]()
+	var nilSlice []int
+	nonNilSlice := []int{1, 2, 3}
+	nullSlice := param.NullSlice[[]int]()
 
 	cases := map[string]Pair{
 		"nilSlice":            {sentinel.IsNull(nilSlice), false},
@@ -44,9 +44,9 @@ func TestNullSlice(t *testing.T) {
 }
 
 func TestNullMap(t *testing.T) {
-	var nilMap map[string]int = nil
-	var nonNilMap map[string]int = map[string]int{"a": 1, "b": 2}
-	var nullMap map[string]int = param.NullMap[map[string]int]()
+	var nilMap map[string]int
+	nonNilMap := map[string]int{"a": 1, "b": 2}
+	nullMap := param.NullMap[map[string]int]()
 
 	cases := map[string]Pair{
 		"nilMap":            {sentinel.IsNull(nilMap), false},

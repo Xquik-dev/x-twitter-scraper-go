@@ -42,7 +42,9 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	_, _ = client.Account.Get(context.Background())
+	if _, err := client.Account.Get(context.Background()); err == nil {
+		t.Fatal("empty response decoded")
+	}
 	if userAgent != fmt.Sprintf("XTwitterScraper/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}

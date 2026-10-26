@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Public X job listings, search and details
+// XJobService covers public X job listings, search and details.
 //
 // XJobService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewXJobService(opts ...option.RequestOption) (r XJobService) {
 	return
 }
 
-// Returns a public job listing with its description as text & Markdown, work type,
+// Get returns a public job listing with its description as text & Markdown, work type,
 // seniority, salary, company & apply link. A job that closed returns job_not_found
 // & is free.
 func (r *XJobService) Get(ctx context.Context, id string, query XJobGetParams, opts ...option.RequestOption) (res *XJobGetResponse, err error) {
@@ -55,7 +55,7 @@ func (r *XJobService) Get(ctx context.Context, id string, query XJobGetParams, o
 	return res, err
 }
 
-// Returns the places whose names match a query, each with the location ID that GET
+// ListLocations returns the places whose names match a query, each with the location ID that GET
 // /x/jobs/search takes. No match returns an empty list, free.
 func (r *XJobService) ListLocations(ctx context.Context, query XJobListLocationsParams, opts ...option.RequestOption) (res *XJobListLocationsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -64,7 +64,7 @@ func (r *XJobService) ListLocations(ctx context.Context, query XJobListLocations
 	return res, err
 }
 
-// Returns job listings with title, location, salary, company & apply link. Add
+// Search returns job listings with title, location, salary, company & apply link. Add
 // filters to narrow them. A closed job does not appear & costs nothing. Follow
 // next_cursor for more.
 func (r *XJobService) Search(ctx context.Context, query XJobSearchParams, opts ...option.RequestOption) (res *XJobSearchResponse, err error) {
@@ -87,13 +87,13 @@ type XJobGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public X job listing. A search returns the fields down to the salary, plus
+// XJobGetResponseJob is a public X job listing. A search returns the fields down to the salary, plus
 // company & account. A lookup adds work type, seniority, function, team &
 // descriptions. A field X leaves empty is left out.
 type XJobGetResponseJob struct {
@@ -172,13 +172,13 @@ type XJobGetResponseJob struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobGetResponseJob) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponseJob) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The X account that posted a job. A job has none when X imported it from a job
+// XJobGetResponseJobAccount is the X account that posted a job. A job has none when X imported it from a job
 // board or no longer shows the account.
 type XJobGetResponseJobAccount struct {
 	// X user ID of the account.
@@ -215,13 +215,13 @@ type XJobGetResponseJobAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobGetResponseJobAccount) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponseJobAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The company profile of a job X imported from a job board.
+// XJobGetResponseJobCompany is the company profile of a job X imported from a job board.
 type XJobGetResponseJobCompany struct {
 	// X company profile ID.
 	ID string `json:"id" api:"required"`
@@ -239,13 +239,13 @@ type XJobGetResponseJobCompany struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobGetResponseJobCompany) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponseJobCompany) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The places whose names match a query.
+// XJobListLocationsResponse holds the places whose names match a query.
 type XJobListLocationsResponse struct {
 	// Places returned, each charged 1 credit.
 	Count int64 `json:"count" api:"required"`
@@ -260,13 +260,13 @@ type XJobListLocationsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobListLocationsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XJobListLocationsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A place a job search can name by its ID.
+// XJobListLocationsResponseLocation is an item in [XJobListLocationsResponse.Locations]. A place a job search can name by its ID.
 type XJobListLocationsResponseLocation struct {
 	// Location ID, which the job search locationId takes.
 	ID string `json:"id" api:"required"`
@@ -281,13 +281,13 @@ type XJobListLocationsResponseLocation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobListLocationsResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XJobListLocationsResponseLocation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 page of job listings. Follow next_cursor while the response reports more
+// XJobSearchResponse is 1 page of job listings. Follow next_cursor while the response reports more
 // pages.
 type XJobSearchResponse struct {
 	HasNextPage bool                    `json:"has_next_page" api:"required"`
@@ -303,13 +303,13 @@ type XJobSearchResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobSearchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public X job listing. A search returns the fields down to the salary, plus
+// XJobSearchResponseJob is a public X job listing. A search returns the fields down to the salary, plus
 // company & account. A lookup adds work type, seniority, function, team &
 // descriptions. A field X leaves empty is left out.
 type XJobSearchResponseJob struct {
@@ -388,13 +388,13 @@ type XJobSearchResponseJob struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobSearchResponseJob) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponseJob) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The X account that posted a job. A job has none when X imported it from a job
+// XJobSearchResponseJobAccount is the X account that posted a job. A job has none when X imported it from a job
 // board or no longer shows the account.
 type XJobSearchResponseJobAccount struct {
 	// X user ID of the account.
@@ -431,13 +431,13 @@ type XJobSearchResponseJobAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobSearchResponseJobAccount) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponseJobAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The company profile of a job X imported from a job board.
+// XJobSearchResponseJobCompany is the company profile of a job X imported from a job board.
 type XJobSearchResponseJobCompany struct {
 	// X company profile ID.
 	ID string `json:"id" api:"required"`
@@ -455,10 +455,10 @@ type XJobSearchResponseJobCompany struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XJobSearchResponseJobCompany) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponseJobCompany) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XJobGetParams struct {

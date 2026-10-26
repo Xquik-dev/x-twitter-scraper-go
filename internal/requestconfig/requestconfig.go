@@ -2,18 +2,23 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package requestconfig builds, sends and retries the HTTP request behind each
+// service method.
 package requestconfig
 
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
-	"math/rand"
+	"math/big"
 	"mime"
 	"net/http"
 	"net/url"
+	"reflect"
 	"runtime"
 	"strconv"
 	"strings"
@@ -23,6 +28,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apierror"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiform"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
 func getDefaultHeaders() map[string]string {
@@ -106,7 +112,7 @@ func sendsMultipart(body apiform.Marshaler) bool {
 	return !ok || files.HasFiles()
 }
 
-func NewRequestConfig(ctx context.Context, method string, u string, body any, dst any, opts ...RequestOption) (*RequestConfig, error) {
+func NewRequestConfig[D any](ctx context.Context, method string, u string, body param.ParamStruct, dst D, opts ...RequestOption) (*RequestConfig, error) {
 	var reader io.Reader
 
 	contentType := "application/json"
@@ -151,15 +157,6 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 			}
 		}
 	}
-	if body, ok := body.([]byte); ok {
-		reader = bytes.NewBuffer(body)
-		hasSerializationFunc = true
-	}
-	if body, ok := body.(io.Reader); ok {
-		reader = body
-		hasSerializationFunc = true
-	}
-
 	if body != nil && !hasSerializationFunc {
 		buf := new(bytes.Buffer)
 		enc := json.NewEncoder(buf)
@@ -195,7 +192,7 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 		HTTPClient: http.DefaultClient,
 		Body:       reader,
 	}
-	cfg.ResponseBodyInto = dst
+	cfg.ResponseBodyInto = Into(dst)
 	cfg.Security = Security{
 		APIKey:      true,
 		OAuthBearer: true,
@@ -235,7 +232,7 @@ type RequestConfig struct {
 	APIKey           string
 	BearerToken      string
 	Security         Security
-	ResponseBodyInto any
+	ResponseBodyInto ResponseBody
 	ResponseInto     **http.Response
 	Body             io.Reader
 }
@@ -316,7 +313,11 @@ func retryDelay(res *http.Response, retryCount int) time.Duration {
 	}
 
 	delay := 500 * time.Millisecond << min(max(retryCount, 0), 4)
-	return delay - time.Duration(rand.Int63n(int64(delay/4)))
+	jitter, err := rand.Int(rand.Reader, big.NewInt(int64(delay/4)))
+	if err != nil {
+		return delay
+	}
+	return delay - time.Duration(jitter.Int64())
 }
 
 func (cfg *RequestConfig) Execute() (err error) {
@@ -393,7 +394,9 @@ func (cfg *RequestConfig) Execute() (err error) {
 		}
 
 		if res != nil && res.Body != nil {
-			_ = res.Body.Close()
+			if err := res.Body.Close(); err != nil {
+				return err
+			}
 		}
 
 		select {
@@ -406,8 +409,8 @@ func (cfg *RequestConfig) Execute() (err error) {
 	if cfg.ResponseInto != nil {
 		*cfg.ResponseInto = res
 	}
-	if responseBodyInto, ok := cfg.ResponseBodyInto.(**http.Response); ok {
-		*responseBodyInto = res
+	if cfg.ResponseBodyInto.raw != nil {
+		*cfg.ResponseBodyInto.raw = res
 	}
 
 	if err != nil {
@@ -416,7 +419,7 @@ func (cfg *RequestConfig) Execute() (err error) {
 
 	if res.StatusCode >= 400 {
 		contents, err := io.ReadAll(res.Body)
-		_ = res.Body.Close()
+		err = errors.Join(err, res.Body.Close())
 		if err != nil {
 			return err
 		}
@@ -431,8 +434,7 @@ func (cfg *RequestConfig) Execute() (err error) {
 		return &aerr
 	}
 
-	_, intoCustomResponseBody := cfg.ResponseBodyInto.(**http.Response)
-	if cfg.ResponseBodyInto == nil || intoCustomResponseBody {
+	if cfg.ResponseBodyInto.decode == nil {
 		if cancel != nil {
 			res.Body = &bodyWithTimeout{rc: res.Body, stop: cancel}
 			cancel = nil
@@ -441,43 +443,61 @@ func (cfg *RequestConfig) Execute() (err error) {
 	}
 
 	contents, err := io.ReadAll(res.Body)
-	_ = res.Body.Close()
+	err = errors.Join(err, res.Body.Close())
 	if err != nil {
 		return fmt.Errorf("error reading response body: %w", err)
 	}
 
-	contentType := res.Header.Get("content-type")
-	mediaType, _, _ := mime.ParseMediaType(contentType)
-	isJSON := strings.Contains(mediaType, "application/json") || strings.HasSuffix(mediaType, "+json")
-	if !isJSON {
-		switch dst := cfg.ResponseBodyInto.(type) {
-		case *string:
-			*dst = string(contents)
-		case **string:
-			tmp := string(contents)
-			*dst = &tmp
-		case *[]byte:
-			*dst = contents
-		default:
-			return fmt.Errorf("expected destination type of 'string' or '[]byte' for responses with content-type '%s' that is not 'application/json'", contentType)
-		}
+	return cfg.ResponseBodyInto.decode(res.Header.Get("content-type"), contents)
+}
+
+type ResponseBody struct {
+	raw    **http.Response
+	decode func(contentType string, contents []byte) error
+}
+
+func Into[D any](dst D) ResponseBody {
+	value := reflect.ValueOf(dst)
+	if !value.IsValid() {
+		return ResponseBody{}
+	}
+	if body, ok := reflect.TypeAssert[ResponseBody](value); ok {
+		return body
+	}
+	if raw, ok := reflect.TypeAssert[**http.Response](value); ok {
+		return ResponseBody{raw: raw}
+	}
+	return ResponseBody{decode: func(contentType string, contents []byte) error {
+		return decodeBody(dst, contentType, contents)
+	}}
+}
+
+func decodeBody[D any](dst D, contentType string, contents []byte) error {
+	value := reflect.ValueOf(dst)
+	if bytes, ok := reflect.TypeAssert[*[]byte](value); ok {
+		*bytes = contents
 		return nil
 	}
-
-	switch dst := cfg.ResponseBodyInto.(type) {
-	case *[]byte:
-		*dst = contents
-	default:
-		err = json.NewDecoder(bytes.NewReader(contents)).Decode(cfg.ResponseBodyInto)
-		if err != nil {
-			return fmt.Errorf("error parsing response json: %w", err)
+	mediaType, _, err := mime.ParseMediaType(contentType)
+	if (err != nil && !errors.Is(err, mime.ErrInvalidMediaParameter)) || !strings.Contains(mediaType, "application/json") && !strings.HasSuffix(mediaType, "+json") {
+		if text, ok := reflect.TypeAssert[*string](value); ok {
+			*text = string(contents)
+			return nil
 		}
+		if text, ok := reflect.TypeAssert[**string](value); ok {
+			body := string(contents)
+			*text = &body
+			return nil
+		}
+		return fmt.Errorf("expected destination type of 'string' or '[]byte' for responses with content-type '%s' that is not 'application/json'", contentType)
 	}
-
+	if err := json.NewDecoder(bytes.NewReader(contents)).Decode(dst); err != nil {
+		return fmt.Errorf("error parsing response json: %w", err)
+	}
 	return nil
 }
 
-func ExecuteNewRequest(ctx context.Context, method string, u string, body any, dst any, opts ...RequestOption) error {
+func ExecuteNewRequest[D any](ctx context.Context, method string, u string, body param.ParamStruct, dst D, opts ...RequestOption) error {
 	cfg, err := NewRequestConfig(ctx, method, u, body, dst, opts...)
 	if err != nil {
 		return err

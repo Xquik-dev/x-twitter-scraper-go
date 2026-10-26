@@ -19,11 +19,9 @@ import (
 // EncodedAsDate is not be stable and shouldn't be relied upon
 type EncodedAsDate Opt[time.Time]
 
-// If we want to set a literal key value into JSON using sjson, we need to make sure it doesn't have
+// EscapeSJSONKey escapes the characters sjson reads as path syntax. If we want to set a literal key value into JSON using sjson, we need to make sure it doesn't have
 // special characters that sjson interprets as a path.
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
-
-type forceOmit int
 
 func (m EncodedAsDate) MarshalJSON() ([]byte, error) {
 	underlying := Opt[time.Time](m)
@@ -34,15 +32,15 @@ func (m EncodedAsDate) MarshalJSON() ([]byte, error) {
 	return underlying.MarshalJSON()
 }
 
-// Stability for the API of MarshalObject is not guaranteed.
-func MarshalObject[T ParamStruct](f T, underlying any) ([]byte, error) {
+// MarshalObject comes with no guarantee of API stability.
+func MarshalObject[T ParamStruct, U any](f T, underlying U) ([]byte, error) {
 	return MarshalWithExtras(f, underlying, f.extraFields())
 }
 
 // MarshalWithExtras is used to marshal a struct with additional properties.
 //
 // Stability for the API of MarshalWithExtras is not guaranteed.
-func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[string]R) ([]byte, error) {
+func MarshalWithExtras[T ParamStruct, U any](f T, underlying U, extras map[string]json.RawMessage) ([]byte, error) {
 	if f.null() {
 		return []byte("null"), nil
 	} else if len(extras) > 0 {
@@ -51,8 +49,7 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 			return nil, err
 		}
 		for k, v := range extras {
-			var a any = v
-			if a == Omit {
+			if string(v) == string(Omit) {
 				if b, e := sjson.DeleteBytes(bytes, k); e == nil {
 					bytes = b
 				}
@@ -71,8 +68,8 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 	}
 }
 
-// Stability for the API of MarshalUnion is not guaranteed.
-func MarshalUnion[T ParamStruct](metadata T, variants ...any) ([]byte, error) {
+// MarshalUnion comes with no guarantee of API stability.
+func MarshalUnion[T ParamStruct](metadata T, variants ...json.Marshaler) ([]byte, error) {
 	nPresent := 0
 	presentIdx := -1
 	for i, variant := range variants {

@@ -18,7 +18,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Look up, search, and explore user profiles and relationships
+// XFollowerService lets you look up, search, and explore user profiles and relationships.
 //
 // XFollowerService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -38,7 +38,7 @@ func NewXFollowerService(opts ...option.RequestOption) (r XFollowerService) {
 	return
 }
 
-// Returns whether one public account follows another.
+// Check returns whether one public account follows another.
 func (r *XFollowerService) Check(ctx context.Context, query XFollowerCheckParams, opts ...option.RequestOption) (res *XFollowerCheckResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/followers/check"
@@ -68,10 +68,10 @@ type XFollowerCheckResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XFollowerCheckResponse) RawJSON() string { return r.JSON.raw }
 func (r *XFollowerCheckResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XFollowerCheckParams struct {

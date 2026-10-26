@@ -17,7 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// Connected X account management
+// XAccountConnectionAttemptService covers connected X account management.
 //
 // XAccountConnectionAttemptService contains methods and other services that help
 // with interacting with the x-twitter-scraper API.
@@ -37,7 +37,7 @@ func NewXAccountConnectionAttemptService(opts ...option.RequestOption) (r XAccou
 	return
 }
 
-// Returns progress for an X account connection attempt.
+// Get returns progress for an X account connection attempt.
 func (r *XAccountConnectionAttemptService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountConnectionAttemptGetResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -106,9 +106,10 @@ func (XAccountConnectionAttemptGetResponseFailed) implXAccountConnectionAttemptG
 func (XAccountConnectionAttemptGetResponseRequiresEmailCode) implXAccountConnectionAttemptGetResponseUnion() {
 }
 
-// Use the following switch statement to find the correct variant
+// AsAny returns the variant the union holds. Use the following switch statement to find the correct variant.
 //
-//	switch variant := XAccountConnectionAttemptGetResponseUnion.AsAny().(type) {
+//	variant, err := XAccountConnectionAttemptGetResponseUnion.AsAny()
+//	switch variant := variant.(type) {
 //	case xtwitterscraper.XAccountConnectionAttemptGetResponsePending:
 //	case xtwitterscraper.XAccountConnectionAttemptGetResponseSuccess:
 //	case xtwitterscraper.XAccountConnectionAttemptGetResponseFailed:
@@ -116,7 +117,7 @@ func (XAccountConnectionAttemptGetResponseRequiresEmailCode) implXAccountConnect
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
-func (u XAccountConnectionAttemptGetResponseUnion) AsAny() anyXAccountConnectionAttemptGetResponse {
+func (u XAccountConnectionAttemptGetResponseUnion) AsAny() (anyXAccountConnectionAttemptGetResponse, error) {
 	switch u.Status {
 	case "pending":
 		return u.AsPending()
@@ -127,37 +128,37 @@ func (u XAccountConnectionAttemptGetResponseUnion) AsAny() anyXAccountConnection
 	case "requires_email_code":
 		return u.AsRequiresEmailCode()
 	}
-	return nil
+	return nil, nil
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsPending() (v XAccountConnectionAttemptGetResponsePending) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAccountConnectionAttemptGetResponseUnion) AsPending() (v XAccountConnectionAttemptGetResponsePending, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsSuccess() (v XAccountConnectionAttemptGetResponseSuccess) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAccountConnectionAttemptGetResponseUnion) AsSuccess() (v XAccountConnectionAttemptGetResponseSuccess, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsFailed() (v XAccountConnectionAttemptGetResponseFailed) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAccountConnectionAttemptGetResponseUnion) AsFailed() (v XAccountConnectionAttemptGetResponseFailed, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAccountConnectionAttemptGetResponseRequiresEmailCode) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAccountConnectionAttemptGetResponseRequiresEmailCode, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAccountConnectionAttemptGetResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAccountConnectionAttemptGetResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAccountConnectionAttemptGetResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// The connection is still in progress.
+// XAccountConnectionAttemptGetResponsePending means the connection is still in progress.
 type XAccountConnectionAttemptGetResponsePending struct {
 	ID          string                             `json:"id" api:"required"`
 	Object      constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
@@ -174,13 +175,13 @@ type XAccountConnectionAttemptGetResponsePending struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountConnectionAttemptGetResponsePending) RawJSON() string { return r.JSON.raw }
 func (r *XAccountConnectionAttemptGetResponsePending) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The account connected successfully.
+// XAccountConnectionAttemptGetResponseSuccess means the account connected successfully.
 type XAccountConnectionAttemptGetResponseSuccess struct {
 	ID     string                             `json:"id" api:"required"`
 	Object constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
@@ -195,13 +196,13 @@ type XAccountConnectionAttemptGetResponseSuccess struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountConnectionAttemptGetResponseSuccess) RawJSON() string { return r.JSON.raw }
 func (r *XAccountConnectionAttemptGetResponseSuccess) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The connection reached a final failure.
+// XAccountConnectionAttemptGetResponseFailed means the connection reached a final failure.
 type XAccountConnectionAttemptGetResponseFailed struct {
 	ID        string                             `json:"id" api:"required"`
 	Error     string                             `json:"error" api:"required"`
@@ -222,13 +223,13 @@ type XAccountConnectionAttemptGetResponseFailed struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountConnectionAttemptGetResponseFailed) RawJSON() string { return r.JSON.raw }
 func (r *XAccountConnectionAttemptGetResponseFailed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Resumable account connection challenge. Submit the email code to finish the same
+// XAccountConnectionAttemptGetResponseRequiresEmailCode is a resumable account connection challenge. Submit the email code to finish the same
 // connection attempt.
 type XAccountConnectionAttemptGetResponseRequiresEmailCode struct {
 	ID        string                               `json:"id" api:"required"`
@@ -250,8 +251,8 @@ type XAccountConnectionAttemptGetResponseRequiresEmailCode struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountConnectionAttemptGetResponseRequiresEmailCode) RawJSON() string { return r.JSON.raw }
 func (r *XAccountConnectionAttemptGetResponseRequiresEmailCode) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }

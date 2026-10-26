@@ -19,7 +19,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// AI analysis of posts, at 2 credits per analyzed post
+// XAnalysisService covers AI analysis of posts, at 2 credits per analyzed post.
 //
 // XAnalysisService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -39,7 +39,7 @@ func NewXAnalysisService(opts ...option.RequestOption) (r XAnalysisService) {
 	return
 }
 
-// Answers whether each post is about your brand, the author's attitude toward it &
+// Brand answers whether each post is about your brand, the author's attitude toward it &
 // the author's relationship with it. Name the brand in analysis.targets. Each
 // analyzed post costs 2 credits.
 func (r *XAnalysisService) Brand(ctx context.Context, body XAnalysisBrandParams, opts ...option.RequestOption) (res *XAnalysisBrandResponse, err error) {
@@ -49,7 +49,7 @@ func (r *XAnalysisService) Brand(ctx context.Context, body XAnalysisBrandParams,
 	return res, err
 }
 
-// Answers 1 to 8 questions you write in analysis.questions. A choice picks a
+// Classify answers 1 to 8 questions you write in analysis.questions. A choice picks a
 // category, such as a topic. A score picks a level. A probability answers yes or
 // no. Without questions it answers the sentiment questions. Each analyzed post
 // costs 2 credits.
@@ -60,7 +60,7 @@ func (r *XAnalysisService) Classify(ctx context.Context, body XAnalysisClassifyP
 	return res, err
 }
 
-// Answers each post's stance on an asset, its content type, its conviction & its
+// MarketSignals answers each post's stance on an asset, its content type, its conviction & its
 // relevance. The summary counts bullish & bearish posts per cashtag. Name the
 // asset in analysis.targets. Each analyzed post costs 2 credits.
 func (r *XAnalysisService) MarketSignals(ctx context.Context, body XAnalysisMarketSignalsParams, opts ...option.RequestOption) (res *XAnalysisMarketSignalsResponse, err error) {
@@ -70,7 +70,7 @@ func (r *XAnalysisService) MarketSignals(ctx context.Context, body XAnalysisMark
 	return res, err
 }
 
-// Answers each post's format, such as reporting, commentary or speculation, its
+// News answers each post's format, such as reporting, commentary or speculation, its
 // source attribution & its relevance to your topic. Name the topic in
 // analysis.targets. Each analyzed post costs 2 credits.
 func (r *XAnalysisService) News(ctx context.Context, body XAnalysisNewsParams, opts ...option.RequestOption) (res *XAnalysisNewsResponse, err error) {
@@ -80,7 +80,7 @@ func (r *XAnalysisService) News(ctx context.Context, body XAnalysisNewsParams, o
 	return res, err
 }
 
-// Answers each post's attitude, its intensity & its sarcasm probability. Send post
+// Sentiment answers each post's attitude, its intensity & its sarcasm probability. Send post
 // IDs, an X search, an account, a List, a post's replies or quotes, or your own
 // texts. Each analyzed post costs 2 credits. A post without an analysis costs
 // nothing.
@@ -91,7 +91,7 @@ func (r *XAnalysisService) Sentiment(ctx context.Context, body XAnalysisSentimen
 	return res, err
 }
 
-// Answers each post's hook, clarity, payoff, humor, spam risk & likely reaction, &
+// ViralScore answers each post's hook, clarity, payoff, humor, spam risk & likely reaction, &
 // adds a Viral Score from 0 to 100 with a verdict. The score rates the wording. It
 // does not predict likes or views. Send drafts in texts to score them before
 // posting. Each analyzed post costs 2 credits.
@@ -102,7 +102,7 @@ func (r *XAnalysisService) ViralScore(ctx context.Context, body XAnalysisViralSc
 	return res, err
 }
 
-// Analyzed posts, the posts without an analysis & the totals of the answers. Each
+// XAnalysisBrandResponse holds analyzed posts, the posts without an analysis & the totals of the answers. Each
 // row in results costs 2 credits.
 type XAnalysisBrandResponse struct {
 	// Totals of the answers across the analyzed posts.
@@ -127,13 +127,13 @@ type XAnalysisBrandResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Totals of the answers across the analyzed posts.
+// XAnalysisBrandResponseAnalysisSummary holds totals of the answers across the analyzed posts.
 type XAnalysisBrandResponseAnalysisSummary struct {
 	// Posts & answers per cashtag, most posts first, up to 20. signal is present for
 	// the market questions.
@@ -146,7 +146,7 @@ type XAnalysisBrandResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisBrandResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                     `json:"schemaVersion" api:"required"`
@@ -157,7 +157,7 @@ type XAnalysisBrandResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -174,16 +174,16 @@ type XAnalysisBrandResponseAnalysisSummary struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                     `json:"choices" api:"required"`
+	Choices PublicMetadata                                     `json:"choices" api:"required"`
 	Rows    int64                                              `json:"rows" api:"required"`
 	Signal  XAnalysisBrandResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -197,10 +197,10 @@ type XAnalysisBrandResponseAnalysisSummaryCashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryCashtagSignal struct {
@@ -218,13 +218,13 @@ type XAnalysisBrandResponseAnalysisSummaryCashtagSignal struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts per comparison status, & up to 50 changed posts with their changes. Null
+// XAnalysisBrandResponseAnalysisSummaryMonitor holds posts per comparison status, & up to 50 changed posts with their changes. Null
 // when the answer holds no post.
 type XAnalysisBrandResponseAnalysisSummaryMonitor struct {
 	ChangedRows []XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow `json:"changedRows" api:"required"`
@@ -239,10 +239,10 @@ type XAnalysisBrandResponseAnalysisSummaryMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow struct {
@@ -257,10 +257,10 @@ type XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -277,15 +277,15 @@ type XAnalysisBrandResponseAnalysisSummaryMonitorChangedRowChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisBrandResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts by analysis outcome.
+// XAnalysisBrandResponseAnalysisSummaryRows holds posts by analysis outcome.
 type XAnalysisBrandResponseAnalysisSummaryRows struct {
 	Analyzed int64 `json:"analyzed" api:"required"`
 	Failed   int64 `json:"failed" api:"required"`
@@ -300,10 +300,10 @@ type XAnalysisBrandResponseAnalysisSummaryRows struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummarySourceDomain struct {
@@ -318,21 +318,21 @@ type XAnalysisBrandResponseAnalysisSummarySourceDomain struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -346,13 +346,13 @@ type XAnalysisBrandResponseAnalysisSummaryTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 analyzed post with its answers.
+// XAnalysisBrandResponseResult is 1 analyzed post with its answers.
 type XAnalysisBrandResponseResult struct {
 	// The answers in full, with their probabilities.
 	Analysis XAnalysisBrandResponseResultAnalysis `json:"analysis" api:"required"`
@@ -372,7 +372,7 @@ type XAnalysisBrandResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -405,13 +405,13 @@ type XAnalysisBrandResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The answers in full, with their probabilities.
+// XAnalysisBrandResponseResultAnalysis holds the answers in full, with their probabilities.
 type XAnalysisBrandResponseResultAnalysis struct {
 	// 1 answer per question, in question order.
 	Answers []XAnalysisBrandResponseResultAnalysisAnswer `json:"answers" api:"required"`
@@ -434,13 +434,13 @@ type XAnalysisBrandResponseResultAnalysis struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 question's answer. A probability has probability. A choice or score has value,
+// XAnalysisBrandResponseResultAnalysisAnswer is 1 question's answer. A probability has probability. A choice or score has value,
 // confidence & the probability of each category or level.
 type XAnalysisBrandResponseResultAnalysisAnswer struct {
 	QuestionID      string `json:"questionId" api:"required"`
@@ -472,10 +472,10 @@ type XAnalysisBrandResponseResultAnalysisAnswer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseResultAnalysisAnswerType string
@@ -505,24 +505,24 @@ type XAnalysisBrandResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisBrandResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisBrandResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// What the AI read beside the post's text.
+// XAnalysisBrandResponseResultAnalysisContextAvailability describes what the AI read beside the post's text.
 type XAnalysisBrandResponseResultAnalysisContextAvailability struct {
 	// Any of "text_blocks", "summary", "not_supplied".
 	Article XAnalysisBrandResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
@@ -551,10 +551,10 @@ type XAnalysisBrandResponseResultAnalysisContextAvailability struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseResultAnalysisContextAvailability) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseResultAnalysisContextAvailabilityArticle string
@@ -579,7 +579,7 @@ const (
 	XAnalysisBrandResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisBrandResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
 
-// truncated when the post was cut to fit.
+// XAnalysisBrandResponseResultAnalysisContextAvailabilityPostText is the type of [XAnalysisBrandResponseResultAnalysisContextAvailability.PostText]. truncated when the post was cut to fit.
 type XAnalysisBrandResponseResultAnalysisContextAvailabilityPostText string
 
 const (
@@ -615,10 +615,10 @@ type XAnalysisBrandResponseResultAnalysisQuestion struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisBrandResponseResultAnswersUnion contains all possible properties and
@@ -640,28 +640,28 @@ type XAnalysisBrandResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisBrandResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisBrandResponseResultAnswersUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisBrandResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisBrandResponseResultAnswersUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisBrandResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisBrandResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisBrandResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// How the post's answers compare with its row in baseline, as the AI Actors
+// XAnalysisBrandResponseResultMonitor describes how the post's answers compare with its row in baseline, as the AI Actors
 // compare a run with an earlier dataset.
 type XAnalysisBrandResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -669,7 +669,7 @@ type XAnalysisBrandResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -688,10 +688,10 @@ type XAnalysisBrandResponseResultMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseResultMonitorChange struct {
@@ -708,13 +708,13 @@ type XAnalysisBrandResponseResultMonitorChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisBrandResponseResultMonitorStatus is the type of [XAnalysisBrandResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisBrandResponseResultMonitorStatus string
@@ -728,7 +728,7 @@ const (
 	XAnalysisBrandResponseResultMonitorStatusAnalysisUnavailable XAnalysisBrandResponseResultMonitorStatus = "analysis_unavailable"
 )
 
-// Only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
+// XAnalysisBrandResponseResultViralVerdict comes only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
 // sleep_on_it.
 type XAnalysisBrandResponseResultViralVerdict string
 
@@ -738,7 +738,7 @@ const (
 	XAnalysisBrandResponseResultViralVerdictSleepOnIt XAnalysisBrandResponseResultViralVerdict = "sleep_on_it"
 )
 
-// A post without an analysis. It costs nothing.
+// XAnalysisBrandResponseUnanalyzed is a post without an analysis. It costs nothing.
 type XAnalysisBrandResponseUnanalyzed struct {
 	// Post ID. Your own texts have the IDs text:1, text:2 & so on.
 	ID string `json:"id" api:"required"`
@@ -759,10 +759,10 @@ type XAnalysisBrandResponseUnanalyzed struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisBrandResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseUnanalyzedStatus string
@@ -772,7 +772,7 @@ const (
 	XAnalysisBrandResponseUnanalyzedStatusSkipped XAnalysisBrandResponseUnanalyzedStatus = "skipped"
 )
 
-// Analyzed posts, the posts without an analysis & the totals of the answers. Each
+// XAnalysisClassifyResponse holds analyzed posts, the posts without an analysis & the totals of the answers. Each
 // row in results costs 2 credits.
 type XAnalysisClassifyResponse struct {
 	// Totals of the answers across the analyzed posts.
@@ -797,13 +797,13 @@ type XAnalysisClassifyResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Totals of the answers across the analyzed posts.
+// XAnalysisClassifyResponseAnalysisSummary holds totals of the answers across the analyzed posts.
 type XAnalysisClassifyResponseAnalysisSummary struct {
 	// Posts & answers per cashtag, most posts first, up to 20. signal is present for
 	// the market questions.
@@ -816,7 +816,7 @@ type XAnalysisClassifyResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisClassifyResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                        `json:"schemaVersion" api:"required"`
@@ -827,7 +827,7 @@ type XAnalysisClassifyResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -844,16 +844,16 @@ type XAnalysisClassifyResponseAnalysisSummary struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                        `json:"choices" api:"required"`
+	Choices PublicMetadata                                        `json:"choices" api:"required"`
 	Rows    int64                                                 `json:"rows" api:"required"`
 	Signal  XAnalysisClassifyResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -867,10 +867,10 @@ type XAnalysisClassifyResponseAnalysisSummaryCashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryCashtagSignal struct {
@@ -888,13 +888,13 @@ type XAnalysisClassifyResponseAnalysisSummaryCashtagSignal struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts per comparison status, & up to 50 changed posts with their changes. Null
+// XAnalysisClassifyResponseAnalysisSummaryMonitor holds posts per comparison status, & up to 50 changed posts with their changes. Null
 // when the answer holds no post.
 type XAnalysisClassifyResponseAnalysisSummaryMonitor struct {
 	ChangedRows []XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow `json:"changedRows" api:"required"`
@@ -909,10 +909,10 @@ type XAnalysisClassifyResponseAnalysisSummaryMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow struct {
@@ -927,12 +927,12 @@ type XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -949,15 +949,15 @@ type XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRowChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts by analysis outcome.
+// XAnalysisClassifyResponseAnalysisSummaryRows holds posts by analysis outcome.
 type XAnalysisClassifyResponseAnalysisSummaryRows struct {
 	Analyzed int64 `json:"analyzed" api:"required"`
 	Failed   int64 `json:"failed" api:"required"`
@@ -972,10 +972,10 @@ type XAnalysisClassifyResponseAnalysisSummaryRows struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummarySourceDomain struct {
@@ -990,21 +990,21 @@ type XAnalysisClassifyResponseAnalysisSummarySourceDomain struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -1018,13 +1018,13 @@ type XAnalysisClassifyResponseAnalysisSummaryTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 analyzed post with its answers.
+// XAnalysisClassifyResponseResult is 1 analyzed post with its answers.
 type XAnalysisClassifyResponseResult struct {
 	// The answers in full, with their probabilities.
 	Analysis XAnalysisClassifyResponseResultAnalysis `json:"analysis" api:"required"`
@@ -1044,7 +1044,7 @@ type XAnalysisClassifyResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -1077,13 +1077,13 @@ type XAnalysisClassifyResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The answers in full, with their probabilities.
+// XAnalysisClassifyResponseResultAnalysis holds the answers in full, with their probabilities.
 type XAnalysisClassifyResponseResultAnalysis struct {
 	// 1 answer per question, in question order.
 	Answers []XAnalysisClassifyResponseResultAnalysisAnswer `json:"answers" api:"required"`
@@ -1106,13 +1106,13 @@ type XAnalysisClassifyResponseResultAnalysis struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 question's answer. A probability has probability. A choice or score has value,
+// XAnalysisClassifyResponseResultAnalysisAnswer is 1 question's answer. A probability has probability. A choice or score has value,
 // confidence & the probability of each category or level.
 type XAnalysisClassifyResponseResultAnalysisAnswer struct {
 	QuestionID      string `json:"questionId" api:"required"`
@@ -1144,10 +1144,10 @@ type XAnalysisClassifyResponseResultAnalysisAnswer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseResultAnalysisAnswerType string
@@ -1177,24 +1177,24 @@ type XAnalysisClassifyResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// What the AI read beside the post's text.
+// XAnalysisClassifyResponseResultAnalysisContextAvailability describes what the AI read beside the post's text.
 type XAnalysisClassifyResponseResultAnalysisContextAvailability struct {
 	// Any of "text_blocks", "summary", "not_supplied".
 	Article XAnalysisClassifyResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
@@ -1223,12 +1223,12 @@ type XAnalysisClassifyResponseResultAnalysisContextAvailability struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseResultAnalysisContextAvailability) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisClassifyResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseResultAnalysisContextAvailabilityArticle string
@@ -1253,7 +1253,7 @@ const (
 	XAnalysisClassifyResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisClassifyResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
 
-// truncated when the post was cut to fit.
+// XAnalysisClassifyResponseResultAnalysisContextAvailabilityPostText is the type of [XAnalysisClassifyResponseResultAnalysisContextAvailability.PostText]. truncated when the post was cut to fit.
 type XAnalysisClassifyResponseResultAnalysisContextAvailabilityPostText string
 
 const (
@@ -1289,10 +1289,10 @@ type XAnalysisClassifyResponseResultAnalysisQuestion struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisClassifyResponseResultAnswersUnion contains all possible properties and
@@ -1314,28 +1314,28 @@ type XAnalysisClassifyResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisClassifyResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisClassifyResponseResultAnswersUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisClassifyResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisClassifyResponseResultAnswersUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisClassifyResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisClassifyResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisClassifyResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// How the post's answers compare with its row in baseline, as the AI Actors
+// XAnalysisClassifyResponseResultMonitor describes how the post's answers compare with its row in baseline, as the AI Actors
 // compare a run with an earlier dataset.
 type XAnalysisClassifyResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -1343,7 +1343,7 @@ type XAnalysisClassifyResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -1362,10 +1362,10 @@ type XAnalysisClassifyResponseResultMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseResultMonitorChange struct {
@@ -1382,13 +1382,13 @@ type XAnalysisClassifyResponseResultMonitorChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisClassifyResponseResultMonitorStatus is the type of [XAnalysisClassifyResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisClassifyResponseResultMonitorStatus string
@@ -1402,7 +1402,7 @@ const (
 	XAnalysisClassifyResponseResultMonitorStatusAnalysisUnavailable XAnalysisClassifyResponseResultMonitorStatus = "analysis_unavailable"
 )
 
-// Only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
+// XAnalysisClassifyResponseResultViralVerdict comes only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
 // sleep_on_it.
 type XAnalysisClassifyResponseResultViralVerdict string
 
@@ -1412,7 +1412,7 @@ const (
 	XAnalysisClassifyResponseResultViralVerdictSleepOnIt XAnalysisClassifyResponseResultViralVerdict = "sleep_on_it"
 )
 
-// A post without an analysis. It costs nothing.
+// XAnalysisClassifyResponseUnanalyzed is a post without an analysis. It costs nothing.
 type XAnalysisClassifyResponseUnanalyzed struct {
 	// Post ID. Your own texts have the IDs text:1, text:2 & so on.
 	ID string `json:"id" api:"required"`
@@ -1433,10 +1433,10 @@ type XAnalysisClassifyResponseUnanalyzed struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisClassifyResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseUnanalyzedStatus string
@@ -1446,7 +1446,7 @@ const (
 	XAnalysisClassifyResponseUnanalyzedStatusSkipped XAnalysisClassifyResponseUnanalyzedStatus = "skipped"
 )
 
-// Analyzed posts, the posts without an analysis & the totals of the answers. Each
+// XAnalysisMarketSignalsResponse holds analyzed posts, the posts without an analysis & the totals of the answers. Each
 // row in results costs 2 credits.
 type XAnalysisMarketSignalsResponse struct {
 	// Totals of the answers across the analyzed posts.
@@ -1471,13 +1471,13 @@ type XAnalysisMarketSignalsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Totals of the answers across the analyzed posts.
+// XAnalysisMarketSignalsResponseAnalysisSummary holds totals of the answers across the analyzed posts.
 type XAnalysisMarketSignalsResponseAnalysisSummary struct {
 	// Posts & answers per cashtag, most posts first, up to 20. signal is present for
 	// the market questions.
@@ -1490,7 +1490,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisMarketSignalsResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                             `json:"schemaVersion" api:"required"`
@@ -1501,7 +1501,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -1518,16 +1518,16 @@ type XAnalysisMarketSignalsResponseAnalysisSummary struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                             `json:"choices" api:"required"`
+	Choices PublicMetadata                                             `json:"choices" api:"required"`
 	Rows    int64                                                      `json:"rows" api:"required"`
 	Signal  XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1541,10 +1541,10 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryCashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal struct {
@@ -1562,15 +1562,15 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts per comparison status, & up to 50 changed posts with their changes. Null
+// XAnalysisMarketSignalsResponseAnalysisSummaryMonitor holds posts per comparison status, & up to 50 changed posts with their changes. Null
 // when the answer holds no post.
 type XAnalysisMarketSignalsResponseAnalysisSummaryMonitor struct {
 	ChangedRows []XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow `json:"changedRows" api:"required"`
@@ -1585,10 +1585,10 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow struct {
@@ -1603,12 +1603,12 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -1625,15 +1625,15 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRowChange struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts by analysis outcome.
+// XAnalysisMarketSignalsResponseAnalysisSummaryRows holds posts by analysis outcome.
 type XAnalysisMarketSignalsResponseAnalysisSummaryRows struct {
 	Analyzed int64 `json:"analyzed" api:"required"`
 	Failed   int64 `json:"failed" api:"required"`
@@ -1648,10 +1648,10 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryRows struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain struct {
@@ -1666,23 +1666,23 @@ type XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -1696,13 +1696,13 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 analyzed post with its answers.
+// XAnalysisMarketSignalsResponseResult is 1 analyzed post with its answers.
 type XAnalysisMarketSignalsResponseResult struct {
 	// The answers in full, with their probabilities.
 	Analysis XAnalysisMarketSignalsResponseResultAnalysis `json:"analysis" api:"required"`
@@ -1722,7 +1722,7 @@ type XAnalysisMarketSignalsResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -1755,13 +1755,13 @@ type XAnalysisMarketSignalsResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The answers in full, with their probabilities.
+// XAnalysisMarketSignalsResponseResultAnalysis holds the answers in full, with their probabilities.
 type XAnalysisMarketSignalsResponseResultAnalysis struct {
 	// 1 answer per question, in question order.
 	Answers []XAnalysisMarketSignalsResponseResultAnalysisAnswer `json:"answers" api:"required"`
@@ -1784,13 +1784,13 @@ type XAnalysisMarketSignalsResponseResultAnalysis struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 question's answer. A probability has probability. A choice or score has value,
+// XAnalysisMarketSignalsResponseResultAnalysisAnswer is 1 question's answer. A probability has probability. A choice or score has value,
 // confidence & the probability of each category or level.
 type XAnalysisMarketSignalsResponseResultAnalysisAnswer struct {
 	QuestionID      string `json:"questionId" api:"required"`
@@ -1822,10 +1822,10 @@ type XAnalysisMarketSignalsResponseResultAnalysisAnswer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseResultAnalysisAnswerType string
@@ -1855,26 +1855,26 @@ type XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) RawJSON() string {
 	return u.JSON.raw
 }
 
-func (r *XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// What the AI read beside the post's text.
+// XAnalysisMarketSignalsResponseResultAnalysisContextAvailability describes what the AI read beside the post's text.
 type XAnalysisMarketSignalsResponseResultAnalysisContextAvailability struct {
 	// Any of "text_blocks", "summary", "not_supplied".
 	Article XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
@@ -1903,12 +1903,12 @@ type XAnalysisMarketSignalsResponseResultAnalysisContextAvailability struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseResultAnalysisContextAvailability) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityArticle string
@@ -1933,7 +1933,7 @@ const (
 	XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
 
-// truncated when the post was cut to fit.
+// XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityPostText is the type of [XAnalysisMarketSignalsResponseResultAnalysisContextAvailability.PostText]. truncated when the post was cut to fit.
 type XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityPostText string
 
 const (
@@ -1969,10 +1969,10 @@ type XAnalysisMarketSignalsResponseResultAnalysisQuestion struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisMarketSignalsResponseResultAnswersUnion contains all possible
@@ -1994,28 +1994,28 @@ type XAnalysisMarketSignalsResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisMarketSignalsResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisMarketSignalsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisMarketSignalsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// How the post's answers compare with its row in baseline, as the AI Actors
+// XAnalysisMarketSignalsResponseResultMonitor describes how the post's answers compare with its row in baseline, as the AI Actors
 // compare a run with an earlier dataset.
 type XAnalysisMarketSignalsResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -2023,7 +2023,7 @@ type XAnalysisMarketSignalsResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -2042,10 +2042,10 @@ type XAnalysisMarketSignalsResponseResultMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseResultMonitorChange struct {
@@ -2062,13 +2062,13 @@ type XAnalysisMarketSignalsResponseResultMonitorChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisMarketSignalsResponseResultMonitorStatus is the type of [XAnalysisMarketSignalsResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisMarketSignalsResponseResultMonitorStatus string
@@ -2082,7 +2082,7 @@ const (
 	XAnalysisMarketSignalsResponseResultMonitorStatusAnalysisUnavailable XAnalysisMarketSignalsResponseResultMonitorStatus = "analysis_unavailable"
 )
 
-// Only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
+// XAnalysisMarketSignalsResponseResultViralVerdict comes only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
 // sleep_on_it.
 type XAnalysisMarketSignalsResponseResultViralVerdict string
 
@@ -2092,7 +2092,7 @@ const (
 	XAnalysisMarketSignalsResponseResultViralVerdictSleepOnIt XAnalysisMarketSignalsResponseResultViralVerdict = "sleep_on_it"
 )
 
-// A post without an analysis. It costs nothing.
+// XAnalysisMarketSignalsResponseUnanalyzed is a post without an analysis. It costs nothing.
 type XAnalysisMarketSignalsResponseUnanalyzed struct {
 	// Post ID. Your own texts have the IDs text:1, text:2 & so on.
 	ID string `json:"id" api:"required"`
@@ -2113,10 +2113,10 @@ type XAnalysisMarketSignalsResponseUnanalyzed struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisMarketSignalsResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseUnanalyzedStatus string
@@ -2126,7 +2126,7 @@ const (
 	XAnalysisMarketSignalsResponseUnanalyzedStatusSkipped XAnalysisMarketSignalsResponseUnanalyzedStatus = "skipped"
 )
 
-// Analyzed posts, the posts without an analysis & the totals of the answers. Each
+// XAnalysisNewsResponse holds analyzed posts, the posts without an analysis & the totals of the answers. Each
 // row in results costs 2 credits.
 type XAnalysisNewsResponse struct {
 	// Totals of the answers across the analyzed posts.
@@ -2151,13 +2151,13 @@ type XAnalysisNewsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Totals of the answers across the analyzed posts.
+// XAnalysisNewsResponseAnalysisSummary holds totals of the answers across the analyzed posts.
 type XAnalysisNewsResponseAnalysisSummary struct {
 	// Posts & answers per cashtag, most posts first, up to 20. signal is present for
 	// the market questions.
@@ -2170,7 +2170,7 @@ type XAnalysisNewsResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisNewsResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                    `json:"schemaVersion" api:"required"`
@@ -2181,7 +2181,7 @@ type XAnalysisNewsResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -2198,16 +2198,16 @@ type XAnalysisNewsResponseAnalysisSummary struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                    `json:"choices" api:"required"`
+	Choices PublicMetadata                                    `json:"choices" api:"required"`
 	Rows    int64                                             `json:"rows" api:"required"`
 	Signal  XAnalysisNewsResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2221,10 +2221,10 @@ type XAnalysisNewsResponseAnalysisSummaryCashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryCashtagSignal struct {
@@ -2242,13 +2242,13 @@ type XAnalysisNewsResponseAnalysisSummaryCashtagSignal struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts per comparison status, & up to 50 changed posts with their changes. Null
+// XAnalysisNewsResponseAnalysisSummaryMonitor holds posts per comparison status, & up to 50 changed posts with their changes. Null
 // when the answer holds no post.
 type XAnalysisNewsResponseAnalysisSummaryMonitor struct {
 	ChangedRows []XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow `json:"changedRows" api:"required"`
@@ -2263,10 +2263,10 @@ type XAnalysisNewsResponseAnalysisSummaryMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow struct {
@@ -2281,10 +2281,10 @@ type XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -2301,15 +2301,15 @@ type XAnalysisNewsResponseAnalysisSummaryMonitorChangedRowChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisNewsResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts by analysis outcome.
+// XAnalysisNewsResponseAnalysisSummaryRows holds posts by analysis outcome.
 type XAnalysisNewsResponseAnalysisSummaryRows struct {
 	Analyzed int64 `json:"analyzed" api:"required"`
 	Failed   int64 `json:"failed" api:"required"`
@@ -2324,10 +2324,10 @@ type XAnalysisNewsResponseAnalysisSummaryRows struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummarySourceDomain struct {
@@ -2342,21 +2342,21 @@ type XAnalysisNewsResponseAnalysisSummarySourceDomain struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -2370,13 +2370,13 @@ type XAnalysisNewsResponseAnalysisSummaryTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 analyzed post with its answers.
+// XAnalysisNewsResponseResult is 1 analyzed post with its answers.
 type XAnalysisNewsResponseResult struct {
 	// The answers in full, with their probabilities.
 	Analysis XAnalysisNewsResponseResultAnalysis `json:"analysis" api:"required"`
@@ -2396,7 +2396,7 @@ type XAnalysisNewsResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -2429,13 +2429,13 @@ type XAnalysisNewsResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The answers in full, with their probabilities.
+// XAnalysisNewsResponseResultAnalysis holds the answers in full, with their probabilities.
 type XAnalysisNewsResponseResultAnalysis struct {
 	// 1 answer per question, in question order.
 	Answers []XAnalysisNewsResponseResultAnalysisAnswer `json:"answers" api:"required"`
@@ -2458,13 +2458,13 @@ type XAnalysisNewsResponseResultAnalysis struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 question's answer. A probability has probability. A choice or score has value,
+// XAnalysisNewsResponseResultAnalysisAnswer is 1 question's answer. A probability has probability. A choice or score has value,
 // confidence & the probability of each category or level.
 type XAnalysisNewsResponseResultAnalysisAnswer struct {
 	QuestionID      string `json:"questionId" api:"required"`
@@ -2496,10 +2496,10 @@ type XAnalysisNewsResponseResultAnalysisAnswer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseResultAnalysisAnswerType string
@@ -2529,24 +2529,24 @@ type XAnalysisNewsResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisNewsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisNewsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// What the AI read beside the post's text.
+// XAnalysisNewsResponseResultAnalysisContextAvailability describes what the AI read beside the post's text.
 type XAnalysisNewsResponseResultAnalysisContextAvailability struct {
 	// Any of "text_blocks", "summary", "not_supplied".
 	Article XAnalysisNewsResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
@@ -2575,10 +2575,10 @@ type XAnalysisNewsResponseResultAnalysisContextAvailability struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseResultAnalysisContextAvailability) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseResultAnalysisContextAvailabilityArticle string
@@ -2603,7 +2603,7 @@ const (
 	XAnalysisNewsResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisNewsResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
 
-// truncated when the post was cut to fit.
+// XAnalysisNewsResponseResultAnalysisContextAvailabilityPostText is the type of [XAnalysisNewsResponseResultAnalysisContextAvailability.PostText]. truncated when the post was cut to fit.
 type XAnalysisNewsResponseResultAnalysisContextAvailabilityPostText string
 
 const (
@@ -2639,10 +2639,10 @@ type XAnalysisNewsResponseResultAnalysisQuestion struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisNewsResponseResultAnswersUnion contains all possible properties and
@@ -2664,28 +2664,28 @@ type XAnalysisNewsResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisNewsResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisNewsResponseResultAnswersUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisNewsResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisNewsResponseResultAnswersUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisNewsResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisNewsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisNewsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// How the post's answers compare with its row in baseline, as the AI Actors
+// XAnalysisNewsResponseResultMonitor describes how the post's answers compare with its row in baseline, as the AI Actors
 // compare a run with an earlier dataset.
 type XAnalysisNewsResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -2693,7 +2693,7 @@ type XAnalysisNewsResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -2712,10 +2712,10 @@ type XAnalysisNewsResponseResultMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseResultMonitorChange struct {
@@ -2732,13 +2732,13 @@ type XAnalysisNewsResponseResultMonitorChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisNewsResponseResultMonitorStatus is the type of [XAnalysisNewsResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisNewsResponseResultMonitorStatus string
@@ -2752,7 +2752,7 @@ const (
 	XAnalysisNewsResponseResultMonitorStatusAnalysisUnavailable XAnalysisNewsResponseResultMonitorStatus = "analysis_unavailable"
 )
 
-// Only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
+// XAnalysisNewsResponseResultViralVerdict comes only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
 // sleep_on_it.
 type XAnalysisNewsResponseResultViralVerdict string
 
@@ -2762,7 +2762,7 @@ const (
 	XAnalysisNewsResponseResultViralVerdictSleepOnIt XAnalysisNewsResponseResultViralVerdict = "sleep_on_it"
 )
 
-// A post without an analysis. It costs nothing.
+// XAnalysisNewsResponseUnanalyzed is a post without an analysis. It costs nothing.
 type XAnalysisNewsResponseUnanalyzed struct {
 	// Post ID. Your own texts have the IDs text:1, text:2 & so on.
 	ID string `json:"id" api:"required"`
@@ -2783,10 +2783,10 @@ type XAnalysisNewsResponseUnanalyzed struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisNewsResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseUnanalyzedStatus string
@@ -2796,7 +2796,7 @@ const (
 	XAnalysisNewsResponseUnanalyzedStatusSkipped XAnalysisNewsResponseUnanalyzedStatus = "skipped"
 )
 
-// Analyzed posts, the posts without an analysis & the totals of the answers. Each
+// XAnalysisSentimentResponse holds analyzed posts, the posts without an analysis & the totals of the answers. Each
 // row in results costs 2 credits.
 type XAnalysisSentimentResponse struct {
 	// Totals of the answers across the analyzed posts.
@@ -2821,13 +2821,13 @@ type XAnalysisSentimentResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Totals of the answers across the analyzed posts.
+// XAnalysisSentimentResponseAnalysisSummary holds totals of the answers across the analyzed posts.
 type XAnalysisSentimentResponseAnalysisSummary struct {
 	// Posts & answers per cashtag, most posts first, up to 20. signal is present for
 	// the market questions.
@@ -2840,7 +2840,7 @@ type XAnalysisSentimentResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisSentimentResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                         `json:"schemaVersion" api:"required"`
@@ -2851,7 +2851,7 @@ type XAnalysisSentimentResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -2868,16 +2868,16 @@ type XAnalysisSentimentResponseAnalysisSummary struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                         `json:"choices" api:"required"`
+	Choices PublicMetadata                                         `json:"choices" api:"required"`
 	Rows    int64                                                  `json:"rows" api:"required"`
 	Signal  XAnalysisSentimentResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2891,10 +2891,10 @@ type XAnalysisSentimentResponseAnalysisSummaryCashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryCashtagSignal struct {
@@ -2912,13 +2912,13 @@ type XAnalysisSentimentResponseAnalysisSummaryCashtagSignal struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts per comparison status, & up to 50 changed posts with their changes. Null
+// XAnalysisSentimentResponseAnalysisSummaryMonitor holds posts per comparison status, & up to 50 changed posts with their changes. Null
 // when the answer holds no post.
 type XAnalysisSentimentResponseAnalysisSummaryMonitor struct {
 	ChangedRows []XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow `json:"changedRows" api:"required"`
@@ -2933,10 +2933,10 @@ type XAnalysisSentimentResponseAnalysisSummaryMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow struct {
@@ -2951,12 +2951,12 @@ type XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -2973,15 +2973,15 @@ type XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRowChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts by analysis outcome.
+// XAnalysisSentimentResponseAnalysisSummaryRows holds posts by analysis outcome.
 type XAnalysisSentimentResponseAnalysisSummaryRows struct {
 	Analyzed int64 `json:"analyzed" api:"required"`
 	Failed   int64 `json:"failed" api:"required"`
@@ -2996,10 +2996,10 @@ type XAnalysisSentimentResponseAnalysisSummaryRows struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummarySourceDomain struct {
@@ -3014,21 +3014,21 @@ type XAnalysisSentimentResponseAnalysisSummarySourceDomain struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -3042,13 +3042,13 @@ type XAnalysisSentimentResponseAnalysisSummaryTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 analyzed post with its answers.
+// XAnalysisSentimentResponseResult is 1 analyzed post with its answers.
 type XAnalysisSentimentResponseResult struct {
 	// The answers in full, with their probabilities.
 	Analysis XAnalysisSentimentResponseResultAnalysis `json:"analysis" api:"required"`
@@ -3068,7 +3068,7 @@ type XAnalysisSentimentResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -3101,13 +3101,13 @@ type XAnalysisSentimentResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The answers in full, with their probabilities.
+// XAnalysisSentimentResponseResultAnalysis holds the answers in full, with their probabilities.
 type XAnalysisSentimentResponseResultAnalysis struct {
 	// 1 answer per question, in question order.
 	Answers []XAnalysisSentimentResponseResultAnalysisAnswer `json:"answers" api:"required"`
@@ -3130,13 +3130,13 @@ type XAnalysisSentimentResponseResultAnalysis struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 question's answer. A probability has probability. A choice or score has value,
+// XAnalysisSentimentResponseResultAnalysisAnswer is 1 question's answer. A probability has probability. A choice or score has value,
 // confidence & the probability of each category or level.
 type XAnalysisSentimentResponseResultAnalysisAnswer struct {
 	QuestionID      string `json:"questionId" api:"required"`
@@ -3168,10 +3168,10 @@ type XAnalysisSentimentResponseResultAnalysisAnswer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseResultAnalysisAnswerType string
@@ -3201,24 +3201,24 @@ type XAnalysisSentimentResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// What the AI read beside the post's text.
+// XAnalysisSentimentResponseResultAnalysisContextAvailability describes what the AI read beside the post's text.
 type XAnalysisSentimentResponseResultAnalysisContextAvailability struct {
 	// Any of "text_blocks", "summary", "not_supplied".
 	Article XAnalysisSentimentResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
@@ -3247,12 +3247,12 @@ type XAnalysisSentimentResponseResultAnalysisContextAvailability struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseResultAnalysisContextAvailability) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisSentimentResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseResultAnalysisContextAvailabilityArticle string
@@ -3277,7 +3277,7 @@ const (
 	XAnalysisSentimentResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisSentimentResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
 
-// truncated when the post was cut to fit.
+// XAnalysisSentimentResponseResultAnalysisContextAvailabilityPostText is the type of [XAnalysisSentimentResponseResultAnalysisContextAvailability.PostText]. truncated when the post was cut to fit.
 type XAnalysisSentimentResponseResultAnalysisContextAvailabilityPostText string
 
 const (
@@ -3313,10 +3313,10 @@ type XAnalysisSentimentResponseResultAnalysisQuestion struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisSentimentResponseResultAnswersUnion contains all possible properties
@@ -3338,28 +3338,28 @@ type XAnalysisSentimentResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisSentimentResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisSentimentResponseResultAnswersUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisSentimentResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisSentimentResponseResultAnswersUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisSentimentResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisSentimentResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisSentimentResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// How the post's answers compare with its row in baseline, as the AI Actors
+// XAnalysisSentimentResponseResultMonitor describes how the post's answers compare with its row in baseline, as the AI Actors
 // compare a run with an earlier dataset.
 type XAnalysisSentimentResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -3367,7 +3367,7 @@ type XAnalysisSentimentResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -3386,10 +3386,10 @@ type XAnalysisSentimentResponseResultMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseResultMonitorChange struct {
@@ -3406,13 +3406,13 @@ type XAnalysisSentimentResponseResultMonitorChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisSentimentResponseResultMonitorStatus is the type of [XAnalysisSentimentResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisSentimentResponseResultMonitorStatus string
@@ -3426,7 +3426,7 @@ const (
 	XAnalysisSentimentResponseResultMonitorStatusAnalysisUnavailable XAnalysisSentimentResponseResultMonitorStatus = "analysis_unavailable"
 )
 
-// Only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
+// XAnalysisSentimentResponseResultViralVerdict comes only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
 // sleep_on_it.
 type XAnalysisSentimentResponseResultViralVerdict string
 
@@ -3436,7 +3436,7 @@ const (
 	XAnalysisSentimentResponseResultViralVerdictSleepOnIt XAnalysisSentimentResponseResultViralVerdict = "sleep_on_it"
 )
 
-// A post without an analysis. It costs nothing.
+// XAnalysisSentimentResponseUnanalyzed is a post without an analysis. It costs nothing.
 type XAnalysisSentimentResponseUnanalyzed struct {
 	// Post ID. Your own texts have the IDs text:1, text:2 & so on.
 	ID string `json:"id" api:"required"`
@@ -3457,10 +3457,10 @@ type XAnalysisSentimentResponseUnanalyzed struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisSentimentResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseUnanalyzedStatus string
@@ -3470,7 +3470,7 @@ const (
 	XAnalysisSentimentResponseUnanalyzedStatusSkipped XAnalysisSentimentResponseUnanalyzedStatus = "skipped"
 )
 
-// Analyzed posts, the posts without an analysis & the totals of the answers. Each
+// XAnalysisViralScoreResponse holds analyzed posts, the posts without an analysis & the totals of the answers. Each
 // row in results costs 2 credits.
 type XAnalysisViralScoreResponse struct {
 	// Totals of the answers across the analyzed posts.
@@ -3495,13 +3495,13 @@ type XAnalysisViralScoreResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Totals of the answers across the analyzed posts.
+// XAnalysisViralScoreResponseAnalysisSummary holds totals of the answers across the analyzed posts.
 type XAnalysisViralScoreResponseAnalysisSummary struct {
 	// Posts & answers per cashtag, most posts first, up to 20. signal is present for
 	// the market questions.
@@ -3514,7 +3514,7 @@ type XAnalysisViralScoreResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisViralScoreResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                          `json:"schemaVersion" api:"required"`
@@ -3525,7 +3525,7 @@ type XAnalysisViralScoreResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -3542,16 +3542,16 @@ type XAnalysisViralScoreResponseAnalysisSummary struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                          `json:"choices" api:"required"`
+	Choices PublicMetadata                                          `json:"choices" api:"required"`
 	Rows    int64                                                   `json:"rows" api:"required"`
 	Signal  XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3565,10 +3565,10 @@ type XAnalysisViralScoreResponseAnalysisSummaryCashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal struct {
@@ -3586,13 +3586,13 @@ type XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts per comparison status, & up to 50 changed posts with their changes. Null
+// XAnalysisViralScoreResponseAnalysisSummaryMonitor holds posts per comparison status, & up to 50 changed posts with their changes. Null
 // when the answer holds no post.
 type XAnalysisViralScoreResponseAnalysisSummaryMonitor struct {
 	ChangedRows []XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow `json:"changedRows" api:"required"`
@@ -3607,10 +3607,10 @@ type XAnalysisViralScoreResponseAnalysisSummaryMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow struct {
@@ -3625,12 +3625,12 @@ type XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -3647,15 +3647,15 @@ type XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRowChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Posts by analysis outcome.
+// XAnalysisViralScoreResponseAnalysisSummaryRows holds posts by analysis outcome.
 type XAnalysisViralScoreResponseAnalysisSummaryRows struct {
 	Analyzed int64 `json:"analyzed" api:"required"`
 	Failed   int64 `json:"failed" api:"required"`
@@ -3670,10 +3670,10 @@ type XAnalysisViralScoreResponseAnalysisSummaryRows struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummarySourceDomain struct {
@@ -3688,21 +3688,21 @@ type XAnalysisViralScoreResponseAnalysisSummarySourceDomain struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -3716,13 +3716,13 @@ type XAnalysisViralScoreResponseAnalysisSummaryTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 analyzed post with its answers.
+// XAnalysisViralScoreResponseResult is 1 analyzed post with its answers.
 type XAnalysisViralScoreResponseResult struct {
 	// The answers in full, with their probabilities.
 	Analysis XAnalysisViralScoreResponseResultAnalysis `json:"analysis" api:"required"`
@@ -3742,7 +3742,7 @@ type XAnalysisViralScoreResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -3775,13 +3775,13 @@ type XAnalysisViralScoreResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The answers in full, with their probabilities.
+// XAnalysisViralScoreResponseResultAnalysis holds the answers in full, with their probabilities.
 type XAnalysisViralScoreResponseResultAnalysis struct {
 	// 1 answer per question, in question order.
 	Answers []XAnalysisViralScoreResponseResultAnalysisAnswer `json:"answers" api:"required"`
@@ -3804,13 +3804,13 @@ type XAnalysisViralScoreResponseResultAnalysis struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 question's answer. A probability has probability. A choice or score has value,
+// XAnalysisViralScoreResponseResultAnalysisAnswer is 1 question's answer. A probability has probability. A choice or score has value,
 // confidence & the probability of each category or level.
 type XAnalysisViralScoreResponseResultAnalysisAnswer struct {
 	QuestionID      string `json:"questionId" api:"required"`
@@ -3842,10 +3842,10 @@ type XAnalysisViralScoreResponseResultAnalysisAnswer struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseResultAnalysisAnswerType string
@@ -3875,26 +3875,26 @@ type XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) RawJSON() string {
 	return u.JSON.raw
 }
 
-func (r *XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// What the AI read beside the post's text.
+// XAnalysisViralScoreResponseResultAnalysisContextAvailability describes what the AI read beside the post's text.
 type XAnalysisViralScoreResponseResultAnalysisContextAvailability struct {
 	// Any of "text_blocks", "summary", "not_supplied".
 	Article XAnalysisViralScoreResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
@@ -3923,12 +3923,12 @@ type XAnalysisViralScoreResponseResultAnalysisContextAvailability struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseResultAnalysisContextAvailability) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XAnalysisViralScoreResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseResultAnalysisContextAvailabilityArticle string
@@ -3953,7 +3953,7 @@ const (
 	XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
 
-// truncated when the post was cut to fit.
+// XAnalysisViralScoreResponseResultAnalysisContextAvailabilityPostText is the type of [XAnalysisViralScoreResponseResultAnalysisContextAvailability.PostText]. truncated when the post was cut to fit.
 type XAnalysisViralScoreResponseResultAnalysisContextAvailabilityPostText string
 
 const (
@@ -3989,10 +3989,10 @@ type XAnalysisViralScoreResponseResultAnalysisQuestion struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisViralScoreResponseResultAnswersUnion contains all possible properties
@@ -4014,28 +4014,28 @@ type XAnalysisViralScoreResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisViralScoreResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisViralScoreResponseResultAnswersUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-func (u XAnalysisViralScoreResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XAnalysisViralScoreResponseResultAnswersUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAnalysisViralScoreResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisViralScoreResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XAnalysisViralScoreResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// How the post's answers compare with its row in baseline, as the AI Actors
+// XAnalysisViralScoreResponseResultMonitor describes how the post's answers compare with its row in baseline, as the AI Actors
 // compare a run with an earlier dataset.
 type XAnalysisViralScoreResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -4043,7 +4043,7 @@ type XAnalysisViralScoreResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -4062,10 +4062,10 @@ type XAnalysisViralScoreResponseResultMonitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseResultMonitorChange struct {
@@ -4082,13 +4082,13 @@ type XAnalysisViralScoreResponseResultMonitorChange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisViralScoreResponseResultMonitorStatus is the type of [XAnalysisViralScoreResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisViralScoreResponseResultMonitorStatus string
@@ -4102,7 +4102,7 @@ const (
 	XAnalysisViralScoreResponseResultMonitorStatusAnalysisUnavailable XAnalysisViralScoreResponseResultMonitorStatus = "analysis_unavailable"
 )
 
-// Only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
+// XAnalysisViralScoreResponseResultViralVerdict comes only from /x/analysis/viral-score. send_it from 70, edit_first from 40, else
 // sleep_on_it.
 type XAnalysisViralScoreResponseResultViralVerdict string
 
@@ -4112,7 +4112,7 @@ const (
 	XAnalysisViralScoreResponseResultViralVerdictSleepOnIt XAnalysisViralScoreResponseResultViralVerdict = "sleep_on_it"
 )
 
-// A post without an analysis. It costs nothing.
+// XAnalysisViralScoreResponseUnanalyzed is a post without an analysis. It costs nothing.
 type XAnalysisViralScoreResponseUnanalyzed struct {
 	// Post ID. Your own texts have the IDs text:1, text:2 & so on.
 	ID string `json:"id" api:"required"`
@@ -4133,10 +4133,10 @@ type XAnalysisViralScoreResponseUnanalyzed struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAnalysisViralScoreResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseUnanalyzedStatus string
@@ -4194,10 +4194,10 @@ func (r XAnalysisBrandParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
+// XAnalysisBrandParamsAnalysis holds analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
 // out for the route's own questions.
 type XAnalysisBrandParamsAnalysis struct {
 	// Posts analyzed at the same time.
@@ -4227,7 +4227,7 @@ func (r XAnalysisBrandParamsAnalysis) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4236,7 +4236,7 @@ func init() {
 	)
 }
 
-// A question the AI answers for each post. A choice picks 1 of 2 to 255
+// XAnalysisBrandParamsAnalysisQuestion is a question the AI answers for each post. A choice picks 1 of 2 to 255
 // categories, a score picks 1 of 2 or more ordered levels & a probability answers
 // yes or no.
 //
@@ -4265,7 +4265,7 @@ func (r XAnalysisBrandParamsAnalysisQuestion) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4274,7 +4274,7 @@ func init() {
 	)
 }
 
-// For a probability. What counts as yes & as no.
+// XAnalysisBrandParamsAnalysisQuestionCriteria is the type of [XAnalysisBrandParamsAnalysisQuestion.Criteria]. For a probability. What counts as yes & as no.
 //
 // The properties No, Yes are required.
 type XAnalysisBrandParamsAnalysisQuestionCriteria struct {
@@ -4288,10 +4288,10 @@ func (r XAnalysisBrandParamsAnalysisQuestionCriteria) MarshalJSON() (data []byte
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Name is required.
+// XAnalysisBrandParamsAnalysisTarget requires the property Name.
 type XAnalysisBrandParamsAnalysisTarget struct {
 	Name    string   `json:"name" api:"required"`
 	Aliases []string `json:"aliases,omitzero"`
@@ -4303,10 +4303,10 @@ func (r XAnalysisBrandParamsAnalysisTarget) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Answers is required.
+// XAnalysisBrandParamsBaseline requires the property Answers.
 type XAnalysisBrandParamsBaseline struct {
 	// The earlier answers by question ID.
 	Answers map[string]XAnalysisBrandParamsBaselineAnswersUnion `json:"answers,omitzero" api:"required"`
@@ -4323,10 +4323,10 @@ func (r XAnalysisBrandParamsBaseline) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisBrandParamsBaselineAnswersUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisBrandParamsBaselineAnswersUnion struct {
@@ -4339,10 +4339,10 @@ func (u XAnalysisBrandParamsBaselineAnswersUnion) MarshalJSON() ([]byte, error) 
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisBrandParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The earlier row's monitor, with its fingerprint.
+// XAnalysisBrandParamsBaselineMonitor is the earlier row's monitor, with its fingerprint.
 type XAnalysisBrandParamsBaselineMonitor struct {
 	ConfigurationFingerprint param.Opt[string] `json:"configurationFingerprint,omitzero"`
 	paramObj
@@ -4353,10 +4353,10 @@ func (r XAnalysisBrandParamsBaselineMonitor) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property ID is required.
+// XAnalysisBrandParamsBaselineTweet requires the property ID.
 type XAnalysisBrandParamsBaselineTweet struct {
 	ID string `json:"id" api:"required"`
 	paramObj
@@ -4367,10 +4367,10 @@ func (r XAnalysisBrandParamsBaselineTweet) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Search order. Default Latest.
+// XAnalysisBrandParamsQueryType is a search order. Default Latest.
 type XAnalysisBrandParamsQueryType string
 
 const (
@@ -4378,7 +4378,7 @@ const (
 	XAnalysisBrandParamsQueryTypeTop    XAnalysisBrandParamsQueryType = "Top"
 )
 
-// Only one field can be non-zero.
+// XAnalysisBrandParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisBrandParamsSinceTimeUnion struct {
@@ -4391,10 +4391,10 @@ func (u XAnalysisBrandParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisBrandParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisBrandParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisBrandParamsUntilTimeUnion struct {
@@ -4407,7 +4407,7 @@ func (u XAnalysisBrandParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisBrandParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisClassifyParams struct {
@@ -4458,10 +4458,10 @@ func (r XAnalysisClassifyParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
+// XAnalysisClassifyParamsAnalysis holds analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
 // out for the route's own questions.
 type XAnalysisClassifyParamsAnalysis struct {
 	// Posts analyzed at the same time.
@@ -4491,7 +4491,7 @@ func (r XAnalysisClassifyParamsAnalysis) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4500,7 +4500,7 @@ func init() {
 	)
 }
 
-// A question the AI answers for each post. A choice picks 1 of 2 to 255
+// XAnalysisClassifyParamsAnalysisQuestion is a question the AI answers for each post. A choice picks 1 of 2 to 255
 // categories, a score picks 1 of 2 or more ordered levels & a probability answers
 // yes or no.
 //
@@ -4529,7 +4529,7 @@ func (r XAnalysisClassifyParamsAnalysisQuestion) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4538,7 +4538,7 @@ func init() {
 	)
 }
 
-// For a probability. What counts as yes & as no.
+// XAnalysisClassifyParamsAnalysisQuestionCriteria is the type of [XAnalysisClassifyParamsAnalysisQuestion.Criteria]. For a probability. What counts as yes & as no.
 //
 // The properties No, Yes are required.
 type XAnalysisClassifyParamsAnalysisQuestionCriteria struct {
@@ -4552,10 +4552,10 @@ func (r XAnalysisClassifyParamsAnalysisQuestionCriteria) MarshalJSON() (data []b
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Name is required.
+// XAnalysisClassifyParamsAnalysisTarget requires the property Name.
 type XAnalysisClassifyParamsAnalysisTarget struct {
 	Name    string   `json:"name" api:"required"`
 	Aliases []string `json:"aliases,omitzero"`
@@ -4567,10 +4567,10 @@ func (r XAnalysisClassifyParamsAnalysisTarget) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Answers is required.
+// XAnalysisClassifyParamsBaseline requires the property Answers.
 type XAnalysisClassifyParamsBaseline struct {
 	// The earlier answers by question ID.
 	Answers map[string]XAnalysisClassifyParamsBaselineAnswersUnion `json:"answers,omitzero" api:"required"`
@@ -4587,10 +4587,10 @@ func (r XAnalysisClassifyParamsBaseline) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisClassifyParamsBaselineAnswersUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisClassifyParamsBaselineAnswersUnion struct {
@@ -4603,10 +4603,10 @@ func (u XAnalysisClassifyParamsBaselineAnswersUnion) MarshalJSON() ([]byte, erro
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisClassifyParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The earlier row's monitor, with its fingerprint.
+// XAnalysisClassifyParamsBaselineMonitor is the earlier row's monitor, with its fingerprint.
 type XAnalysisClassifyParamsBaselineMonitor struct {
 	ConfigurationFingerprint param.Opt[string] `json:"configurationFingerprint,omitzero"`
 	paramObj
@@ -4617,10 +4617,10 @@ func (r XAnalysisClassifyParamsBaselineMonitor) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property ID is required.
+// XAnalysisClassifyParamsBaselineTweet requires the property ID.
 type XAnalysisClassifyParamsBaselineTweet struct {
 	ID string `json:"id" api:"required"`
 	paramObj
@@ -4631,10 +4631,10 @@ func (r XAnalysisClassifyParamsBaselineTweet) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Search order. Default Latest.
+// XAnalysisClassifyParamsQueryType is a search order. Default Latest.
 type XAnalysisClassifyParamsQueryType string
 
 const (
@@ -4642,7 +4642,7 @@ const (
 	XAnalysisClassifyParamsQueryTypeTop    XAnalysisClassifyParamsQueryType = "Top"
 )
 
-// Only one field can be non-zero.
+// XAnalysisClassifyParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisClassifyParamsSinceTimeUnion struct {
@@ -4655,10 +4655,10 @@ func (u XAnalysisClassifyParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisClassifyParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisClassifyParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisClassifyParamsUntilTimeUnion struct {
@@ -4671,7 +4671,7 @@ func (u XAnalysisClassifyParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisClassifyParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisMarketSignalsParams struct {
@@ -4722,10 +4722,10 @@ func (r XAnalysisMarketSignalsParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
+// XAnalysisMarketSignalsParamsAnalysis holds analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
 // out for the route's own questions.
 type XAnalysisMarketSignalsParamsAnalysis struct {
 	// Posts analyzed at the same time.
@@ -4755,7 +4755,7 @@ func (r XAnalysisMarketSignalsParamsAnalysis) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4764,7 +4764,7 @@ func init() {
 	)
 }
 
-// A question the AI answers for each post. A choice picks 1 of 2 to 255
+// XAnalysisMarketSignalsParamsAnalysisQuestion is a question the AI answers for each post. A choice picks 1 of 2 to 255
 // categories, a score picks 1 of 2 or more ordered levels & a probability answers
 // yes or no.
 //
@@ -4793,7 +4793,7 @@ func (r XAnalysisMarketSignalsParamsAnalysisQuestion) MarshalJSON() (data []byte
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4802,7 +4802,7 @@ func init() {
 	)
 }
 
-// For a probability. What counts as yes & as no.
+// XAnalysisMarketSignalsParamsAnalysisQuestionCriteria is the type of [XAnalysisMarketSignalsParamsAnalysisQuestion.Criteria]. For a probability. What counts as yes & as no.
 //
 // The properties No, Yes are required.
 type XAnalysisMarketSignalsParamsAnalysisQuestionCriteria struct {
@@ -4816,10 +4816,10 @@ func (r XAnalysisMarketSignalsParamsAnalysisQuestionCriteria) MarshalJSON() (dat
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Name is required.
+// XAnalysisMarketSignalsParamsAnalysisTarget requires the property Name.
 type XAnalysisMarketSignalsParamsAnalysisTarget struct {
 	Name    string   `json:"name" api:"required"`
 	Aliases []string `json:"aliases,omitzero"`
@@ -4831,10 +4831,10 @@ func (r XAnalysisMarketSignalsParamsAnalysisTarget) MarshalJSON() (data []byte, 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Answers is required.
+// XAnalysisMarketSignalsParamsBaseline requires the property Answers.
 type XAnalysisMarketSignalsParamsBaseline struct {
 	// The earlier answers by question ID.
 	Answers map[string]XAnalysisMarketSignalsParamsBaselineAnswersUnion `json:"answers,omitzero" api:"required"`
@@ -4851,10 +4851,10 @@ func (r XAnalysisMarketSignalsParamsBaseline) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisMarketSignalsParamsBaselineAnswersUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisMarketSignalsParamsBaselineAnswersUnion struct {
@@ -4867,10 +4867,10 @@ func (u XAnalysisMarketSignalsParamsBaselineAnswersUnion) MarshalJSON() ([]byte,
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisMarketSignalsParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The earlier row's monitor, with its fingerprint.
+// XAnalysisMarketSignalsParamsBaselineMonitor is the earlier row's monitor, with its fingerprint.
 type XAnalysisMarketSignalsParamsBaselineMonitor struct {
 	ConfigurationFingerprint param.Opt[string] `json:"configurationFingerprint,omitzero"`
 	paramObj
@@ -4881,10 +4881,10 @@ func (r XAnalysisMarketSignalsParamsBaselineMonitor) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property ID is required.
+// XAnalysisMarketSignalsParamsBaselineTweet requires the property ID.
 type XAnalysisMarketSignalsParamsBaselineTweet struct {
 	ID string `json:"id" api:"required"`
 	paramObj
@@ -4895,10 +4895,10 @@ func (r XAnalysisMarketSignalsParamsBaselineTweet) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Search order. Default Latest.
+// XAnalysisMarketSignalsParamsQueryType is a search order. Default Latest.
 type XAnalysisMarketSignalsParamsQueryType string
 
 const (
@@ -4906,7 +4906,7 @@ const (
 	XAnalysisMarketSignalsParamsQueryTypeTop    XAnalysisMarketSignalsParamsQueryType = "Top"
 )
 
-// Only one field can be non-zero.
+// XAnalysisMarketSignalsParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisMarketSignalsParamsSinceTimeUnion struct {
@@ -4919,10 +4919,10 @@ func (u XAnalysisMarketSignalsParamsSinceTimeUnion) MarshalJSON() ([]byte, error
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisMarketSignalsParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisMarketSignalsParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisMarketSignalsParamsUntilTimeUnion struct {
@@ -4935,7 +4935,7 @@ func (u XAnalysisMarketSignalsParamsUntilTimeUnion) MarshalJSON() ([]byte, error
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisMarketSignalsParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisNewsParams struct {
@@ -4986,10 +4986,10 @@ func (r XAnalysisNewsParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
+// XAnalysisNewsParamsAnalysis holds analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
 // out for the route's own questions.
 type XAnalysisNewsParamsAnalysis struct {
 	// Posts analyzed at the same time.
@@ -5019,7 +5019,7 @@ func (r XAnalysisNewsParamsAnalysis) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5028,7 +5028,7 @@ func init() {
 	)
 }
 
-// A question the AI answers for each post. A choice picks 1 of 2 to 255
+// XAnalysisNewsParamsAnalysisQuestion is a question the AI answers for each post. A choice picks 1 of 2 to 255
 // categories, a score picks 1 of 2 or more ordered levels & a probability answers
 // yes or no.
 //
@@ -5057,7 +5057,7 @@ func (r XAnalysisNewsParamsAnalysisQuestion) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5066,7 +5066,7 @@ func init() {
 	)
 }
 
-// For a probability. What counts as yes & as no.
+// XAnalysisNewsParamsAnalysisQuestionCriteria is the type of [XAnalysisNewsParamsAnalysisQuestion.Criteria]. For a probability. What counts as yes & as no.
 //
 // The properties No, Yes are required.
 type XAnalysisNewsParamsAnalysisQuestionCriteria struct {
@@ -5080,10 +5080,10 @@ func (r XAnalysisNewsParamsAnalysisQuestionCriteria) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Name is required.
+// XAnalysisNewsParamsAnalysisTarget requires the property Name.
 type XAnalysisNewsParamsAnalysisTarget struct {
 	Name    string   `json:"name" api:"required"`
 	Aliases []string `json:"aliases,omitzero"`
@@ -5095,10 +5095,10 @@ func (r XAnalysisNewsParamsAnalysisTarget) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Answers is required.
+// XAnalysisNewsParamsBaseline requires the property Answers.
 type XAnalysisNewsParamsBaseline struct {
 	// The earlier answers by question ID.
 	Answers map[string]XAnalysisNewsParamsBaselineAnswersUnion `json:"answers,omitzero" api:"required"`
@@ -5115,10 +5115,10 @@ func (r XAnalysisNewsParamsBaseline) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisNewsParamsBaselineAnswersUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisNewsParamsBaselineAnswersUnion struct {
@@ -5131,10 +5131,10 @@ func (u XAnalysisNewsParamsBaselineAnswersUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisNewsParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The earlier row's monitor, with its fingerprint.
+// XAnalysisNewsParamsBaselineMonitor is the earlier row's monitor, with its fingerprint.
 type XAnalysisNewsParamsBaselineMonitor struct {
 	ConfigurationFingerprint param.Opt[string] `json:"configurationFingerprint,omitzero"`
 	paramObj
@@ -5145,10 +5145,10 @@ func (r XAnalysisNewsParamsBaselineMonitor) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property ID is required.
+// XAnalysisNewsParamsBaselineTweet requires the property ID.
 type XAnalysisNewsParamsBaselineTweet struct {
 	ID string `json:"id" api:"required"`
 	paramObj
@@ -5159,10 +5159,10 @@ func (r XAnalysisNewsParamsBaselineTweet) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Search order. Default Latest.
+// XAnalysisNewsParamsQueryType is a search order. Default Latest.
 type XAnalysisNewsParamsQueryType string
 
 const (
@@ -5170,7 +5170,7 @@ const (
 	XAnalysisNewsParamsQueryTypeTop    XAnalysisNewsParamsQueryType = "Top"
 )
 
-// Only one field can be non-zero.
+// XAnalysisNewsParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisNewsParamsSinceTimeUnion struct {
@@ -5183,10 +5183,10 @@ func (u XAnalysisNewsParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisNewsParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisNewsParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisNewsParamsUntilTimeUnion struct {
@@ -5199,7 +5199,7 @@ func (u XAnalysisNewsParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisNewsParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisSentimentParams struct {
@@ -5250,10 +5250,10 @@ func (r XAnalysisSentimentParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
+// XAnalysisSentimentParamsAnalysis holds analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
 // out for the route's own questions.
 type XAnalysisSentimentParamsAnalysis struct {
 	// Posts analyzed at the same time.
@@ -5283,7 +5283,7 @@ func (r XAnalysisSentimentParamsAnalysis) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5292,7 +5292,7 @@ func init() {
 	)
 }
 
-// A question the AI answers for each post. A choice picks 1 of 2 to 255
+// XAnalysisSentimentParamsAnalysisQuestion is a question the AI answers for each post. A choice picks 1 of 2 to 255
 // categories, a score picks 1 of 2 or more ordered levels & a probability answers
 // yes or no.
 //
@@ -5321,7 +5321,7 @@ func (r XAnalysisSentimentParamsAnalysisQuestion) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5330,7 +5330,7 @@ func init() {
 	)
 }
 
-// For a probability. What counts as yes & as no.
+// XAnalysisSentimentParamsAnalysisQuestionCriteria is the type of [XAnalysisSentimentParamsAnalysisQuestion.Criteria]. For a probability. What counts as yes & as no.
 //
 // The properties No, Yes are required.
 type XAnalysisSentimentParamsAnalysisQuestionCriteria struct {
@@ -5344,10 +5344,10 @@ func (r XAnalysisSentimentParamsAnalysisQuestionCriteria) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Name is required.
+// XAnalysisSentimentParamsAnalysisTarget requires the property Name.
 type XAnalysisSentimentParamsAnalysisTarget struct {
 	Name    string   `json:"name" api:"required"`
 	Aliases []string `json:"aliases,omitzero"`
@@ -5359,10 +5359,10 @@ func (r XAnalysisSentimentParamsAnalysisTarget) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Answers is required.
+// XAnalysisSentimentParamsBaseline requires the property Answers.
 type XAnalysisSentimentParamsBaseline struct {
 	// The earlier answers by question ID.
 	Answers map[string]XAnalysisSentimentParamsBaselineAnswersUnion `json:"answers,omitzero" api:"required"`
@@ -5379,10 +5379,10 @@ func (r XAnalysisSentimentParamsBaseline) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisSentimentParamsBaselineAnswersUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisSentimentParamsBaselineAnswersUnion struct {
@@ -5395,10 +5395,10 @@ func (u XAnalysisSentimentParamsBaselineAnswersUnion) MarshalJSON() ([]byte, err
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisSentimentParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The earlier row's monitor, with its fingerprint.
+// XAnalysisSentimentParamsBaselineMonitor is the earlier row's monitor, with its fingerprint.
 type XAnalysisSentimentParamsBaselineMonitor struct {
 	ConfigurationFingerprint param.Opt[string] `json:"configurationFingerprint,omitzero"`
 	paramObj
@@ -5409,10 +5409,10 @@ func (r XAnalysisSentimentParamsBaselineMonitor) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property ID is required.
+// XAnalysisSentimentParamsBaselineTweet requires the property ID.
 type XAnalysisSentimentParamsBaselineTweet struct {
 	ID string `json:"id" api:"required"`
 	paramObj
@@ -5423,10 +5423,10 @@ func (r XAnalysisSentimentParamsBaselineTweet) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Search order. Default Latest.
+// XAnalysisSentimentParamsQueryType is a search order. Default Latest.
 type XAnalysisSentimentParamsQueryType string
 
 const (
@@ -5434,7 +5434,7 @@ const (
 	XAnalysisSentimentParamsQueryTypeTop    XAnalysisSentimentParamsQueryType = "Top"
 )
 
-// Only one field can be non-zero.
+// XAnalysisSentimentParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisSentimentParamsSinceTimeUnion struct {
@@ -5447,10 +5447,10 @@ func (u XAnalysisSentimentParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisSentimentParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisSentimentParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisSentimentParamsUntilTimeUnion struct {
@@ -5463,7 +5463,7 @@ func (u XAnalysisSentimentParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisSentimentParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisViralScoreParams struct {
@@ -5514,10 +5514,10 @@ func (r XAnalysisViralScoreParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
+// XAnalysisViralScoreParamsAnalysis holds analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
 // out for the route's own questions.
 type XAnalysisViralScoreParamsAnalysis struct {
 	// Posts analyzed at the same time.
@@ -5547,7 +5547,7 @@ func (r XAnalysisViralScoreParamsAnalysis) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5556,7 +5556,7 @@ func init() {
 	)
 }
 
-// A question the AI answers for each post. A choice picks 1 of 2 to 255
+// XAnalysisViralScoreParamsAnalysisQuestion is a question the AI answers for each post. A choice picks 1 of 2 to 255
 // categories, a score picks 1 of 2 or more ordered levels & a probability answers
 // yes or no.
 //
@@ -5585,7 +5585,7 @@ func (r XAnalysisViralScoreParamsAnalysisQuestion) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5594,7 +5594,7 @@ func init() {
 	)
 }
 
-// For a probability. What counts as yes & as no.
+// XAnalysisViralScoreParamsAnalysisQuestionCriteria is the type of [XAnalysisViralScoreParamsAnalysisQuestion.Criteria]. For a probability. What counts as yes & as no.
 //
 // The properties No, Yes are required.
 type XAnalysisViralScoreParamsAnalysisQuestionCriteria struct {
@@ -5608,10 +5608,10 @@ func (r XAnalysisViralScoreParamsAnalysisQuestionCriteria) MarshalJSON() (data [
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Name is required.
+// XAnalysisViralScoreParamsAnalysisTarget requires the property Name.
 type XAnalysisViralScoreParamsAnalysisTarget struct {
 	Name    string   `json:"name" api:"required"`
 	Aliases []string `json:"aliases,omitzero"`
@@ -5623,10 +5623,10 @@ func (r XAnalysisViralScoreParamsAnalysisTarget) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Answers is required.
+// XAnalysisViralScoreParamsBaseline requires the property Answers.
 type XAnalysisViralScoreParamsBaseline struct {
 	// The earlier answers by question ID.
 	Answers map[string]XAnalysisViralScoreParamsBaselineAnswersUnion `json:"answers,omitzero" api:"required"`
@@ -5643,10 +5643,10 @@ func (r XAnalysisViralScoreParamsBaseline) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisViralScoreParamsBaselineAnswersUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisViralScoreParamsBaselineAnswersUnion struct {
@@ -5659,10 +5659,10 @@ func (u XAnalysisViralScoreParamsBaselineAnswersUnion) MarshalJSON() ([]byte, er
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisViralScoreParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The earlier row's monitor, with its fingerprint.
+// XAnalysisViralScoreParamsBaselineMonitor is the earlier row's monitor, with its fingerprint.
 type XAnalysisViralScoreParamsBaselineMonitor struct {
 	ConfigurationFingerprint param.Opt[string] `json:"configurationFingerprint,omitzero"`
 	paramObj
@@ -5673,10 +5673,10 @@ func (r XAnalysisViralScoreParamsBaselineMonitor) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property ID is required.
+// XAnalysisViralScoreParamsBaselineTweet requires the property ID.
 type XAnalysisViralScoreParamsBaselineTweet struct {
 	ID string `json:"id" api:"required"`
 	paramObj
@@ -5687,10 +5687,10 @@ func (r XAnalysisViralScoreParamsBaselineTweet) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Search order. Default Latest.
+// XAnalysisViralScoreParamsQueryType is a search order. Default Latest.
 type XAnalysisViralScoreParamsQueryType string
 
 const (
@@ -5698,7 +5698,7 @@ const (
 	XAnalysisViralScoreParamsQueryTypeTop    XAnalysisViralScoreParamsQueryType = "Top"
 )
 
-// Only one field can be non-zero.
+// XAnalysisViralScoreParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisViralScoreParamsSinceTimeUnion struct {
@@ -5711,10 +5711,10 @@ func (u XAnalysisViralScoreParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisViralScoreParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Only one field can be non-zero.
+// XAnalysisViralScoreParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type XAnalysisViralScoreParamsUntilTimeUnion struct {
@@ -5727,5 +5727,5 @@ func (u XAnalysisViralScoreParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisViralScoreParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }

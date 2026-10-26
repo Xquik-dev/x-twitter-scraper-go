@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package option holds the request options that configure the client or a
+// single request, such as the API key, base URL, retries, headers and
+// middleware.
 package option
 
 import (
@@ -169,7 +172,7 @@ func WithQueryDel(key string) RequestOption {
 // The key accepts a string as defined by the [sjson format].
 //
 // [sjson format]: https://github.com/tidwall/sjson
-func WithJSONSet(key string, value any) RequestOption {
+func WithJSONSet[V any](key string, value V) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) (err error) {
 		var b []byte
 
@@ -215,9 +218,10 @@ func WithJSONDel(key string) RequestOption {
 
 // WithResponseBodyInto returns a RequestOption that overwrites the deserialization target with
 // the given destination. If provided, we don't deserialize into the default struct.
-func WithResponseBodyInto(dst any) RequestOption {
+func WithResponseBodyInto[D any](dst *D) RequestOption {
+	into := requestconfig.Into(dst)
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.ResponseBodyInto = dst
+		r.ResponseBodyInto = into
 		return nil
 	})
 }
@@ -230,23 +234,12 @@ func WithResponseInto(dst **http.Response) RequestOption {
 	})
 }
 
-// WithRequestBody returns a RequestOption that provides a custom serialized body with the given
+// WithRequestBody returns a RequestOption that sends body as is with the given
 // content type.
-//
-// body accepts an io.Reader or raw []bytes.
-func WithRequestBody(contentType string, body any) RequestOption {
+func WithRequestBody(contentType string, body io.Reader) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		if reader, ok := body.(io.Reader); ok {
-			r.Body = reader
-			return r.Apply(WithHeader("Content-Type", contentType))
-		}
-
-		if b, ok := body.([]byte); ok {
-			r.Body = bytes.NewBuffer(b)
-			return r.Apply(WithHeader("Content-Type", contentType))
-		}
-
-		return fmt.Errorf("body must be a byte slice or implement io.Reader")
+		r.Body = body
+		return r.Apply(WithHeader("Content-Type", contentType))
 	})
 }
 

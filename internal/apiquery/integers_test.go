@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package apiquery
@@ -6,7 +7,7 @@ package apiquery
 import "testing"
 
 func TestEightBitIntegers(t *testing.T) {
-	values, err := Marshal(map[string]any{"max": uint8(255), "min": int8(-128), "zero": int8(0)})
+	values, err := Marshal(queryMap{"max": queryUint8(255), "min": queryInt8(-128), "zero": queryInt8(0)})
 	if err != nil {
 		t.Fatal(err)
 	}

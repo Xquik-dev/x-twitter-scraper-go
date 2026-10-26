@@ -17,7 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// Account info and settings
+// AccountService covers account info and settings.
 //
 // AccountService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -37,7 +37,7 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 	return
 }
 
-// Returns plan, credit, monitoring, and account settings for the authenticated
+// Get returns plan, credit, monitoring, and account settings for the authenticated
 // user.
 func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) (res *AccountGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -46,7 +46,7 @@ func (r *AccountService) Get(ctx context.Context, opts ...option.RequestOption) 
 	return res, err
 }
 
-// Links an X username to the authenticated Xquik account.
+// SetXUsername links an X username to the authenticated Xquik account.
 func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsernameParams, opts ...option.RequestOption) (res *AccountSetXUsernameResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "account/x-identity"
@@ -54,7 +54,7 @@ func (r *AccountService) SetXUsername(ctx context.Context, body AccountSetXUsern
 	return res, err
 }
 
-// Changes the locale used for account responses and notifications.
+// UpdateLocale changes the locale used for account responses and notifications.
 func (r *AccountService) UpdateLocale(ctx context.Context, body AccountUpdateLocaleParams, opts ...option.RequestOption) (res *AccountUpdateLocaleResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "account"
@@ -92,13 +92,13 @@ type AccountGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r AccountGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Subscription state without billing provider identifiers.
+// AccountGetResponseSubscription holds subscription state without billing provider identifiers.
 type AccountGetResponseSubscription struct {
 	// Any of "none", "active", "past_due", "canceling", "incomplete".
 	Status AccountGetResponseSubscriptionStatus `json:"status" api:"required"`
@@ -118,10 +118,10 @@ type AccountGetResponseSubscription struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r AccountGetResponseSubscription) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponseSubscription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountGetResponseSubscriptionStatus string
@@ -171,10 +171,10 @@ type AccountGetResponseMonitorBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r AccountGetResponseMonitorBilling) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponseMonitorBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountGetResponsePlan string
@@ -214,10 +214,10 @@ type AccountGetResponseCreditInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r AccountGetResponseCreditInfo) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponseCreditInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountSetXUsernameResponse struct {
@@ -232,10 +232,10 @@ type AccountSetXUsernameResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r AccountSetXUsernameResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountSetXUsernameResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountUpdateLocaleResponse struct {
@@ -252,10 +252,10 @@ type AccountUpdateLocaleResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r AccountUpdateLocaleResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountUpdateLocaleResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountSetXUsernameParams struct {
@@ -269,7 +269,7 @@ func (r AccountSetXUsernameParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AccountSetXUsernameParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type AccountUpdateLocaleParams struct {
@@ -283,7 +283,7 @@ func (r AccountUpdateLocaleParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AccountUpdateLocaleParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type AccountUpdateLocaleParamsLocale string

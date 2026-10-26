@@ -118,14 +118,29 @@ func (r sdkReader) unresolved(name string) *shape {
 	return opaque(unknown)
 }
 
-func (r sdkReader) shape(pkg string, expression ast.Expr, tag string, stack []string) *shape {
+func (r sdkReader) untyped(expression ast.Expr) *shape {
+	r.problems[fmt.Sprintf("The field check rejects the Go type %s. Use shared.PublicMetadata for a free-form object and json.RawMessage for a free-form value.", types.ExprString(expression))] = true
+	return opaque(unknown)
+}
+
+func isEmptyInterface(expression ast.Expr) bool {
 	switch typed := expression.(type) {
 	case *ast.Ident:
-		switch {
-		case slices.Contains(scalarTypes, typed.Name):
+		return typed.Name == "any"
+	case *ast.InterfaceType:
+		return typed.Methods.NumFields() == 0
+	}
+	return false
+}
+
+func (r sdkReader) shape(pkg string, expression ast.Expr, tag string, stack []string) *shape {
+	if isEmptyInterface(expression) {
+		return r.untyped(expression)
+	}
+	switch typed := expression.(type) {
+	case *ast.Ident:
+		if slices.Contains(scalarTypes, typed.Name) {
 			return scalarOf(nil)
-		case typed.Name == "any":
-			return opaque(unknown)
 		}
 		return r.named(pkg, typed.Name, tag, stack)
 	case *ast.SelectorExpr:
@@ -137,12 +152,17 @@ func (r sdkReader) shape(pkg string, expression ast.Expr, tag string, stack []st
 			return r.named(owner, typed.Sel.Name, tag, stack)
 		case owner == "param" && slices.Contains(paramMarkers, typed.Sel.Name):
 			return objectOf(map[string]field{})
+		case owner == "json" && typed.Sel.Name == "RawMessage":
+			return opaque(unknown)
 		}
 	case *ast.StarExpr:
 		return r.shape(pkg, typed.X, tag, stack)
 	case *ast.ArrayType:
 		return &shape{kind: array, items: r.shape(pkg, typed.Elt, tag, stack)}
 	case *ast.MapType:
+		if isEmptyInterface(typed.Value) {
+			return r.untyped(expression)
+		}
 		return opaque(free)
 	case *ast.InterfaceType:
 		return opaque(unknown)

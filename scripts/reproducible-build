@@ -12,4 +12,13 @@ source scripts/temp-paths
 temp_path workspace archive
 
 echo "==> Verifying reproducible Go module archives"
-TMPDIR="$workspace" go run ./cmd/reproducible-build "$@"
+if (($# > 1)); then
+  echo 'usage: ./scripts/reproducible-build [output.zip]' >&2
+  exit 2
+fi
+if (($# == 1)); then
+  TMPDIR="$workspace" go run ./cmd/reproducible-build --archive > "$workspace/module.zip"
+  mv "$workspace/module.zip" "$1"
+else
+  TMPDIR="$workspace" go run ./cmd/reproducible-build
+fi

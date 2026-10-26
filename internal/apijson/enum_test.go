@@ -21,7 +21,7 @@ type EnumStruct struct {
 }
 
 func (o *EnumStruct) UnmarshalJSON(data []byte) error {
-	return UnmarshalRoot(data, o)
+	return UnmarshalRoot(data, o, nil)
 }
 
 func init() {
@@ -78,7 +78,7 @@ func TestEnumStructStringValidator(t *testing.T) {
 		var dst EnumStruct
 
 		dec := decoderBuilder{root: true}
-		exactness, err := dec.unmarshalWithExactness([]byte(raw), &dst)
+		exactness, err := dec.unmarshalWithExactness([]byte(raw), reflect.ValueOf(&dst).Elem())
 
 		if err != nil || !reflect.DeepEqual(dst, expected.EnumStruct) {
 			t.Fatalf("decoded %#v, error %v; expected %#v", dst, err, expected.EnumStruct)

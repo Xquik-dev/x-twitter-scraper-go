@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package param holds the types that build request params, such as [Opt] for an
+// optional field and [Null] for an explicit null.
 package param
 
 import (
@@ -26,7 +28,7 @@ func NullStruct[T ParamStruct, PtrT InferPtr[T]]() T {
 	return *pt
 }
 
-// Override replaces the value of a struct with any type.
+// Override replaces the value of a struct with raw JSON.
 //
 // Only the first type parameter should be provided,
 // the type PtrT will be inferred.
@@ -36,7 +38,7 @@ func NullStruct[T ParamStruct, PtrT InferPtr[T]]() T {
 // The public fields of the returned struct T will be unset.
 //
 // To override a specific field in a struct, use its [SetExtraFields] method.
-func Override[T ParamStruct, PtrT InferPtr[T]](v any) T {
+func Override[T ParamStruct, PtrT InferPtr[T]](v json.RawMessage) T {
 	var t T
 	pt := PtrT(&t)
 	pt.setMetadata(v)
@@ -62,14 +64,15 @@ func SetJSON(rawJSON []byte, ptr anyParamStruct) {
 // the field will be omitted from the request.
 //
 // If v is set explicitly to the JSON value "null", IsOmitted returns false.
-func IsOmitted(v any) bool {
-	if v == nil {
+func IsOmitted[T any](v T) bool {
+	value := reflect.ValueOf(v)
+	if !value.IsValid() {
 		return false
 	}
-	if o, ok := v.(Optional); ok {
+	if o, ok := reflect.TypeAssert[Optional](value); ok {
 		return o.isZero()
 	}
-	return reflect.ValueOf(v).IsZero()
+	return value.IsZero()
 }
 
 // IsNull returns true if v was set to the JSON value null.
@@ -79,7 +82,7 @@ func IsOmitted(v any) bool {
 //
 // IsNull returns false if the value is omitted.
 func IsNull[T any](v T) bool {
-	if nullable, ok := any(v).(ParamNullable); ok {
+	if nullable, ok := reflect.TypeAssert[ParamNullable](reflect.ValueOf(&v).Elem()); ok {
 		return nullable.null()
 	}
 
@@ -101,18 +104,18 @@ type ParamNullable interface {
 // used in API parameters, by convention these usually end in
 // "Params" or "Param".
 type ParamStruct interface {
-	Overrides() (any, bool)
+	Overrides() (json.RawMessage, bool)
 	null() bool
-	extraFields() map[string]any
+	extraFields() map[string]json.RawMessage
 }
 
 type anyParamStruct interface {
-	setMetadata(any)
+	setMetadata(json.RawMessage)
 }
 
-// This is an implementation detail and should never be explicitly set.
+// InferPtr is an implementation detail and should never be explicitly set.
 type InferPtr[T ParamStruct] interface {
-	setMetadata(any)
+	setMetadata(json.RawMessage)
 	*T
 }
 
@@ -124,24 +127,27 @@ type APIUnion struct{ metadata }
 
 // Overrides returns the value of the struct when it is created with
 // [Override], the second argument helps differentiate an explicit null.
-func (m metadata) Overrides() (any, bool) {
-	if _, ok := m.any.(metadataExtraFields); ok {
-		return nil, false
+func (m metadata) Overrides() (json.RawMessage, bool) {
+	switch value := m.value.(type) {
+	case metadataNull:
+		return json.RawMessage("null"), true
+	case metadataJSON:
+		return json.RawMessage(value), true
 	}
-	return m.any, m.any != nil
+	return nil, false
 }
 
 // ExtraFields returns the extra fields added to the JSON object.
-func (m metadata) ExtraFields() map[string]any {
-	if extras, ok := m.any.(metadataExtraFields); ok {
+func (m metadata) ExtraFields() map[string]json.RawMessage {
+	if extras, ok := m.value.(metadataExtraFields); ok {
 		return extras
 	}
 	return nil
 }
 
 // Omit can be used with [metadata.SetExtraFields] to ensure that a
-// required field is omitted.
-const Omit forceOmit = -1
+// required field is omitted. A nil [json.RawMessage] sends null instead.
+var Omit = json.RawMessage("\x00omit")
 
 // SetExtraFields adds extra fields to the JSON object.
 //
@@ -150,36 +156,42 @@ const Omit forceOmit = -1
 //
 // To intentionally omit a required field, use [Omit].
 //
-//	foo.SetExtraFields(map[string]any{"bar": Omit})
+//	foo.SetExtraFields(map[string]json.RawMessage{"bar": param.Omit})
 //
 // If the struct already contains the field ExtraFields, then this
 // method will have no effect.
-func (m *metadata) SetExtraFields(extraFields map[string]any) {
-	m.any = metadataExtraFields(extraFields)
+func (m *metadata) SetExtraFields(extraFields map[string]json.RawMessage) {
+	m.value = metadataExtraFields(extraFields)
 }
 
-func (m metadata) extraFields() map[string]any { return m.ExtraFields() }
+func (m metadata) extraFields() map[string]json.RawMessage { return m.ExtraFields() }
 
 func (m metadata) null() bool {
-	if _, ok := m.any.(metadataNull); ok {
+	switch value := m.value.(type) {
+	case metadataNull:
 		return true
+	case metadataJSON:
+		return string(value) == "null"
 	}
-
-	if msg, ok := m.any.(json.RawMessage); ok {
-		return string(msg) == "null"
-	}
-
 	return false
 }
 
-type metadata struct{ any }
-type metadataNull struct{}
-type metadataExtraFields map[string]any
+type metadata struct{ value metadataValue }
 
-func (m *metadata) setMetadata(override any) {
+type metadataValue interface{ isMetadata() }
+
+type metadataNull struct{}
+type metadataExtraFields map[string]json.RawMessage
+type metadataJSON json.RawMessage
+
+func (metadataNull) isMetadata()        {}
+func (metadataExtraFields) isMetadata() {}
+func (metadataJSON) isMetadata()        {}
+
+func (m *metadata) setMetadata(override json.RawMessage) {
 	if override == nil {
-		m.any = metadataNull{}
+		m.value = metadataNull{}
 		return
 	}
-	m.any = override
+	m.value = metadataJSON(override)
 }

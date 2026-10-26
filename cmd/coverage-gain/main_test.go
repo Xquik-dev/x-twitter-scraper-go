@@ -1,10 +1,12 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package main
 
 import (
 	"encoding/json"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -21,12 +23,21 @@ func TestRunAgainstGitParent(t *testing.T) {
 	if err := run(directory); err == nil {
 		t.Fatal("non-repository passed")
 	}
-	gitCommand := func(args ...string) {
+	gitCommand := func(command *exec.Cmd) {
 		t.Helper()
-		command := exec.Command("git", append([]string{"-c", "user.name=Coverage test", "-c", "user.email=coverage@example.test", "-c", "commit.gpgsign=false"}, args...)...)
 		if data, err := command.CombinedOutput(); err != nil {
-			t.Fatalf("git %v: %v\n%s", args, err, data)
+			t.Fatalf("%v: %v\n%s", command.Args, err, data)
 		}
+	}
+	commit := func(message string) {
+		t.Helper()
+		command := exec.Command("git", "-c", "user.name=Coverage test", "-c", "user.email=coverage@example.test", "-c", "commit.gpgsign=false", "commit", "-q", "--file=-")
+		command.Stdin = strings.NewReader(message)
+		gitCommand(command)
+	}
+	pathspec := func(command *exec.Cmd, path string) *exec.Cmd {
+		command.Stdin = strings.NewReader(path)
+		return command
 	}
 	write := func(path, data string) {
 		t.Helper()
@@ -34,22 +45,22 @@ func TestRunAgainstGitParent(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if err := checkLOC("HEAD"); err == nil {
+	if err := checkLOC("HEAD", true); err == nil {
 		t.Fatal("LOC check outside Git passed")
 	}
-	gitCommand("init", "-q", "--initial-branch=main")
+	gitCommand(exec.Command("git", "init", "-q", "--initial-branch=main"))
 	if err := run(directory); err == nil {
 		t.Fatal("repository without parent passed")
 	}
 	const original = "package fixture\nconst one = 1\nconst two = 2\n"
 	write("fixture.go", original)
-	gitCommand("add", "fixture.go")
-	gitCommand("commit", "-qm", "parent")
+	gitCommand(exec.Command("git", "add", "fixture.go"))
+	commit("parent")
 	write("fixture.go", "package fixture\n")
 	if err := run(directory); err == nil || !strings.Contains(err.Error(), "read verified coverage") {
 		t.Fatalf("missing baseline error = %v", err)
 	}
-	parent, err := git("rev-parse", "HEAD")
+	parent, err := git(exec.Command("git", "rev-parse", "HEAD"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +92,7 @@ func TestRunAgainstGitParent(t *testing.T) {
 	if err := run(directory); err != nil {
 		t.Fatal(err)
 	}
-	report, err := os.ReadFile(filepath.Join(directory, "summary.json"))
+	report, err := fs.ReadFile(os.DirFS(directory), "summary.json")
 	if err != nil || !strings.Contains(string(report), `"Covered": 1`) {
 		t.Fatalf("summary = %s, %v", report, err)
 	}
@@ -104,22 +115,22 @@ func TestRunAgainstGitParent(t *testing.T) {
 			if test.extra != "" {
 				write(test.extra, original)
 				if !test.untracked {
-					gitCommand("add", "--intent-to-add", test.extra)
+					gitCommand(pathspec(exec.Command("git", "add", "--intent-to-add", "--pathspec-from-file=-"), test.extra))
 				}
 				t.Cleanup(func() {
-					gitCommand("reset", "-q", "--", test.extra)
+					gitCommand(pathspec(exec.Command("git", "reset", "-q", "--pathspec-from-file=-"), test.extra))
 					if err := os.Remove(test.extra); err != nil {
 						t.Fatal(err)
 					}
 				})
 			}
-			err := checkLOC(parent)
+			err := checkLOC(parent, true)
 			if test.failure == "" && err != nil || test.failure != "" && (err == nil || !strings.Contains(err.Error(), test.failure)) {
 				t.Fatalf("LOC error = %v, want %q", err, test.failure)
 			}
 		})
 	}
-	if err := checkLOC("missing-parent"); err == nil {
+	if err := checkLOC("missing-parent", false); err == nil {
 		t.Fatal("missing parent passed")
 	}
 	write("fixture.go", "package fixture\n")
@@ -128,8 +139,8 @@ func TestRunAgainstGitParent(t *testing.T) {
 		t.Fatalf("coverage regression error = %v", err)
 	}
 	write(filepath.Join(directory, "coverage.xml"), xml)
-	gitCommand("add", "fixture.go")
-	gitCommand("commit", "-qm", "candidate")
+	gitCommand(exec.Command("git", "add", "fixture.go"))
+	commit("candidate")
 	if err := run(directory); err != nil {
 		t.Fatalf("clean candidate must compare its parent: %v", err)
 	}
@@ -259,7 +270,7 @@ func TestCLIRecordsAndCompares(t *testing.T) {
 			t.Fatalf("%v: %v\n%s", command.Args, err, data)
 		}
 	}
-	parent, err := git("rev-parse", "HEAD^")
+	parent, err := git(exec.Command("git", "rev-parse", "HEAD^"))
 	if err != nil {
 		t.Fatal(err)
 	}

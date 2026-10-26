@@ -77,8 +77,7 @@ The recheck date falls within 30 days. The entry blocks again on that date.
 The list is empty today.
 
 The source scan, `scripts/source-security`, runs gosec over every package and test.
-Every finding must match a reviewed record in `security/source-reviews.md` and `security/source-reviews.json`.
-A new finding, or a reviewed one whose code or line moved, fails the run.
+Any finding fails the run.
 
 Run `bin/check-local` before requesting review.
 Run `scripts/fuzz` as well when you change `internal/apiform`.

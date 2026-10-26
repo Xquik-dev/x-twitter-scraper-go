@@ -13,7 +13,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
-// Support ticket management
+// SupportAttachmentService covers support ticket management.
 //
 // SupportAttachmentService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -33,7 +33,7 @@ func NewSupportAttachmentService(opts ...option.RequestOption) (r SupportAttachm
 	return
 }
 
-// Streams an authenticated user's support image or video. Video requests support
+// Download streams an authenticated user's support image or video. Video requests support
 // one standard byte range for seeking and resumable playback.
 func (r *SupportAttachmentService) Download(ctx context.Context, id string, query SupportAttachmentDownloadParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	if !param.IsOmitted(query.Range) {

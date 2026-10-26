@@ -45,7 +45,7 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	return
 }
 
-// Returns one public profile with counts and verification details.
+// Get returns one public profile with counts and verification details.
 func (r *XUserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.UserProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -57,7 +57,7 @@ func (r *XUserService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Returns the accounts an organization lists as its affiliates, in X's order. An
+// GetAffiliates returns the accounts an organization lists as its affiliates, in X's order. An
 // account without affiliates returns an empty list.
 func (r *XUserService) GetAffiliates(ctx context.Context, id string, query XUserGetAffiliatesParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -70,7 +70,7 @@ func (r *XUserService) GetAffiliates(ctx context.Context, id string, query XUser
 	return res, err
 }
 
-// Returns the posts on the user's Articles tab, newest first. Each post's
+// GetArticles returns the posts on the user's Articles tab, newest first. Each post's
 // `article` holds the Article's ID, title, preview, cover & dates. Read the full
 // text with GET /x/articles/{tweetId}.
 func (r *XUserService) GetArticles(ctx context.Context, id string, query XUserGetArticlesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
@@ -84,7 +84,7 @@ func (r *XUserService) GetArticles(ctx context.Context, id string, query XUserGe
 	return res, err
 }
 
-// Returns the newest posts of up to 20 users, named by user ID, username or
+// GetBatchTweets returns the newest posts of up to 20 users, named by user ID, username or
 // profile link, in the order named. Send ids or usernames, not both. Each post
 // costs 1 credit. A user in unavailable_ids or unprocessed_ids costs nothing.
 func (r *XUserService) GetBatchTweets(ctx context.Context, query XUserGetBatchTweetsParams, opts ...option.RequestOption) (res *XUserGetBatchTweetsResponse, err error) {
@@ -94,7 +94,7 @@ func (r *XUserService) GetBatchTweets(ctx context.Context, query XUserGetBatchTw
 	return res, err
 }
 
-// Returns the user IDs of the selected user's followers, newest first, up to 5,000
+// GetFollowerIDs returns the user IDs of the selected user's followers, newest first, up to 5,000
 // a page. Use it when you need IDs only. Each ID costs 1 credit.
 func (r *XUserService) GetFollowerIDs(ctx context.Context, id string, query XUserGetFollowerIDsParams, opts ...option.RequestOption) (res *XUserGetFollowerIDsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -107,7 +107,7 @@ func (r *XUserService) GetFollowerIDs(ctx context.Context, id string, query XUse
 	return res, err
 }
 
-// Returns the user IDs of the accounts the selected user follows, newest first, up
+// GetFollowingIDs returns the user IDs of the accounts the selected user follows, newest first, up
 // to 5,000 a page. Use it when you need IDs only. Each ID costs 1 credit.
 func (r *XUserService) GetFollowingIDs(ctx context.Context, id string, query XUserGetFollowingIDsParams, opts ...option.RequestOption) (res *XUserGetFollowingIDsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -120,7 +120,7 @@ func (r *XUserService) GetFollowingIDs(ctx context.Context, id string, query XUs
 	return res, err
 }
 
-// Returns the posts on the user's Highlights tab, in X's order. An account without
+// GetHighlights returns the posts on the user's Highlights tab, in X's order. An account without
 // highlights returns an empty list.
 func (r *XUserService) GetHighlights(ctx context.Context, id string, query XUserGetHighlightsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -133,7 +133,7 @@ func (r *XUserService) GetHighlights(ctx context.Context, id string, query XUser
 	return res, err
 }
 
-// Returns engagement insights for 1 profile. They are engagement rate, averages
+// GetInsights returns engagement insights for 1 profile. They are engagement rate, averages
 // per post and posting rate, from its counts and its last 20 posts. Reposts and
 // the pinned post stay out of the averages. Each report costs 1 credit, whatever
 // it reads.
@@ -148,7 +148,7 @@ func (r *XUserService) GetInsights(ctx context.Context, id string, query XUserGe
 	return res, err
 }
 
-// Returns the public X Lists that include the selected user, as the profile's List
+// GetListMemberships returns the public X Lists that include the selected user, as the profile's List
 // memberships page shows them. Each List costs 1 credit. A protected account
 // answers 403.
 func (r *XUserService) GetListMemberships(ctx context.Context, id string, query XUserGetListMembershipsParams, opts ...option.RequestOption) (res *XUserGetListMembershipsResponse, err error) {
@@ -162,7 +162,7 @@ func (r *XUserService) GetListMemberships(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Returns the public X Lists the selected user created, in X's order, as the
+// GetLists returns the public X Lists the selected user created, in X's order, as the
 // profile's Lists tab shows them. Each List costs 1 credit. A protected account
 // answers 403.
 func (r *XUserService) GetLists(ctx context.Context, id string, query XUserGetListsParams, opts ...option.RequestOption) (res *XUserGetListsResponse, err error) {
@@ -176,7 +176,7 @@ func (r *XUserService) GetLists(ctx context.Context, id string, query XUserGetLi
 	return res, err
 }
 
-// Says whether 1 user is broadcasting live video on X right now, with their latest
+// GetLive says whether 1 user is broadcasting live video on X right now, with their latest
 // broadcast, live or ended. Each check costs 1 credit.
 func (r *XUserService) GetLive(ctx context.Context, id string, query XUserGetLiveParams, opts ...option.RequestOption) (res *XUserGetLiveResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -189,7 +189,7 @@ func (r *XUserService) GetLive(ctx context.Context, id string, query XUserGetLiv
 	return res, err
 }
 
-// Returns the public accounts X lists as similar to the selected user, in X's
+// GetSimilar returns the public accounts X lists as similar to the selected user, in X's
 // order. X can list slightly different accounts on each call. Each account costs 1
 // credit.
 func (r *XUserService) GetSimilar(ctx context.Context, id string, query XUserGetSimilarParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
@@ -203,7 +203,7 @@ func (r *XUserService) GetSimilar(ctx context.Context, id string, query XUserGet
 	return res, err
 }
 
-// Returns the creators the selected user subscribes to, in X's order. An account
+// GetSubscriptions returns the creators the selected user subscribes to, in X's order. An account
 // that hides its subscriptions returns an empty list.
 func (r *XUserService) GetSubscriptions(ctx context.Context, id string, query XUserGetSubscriptionsParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -216,7 +216,7 @@ func (r *XUserService) GetSubscriptions(ctx context.Context, id string, query XU
 	return res, err
 }
 
-// Removes a follower from a connected X account.
+// RemoveFollower removes a follower from a connected X account.
 func (r *XUserService) RemoveFollower(ctx context.Context, id string, params XUserRemoveFollowerParams, opts ...option.RequestOption) (res *XUserRemoveFollowerResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -231,7 +231,7 @@ func (r *XUserService) RemoveFollower(ctx context.Context, id string, params XUs
 	return res, err
 }
 
-// Returns public profiles for the requested user IDs.
+// GetBatch returns public profiles for the requested user IDs.
 func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, opts ...option.RequestOption) (res *XUserGetBatchResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/batch"
@@ -239,7 +239,7 @@ func (r *XUserService) GetBatch(ctx context.Context, query XUserGetBatchParams, 
 	return res, err
 }
 
-// Returns public follower profiles for the selected user.
+// GetFollowers returns public follower profiles for the selected user.
 func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserGetFollowersParams, opts ...option.RequestOption) (res *XUserGetFollowersResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -251,7 +251,7 @@ func (r *XUserService) GetFollowers(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// Returns mutual profiles visible to the connected X account.
+// GetFollowersYouKnow returns mutual profiles visible to the connected X account.
 func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query XUserGetFollowersYouKnowParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -263,7 +263,7 @@ func (r *XUserService) GetFollowersYouKnow(ctx context.Context, id string, query
 	return res, err
 }
 
-// Returns public profiles followed by the selected user.
+// GetFollowing returns public profiles followed by the selected user.
 func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserGetFollowingParams, opts ...option.RequestOption) (res *XUserGetFollowingResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -275,7 +275,7 @@ func (r *XUserService) GetFollowing(ctx context.Context, id string, query XUserG
 	return res, err
 }
 
-// Returns visible tweets liked by the selected user.
+// GetLikes returns visible tweets liked by the selected user.
 func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLikesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -287,7 +287,7 @@ func (r *XUserService) GetLikes(ctx context.Context, id string, query XUserGetLi
 	return res, err
 }
 
-// Returns public media posts from the selected user.
+// GetMedia returns public media posts from the selected user.
 func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMediaParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -299,7 +299,7 @@ func (r *XUserService) GetMedia(ctx context.Context, id string, query XUserGetMe
 	return res, err
 }
 
-// Returns public posts mentioning the selected user.
+// GetMentions returns public posts mentioning the selected user.
 func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGetMentionsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -311,7 +311,7 @@ func (r *XUserService) GetMentions(ctx context.Context, id string, query XUserGe
 	return res, err
 }
 
-// Returns target-authored posts and replies. Omit mode for automatic maximum
+// GetReplies returns target-authored posts and replies. Omit mode for automatic maximum
 // coverage. Pass next_cursor unchanged. Unprefixed cursors stay legacy. Excludes
 // other-author context.
 func (r *XUserService) GetReplies(ctx context.Context, id string, query XUserGetRepliesParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
@@ -325,7 +325,7 @@ func (r *XUserService) GetReplies(ctx context.Context, id string, query XUserGet
 	return res, err
 }
 
-// Returns public profiles matching a name or username.
+// GetSearch returns public profiles matching a name or username.
 func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/search"
@@ -333,7 +333,7 @@ func (r *XUserService) GetSearch(ctx context.Context, query XUserGetSearchParams
 	return res, err
 }
 
-// For multiple users, use createExtraction with tweet_search_extractor and
+// GetTweets returns [shared.PaginatedTweets]. For multiple users, use createExtraction with tweet_search_extractor and
 // targetUsernames. Omit mode for automatic maximum coverage. Pass next_cursor
 // unchanged. Unprefixed cursors use legacy pagination.
 func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetTweetsParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
@@ -347,7 +347,7 @@ func (r *XUserService) GetTweets(ctx context.Context, id string, query XUserGetT
 	return res, err
 }
 
-// Returns verified public profiles following the selected user.
+// GetVerifiedFollowers returns verified public profiles following the selected user.
 func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, query XUserGetVerifiedFollowersParams, opts ...option.RequestOption) (res *XUserGetVerifiedFollowersResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -359,7 +359,7 @@ func (r *XUserService) GetVerifiedFollowers(ctx context.Context, id string, quer
 	return res, err
 }
 
-// Returns X's own translation of 1 profile's bio into the language you pick, with
+// TranslateBio returns X's own translation of 1 profile's bio into the language you pick, with
 // the links, mentions, and tags X places in the translated text. A profile without
 // a bio returns translation null & a message, free of charge.
 func (r *XUserService) TranslateBio(ctx context.Context, id string, query XUserTranslateBioParams, opts ...option.RequestOption) (res *XUserTranslateBioResponse, err error) {
@@ -373,7 +373,7 @@ func (r *XUserService) TranslateBio(ctx context.Context, id string, query XUserT
 	return res, err
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XUserRemoveFollowerResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XUserRemoveFollowerResponse struct {
@@ -423,14 +423,14 @@ type XUserRemoveFollowerResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -497,13 +497,13 @@ type XUserRemoveFollowerResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserRemoveFollowerResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XUserRemoveFollowerResponseAccount is a connected account selected for the write.
 type XUserRemoveFollowerResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -516,10 +516,10 @@ type XUserRemoveFollowerResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserRemoveFollowerResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserRemoveFollowerResponseAction string
@@ -546,7 +546,7 @@ const (
 	XUserRemoveFollowerResponseActionLeaveCommunity  XUserRemoveFollowerResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XUserRemoveFollowerResponseBilling is the type of [XUserRemoveFollowerResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XUserRemoveFollowerResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -565,13 +565,13 @@ type XUserRemoveFollowerResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserRemoveFollowerResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XUserRemoveFollowerResponseNextAction is the type of [XUserRemoveFollowerResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XUserRemoveFollowerResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -589,18 +589,18 @@ type XUserRemoveFollowerResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserRemoveFollowerResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XUserRemoveFollowerResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XUserRemoveFollowerResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -610,13 +610,13 @@ type XUserRemoveFollowerResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserRemoveFollowerResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XUserRemoveFollowerResponseResult is a confirmed result produced by the write, when available.
 type XUserRemoveFollowerResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -632,10 +632,10 @@ type XUserRemoveFollowerResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserRemoveFollowerResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserRemoveFollowerResponseStatus string
@@ -649,7 +649,7 @@ const (
 	XUserRemoveFollowerResponseStatusExpired             XUserRemoveFollowerResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XUserRemoveFollowerResponseTarget is an existing X resource targeted by the write, when applicable.
 type XUserRemoveFollowerResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -663,13 +663,13 @@ type XUserRemoveFollowerResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserRemoveFollowerResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Batch lookup preserves first-seen ID order and ignores duplicate IDs.
+// XUserGetBatchResponse is the response from [XUserService.GetBatch]. Batch lookup preserves first-seen ID order and ignores duplicate IDs.
 // unavailable_ids were processed without profiles. unprocessed_ids were
 // credit-limited.
 type XUserGetBatchResponse struct {
@@ -711,10 +711,10 @@ type XUserGetBatchResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetBatchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetBatchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XUserGetFollowersResponseUnion contains all possible properties and values from
@@ -747,24 +747,24 @@ type XUserGetFollowersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XUserGetFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XUserGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XUserGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Present on the last page of a filtered automatic read that sent no maxScan, once
+// XUserGetFollowersResponseScanLimit is present on the last page of a filtered automatic read that sent no maxScan, once
 // the list scanned 100,000 profiles across its pages. That page is the list's
 // last.
 type XUserGetFollowersResponseScanLimit struct {
@@ -787,13 +787,13 @@ type XUserGetFollowersResponseScanLimit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Terminal relationship coverage response with diagnostics.
+// XUserGetFollowersResponseUserListCoverageResponse is a terminal relationship coverage response with diagnostics.
 type XUserGetFollowersResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XUserGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -812,13 +812,13 @@ type XUserGetFollowersResponseUserListCoverageResponse struct {
 	shared.PaginatedUsers
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowersResponseUserListCoverageResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowersResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Coverage evidence across parallel relationship strategies.
+// XUserGetFollowersResponseUserListCoverageResponseDiagnostic holds coverage evidence across parallel relationship strategies.
 type XUserGetFollowersResponseUserListCoverageResponseDiagnostic struct {
 	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
@@ -857,15 +857,15 @@ type XUserGetFollowersResponseUserListCoverageResponseDiagnostic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowersResponseUserListCoverageResponseDiagnostic) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetFollowersResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Result counts and stop reason for one relationship strategy.
+// XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy holds result counts and stop reason for one relationship strategy.
 type XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
@@ -888,12 +888,12 @@ type XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XUserGetFollowingResponseUnion contains all possible properties and values from
@@ -926,24 +926,24 @@ type XUserGetFollowingResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XUserGetFollowingResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XUserGetFollowingResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XUserGetFollowingResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Present on the last page of a filtered automatic read that sent no maxScan, once
+// XUserGetFollowingResponseScanLimit is present on the last page of a filtered automatic read that sent no maxScan, once
 // the list scanned 100,000 profiles across its pages. That page is the list's
 // last.
 type XUserGetFollowingResponseScanLimit struct {
@@ -966,13 +966,13 @@ type XUserGetFollowingResponseScanLimit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowingResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowingResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Terminal relationship coverage response with diagnostics.
+// XUserGetFollowingResponseUserListCoverageResponse is a terminal relationship coverage response with diagnostics.
 type XUserGetFollowingResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XUserGetFollowingResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -991,13 +991,13 @@ type XUserGetFollowingResponseUserListCoverageResponse struct {
 	shared.PaginatedUsers
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowingResponseUserListCoverageResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowingResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Coverage evidence across parallel relationship strategies.
+// XUserGetFollowingResponseUserListCoverageResponseDiagnostic holds coverage evidence across parallel relationship strategies.
 type XUserGetFollowingResponseUserListCoverageResponseDiagnostic struct {
 	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
@@ -1036,15 +1036,15 @@ type XUserGetFollowingResponseUserListCoverageResponseDiagnostic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowingResponseUserListCoverageResponseDiagnostic) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetFollowingResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Result counts and stop reason for one relationship strategy.
+// XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy holds result counts and stop reason for one relationship strategy.
 type XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
@@ -1067,12 +1067,12 @@ type XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XUserGetVerifiedFollowersResponseUnion contains all possible properties and
@@ -1107,24 +1107,24 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XUserGetVerifiedFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XUserGetVerifiedFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *XUserGetVerifiedFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Present on the last page of a filtered automatic read that sent no maxScan, once
+// XUserGetVerifiedFollowersResponseScanLimit is present on the last page of a filtered automatic read that sent no maxScan, once
 // the list scanned 100,000 profiles across its pages. That page is the list's
 // last.
 type XUserGetVerifiedFollowersResponseScanLimit struct {
@@ -1147,13 +1147,13 @@ type XUserGetVerifiedFollowersResponseScanLimit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetVerifiedFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetVerifiedFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Terminal relationship coverage response with diagnostics.
+// XUserGetVerifiedFollowersResponseUserListCoverageResponse is a terminal relationship coverage response with diagnostics.
 type XUserGetVerifiedFollowersResponseUserListCoverageResponse struct {
 	// Coverage evidence across parallel relationship strategies.
 	Diagnostic XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic" api:"required"`
@@ -1172,15 +1172,15 @@ type XUserGetVerifiedFollowersResponseUserListCoverageResponse struct {
 	shared.PaginatedUsers
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetVerifiedFollowersResponseUserListCoverageResponse) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Coverage evidence across parallel relationship strategies.
+// XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic holds coverage evidence across parallel relationship strategies.
 type XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic struct {
 	// True after all active strategies exhaust their sources.
 	Complete            bool  `json:"complete" api:"required"`
@@ -1219,15 +1219,15 @@ type XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Result counts and stop reason for one relationship strategy.
+// XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy holds result counts and stop reason for one relationship strategy.
 type XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy struct {
 	DuplicateCount int64 `json:"duplicateCount" api:"required"`
 	PagesFetched   int64 `json:"pagesFetched" api:"required"`
@@ -1250,15 +1250,15 @@ type XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Each user's newest posts, in the order the users were named, with the pinned
+// XUserGetBatchTweetsResponse holds each user's newest posts, in the order the users were named, with the pinned
 // post first. The ID lists name the requested IDs or usernames. They name a
 // profile link by its username.
 type XUserGetBatchTweetsResponse struct {
@@ -1287,13 +1287,13 @@ type XUserGetBatchTweetsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetBatchTweetsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetBatchTweetsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A page of user IDs without profiles. Follow next_cursor while the response
+// XUserGetFollowerIDsResponse is a page of user IDs without profiles. Follow next_cursor while the response
 // reports more pages.
 type XUserGetFollowerIDsResponse struct {
 	HasNextPage bool `json:"has_next_page" api:"required"`
@@ -1310,13 +1310,13 @@ type XUserGetFollowerIDsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowerIDsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowerIDsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A page of user IDs without profiles. Follow next_cursor while the response
+// XUserGetFollowingIDsResponse is a page of user IDs without profiles. Follow next_cursor while the response
 // reports more pages.
 type XUserGetFollowingIDsResponse struct {
 	HasNextPage bool `json:"has_next_page" api:"required"`
@@ -1333,10 +1333,10 @@ type XUserGetFollowingIDsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetFollowingIDsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowingIDsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetInsightsResponse struct {
@@ -1355,13 +1355,13 @@ type XUserGetInsightsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetInsightsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement insights of 1 profile. Engagements are likes, replies, reposts and
+// XUserGetInsightsResponseInsights holds engagement insights of 1 profile. Engagements are likes, replies, reposts and
 // quotes. A rate is null when nothing divides it, such as a profile without posts
 // of its own.
 type XUserGetInsightsResponseInsights struct {
@@ -1412,13 +1412,13 @@ type XUserGetInsightsResponseInsights struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetInsightsResponseInsights) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponseInsights) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Each count per post of the sample. Null without posts.
+// XUserGetInsightsResponseInsightsAverages holds each count per post of the sample. Null without posts.
 type XUserGetInsightsResponseInsightsAverages struct {
 	// Bookmarks.
 	Bookmarks float64 `json:"bookmarks" api:"required"`
@@ -1448,13 +1448,13 @@ type XUserGetInsightsResponseInsightsAverages struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetInsightsResponseInsightsAverages) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponseInsightsAverages) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The recent posts the averages read.
+// XUserGetInsightsResponseInsightsSample holds the recent posts the averages read.
 type XUserGetInsightsResponseInsightsSample struct {
 	// When the newest of them went up.
 	NewestAt time.Time `json:"newestAt" api:"required" format:"date-time"`
@@ -1472,13 +1472,13 @@ type XUserGetInsightsResponseInsightsSample struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetInsightsResponseInsightsSample) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponseInsightsSample) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 page of public X Lists. Follow next_cursor while the response reports more
+// XUserGetListMembershipsResponse is 1 page of public X Lists. Follow next_cursor while the response reports more
 // pages. Each returned List costs 1 credit.
 type XUserGetListMembershipsResponse struct {
 	HasNextPage bool                                  `json:"has_next_page" api:"required"`
@@ -1494,13 +1494,13 @@ type XUserGetListMembershipsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public X List with its owner's public profile. Leaves out what X tells the
+// XUserGetListMembershipsResponseList is a public X List with its owner's public profile. Leaves out what X tells the
 // reading account, such as whether it follows the List.
 type XUserGetListMembershipsResponseList struct {
 	// Numeric ID of the List.
@@ -1550,13 +1550,13 @@ type XUserGetListMembershipsResponseList struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseList) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner the owner uploaded.
+// XUserGetListMembershipsResponseListCustomBanner is a banner the owner uploaded.
 type XUserGetListMembershipsResponseListCustomBanner struct {
 	// Banner image URL.
 	URL string `json:"url" api:"required"`
@@ -1586,10 +1586,10 @@ type XUserGetListMembershipsResponseListCustomBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListCustomBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListMembershipsResponseListCustomBannerPalette struct {
@@ -1606,13 +1606,13 @@ type XUserGetListMembershipsResponseListCustomBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XUserGetListMembershipsResponseListCustomBannerPaletteRgb holds the color's red, green and blue values.
 type XUserGetListMembershipsResponseListCustomBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -1627,15 +1627,15 @@ type XUserGetListMembershipsResponseListCustomBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListCustomBannerPaletteRgb) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XUserGetListMembershipsResponseListCustomBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XUserGetListMembershipsResponseListCustomBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -1656,15 +1656,15 @@ type XUserGetListMembershipsResponseListCustomBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListCustomBannerSalientRect) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// XUserGetListMembershipsResponseListDefaultBanner is a banner X shows when the owner uploaded none. X picks it per reading account, so
 // 2 calls can return different ones.
 type XUserGetListMembershipsResponseListDefaultBanner struct {
 	// Banner image URL.
@@ -1695,10 +1695,10 @@ type XUserGetListMembershipsResponseListDefaultBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListMembershipsResponseListDefaultBannerPalette struct {
@@ -1715,13 +1715,13 @@ type XUserGetListMembershipsResponseListDefaultBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XUserGetListMembershipsResponseListDefaultBannerPaletteRgb holds the color's red, green and blue values.
 type XUserGetListMembershipsResponseListDefaultBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -1736,15 +1736,15 @@ type XUserGetListMembershipsResponseListDefaultBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListDefaultBannerPaletteRgb) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XUserGetListMembershipsResponseListDefaultBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XUserGetListMembershipsResponseListDefaultBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -1765,15 +1765,15 @@ type XUserGetListMembershipsResponseListDefaultBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListMembershipsResponseListDefaultBannerSalientRect) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 page of public X Lists. Follow next_cursor while the response reports more
+// XUserGetListsResponse is 1 page of public X Lists. Follow next_cursor while the response reports more
 // pages. Each returned List costs 1 credit.
 type XUserGetListsResponse struct {
 	HasNextPage bool                        `json:"has_next_page" api:"required"`
@@ -1789,13 +1789,13 @@ type XUserGetListsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public X List with its owner's public profile. Leaves out what X tells the
+// XUserGetListsResponseList is a public X List with its owner's public profile. Leaves out what X tells the
 // reading account, such as whether it follows the List.
 type XUserGetListsResponseList struct {
 	// Numeric ID of the List.
@@ -1845,13 +1845,13 @@ type XUserGetListsResponseList struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseList) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner the owner uploaded.
+// XUserGetListsResponseListCustomBanner is a banner the owner uploaded.
 type XUserGetListsResponseListCustomBanner struct {
 	// Banner image URL.
 	URL string `json:"url" api:"required"`
@@ -1881,10 +1881,10 @@ type XUserGetListsResponseListCustomBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListsResponseListCustomBannerPalette struct {
@@ -1901,13 +1901,13 @@ type XUserGetListsResponseListCustomBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XUserGetListsResponseListCustomBannerPaletteRgb holds the color's red, green and blue values.
 type XUserGetListsResponseListCustomBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -1922,13 +1922,13 @@ type XUserGetListsResponseListCustomBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListCustomBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XUserGetListsResponseListCustomBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XUserGetListsResponseListCustomBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -1949,13 +1949,13 @@ type XUserGetListsResponseListCustomBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListCustomBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Banner X shows when the owner uploaded none. X picks it per reading account, so
+// XUserGetListsResponseListDefaultBanner is a banner X shows when the owner uploaded none. X picks it per reading account, so
 // 2 calls can return different ones.
 type XUserGetListsResponseListDefaultBanner struct {
 	// Banner image URL.
@@ -1986,10 +1986,10 @@ type XUserGetListsResponseListDefaultBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListsResponseListDefaultBannerPalette struct {
@@ -2006,13 +2006,13 @@ type XUserGetListsResponseListDefaultBannerPalette struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The color's red, green and blue values.
+// XUserGetListsResponseListDefaultBannerPaletteRgb holds the color's red, green and blue values.
 type XUserGetListsResponseListDefaultBannerPaletteRgb struct {
 	Blue  int64 `json:"blue"`
 	Green int64 `json:"green"`
@@ -2027,13 +2027,13 @@ type XUserGetListsResponseListDefaultBannerPaletteRgb struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListDefaultBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X marks as the subject of the banner, in pixels.
+// XUserGetListsResponseListDefaultBannerSalientRect is an area X marks as the subject of the banner, in pixels.
 type XUserGetListsResponseListDefaultBannerSalientRect struct {
 	// Height of the marked area.
 	Height int64 `json:"height"`
@@ -2054,13 +2054,13 @@ type XUserGetListsResponseListDefaultBannerSalientRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetListsResponseListDefaultBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Says whether a user broadcasts live video on X now. `broadcast` is their latest
+// XUserGetLiveResponse says whether a user broadcasts live video on X now. `broadcast` is their latest
 // broadcast, live or ended, and null when X shows none.
 type XUserGetLiveResponse struct {
 	// Latest broadcast, live or ended. Null when X shows none.
@@ -2082,13 +2082,13 @@ type XUserGetLiveResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetLiveResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetLiveResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Latest broadcast, live or ended. Null when X shows none.
+// XUserGetLiveResponseBroadcast is the latest broadcast, live or ended. Null when X shows none.
 type XUserGetLiveResponseBroadcast struct {
 	// Broadcast ID
 	ID string `json:"id" api:"required"`
@@ -2172,13 +2172,13 @@ type XUserGetLiveResponseBroadcast struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetLiveResponseBroadcast) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetLiveResponseBroadcast) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Broadcaster, as X's live video service names the account
+// XUserGetLiveResponseBroadcastPeriscopeUser is a broadcaster, as X's live video service names the account.
 type XUserGetLiveResponseBroadcastPeriscopeUser struct {
 	// Live video account ID
 	ID string `json:"id"`
@@ -2202,10 +2202,10 @@ type XUserGetLiveResponseBroadcastPeriscopeUser struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserGetLiveResponseBroadcastPeriscopeUser) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetLiveResponseBroadcastPeriscopeUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponse struct {
@@ -2222,13 +2222,13 @@ type XUserTranslateBioResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Null when the profile has no bio.
+// XUserTranslateBioResponseTranslation is null when the profile has no bio.
 type XUserTranslateBioResponseTranslation struct {
 	// Lists hashtags, symbols, links, and mentions from tweet text.
 	Entities XUserTranslateBioResponseTranslationEntities `json:"entities" api:"required"`
@@ -2255,13 +2255,13 @@ type XUserTranslateBioResponseTranslation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslation) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// XUserTranslateBioResponseTranslationEntities lists hashtags, symbols, links, and mentions from tweet text.
 type XUserTranslateBioResponseTranslationEntities struct {
 	Hashtags     []XUserTranslateBioResponseTranslationEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []XUserTranslateBioResponseTranslationEntitiesSmarttag    `json:"smarttags"`
@@ -2282,13 +2282,13 @@ type XUserTranslateBioResponseTranslationEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntities) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntities) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Hashtag text and its source offsets in a tweet.
+// XUserTranslateBioResponseTranslationEntitiesHashtag holds hashtag text and its source offsets in a tweet.
 type XUserTranslateBioResponseTranslationEntitiesHashtag struct {
 	Text    string  `json:"text" api:"required"`
 	Indices []int64 `json:"indices"`
@@ -2305,13 +2305,13 @@ type XUserTranslateBioResponseTranslationEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// XUserTranslateBioResponseTranslationEntitiesHashtagTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type XUserTranslateBioResponseTranslationEntitiesHashtagTag struct {
 	// X's ID for the SmartTag.
@@ -2326,10 +2326,10 @@ type XUserTranslateBioResponseTranslationEntitiesHashtagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesHashtagTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo struct {
@@ -2342,12 +2342,12 @@ type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo struct {
@@ -2365,15 +2365,15 @@ type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// XUserTranslateBioResponseTranslationEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type XUserTranslateBioResponseTranslationEntitiesSmarttag struct {
 	Indices []int64 `json:"indices"`
 	Seconds float64 `json:"seconds"`
@@ -2392,13 +2392,13 @@ type XUserTranslateBioResponseTranslationEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// XUserTranslateBioResponseTranslationEntitiesSmarttagTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type XUserTranslateBioResponseTranslationEntitiesSmarttagTag struct {
 	// X's ID for the SmartTag.
@@ -2413,10 +2413,10 @@ type XUserTranslateBioResponseTranslationEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo struct {
@@ -2429,12 +2429,12 @@ type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo struct {
@@ -2452,15 +2452,15 @@ type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// XUserTranslateBioResponseTranslationEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type XUserTranslateBioResponseTranslationEntitiesSymbol struct {
 	Indices []int64 `json:"indices"`
 	Seconds float64 `json:"seconds"`
@@ -2479,13 +2479,13 @@ type XUserTranslateBioResponseTranslationEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbol) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// XUserTranslateBioResponseTranslationEntitiesSymbolTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type XUserTranslateBioResponseTranslationEntitiesSymbolTag struct {
 	// X's ID for the SmartTag.
@@ -2500,10 +2500,10 @@ type XUserTranslateBioResponseTranslationEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo struct {
@@ -2516,12 +2516,12 @@ type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo struct {
@@ -2539,15 +2539,15 @@ type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// XUserTranslateBioResponseTranslationEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type XUserTranslateBioResponseTranslationEntitiesTimestamp struct {
 	Indices []int64 `json:"indices"`
 	Seconds float64 `json:"seconds"`
@@ -2566,13 +2566,13 @@ type XUserTranslateBioResponseTranslationEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestamp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// XUserTranslateBioResponseTranslationEntitiesTimestampTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type XUserTranslateBioResponseTranslationEntitiesTimestampTag struct {
 	// X's ID for the SmartTag.
@@ -2587,10 +2587,10 @@ type XUserTranslateBioResponseTranslationEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo struct {
@@ -2603,12 +2603,12 @@ type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo struct {
@@ -2626,15 +2626,15 @@ type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Shortened, display, and expanded URLs from tweet text.
+// XUserTranslateBioResponseTranslationEntitiesURL holds shortened, display, and expanded URLs from tweet text.
 type XUserTranslateBioResponseTranslationEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -2651,13 +2651,13 @@ type XUserTranslateBioResponseTranslationEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesURL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Profile identity and source offsets of a mention.
+// XUserTranslateBioResponseTranslationEntitiesUserMention holds profile identity and source offsets of a mention.
 type XUserTranslateBioResponseTranslationEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -2674,10 +2674,10 @@ type XUserTranslateBioResponseTranslationEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XUserTranslateBioResponseTranslationEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesUserMention) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserRemoveFollowerParams struct {
@@ -2692,7 +2692,7 @@ func (r XUserRemoveFollowerParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XUserRemoveFollowerParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XUserGetBatchParams struct {
@@ -2848,7 +2848,7 @@ func (r XUserGetFollowersParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
+// XUserGetFollowersParamsMode is the type of [XUserGetFollowersParams.Mode]. Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
 // Coverage returns diagnostics once and rejects cursors.
 type XUserGetFollowersParamsMode string
 
@@ -3011,7 +3011,7 @@ func (r XUserGetFollowingParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
+// XUserGetFollowingParamsMode is the type of [XUserGetFollowingParams.Mode]. Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
 // Coverage returns diagnostics once and rejects cursors.
 type XUserGetFollowingParamsMode string
 
@@ -3148,7 +3148,7 @@ func (r XUserGetLikesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XUserGetLikesParamsMediaType is the type of [XUserGetLikesParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XUserGetLikesParamsMediaType string
 
 const (
@@ -3160,7 +3160,7 @@ const (
 	XUserGetLikesParamsMediaTypeNone   XUserGetLikesParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XUserGetLikesParamsQuotes applies only when the caller requests a quote mode.
 type XUserGetLikesParamsQuotes string
 
 const (
@@ -3169,7 +3169,7 @@ const (
 	XUserGetLikesParamsQuotesOnly    XUserGetLikesParamsQuotes = "only"
 )
 
-// Only when the caller requests a reply mode.
+// XUserGetLikesParamsReplies applies only when the caller requests a reply mode.
 type XUserGetLikesParamsReplies string
 
 const (
@@ -3178,7 +3178,7 @@ const (
 	XUserGetLikesParamsRepliesOnly    XUserGetLikesParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XUserGetLikesParamsRetweets applies only when the caller requests a repost mode.
 type XUserGetLikesParamsRetweets string
 
 const (
@@ -3315,7 +3315,7 @@ func (r XUserGetMediaParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XUserGetMediaParamsMediaType is the type of [XUserGetMediaParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XUserGetMediaParamsMediaType string
 
 const (
@@ -3327,7 +3327,7 @@ const (
 	XUserGetMediaParamsMediaTypeNone   XUserGetMediaParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XUserGetMediaParamsQuotes applies only when the caller requests a quote mode.
 type XUserGetMediaParamsQuotes string
 
 const (
@@ -3336,7 +3336,7 @@ const (
 	XUserGetMediaParamsQuotesOnly    XUserGetMediaParamsQuotes = "only"
 )
 
-// Only when the caller requests a reply mode.
+// XUserGetMediaParamsReplies applies only when the caller requests a reply mode.
 type XUserGetMediaParamsReplies string
 
 const (
@@ -3345,7 +3345,7 @@ const (
 	XUserGetMediaParamsRepliesOnly    XUserGetMediaParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XUserGetMediaParamsRetweets applies only when the caller requests a repost mode.
 type XUserGetMediaParamsRetweets string
 
 const (
@@ -3486,7 +3486,7 @@ func (r XUserGetMentionsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XUserGetMentionsParamsMediaType is the type of [XUserGetMentionsParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XUserGetMentionsParamsMediaType string
 
 const (
@@ -3498,7 +3498,7 @@ const (
 	XUserGetMentionsParamsMediaTypeNone   XUserGetMentionsParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XUserGetMentionsParamsQuotes applies only when the caller requests a quote mode.
 type XUserGetMentionsParamsQuotes string
 
 const (
@@ -3507,7 +3507,7 @@ const (
 	XUserGetMentionsParamsQuotesOnly    XUserGetMentionsParamsQuotes = "only"
 )
 
-// Only when the caller requests a reply mode.
+// XUserGetMentionsParamsReplies applies only when the caller requests a reply mode.
 type XUserGetMentionsParamsReplies string
 
 const (
@@ -3516,7 +3516,7 @@ const (
 	XUserGetMentionsParamsRepliesOnly    XUserGetMentionsParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XUserGetMentionsParamsRetweets applies only when the caller requests a repost mode.
 type XUserGetMentionsParamsRetweets string
 
 const (
@@ -3681,7 +3681,7 @@ func (r XUserGetRepliesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XUserGetRepliesParamsMediaType is the type of [XUserGetRepliesParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XUserGetRepliesParamsMediaType string
 
 const (
@@ -3693,7 +3693,7 @@ const (
 	XUserGetRepliesParamsMediaTypeNone   XUserGetRepliesParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XUserGetRepliesParamsQuotes applies only when the caller requests a quote mode.
 type XUserGetRepliesParamsQuotes string
 
 const (
@@ -3702,7 +3702,7 @@ const (
 	XUserGetRepliesParamsQuotesOnly    XUserGetRepliesParamsQuotes = "only"
 )
 
-// Only when the caller requests a reply mode.
+// XUserGetRepliesParamsReplies applies only when the caller requests a reply mode.
 type XUserGetRepliesParamsReplies string
 
 const (
@@ -3711,7 +3711,7 @@ const (
 	XUserGetRepliesParamsRepliesOnly    XUserGetRepliesParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XUserGetRepliesParamsRetweets applies only when the caller requests a repost mode.
 type XUserGetRepliesParamsRetweets string
 
 const (
@@ -3949,7 +3949,7 @@ func (r XUserGetTweetsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XUserGetTweetsParamsMediaType is the type of [XUserGetTweetsParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XUserGetTweetsParamsMediaType string
 
 const (
@@ -3961,7 +3961,7 @@ const (
 	XUserGetTweetsParamsMediaTypeNone   XUserGetTweetsParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XUserGetTweetsParamsQuotes applies only when the caller requests a quote mode.
 type XUserGetTweetsParamsQuotes string
 
 const (
@@ -3970,7 +3970,7 @@ const (
 	XUserGetTweetsParamsQuotesOnly    XUserGetTweetsParamsQuotes = "only"
 )
 
-// Only when the caller requests a reply mode.
+// XUserGetTweetsParamsReplies applies only when the caller requests a reply mode.
 type XUserGetTweetsParamsReplies string
 
 const (
@@ -3979,7 +3979,7 @@ const (
 	XUserGetTweetsParamsRepliesOnly    XUserGetTweetsParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XUserGetTweetsParamsRetweets applies only when the caller requests a repost mode.
 type XUserGetTweetsParamsRetweets string
 
 const (
@@ -4075,7 +4075,7 @@ func (r XUserGetVerifiedFollowersParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
+// XUserGetVerifiedFollowersParamsMode is the type of [XUserGetVerifiedFollowersParams.Mode]. Omit mode for resumable maximum coverage. Standard keeps legacy pagination.
 // Coverage returns diagnostics once and rejects cursors.
 type XUserGetVerifiedFollowersParamsMode string
 
@@ -4262,7 +4262,7 @@ func (r XUserGetArticlesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Its aliases are has_video & has_media.
+// XUserGetArticlesParamsMediaType is the type of [XUserGetArticlesParams.MediaType]. Filter media. Its aliases are has_video & has_media.
 type XUserGetArticlesParamsMediaType string
 
 const (
@@ -4274,7 +4274,7 @@ const (
 	XUserGetArticlesParamsMediaTypeNone   XUserGetArticlesParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XUserGetArticlesParamsQuotes applies only when the caller requests a quote mode.
 type XUserGetArticlesParamsQuotes string
 
 const (
@@ -4283,7 +4283,7 @@ const (
 	XUserGetArticlesParamsQuotesOnly    XUserGetArticlesParamsQuotes = "only"
 )
 
-// Reply mode. Exclude keeps own-thread replies.
+// XUserGetArticlesParamsReplies is a reply mode. Exclude keeps own-thread replies.
 type XUserGetArticlesParamsReplies string
 
 const (
@@ -4292,7 +4292,7 @@ const (
 	XUserGetArticlesParamsRepliesOnly    XUserGetArticlesParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XUserGetArticlesParamsRetweets applies only when the caller requests a repost mode.
 type XUserGetArticlesParamsRetweets string
 
 const (
@@ -4482,7 +4482,7 @@ func (r XUserGetHighlightsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Its aliases are has_video & has_media.
+// XUserGetHighlightsParamsMediaType is the type of [XUserGetHighlightsParams.MediaType]. Filter media. Its aliases are has_video & has_media.
 type XUserGetHighlightsParamsMediaType string
 
 const (
@@ -4494,7 +4494,7 @@ const (
 	XUserGetHighlightsParamsMediaTypeNone   XUserGetHighlightsParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XUserGetHighlightsParamsQuotes applies only when the caller requests a quote mode.
 type XUserGetHighlightsParamsQuotes string
 
 const (
@@ -4503,7 +4503,7 @@ const (
 	XUserGetHighlightsParamsQuotesOnly    XUserGetHighlightsParamsQuotes = "only"
 )
 
-// Reply mode. Exclude keeps own-thread replies.
+// XUserGetHighlightsParamsReplies is a reply mode. Exclude keeps own-thread replies.
 type XUserGetHighlightsParamsReplies string
 
 const (
@@ -4512,7 +4512,7 @@ const (
 	XUserGetHighlightsParamsRepliesOnly    XUserGetHighlightsParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XUserGetHighlightsParamsRetweets applies only when the caller requests a repost mode.
 type XUserGetHighlightsParamsRetweets string
 
 const (
@@ -4782,7 +4782,7 @@ func (r XUserTranslateBioParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Optional legacy pagination override. Search-only filters such as keywords apply
+// XUserGetRepliesParamsMode is an optional legacy pagination override. Search-only filters such as keywords apply
 // only without it.
 type XUserGetRepliesParamsMode string
 
@@ -4790,7 +4790,7 @@ const (
 	XUserGetRepliesParamsModeStandard XUserGetRepliesParamsMode = "standard"
 )
 
-// Optional legacy pagination override. Search-only filters such as keywords apply
+// XUserGetTweetsParamsMode is an optional legacy pagination override. Search-only filters such as keywords apply
 // only without it.
 type XUserGetTweetsParamsMode string
 

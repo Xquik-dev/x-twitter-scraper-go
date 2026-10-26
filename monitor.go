@@ -22,7 +22,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// X account monitoring with 1-second checks
+// MonitorService covers X account monitoring with 1-second checks.
 //
 // MonitorService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -48,7 +48,7 @@ func NewMonitorService(opts ...option.RequestOption) (r MonitorService) {
 	return
 }
 
-// Creates an account monitor. Monitors are unlimited. Active monitors check every
+// New creates an account monitor. Monitors are unlimited. Active monitors check every
 // 1 second and cost 30 credits per hour. Events and webhook deliveries are
 // included. Creation requires available credits for the first hourly charge and
 // username lookup.
@@ -59,7 +59,7 @@ func (r *MonitorService) New(ctx context.Context, body MonitorNewParams, opts ..
 	return res, err
 }
 
-// Returns configuration and status for one account monitor.
+// Get returns configuration and status for one account monitor.
 func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Monitor, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -71,7 +71,7 @@ func (r *MonitorService) Get(ctx context.Context, id string, opts ...option.Requ
 	return res, err
 }
 
-// Updates mutable settings for an existing account monitor.
+// Update updates mutable settings for an existing account monitor.
 func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpdateParams, opts ...option.RequestOption) (res *Monitor, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -83,7 +83,7 @@ func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpda
 	return res, err
 }
 
-// Returns account monitors with their current operating states.
+// List returns account monitors with their current operating states.
 func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "monitors"
@@ -91,7 +91,7 @@ func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption)
 	return res, err
 }
 
-// Stops one account monitor, then removes its stored events in bounded batches.
+// Deactivate stops one account monitor, then removes its stored events in bounded batches.
 // Poll statusUrl until the monitor returns 404.
 func (r *MonitorService) Deactivate(ctx context.Context, id string, opts ...option.RequestOption) (res *MonitorDeactivateResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -104,7 +104,7 @@ func (r *MonitorService) Deactivate(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Account monitor that tracks activity for a given X user.
+// Monitor is an account monitor that tracks activity for a given X user.
 type Monitor struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -140,13 +140,13 @@ type Monitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r Monitor) RawJSON() string { return r.JSON.raw }
 func (r *Monitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Why Xquik automatically paused this monitor.
+// MonitorPausedReason describes why Xquik automatically paused this monitor.
 type MonitorPausedReason string
 
 const (
@@ -179,10 +179,10 @@ type MonitorNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorListResponse struct {
@@ -201,10 +201,10 @@ type MonitorListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorDeactivateResponse struct {
@@ -222,10 +222,10 @@ type MonitorDeactivateResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r MonitorDeactivateResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorDeactivateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorNewParams struct {
@@ -244,7 +244,7 @@ func (r MonitorNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorUpdateParams struct {
@@ -261,5 +261,5 @@ func (r MonitorUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

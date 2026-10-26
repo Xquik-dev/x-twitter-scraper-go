@@ -22,7 +22,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// X Space details, host, and speakers
+// XSpaceService covers X Space details, host, and speakers.
 //
 // XSpaceService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -42,7 +42,7 @@ func NewXSpaceService(opts ...option.RequestOption) (r XSpaceService) {
 	return
 }
 
-// Returns 1 X Space as X shows it, live, scheduled or ended. Accepts the Space ID
+// Get returns 1 X Space as X shows it, live, scheduled or ended. Accepts the Space ID
 // or the URL-encoded Space URL. A Space X limits to subscribers or a community
 // answers 404.
 func (r *XSpaceService) Get(ctx context.Context, id string, query XSpaceGetParams, opts ...option.RequestOption) (res *XSpaceGetResponse, err error) {
@@ -56,7 +56,7 @@ func (r *XSpaceService) Get(ctx context.Context, id string, query XSpaceGetParam
 	return res, err
 }
 
-// Returns the recording X plays back once a Space is over, in state Ended or
+// GetReplay returns the recording X plays back once a Space is over, in state Ended or
 // TimedOut. Accepts the Space ID or the URL-encoded Space URL. Check state and
 // isAvailableForReplay with the Space lookup first. A live or scheduled Space
 // answers 409, and a cancelled one 404.
@@ -71,7 +71,7 @@ func (r *XSpaceService) GetReplay(ctx context.Context, id string, query XSpaceGe
 	return res, err
 }
 
-// Returns public Spaces each once, as GET /x/spaces/{id} serves them. Latest & Top
+// Search returns public Spaces each once, as GET /x/spaces/{id} serves them. Latest & Top
 // find the Spaces that matching posts share, live, scheduled or ended. Live &
 // Upcoming read X's own Spaces search, in X's order. It finds live or scheduled
 // Spaces by the words in their titles. Costs 1 credit per Space.
@@ -93,13 +93,13 @@ type XSpaceGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X Space
+// XSpaceGetResponseSpace is an X Space.
 type XSpaceGetResponseSpace struct {
 	// Space ID
 	ID string `json:"id" api:"required"`
@@ -197,13 +197,13 @@ type XSpaceGetResponseSpace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpace) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpace) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// An account on a Space's stage or in its audience, as X lists it there.
+// XSpaceGetResponseSpaceAdmin is an account on a Space's stage or in its audience, as X lists it there.
 type XSpaceGetResponseSpaceAdmin struct {
 	ID string `json:"id" api:"required"`
 	// Name the account shows in the Space
@@ -249,18 +249,18 @@ type XSpaceGetResponseSpaceAdmin struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpaceAdmin) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Organization affiliation label shown on an X profile.
+// XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -279,13 +279,13 @@ type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// An account on a Space's stage or in its audience, as X lists it there.
+// XSpaceGetResponseSpaceListener is an account on a Space's stage or in its audience, as X lists it there.
 type XSpaceGetResponseSpaceListener struct {
 	ID string `json:"id" api:"required"`
 	// Name the account shows in the Space
@@ -331,18 +331,18 @@ type XSpaceGetResponseSpaceListener struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpaceListener) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Organization affiliation label shown on an X profile.
+// XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -361,13 +361,13 @@ type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// An account on a Space's stage or in its audience, as X lists it there.
+// XSpaceGetResponseSpaceSpeaker is an account on a Space's stage or in its audience, as X lists it there.
 type XSpaceGetResponseSpaceSpeaker struct {
 	ID string `json:"id" api:"required"`
 	// Name the account shows in the Space
@@ -413,18 +413,18 @@ type XSpaceGetResponseSpaceSpeaker struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpaceSpeaker) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Organization affiliation label shown on an X profile.
+// XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -443,13 +443,13 @@ type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A post shared in a Space, & the account that shared it.
+// XSpaceGetResponseSpaceSharing is a post shared in a Space, & the account that shared it.
 type XSpaceGetResponseSpaceSharing struct {
 	// X's ID of the sharing, not of the post
 	ID string `json:"id"`
@@ -473,10 +473,10 @@ type XSpaceGetResponseSpaceSharing struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetResponseSpaceSharing) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceSharing) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSpaceGetReplayResponse struct {
@@ -490,13 +490,13 @@ type XSpaceGetReplayResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetReplayResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetReplayResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Recording of an ended Space
+// XSpaceGetReplayResponseReplay is a recording of an ended Space.
 type XSpaceGetReplayResponseReplay struct {
 	// HLS playlist of the recording
 	URL string `json:"url" api:"required" format:"uri"`
@@ -514,10 +514,10 @@ type XSpaceGetReplayResponseReplay struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceGetReplayResponseReplay) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetReplayResponseReplay) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSpaceSearchResponse struct {
@@ -535,13 +535,13 @@ type XSpaceSearchResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X Space
+// XSpaceSearchResponseSpace is an X Space.
 type XSpaceSearchResponseSpace struct {
 	// Space ID
 	ID string `json:"id" api:"required"`
@@ -639,13 +639,13 @@ type XSpaceSearchResponseSpace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpace) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpace) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// An account on a Space's stage or in its audience, as X lists it there.
+// XSpaceSearchResponseSpaceAdmin is an account on a Space's stage or in its audience, as X lists it there.
 type XSpaceSearchResponseSpaceAdmin struct {
 	ID string `json:"id" api:"required"`
 	// Name the account shows in the Space
@@ -691,18 +691,18 @@ type XSpaceSearchResponseSpaceAdmin struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpaceAdmin) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Organization affiliation label shown on an X profile.
+// XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -721,13 +721,13 @@ type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// An account on a Space's stage or in its audience, as X lists it there.
+// XSpaceSearchResponseSpaceListener is an account on a Space's stage or in its audience, as X lists it there.
 type XSpaceSearchResponseSpaceListener struct {
 	ID string `json:"id" api:"required"`
 	// Name the account shows in the Space
@@ -773,18 +773,18 @@ type XSpaceSearchResponseSpaceListener struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpaceListener) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Organization affiliation label shown on an X profile.
+// XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -803,15 +803,15 @@ type XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// An account on a Space's stage or in its audience, as X lists it there.
+// XSpaceSearchResponseSpaceSpeaker is an account on a Space's stage or in its audience, as X lists it there.
 type XSpaceSearchResponseSpaceSpeaker struct {
 	ID string `json:"id" api:"required"`
 	// Name the account shows in the Space
@@ -857,18 +857,18 @@ type XSpaceSearchResponseSpaceSpeaker struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpaceSpeaker) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Organization affiliation label shown on an X profile.
+// XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -887,15 +887,15 @@ type XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel) RawJSON() string {
 	return r.JSON.raw
 }
 func (r *XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A post shared in a Space, & the account that shared it.
+// XSpaceSearchResponseSpaceSharing is a post shared in a Space, & the account that shared it.
 type XSpaceSearchResponseSpaceSharing struct {
 	// X's ID of the sharing, not of the post
 	ID string `json:"id"`
@@ -919,10 +919,10 @@ type XSpaceSearchResponseSpaceSharing struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSpaceSearchResponseSpaceSharing) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceSharing) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSpaceGetParams struct {
@@ -1010,7 +1010,7 @@ func (r XSpaceSearchParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Latest finds Spaces in the newest posts. Top finds them in the most engaging
+// XSpaceSearchParamsQueryType is the type of [XSpaceSearchParams.QueryType]. Latest finds Spaces in the newest posts. Top finds them in the most engaging
 // posts. Live lists Spaces on air now. Upcoming lists scheduled ones, as X's
 // Spaces search does. Any case works. Aliases result_type, sort_order, type,
 // search_type, product, category & section.

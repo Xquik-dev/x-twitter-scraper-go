@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package option
@@ -132,25 +133,40 @@ func TestRequestOptions(t *testing.T) {
 	})
 
 	t.Run("response destinations and request bodies", func(t *testing.T) {
-		cfg := newOptionTestConfig(t)
+		received := newOptionTestConfig(t)
+		baseURL, err := url.Parse("https://example.com/")
+		if err != nil {
+			t.Fatal(err)
+		}
+		received.BaseURL = baseURL
+		received.CustomHTTPDoer = testHTTPDoer(func(*http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Header:     http.Header{"Content-Type": {"text/plain"}},
+				Body:       io.NopCloser(strings.NewReader("timeline")),
+			}, nil
+		})
 		var response *http.Response
 		var bodyDestination string
-		applyOption(t, cfg, WithResponseBodyInto(&bodyDestination))
-		applyOption(t, cfg, WithResponseInto(&response))
-		if cfg.ResponseBodyInto != &bodyDestination || cfg.ResponseInto != &response {
+		applyOption(t, received, WithResponseBodyInto(&bodyDestination))
+		applyOption(t, received, WithResponseInto(&response))
+		if err := received.Execute(); err != nil {
+			t.Fatal(err)
+		}
+		if bodyDestination != "timeline" || response == nil {
 			t.Fatal("response destination was not retained")
 		}
+
+		cfg := newOptionTestConfig(t)
 
 		applyOption(t, cfg, WithRequestBody("text/plain", strings.NewReader("reader")))
 		if cfg.Request.Header.Get("Content-Type") != "text/plain" {
 			t.Fatal("reader content type was not set")
 		}
-		applyOption(t, cfg, WithRequestBody("application/octet-stream", []byte("bytes")))
-		if _, ok := cfg.Body.(*bytes.Buffer); !ok {
-			t.Fatalf("Body type = %T", cfg.Body)
-		}
-		if err := WithRequestBody("text/plain", 42).Apply(cfg); err == nil {
-			t.Fatal("WithRequestBody() accepted an unsupported body")
+		body := bytes.NewReader([]byte("bytes"))
+		applyOption(t, cfg, WithRequestBody("application/octet-stream", body))
+		if cfg.Body != body || cfg.Request.Header.Get("Content-Type") != "application/octet-stream" {
+			t.Fatalf("Body = %T with content type %q", cfg.Body, cfg.Request.Header.Get("Content-Type"))
 		}
 	})
 
@@ -163,7 +179,10 @@ func TestRequestOptions(t *testing.T) {
 		if cfg.RequestTimeout != 3*time.Second {
 			t.Fatalf("RequestTimeout = %s", cfg.RequestTimeout)
 		}
-		wantURL, _ := url.Parse("https://xquik.com/api/v1/")
+		wantURL, err := url.Parse("https://xquik.com/api/v1/")
+		if err != nil {
+			t.Fatal(err)
+		}
 		if cfg.DefaultBaseURL.String() != wantURL.String() {
 			t.Fatalf("DefaultBaseURL = %s", cfg.DefaultBaseURL)
 		}

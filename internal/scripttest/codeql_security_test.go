@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package scripttest
@@ -6,6 +7,7 @@ package scripttest
 import (
 	"bytes"
 	"errors"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,23 +15,18 @@ import (
 	"testing"
 )
 
-const fakeCodeQL = `#!/bin/sh
-case "$1 $2" in
-  "version --format=terse") echo 2.27.2 ;;
-  "pack install") ;;
-  "database create") ;;
-  "database analyze")
-    for argument; do
-      case "$argument" in --output=*) cp "$FAKE_REPORT" "${argument#--output=}" ;; esac
-    done ;;
-  *) echo "unexpected codeql call $*" >&2; exit 97 ;;
-esac
-`
-
 const (
 	extractionDiagnostic = `{"id":"go/diagnostics/extraction-errors"}`
 	extractedFile        = `{"locations":[{"physicalLocation":{"artifactLocation":{"uri":"client.go","uriBaseId":"%SRCROOT%"}}}],"message":{"text":""},"level":"none","descriptor":{"id":"go/diagnostics/successfully-extracted-files"}}`
 	unreadFile           = `{"message":{"text":"Extraction failed in client.go with error undefined: missingName"},"level":"error","descriptor":{"id":"go/diagnostics/extraction-errors"}}`
+	codeqlCalls          = `version --format=terse
+pack install codeql/no-code-comments
+pack install $REPORT/query-tests/no-code-comments-test --additional-packs=$REPORT/query-tests
+test run $REPORT/query-tests/no-code-comments-test --additional-packs=$REPORT/query-tests --threads=4
+test run saw extract tests true and 0 fixture files
+database create $REPORT/database --language=go --build-mode=autobuild --source-root=$REPO --threads=4
+database analyze $REPORT/database codeql/go-queries@1.6.12:codeql-suites/go-security-extended.qls codeql/no-code-comments --format=sarifv2.1.0 --output=$REPORT/report.sarif --threads=4
+`
 )
 
 func codeqlReport(diagnostics string, notifications ...string) string {
@@ -38,23 +35,20 @@ func codeqlReport(diagnostics string, notifications ...string) string {
 		`],"executionSuccessful":true}],"results":[]}]}`
 }
 
-func runCodeQLSecurity(t *testing.T, report string) auditResult {
+func runCodeQLSecurity(t *testing.T, report string) (auditResult, string) {
 	t.Helper()
-	script, err := filepath.Abs("../../scripts/codeql-security")
+	root := t.TempDir()
+	codeql, err := filepath.Abs("testdata/codeql")
 	if err != nil {
 		t.Fatal(err)
 	}
-	root := t.TempDir()
-	codeql := filepath.Join(root, "codeql")
 	reportPath := filepath.Join(root, "report.sarif")
-	if err := os.WriteFile(codeql, []byte(fakeCodeQL), 0o755); err != nil {
-		t.Fatal(err)
-	}
 	if err := os.WriteFile(reportPath, []byte(report), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	command := exec.Command(script)
-	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "TMPDIR="+root)
+	callsPath := filepath.Join(root, "calls.log")
+	command := exec.Command("../../scripts/codeql-security")
+	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "FAKE_CALLS="+callsPath, "TMPDIR="+root)
 	var stdout, stderr bytes.Buffer
 	command.Stdout, command.Stderr = &stdout, &stderr
 	result := auditResult{}
@@ -66,7 +60,11 @@ func runCodeQLSecurity(t *testing.T, report string) auditResult {
 		result.code = exit.ExitCode()
 	}
 	result.stdout, result.stderr = stdout.String(), stderr.String()
-	return result
+	calls, err := fs.ReadFile(os.DirFS(root), "calls.log")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return result, string(calls)
 }
 
 func TestCodeQLSecurity(t *testing.T) {
@@ -95,9 +93,12 @@ func TestCodeQLSecurity(t *testing.T) {
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			result := runCodeQLSecurity(t, test.report)
+			result, calls := runCodeQLSecurity(t, test.report)
 			if result.code != test.code {
 				t.Fatalf("exit code %d, want %d\nstderr: %s", result.code, test.code, result.stderr)
+			}
+			if calls != codeqlCalls {
+				t.Fatalf("codeql calls\n%s\nwant\n%s", calls, codeqlCalls)
 			}
 			if want := test.report + test.stdout; result.stdout != want {
 				t.Fatalf("stdout %q, want %q", result.stdout, want)

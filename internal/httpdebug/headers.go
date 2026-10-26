@@ -1,6 +1,9 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
+// Package httpdebug redacts credential headers before the SDK logs or dumps a
+// request or response.
 package httpdebug
 
 import "net/http"

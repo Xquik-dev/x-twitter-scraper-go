@@ -20,6 +20,15 @@ fi
 source scripts/temp-paths
 temp_path report codeql
 "$codeql" pack install codeql/no-code-comments
+query_tests="$report/query-tests"
+mkdir -- "$query_tests"
+cp -R -- codeql/no-code-comments codeql/no-code-comments-test "$query_tests/"
+while IFS= read -r -d '' fixture; do
+  mv -- "$fixture" "${fixture%.fixture}"
+done < <(find "$query_tests" -name '*.fixture' -print0)
+"$codeql" pack install "$query_tests/no-code-comments-test" --additional-packs="$query_tests"
+CODEQL_EXTRACTOR_GO_OPTION_EXTRACT_TESTS=true "$codeql" test run "$query_tests/no-code-comments-test" \
+  --additional-packs="$query_tests" --threads=4
 "$codeql" database create "$report/database" --language=go --build-mode=autobuild --source-root="$PWD" --threads=4
 "$codeql" database analyze "$report/database" codeql/go-queries@1.6.12:codeql-suites/go-security-extended.qls codeql/no-code-comments --format=sarifv2.1.0 --output="$report/report.sarif" --threads=4
 cat "$report/report.sarif"

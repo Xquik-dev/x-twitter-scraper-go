@@ -1,0 +1,2 @@
+// Package public is the 1 package doc comment the query accepts.
+package public

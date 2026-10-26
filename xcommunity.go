@@ -50,7 +50,7 @@ func NewXCommunityService(opts ...option.RequestOption) (r XCommunityService) {
 	return
 }
 
-// Creates an X Community through a connected account.
+// New creates an X Community through a connected account.
 func (r *XCommunityService) New(ctx context.Context, params XCommunityNewParams, opts ...option.RequestOption) (res *XCommunityNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -61,7 +61,7 @@ func (r *XCommunityService) New(ctx context.Context, params XCommunityNewParams,
 	return res, err
 }
 
-// Deletes an owned X Community through a connected account.
+// Delete deletes an owned X Community through a connected account.
 func (r *XCommunityService) Delete(ctx context.Context, id string, params XCommunityDeleteParams, opts ...option.RequestOption) (res *XCommunityDeleteResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -76,7 +76,7 @@ func (r *XCommunityService) Delete(ctx context.Context, id string, params XCommu
 	return res, err
 }
 
-// Returns the communities X finds for a keyword, in X's order. Each community
+// Find returns the communities X finds for a keyword, in X's order. Each community
 // costs 1 credit. To search the tweets in Communities, use /x/communities/search.
 func (r *XCommunityService) Find(ctx context.Context, query XCommunityFindParams, opts ...option.RequestOption) (res *shared.CommunityPage, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -85,7 +85,7 @@ func (r *XCommunityService) Find(ctx context.Context, query XCommunityFindParams
 	return res, err
 }
 
-// Returns community activity for X's latest period. Includes likes, new members,
+// GetAnalytics returns community activity for X's latest period. Includes likes, new members,
 // posts, replies & unique posters. Each metric has a count and a changePercent.
 // Each request costs 1 credit.
 func (r *XCommunityService) GetAnalytics(ctx context.Context, id string, query XCommunityGetAnalyticsParams, opts ...option.RequestOption) (res *shared.CommunityAnalytics, err error) {
@@ -99,7 +99,7 @@ func (r *XCommunityService) GetAnalytics(ctx context.Context, id string, query X
 	return res, err
 }
 
-// Returns public identity and membership counts for one community.
+// GetInfo returns public identity and membership counts for one community.
 func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...option.RequestOption) (res *XCommunityGetInfoResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -111,7 +111,7 @@ func (r *XCommunityService) GetInfo(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Returns public member profiles for one community.
+// GetMembers returns public member profiles for one community.
 func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCommunityGetMembersParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -123,7 +123,7 @@ func (r *XCommunityService) GetMembers(ctx context.Context, id string, query XCo
 	return res, err
 }
 
-// Returns public moderator profiles for one community.
+// GetModerators returns public moderator profiles for one community.
 func (r *XCommunityService) GetModerators(ctx context.Context, id string, query XCommunityGetModeratorsParams, opts ...option.RequestOption) (res *shared.PaginatedUsers, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -135,7 +135,7 @@ func (r *XCommunityService) GetModerators(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Returns one tweet page, not community records.
+// GetSearch returns one tweet page, not community records.
 func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSearchParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/communities/search"
@@ -143,7 +143,7 @@ func (r *XCommunityService) GetSearch(ctx context.Context, query XCommunityGetSe
 	return res, err
 }
 
-// Returns the communities X ranks highest under a topic or subtopic. Name it by
+// ListPopular returns the communities X ranks highest under a topic or subtopic. Name it by
 // topicId or by topic name from /x/communities/topics. Each community costs 1
 // credit. A missing or unknown topic returns invalid_community_topic & lists the
 // topic names.
@@ -154,7 +154,7 @@ func (r *XCommunityService) ListPopular(ctx context.Context, query XCommunityLis
 	return res, err
 }
 
-// Returns the communities X suggests, with their full public fields. X picks them
+// ListSuggested returns the communities X suggests, with their full public fields. X picks them
 // per request, so 2 calls can differ. If X suggests none, Xquik asks up to 2 more
 // times. An empty list is free. Each community costs 1 credit.
 func (r *XCommunityService) ListSuggested(ctx context.Context, query XCommunityListSuggestedParams, opts ...option.RequestOption) (res *XCommunityListSuggestedResponse, err error) {
@@ -164,7 +164,7 @@ func (r *XCommunityService) ListSuggested(ctx context.Context, query XCommunityL
 	return res, err
 }
 
-// Returns the community topics with their subtopics. Pass an ID as topicId, or a
+// ListTopics returns the community topics with their subtopics. Pass an ID as topicId, or a
 // name as topic, to /x/communities/popular. Each top-level topic costs 1 credit,
 // its subtopics included.
 func (r *XCommunityService) ListTopics(ctx context.Context, query XCommunityListTopicsParams, opts ...option.RequestOption) (res *XCommunityListTopicsResponse, err error) {
@@ -174,7 +174,7 @@ func (r *XCommunityService) ListTopics(ctx context.Context, query XCommunityList
 	return res, err
 }
 
-// Finds a community's members by name or username, as the search box on X's
+// SearchMembers finds a community's members by name or username, as the search box on X's
 // members page does. X checks up to 10 accounts that match, & the answer holds the
 // members among them, each with its role. Each member costs 1 credit. An answer
 // without members is free.
@@ -189,7 +189,7 @@ func (r *XCommunityService) SearchMembers(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XCommunityNewResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XCommunityNewResponse struct {
@@ -239,14 +239,14 @@ type XCommunityNewResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -313,13 +313,13 @@ type XCommunityNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XCommunityNewResponseAccount is a connected account selected for the write.
 type XCommunityNewResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -332,10 +332,10 @@ type XCommunityNewResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityNewResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNewResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityNewResponseAction string
@@ -362,7 +362,7 @@ const (
 	XCommunityNewResponseActionLeaveCommunity  XCommunityNewResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XCommunityNewResponseBilling is the type of [XCommunityNewResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XCommunityNewResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -381,13 +381,13 @@ type XCommunityNewResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityNewResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNewResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XCommunityNewResponseNextAction is the type of [XCommunityNewResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XCommunityNewResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -405,18 +405,18 @@ type XCommunityNewResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityNewResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNewResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XCommunityNewResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XCommunityNewResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -426,13 +426,13 @@ type XCommunityNewResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityNewResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNewResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XCommunityNewResponseResult is a confirmed result produced by the write, when available.
 type XCommunityNewResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -448,10 +448,10 @@ type XCommunityNewResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityNewResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNewResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityNewResponseStatus string
@@ -465,7 +465,7 @@ const (
 	XCommunityNewResponseStatusExpired             XCommunityNewResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XCommunityNewResponseTarget is an existing X resource targeted by the write, when applicable.
 type XCommunityNewResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -479,13 +479,13 @@ type XCommunityNewResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityNewResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNewResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XCommunityDeleteResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XCommunityDeleteResponse struct {
@@ -535,14 +535,14 @@ type XCommunityDeleteResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -609,13 +609,13 @@ type XCommunityDeleteResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XCommunityDeleteResponseAccount is a connected account selected for the write.
 type XCommunityDeleteResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -628,10 +628,10 @@ type XCommunityDeleteResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityDeleteResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityDeleteResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityDeleteResponseAction string
@@ -658,7 +658,7 @@ const (
 	XCommunityDeleteResponseActionLeaveCommunity  XCommunityDeleteResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XCommunityDeleteResponseBilling is the type of [XCommunityDeleteResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XCommunityDeleteResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -677,13 +677,13 @@ type XCommunityDeleteResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityDeleteResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityDeleteResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XCommunityDeleteResponseNextAction is the type of [XCommunityDeleteResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XCommunityDeleteResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -701,18 +701,18 @@ type XCommunityDeleteResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityDeleteResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityDeleteResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XCommunityDeleteResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XCommunityDeleteResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -722,13 +722,13 @@ type XCommunityDeleteResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityDeleteResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityDeleteResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XCommunityDeleteResponseResult is a confirmed result produced by the write, when available.
 type XCommunityDeleteResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -744,10 +744,10 @@ type XCommunityDeleteResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityDeleteResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityDeleteResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityDeleteResponseStatus string
@@ -761,7 +761,7 @@ const (
 	XCommunityDeleteResponseStatusExpired             XCommunityDeleteResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XCommunityDeleteResponseTarget is an existing X resource targeted by the write, when applicable.
 type XCommunityDeleteResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -775,10 +775,10 @@ type XCommunityDeleteResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityDeleteResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityDeleteResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityGetInfoResponse struct {
@@ -792,13 +792,13 @@ type XCommunityGetInfoResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityGetInfoResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityGetInfoResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community info object
+// XCommunityGetInfoResponseCommunity is a community info object.
 type XCommunityGetInfoResponseCommunity struct {
 	// Unique community identifier
 	ID string `json:"id" api:"required"`
@@ -861,10 +861,10 @@ type XCommunityGetInfoResponseCommunity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityGetInfoResponseCommunity) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityGetInfoResponseCommunity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityGetInfoResponseCommunityCreator struct {
@@ -926,7 +926,7 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 	// Whether the profile may add a location to posts.
 	GeoEnabled bool `json:"geoEnabled"`
 	// Public profile bio translation returned by X
-	GrokTranslatedBio  map[string]any `json:"grokTranslatedBio"`
+	GrokTranslatedBio  PublicMetadata `json:"grokTranslatedBio"`
 	HasCustomTimelines bool           `json:"hasCustomTimelines"`
 	// Whether the profile filled X's extended fields, such as a birth date. True or
 	// false.
@@ -957,9 +957,9 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 	PinnedTweetIDs           []string `json:"pinnedTweetIds"`
 	PossiblySensitive        bool     `json:"possiblySensitive"`
 	// Professional metadata with category display settings
-	Professional map[string]any `json:"professional"`
+	Professional PublicMetadata `json:"professional"`
 	// Structured profile bio with entity annotations
-	ProfileBio map[string]any `json:"profile_bio"`
+	ProfileBio PublicMetadata `json:"profile_bio"`
 	// Original X profile banner field when available
 	ProfileBannerURL           string `json:"profileBannerUrl"`
 	ProfileDescriptionLanguage string `json:"profileDescriptionLanguage"`
@@ -1086,13 +1086,13 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityGetInfoResponseCommunityCreator) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityGetInfoResponseCommunityCreator) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Primary topic
+// XCommunityGetInfoResponseCommunityPrimaryTopic is a primary topic.
 type XCommunityGetInfoResponseCommunityPrimaryTopic struct {
 	ID   string `json:"id"`
 	Name string `json:"name" api:"required"`
@@ -1105,10 +1105,10 @@ type XCommunityGetInfoResponseCommunityPrimaryTopic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityGetInfoResponseCommunityPrimaryTopic) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityGetInfoResponseCommunityPrimaryTopic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityGetInfoResponseCommunityRule struct {
@@ -1125,10 +1125,10 @@ type XCommunityGetInfoResponseCommunityRule struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityGetInfoResponseCommunityRule) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityGetInfoResponseCommunityRule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityListSuggestedResponse struct {
@@ -1148,10 +1148,10 @@ type XCommunityListSuggestedResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityListSuggestedResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityListSuggestedResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityListTopicsResponse struct {
@@ -1171,10 +1171,10 @@ type XCommunityListTopicsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityListTopicsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityListTopicsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityNewParams struct {
@@ -1193,7 +1193,7 @@ func (r XCommunityNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XCommunityNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XCommunityDeleteParams struct {
@@ -1210,7 +1210,7 @@ func (r XCommunityDeleteParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XCommunityDeleteParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XCommunityGetAnalyticsParams struct {
@@ -1483,7 +1483,7 @@ func (r XCommunityGetSearchParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XCommunityGetSearchParamsMediaType is the type of [XCommunityGetSearchParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XCommunityGetSearchParamsMediaType string
 
 const (
@@ -1495,7 +1495,7 @@ const (
 	XCommunityGetSearchParamsMediaTypeNone   XCommunityGetSearchParamsMediaType = "none"
 )
 
-// Sort order (Latest or Top)
+// XCommunityGetSearchParamsQueryType is a sort order (Latest or Top).
 type XCommunityGetSearchParamsQueryType string
 
 const (
@@ -1682,7 +1682,7 @@ func (r XCommunitySearchMembersParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Reply mode. Exclude keeps own-thread replies.
+// XCommunityGetSearchParamsReplies is a reply mode. Exclude keeps own-thread replies.
 type XCommunityGetSearchParamsReplies string
 
 const (
@@ -1691,7 +1691,7 @@ const (
 	XCommunityGetSearchParamsRepliesOnly    XCommunityGetSearchParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XCommunityGetSearchParamsRetweets applies only when the caller requests a repost mode.
 type XCommunityGetSearchParamsRetweets string
 
 const (
@@ -1700,7 +1700,7 @@ const (
 	XCommunityGetSearchParamsRetweetsOnly    XCommunityGetSearchParamsRetweets = "only"
 )
 
-// Only when the caller requests a quote mode.
+// XCommunityGetSearchParamsQuotes applies only when the caller requests a quote mode.
 type XCommunityGetSearchParamsQuotes string
 
 const (

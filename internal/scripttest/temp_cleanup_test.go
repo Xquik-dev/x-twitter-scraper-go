@@ -1,4 +1,5 @@
-// Copyright the Xquik contributors.
+// SPDX-FileCopyrightText: 2026 Xquik contributors
+//
 // SPDX-License-Identifier: Apache-2.0
 
 package scripttest
@@ -6,6 +7,7 @@ package scripttest
 import (
 	"bytes"
 	"errors"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,83 +17,52 @@ import (
 	"time"
 )
 
-const fakeTool = `#!/bin/sh
-case "$*" in
-  "version --format=terse") echo 2.27.2; exit 0 ;;
-  "list -f "*|"list -deps "*|"list ./...") echo github.com/Xquik-dev/x-twitter-scraper-go; exit 0 ;;
-  "-l .") exit 0 ;;
-esac
-if [ "$(basename "$0")" = go ]; then
-  mktemp "${GOTMPDIR:-${TMPDIR:-/tmp}}/go-build.XXXXXX" >/dev/null || exit 1
-fi
-if [ "$FAKE_COVERAGE" = true ]; then
-  case "$1" in
-    test)
-      for argument; do
-        case "$argument" in -coverprofile=*) echo 'mode: set' >"${argument#-coverprofile=}" ;; esac
-      done ;;
-    run) cat ;;
-    *) exit 1 ;;
-  esac
-  exit 0
-fi
-if [ -n "$GOMODCACHE" ]; then
-  mkdir -p "$GOMODCACHE/cache/download" && : >"$GOMODCACHE/cache/download/list" && chmod -R a-w "$GOMODCACHE"
-fi
-if [ -n "$FAKE_STARTED" ]; then
-  : >"$FAKE_STARTED"
-  exec sleep 30
-fi
-echo "fake $(basename "$0") failed" >&2
-exit 3
-`
-
 type cleanupCase struct {
 	name    string
-	command []string
+	command func(root string) *exec.Cmd
 	tools   []string
 	setup   func(t *testing.T, root string) []string
 }
 
-func repositoryRoot(t *testing.T) string {
-	t.Helper()
-	root, err := filepath.Abs("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-	return root
-}
-
-func cleanupCases(t *testing.T) []cleanupCase {
-	repo := repositoryRoot(t)
-	script := func(path string) string { return filepath.Join(repo, path) }
+func cleanupCases() []cleanupCase {
 	return []cleanupCase{
-		{name: "check-local", command: []string{script("bin/check-local"), "--no-status"}, tools: []string{"go", "jq", "uv"}},
-		{name: "test", command: []string{script("scripts/test")}, tools: []string{"go"}},
-		{name: "fuzz", command: []string{script("scripts/fuzz")}, tools: []string{"go"}},
-		{name: "lint", command: []string{script("scripts/lint")}, tools: []string{"go", "gofmt"}},
-		{name: "collect-coverage", command: []string{script("scripts/collect-coverage")}, tools: []string{"go"}},
-		{name: "collect-branches", command: []string{script("scripts/collect-branches")}, tools: []string{"go"}},
-		{name: "coverage-baseline", command: []string{script("scripts/coverage-baseline"), "HEAD"}, tools: []string{"go"}},
-		{name: "codeql-security", command: []string{script("scripts/codeql-security")}, tools: []string{"codeql"}, setup: func(t *testing.T, root string) []string {
+		{name: "check-local", command: func(string) *exec.Cmd { return exec.Command("../../bin/check-local", "--no-status") }, tools: []string{"go", "jq", "uv"}},
+		{name: "test", command: func(string) *exec.Cmd { return exec.Command("../../scripts/test") }, tools: []string{"go"}},
+		{name: "fuzz", command: func(string) *exec.Cmd { return exec.Command("../../scripts/fuzz") }, tools: []string{"go"}},
+		{name: "lint", command: func(string) *exec.Cmd { return exec.Command("../../scripts/lint") }, tools: []string{"go", "gofmt"}},
+		{name: "collect-coverage", command: func(string) *exec.Cmd { return exec.Command("../../scripts/collect-coverage") }, tools: []string{"go"}},
+		{name: "collect-branches", command: func(string) *exec.Cmd { return exec.Command("../../scripts/collect-branches") }, tools: []string{"go"}},
+		{name: "coverage-baseline", command: func(string) *exec.Cmd { return exec.Command("../../scripts/coverage-baseline", "HEAD") }, tools: []string{"go"}},
+		{name: "codeql-security", command: func(string) *exec.Cmd { return exec.Command("../../scripts/codeql-security") }, tools: []string{"codeql"}, setup: func(t *testing.T, root string) []string {
 			return []string{"XQUIK_CODEQL_BIN=" + filepath.Join(root, "bin", "codeql")}
 		}},
-		{name: "source-security", command: []string{script("scripts/source-security")}, tools: []string{"go"}},
-		{name: "signing-audit", command: []string{"bash", script("scripts/signing-audit")}, tools: []string{"uv"}},
-		{name: "dependency-audit", command: []string{script("scripts/dependency-audit")}, tools: []string{"go"}, setup: func(t *testing.T, root string) []string {
+		{name: "source-security", command: func(string) *exec.Cmd { return exec.Command("../../scripts/source-security") }, tools: []string{"go"}},
+		{name: "signing-audit", command: func(string) *exec.Cmd { return exec.Command("bash", "../../scripts/signing-audit") }, tools: []string{"uv"}},
+		{name: "dependency-audit", command: func(root string) *exec.Cmd {
+			command := exec.Command("scripts/dependency-audit", ".")
+			command.Dir = filepath.Join(root, "project")
+			return command
+		}, tools: []string{"go"}, setup: func(t *testing.T, root string) []string {
 			project := filepath.Join(root, "project")
 			if err := os.MkdirAll(project, 0o750); err != nil {
 				t.Fatal(err)
 			}
-			return []string{"FAKE_ARGUMENT=" + project}
+			linkAuditScript(t, project)
+			return nil
 		}},
-		{name: "reproducible-build", command: []string{script("scripts/reproducible-build")}, tools: []string{"go"}},
-		{name: "verify-release", command: []string{"bash", script("scripts/verify-release"), "v1.2.3", "0123456789abcdef0123456789abcdef01234567"}, tools: []string{"go"}},
+		{name: "reproducible-build", command: func(string) *exec.Cmd { return exec.Command("../../scripts/reproducible-build") }, tools: []string{"go"}},
+		{name: "verify-release", command: func(string) *exec.Cmd {
+			return exec.Command("bash", "../../scripts/verify-release", "v1.2.3", "0123456789abcdef0123456789abcdef01234567")
+		}, tools: []string{"go"}},
 	}
 }
 
 func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd, string) {
 	t.Helper()
+	fakeTool, err := filepath.Abs("testdata/fake-tool")
+	if err != nil {
+		t.Fatal(err)
+	}
 	root := t.TempDir()
 	private := filepath.Join(root, "tmp")
 	bin := filepath.Join(root, "bin")
@@ -102,7 +73,7 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 		}
 	}
 	for _, tool := range test.tools {
-		if err := os.WriteFile(filepath.Join(bin, tool), []byte(fakeTool), 0o755); err != nil {
+		if err := os.Symlink(fakeTool, filepath.Join(bin, tool)); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -110,24 +81,26 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 	if started != "" {
 		env = append(env, "FAKE_STARTED="+started)
 	}
-	command := append([]string(nil), test.command...)
 	if test.setup != nil {
-		for _, variable := range test.setup(t, root) {
-			if argument, ok := strings.CutPrefix(variable, "FAKE_ARGUMENT="); ok {
-				command = append(command, argument)
-				continue
-			}
-			env = append(env, variable)
-		}
+		env = append(env, test.setup(t, root)...)
 	}
-	cmd := exec.Command(command[0], command[1:]...)
+	cmd := test.command(root)
 	cmd.Env = append(os.Environ(), env...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout, cmd.Stderr = &stdout, &stderr
 	t.Cleanup(func() {
-		for _, directory := range []string{moduleCache, filepath.Join(moduleCache, "cache"), filepath.Join(moduleCache, "cache", "download")} {
-			if err := os.Chmod(directory, 0o700); err != nil && !errors.Is(err, os.ErrNotExist) {
+		cache, err := os.OpenRoot(moduleCache)
+		if errors.Is(err, os.ErrNotExist) {
+			return
+		}
+		if err != nil {
+			t.Errorf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
+			return
+		}
+		defer cache.Close()
+		for _, directory := range []string{".", "cache", filepath.Join("cache", "download")} {
+			if err := cache.Chmod(directory, 0o750); err != nil && !errors.Is(err, os.ErrNotExist) {
 				t.Errorf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
 			}
 		}
@@ -206,7 +179,7 @@ func terminateRun(t *testing.T, cmd *exec.Cmd, started string, signal syscall.Si
 }
 
 func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
-	for _, test := range cleanupCases(t) {
+	for _, test := range cleanupCases() {
 		t.Run(test.name, func(t *testing.T) {
 			cmd, private := startCleanupCase(t, test, "")
 			if code := exitCode(t, cmd, cmd.Wait()); code == 0 {
@@ -218,7 +191,7 @@ func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
 }
 
 func TestChecksRemoveTheirTempDirsWhenTerminated(t *testing.T) {
-	for _, test := range cleanupCases(t) {
+	for _, test := range cleanupCases() {
 		t.Run(test.name, func(t *testing.T) {
 			for _, signal := range []syscall.Signal{syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM} {
 				t.Run(signal.String(), func(t *testing.T) {
@@ -237,8 +210,11 @@ func TestInterruptStopsBashParent(t *testing.T) {
 	started := filepath.Join(root, "started")
 	continued := filepath.Join(root, "continued")
 	test := cleanupCase{
-		command: []string{"bash", "-c", "\"$1\"\n: >\"$2\"\n", "bash", filepath.Join(repositoryRoot(t), "scripts/test"), continued},
-		tools:   []string{"go"},
+		command: func(string) *exec.Cmd {
+			return exec.Command("bash", "-c", "\"$1\"\n: >\"$FAKE_CONTINUED\"\n", "bash", "../../scripts/test")
+		},
+		tools: []string{"go"},
+		setup: func(*testing.T, string) []string { return []string{"FAKE_CONTINUED=" + continued} },
 	}
 	cmd, private := startCleanupCase(t, test, started)
 	terminateRun(t, cmd, started, syscall.SIGINT)
@@ -248,21 +224,21 @@ func TestInterruptStopsBashParent(t *testing.T) {
 	}
 }
 
-func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args ...string) (*exec.Cmd, string) {
+func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string) (*exec.Cmd, string) {
 	t.Helper()
 	checkLocal = "#!/bin/sh\nmktemp \"${GOTMPDIR:-$TMPDIR}/go-build.XXXXXX\" >/dev/null || exit 1\n" + checkLocal
-	if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o755); err != nil {
+	if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	fixture.git(fixture.repo, "commit", "--quiet", "--all", "--message", "check-local")
-	fixture.git(fixture.repo, "push", "--quiet", "origin", "main")
+	fixture.git(fixture.repo, exec.Command("git", "commit", "--quiet", "--all", "--message", "check-local"))
+	fixture.git(fixture.repo, exec.Command("git", "push", "--quiet", "origin", "main"))
 	root := t.TempDir()
 	private := filepath.Join(root, "tmp")
 	if err := os.MkdirAll(private, 0o750); err != nil {
 		t.Fatal(err)
 	}
-	cmd := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
-	cmd.Dir = t.TempDir()
+	cmd := exec.Command(releaseLocal, "--dry-run")
+	cmd.Dir = fixture.outside
 	cmd.Env = append(append([]string(nil), fixture.env...), "TMPDIR="+private, "GOTMPDIR=", "GOMODCACHE="+filepath.Join(root, "modules"))
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	var stdout, stderr bytes.Buffer
@@ -275,14 +251,14 @@ func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args
 
 func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 	t.Run("after a dry run", func(t *testing.T) {
-		cmd, private := startRelease(t, newReleaseFixture(t), "", "--dry-run")
+		cmd, private := startRelease(t, newReleaseFixture(t), "")
 		if code := exitCode(t, cmd, cmd.Wait()); code != 0 {
 			t.Fatalf("dry run exit %d\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
 		expectEmpty(t, cmd, private)
 	})
 	t.Run("when a step fails", func(t *testing.T) {
-		cmd, private := startRelease(t, newReleaseFixture(t), "exit 3\n", "--dry-run")
+		cmd, private := startRelease(t, newReleaseFixture(t), "exit 3\n")
 		if code := exitCode(t, cmd, cmd.Wait()); code != 3 {
 			t.Fatalf("exit %d, want 3\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
@@ -291,7 +267,7 @@ func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 	for _, signal := range []syscall.Signal{syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM} {
 		t.Run("when terminated by "+signal.String(), func(t *testing.T) {
 			started := filepath.Join(t.TempDir(), "started")
-			cmd, private := startRelease(t, newReleaseFixture(t), ": >\""+started+"\"\nexec sleep 30\n", "--dry-run")
+			cmd, private := startRelease(t, newReleaseFixture(t), ": >\""+started+"\"\nexec sleep 30\n")
 			terminateRun(t, cmd, started, signal)
 			expectEmpty(t, cmd, private)
 		})
@@ -310,7 +286,7 @@ func TestCoverageReportsOnlyRetainedProfiles(t *testing.T) {
 				output = t.TempDir()
 			}
 			test := cleanupCase{
-				command: []string{filepath.Join(repositoryRoot(t), "scripts/collect-coverage")},
+				command: func(string) *exec.Cmd { return exec.Command("../../scripts/collect-coverage") },
 				tools:   []string{"go"},
 				setup: func(t *testing.T, root string) []string {
 					return []string{"FAKE_COVERAGE=true", "XQUIK_COVERAGE_DIR=" + output}
@@ -324,14 +300,14 @@ func TestCoverageReportsOnlyRetainedProfiles(t *testing.T) {
 			if retain {
 				want += "Coverage profile: " + filepath.Join(output, "coverage.out") + "\n"
 				for _, name := range []string{"coverage.out", "coverage.xml"} {
-					data, err := os.ReadFile(filepath.Join(output, name))
+					data, err := fs.ReadFile(os.DirFS(output), name)
 					if err != nil || string(data) != "mode: set\n" {
 						t.Fatalf("retained %s = %q, error %v", name, data, err)
 					}
 				}
 			}
-			if got := cmd.Stdout.(*bytes.Buffer).String(); got != want {
-				t.Fatalf("stdout %q, want %q", got, want)
+			if stdout, ok := cmd.Stdout.(*bytes.Buffer); !ok || stdout.String() != want {
+				t.Fatalf("stdout %q, want %q", stdout.String(), want)
 			}
 			expectEmpty(t, cmd, private)
 		})

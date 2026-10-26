@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package apierror defines Error, the error the client returns for an
+// unsuccessful API response. Its dumps redact credential headers.
 package apierror
 
 import (
@@ -28,7 +30,7 @@ type Error struct {
 
 func (r Error) RawJSON() string { return r.JSON.raw }
 func (r *Error) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 func (r *Error) Error() string {
@@ -47,7 +49,10 @@ func (r *Error) DumpRequest(body bool) []byte {
 	} else if body {
 		body = false
 	}
-	out, _ := httputil.DumpRequestOut(&requestCopy, body)
+	out, err := httputil.DumpRequestOut(&requestCopy, body)
+	if err != nil {
+		return nil
+	}
 	return out
 }
 
@@ -60,6 +65,9 @@ func (r *Error) DumpResponse(body bool) []byte {
 	} else if body {
 		body = false
 	}
-	out, _ := httputil.DumpResponse(&responseCopy, body)
+	out, err := httputil.DumpResponse(&responseCopy, body)
+	if err != nil {
+		return nil
+	}
 	return out
 }
