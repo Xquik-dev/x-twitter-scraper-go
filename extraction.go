@@ -1129,7 +1129,7 @@ type ExtractionExportResultsParamsFormat string
 
 const (
 	ExtractionExportResultsParamsFormatCsv        ExtractionExportResultsParamsFormat = "csv"
-	ExtractionExportResultsParamsFormatJson       ExtractionExportResultsParamsFormat = "json"
+	ExtractionExportResultsParamsFormatJSON       ExtractionExportResultsParamsFormat = "json"
 	ExtractionExportResultsParamsFormatMd         ExtractionExportResultsParamsFormat = "md"
 	ExtractionExportResultsParamsFormatMdDocument ExtractionExportResultsParamsFormat = "md-document"
 	ExtractionExportResultsParamsFormatPdf        ExtractionExportResultsParamsFormat = "pdf"

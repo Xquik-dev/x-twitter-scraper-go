@@ -518,8 +518,8 @@ func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsString() (v stri
 // Returns the unmodified JSON received from the API
 func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisBrandResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisBrandResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -653,8 +653,8 @@ func (u XAnalysisBrandResponseResultAnswersUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u XAnalysisBrandResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisBrandResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisBrandResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -1190,8 +1190,8 @@ func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsString() (v s
 // Returns the unmodified JSON received from the API
 func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -1327,8 +1327,8 @@ func (u XAnalysisClassifyResponseResultAnswersUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u XAnalysisClassifyResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisClassifyResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisClassifyResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -1870,8 +1870,8 @@ func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) RawJSON() 
 	return u.JSON.raw
 }
 
-func (r *XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -2007,8 +2007,8 @@ func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsString() (v string) 
 // Returns the unmodified JSON received from the API
 func (u XAnalysisMarketSignalsResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisMarketSignalsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisMarketSignalsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -2542,8 +2542,8 @@ func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsString() (v strin
 // Returns the unmodified JSON received from the API
 func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisNewsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisNewsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -2677,8 +2677,8 @@ func (u XAnalysisNewsResponseResultAnswersUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u XAnalysisNewsResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisNewsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisNewsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -3214,8 +3214,8 @@ func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsString() (v 
 // Returns the unmodified JSON received from the API
 func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -3351,8 +3351,8 @@ func (u XAnalysisSentimentResponseResultAnswersUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u XAnalysisSentimentResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisSentimentResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisSentimentResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -3890,8 +3890,8 @@ func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) RawJSON() str
 	return u.JSON.raw
 }
 
-func (r *XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -4027,8 +4027,8 @@ func (u XAnalysisViralScoreResponseResultAnswersUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u XAnalysisViralScoreResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAnalysisViralScoreResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAnalysisViralScoreResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors

@@ -277,7 +277,7 @@ type DrawExportParamsFormat string
 
 const (
 	DrawExportParamsFormatCsv        DrawExportParamsFormat = "csv"
-	DrawExportParamsFormatJson       DrawExportParamsFormat = "json"
+	DrawExportParamsFormatJSON       DrawExportParamsFormat = "json"
 	DrawExportParamsFormatMd         DrawExportParamsFormat = "md"
 	DrawExportParamsFormatMdDocument DrawExportParamsFormat = "md-document"
 	DrawExportParamsFormatPdf        DrawExportParamsFormat = "pdf"

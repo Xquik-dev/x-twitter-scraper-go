@@ -264,8 +264,8 @@ func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionChallen
 // Returns the unmodified JSON received from the API
 func (u XAccountNewResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAccountNewResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAccountNewResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Sanitized X account summary returned by connect and reauth.

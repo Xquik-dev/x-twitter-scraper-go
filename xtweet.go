@@ -2059,8 +2059,8 @@ func (u TweetDetailSportsContextScheduledAtMsUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u TweetDetailSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *TweetDetailSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *TweetDetailSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -3033,8 +3033,8 @@ func (u XTweetSearchResponseUnion) AsXTweetSearchResponseTweetSearchCoverageResp
 // Returns the unmodified JSON received from the API
 func (u XTweetSearchResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XTweetSearchResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XTweetSearchResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Terminal Tweet search coverage response with diagnostics.

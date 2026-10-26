@@ -147,8 +147,8 @@ func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCover
 // Returns the unmodified JSON received from the API
 func (u XListGetFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XListGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XListGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once
@@ -326,8 +326,8 @@ func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageR
 // Returns the unmodified JSON received from the API
 func (u XListGetMembersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XListGetMembersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XListGetMembersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once

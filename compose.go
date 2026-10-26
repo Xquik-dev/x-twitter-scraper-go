@@ -134,8 +134,8 @@ func (u ComposeNewResponseUnion) AsComposeNewResponseComposeScoreResult() (v Com
 // Returns the unmodified JSON received from the API
 func (u ComposeNewResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *ComposeNewResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *ComposeNewResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Rules, questions, and research guidance for drafting a post.
@@ -421,8 +421,8 @@ type ComposeNewParams struct {
 	paramObj
 }
 
-func (u ComposeNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfComposePrepareRequest, u.OfComposeRefineRequest, u.OfComposeScoreRequest)
+func (r ComposeNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(r, r.OfComposePrepareRequest, r.OfComposeRefineRequest, r.OfComposeScoreRequest)
 }
 func (r *ComposeNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, nil)

@@ -9,14 +9,9 @@ import (
 	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
-	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
-
-type paramUnion = param.APIUnion
-
-type paramObj = param.APIObject
 
 // PublicMetadata holds a JSON object whose fields X defines. Each value keeps its
 // raw JSON, so decode a key with [json.Unmarshal] into the type you expect.
@@ -509,8 +504,8 @@ func (u CommunityCreatorUnion) AsCommunityCreatorObject() (v CommunityCreatorObj
 // Returns the unmodified JSON received from the API
 func (u CommunityCreatorUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CommunityCreatorUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *CommunityCreatorUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 type CommunityCreatorObject struct {
@@ -787,8 +782,8 @@ func (u CommunityMembersFacepileUnion) AsCommunityMembersFacepileCommunityMember
 // Returns the unmodified JSON received from the API
 func (u CommunityMembersFacepileUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CommunityMembersFacepileUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *CommunityMembersFacepileUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // A member X previews by ID & profile picture only.
@@ -5914,8 +5909,8 @@ func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMs
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -7412,8 +7407,8 @@ func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledA
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -7622,8 +7617,8 @@ func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJ
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -10342,8 +10337,8 @@ func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledA
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -11846,8 +11841,8 @@ func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextSchedul
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -12056,8 +12051,8 @@ func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) R
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -12258,8 +12253,8 @@ func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v s
 // Returns the unmodified JSON received from the API
 func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -16156,8 +16151,8 @@ func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledA
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -17660,8 +17655,8 @@ func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextSchedul
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -17870,8 +17865,8 @@ func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) R
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -20604,8 +20599,8 @@ func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextSchedul
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -22112,8 +22107,8 @@ func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextSche
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -22322,8 +22317,8 @@ func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -22526,8 +22521,8 @@ func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() st
 	return u.JSON.raw
 }
 
-func (r *EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -22724,8 +22719,8 @@ func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u EmbeddedTweetSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *EmbeddedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *EmbeddedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.
@@ -24712,8 +24707,8 @@ func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
 // Returns the unmodified JSON received from the API
 func (u SearchTweetSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *SearchTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *SearchTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Public visibility notice attached to an available tweet.

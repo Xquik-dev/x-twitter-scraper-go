@@ -760,8 +760,8 @@ func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCover
 // Returns the unmodified JSON received from the API
 func (u XUserGetFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XUserGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XUserGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once
@@ -939,8 +939,8 @@ func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCover
 // Returns the unmodified JSON received from the API
 func (u XUserGetFollowingResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XUserGetFollowingResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XUserGetFollowingResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once
@@ -1120,8 +1120,8 @@ func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersRespo
 // Returns the unmodified JSON received from the API
 func (u XUserGetVerifiedFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XUserGetVerifiedFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XUserGetVerifiedFollowersResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once

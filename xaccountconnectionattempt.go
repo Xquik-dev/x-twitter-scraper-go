@@ -153,8 +153,8 @@ func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAcc
 // Returns the unmodified JSON received from the API
 func (u XAccountConnectionAttemptGetResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *XAccountConnectionAttemptGetResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+func (u *XAccountConnectionAttemptGetResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
 // The connection is still in progress.
