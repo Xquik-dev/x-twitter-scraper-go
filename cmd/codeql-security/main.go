@@ -13,6 +13,10 @@ import (
 
 const extractionErrors = "go/diagnostics/extraction-errors"
 
+type failure string
+
+func (f failure) Error() string { return string(f) }
+
 func validate(data []byte) error {
 	var report struct {
 		Version string
@@ -48,7 +52,7 @@ func validate(data []byte) error {
 		ran = ran || descriptor.ID == extractionErrors
 	}
 	if !ran {
-		return fmt.Errorf("The CodeQL scan lacks %s, so it cannot show that it read every file. Make the suite in scripts/codeql-security run that diagnostic query.", extractionErrors)
+		return failure(fmt.Sprintf("The CodeQL scan lacks %s, so it cannot show that it read every file. Make the suite in scripts/codeql-security run that diagnostic query.", extractionErrors))
 	}
 	extracted := 0
 	var unread []string
@@ -61,7 +65,7 @@ func validate(data []byte) error {
 			case notification.Descriptor.ID == extractionErrors:
 				unread = append(unread, fmt.Sprintf("%q", notification.Message.Text))
 			case notification.Level != "none" && notification.Level != "note":
-				return fmt.Errorf("CodeQL diagnostic %s needs review. It said %q. Fix the cause, then rerun bin/check-local.", notification.Descriptor.ID, notification.Message.Text)
+				return failure(fmt.Sprintf("CodeQL diagnostic %s needs review. It said %q. Fix the cause, then rerun bin/check-local.", notification.Descriptor.ID, notification.Message.Text))
 			}
 			if notification.Descriptor.ID == "go/diagnostics/successfully-extracted-files" {
 				extracted++
@@ -69,7 +73,7 @@ func validate(data []byte) error {
 		}
 	}
 	if len(unread) > 0 {
-		return fmt.Errorf("CodeQL could not read all Go code, so the scan is incomplete. It said %s. Fix that code so Go compiles it, then rerun bin/check-local.", strings.Join(unread, " and "))
+		return failure(fmt.Sprintf("CodeQL could not read all Go code, so the scan is incomplete. It said %s. Fix that code so Go compiles it, then rerun bin/check-local.", strings.Join(unread, " and ")))
 	}
 	if extracted == 0 {
 		return fmt.Errorf("CodeQL did not confirm extracted Go files")

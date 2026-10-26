@@ -74,7 +74,15 @@ type auditResult struct {
 	stdout, stderr string
 }
 
-func runAudit(t *testing.T, goCommand string, findings []finding, exceptions any) auditResult {
+func encode[T any](value T) []byte {
+	data, err := json.Marshal(value)
+	if err != nil {
+		panic(err)
+	}
+	return data
+}
+
+func runAudit[E any](t *testing.T, goCommand string, findings []finding, exceptions E) auditResult {
 	t.Helper()
 	script, err := filepath.Abs("../../scripts/dependency-audit")
 	if err != nil {
@@ -91,14 +99,6 @@ func runAudit(t *testing.T, goCommand string, findings []finding, exceptions any
 			t.Fatal(err)
 		}
 		return path
-	}
-	encode := func(value any) []byte {
-		t.Helper()
-		data, err := json.Marshal(value)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return data
 	}
 	report := []byte(`{"config":{"scanner_name":"govulncheck","scan_level":"symbol"}}` + "\n" + `{"progress":{"message":"Scanning your code"}}` + "\n")
 	for _, item := range findings {
@@ -132,7 +132,7 @@ func TestDependencyAudit(t *testing.T) {
 	for _, test := range []struct {
 		name       string
 		findings   []finding
-		exceptions any
+		exceptions []exception
 		want       auditResult
 	}{
 		{
@@ -234,15 +234,6 @@ func TestDependencyAudit(t *testing.T) {
 			},
 		},
 		{
-			name:       "blocks an exceptions file that is not a list of entries",
-			exceptions: map[string]any{"exceptions": []exception{}},
-			want: auditResult{
-				code:   1,
-				stdout: "Blocked. audit-exceptions.json must hold an array of entries with \"id\", \"module\", \"reason\" and \"recheck\".\n",
-				stderr: failed1,
-			},
-		},
-		{
 			name:       "passes and names an exception that matches no finding",
 			exceptions: []exception{listed(day(10))},
 			want: auditResult{
@@ -258,6 +249,21 @@ func TestDependencyAudit(t *testing.T) {
 					got.code, got.stdout, got.stderr, test.want.code, test.want.stdout, test.want.stderr)
 			}
 		})
+	}
+}
+
+func TestDependencyAuditBlocksAnExceptionsFileThatIsNotAList(t *testing.T) {
+	got := runAudit(t, fakeGo, nil, struct {
+		Exceptions []exception `json:"exceptions"`
+	}{Exceptions: []exception{}})
+	want := auditResult{
+		code:   1,
+		stdout: "Blocked. audit-exceptions.json must hold an array of entries with \"id\", \"module\", \"reason\" and \"recheck\".\n",
+		stderr: failed1,
+	}
+	if got != want {
+		t.Fatalf("audit result differs\ngot  code %d\nstdout %s\nstderr %s\nwant code %d\nstdout %s\nstderr %s",
+			got.code, got.stdout, got.stderr, want.code, want.stdout, want.stderr)
 	}
 }
 

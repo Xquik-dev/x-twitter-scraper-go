@@ -40,7 +40,7 @@ func verify(input io.Reader, sources fs.FS, root string) error {
 	if err := decoder.Decode(&report); err != nil {
 		return err
 	}
-	var extra any
+	var extra json.RawMessage
 	if err := decoder.Decode(&extra); err != io.EOF {
 		return fmt.Errorf("invalid trailing scanner output: %v", err)
 	}
