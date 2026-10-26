@@ -23,7 +23,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// Connected X account management
+// XAccountService covers connected X account management.
 //
 // XAccountService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -43,7 +43,7 @@ func NewXAccountService(opts ...option.RequestOption) (r XAccountService) {
 	return
 }
 
-// Starts a secure X account connection flow.
+// New starts a secure X account connection flow.
 func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts ...option.RequestOption) (res *XAccountNewResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/accounts"
@@ -51,7 +51,7 @@ func (r *XAccountService) New(ctx context.Context, body XAccountNewParams, opts 
 	return res, err
 }
 
-// Returns one connected X account and its current status.
+// Get returns one connected X account and its current status.
 func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -63,7 +63,7 @@ func (r *XAccountService) Get(ctx context.Context, id string, opts ...option.Req
 	return res, err
 }
 
-// Returns connected accounts in creation order. Omit pagination for up to 10,000
+// List returns connected accounts in creation order. Omit pagination for up to 10,000
 // accounts. Send limit or cursor for legacy pagination.
 func (r *XAccountService) List(ctx context.Context, query XAccountListParams, opts ...option.RequestOption) (res *XAccountListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -72,7 +72,7 @@ func (r *XAccountService) List(ctx context.Context, query XAccountListParams, op
 	return res, err
 }
 
-// Disconnects one X account and removes stored session access.
+// Delete disconnects one X account and removes stored session access.
 func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *XAccountDeleteResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -84,7 +84,7 @@ func (r *XAccountService) Delete(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Clears loginFailedAt and loginFailureReason for accounts with transient or
+// BulkRetry clears loginFailedAt and loginFailureReason for accounts with transient or
 // automated failure reasons. Set AccountIDs to retry only those accounts.
 func (r *XAccountService) BulkRetry(ctx context.Context, body XAccountBulkRetryParams, opts ...option.RequestOption) (res *XAccountBulkRetryResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -93,7 +93,7 @@ func (r *XAccountService) BulkRetry(ctx context.Context, body XAccountBulkRetryP
 	return res, err
 }
 
-// Starts re-authentication for an existing X account connection.
+// Reauth starts re-authentication for an existing X account connection.
 func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountReauthParams, opts ...option.RequestOption) (res *XAccountReauthResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -105,7 +105,7 @@ func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountRe
 	return res, err
 }
 
-// Linked X account summary with connection status, health, and timestamp metadata.
+// XAccount is a linked X account summary with connection status, health, and timestamp metadata.
 type XAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -137,13 +137,13 @@ type XAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccount) RawJSON() string { return r.JSON.raw }
 func (r *XAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Derived health. `healthy` is ready. `needsReauth` needs credentials. `locked`
+// XAccountHealth holds derived health. `healthy` is ready. `needsReauth` needs credentials. `locked`
 // must be unlocked on X. `suspended` is banned. `recovering` can reconnect. Wait
 // before using `temporaryIssue`.
 type XAccountHealth string
@@ -157,7 +157,7 @@ const (
 	XAccountHealthTemporaryIssue XAccountHealth = "temporaryIssue"
 )
 
-// Connected X account details with health and timestamp metadata.
+// XAccountDetail holds connected X account details with health and timestamp metadata.
 type XAccountDetail struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -186,7 +186,7 @@ type XAccountDetail struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountDetail) RawJSON() string { return r.JSON.raw }
 func (r *XAccountDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -261,14 +261,14 @@ func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionChallen
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u XAccountNewResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (u *XAccountNewResponseUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Sanitized X account summary returned by connect and reauth.
+// XAccountNewResponseSanitizedXAccount is a sanitized X account summary returned by connect and reauth.
 type XAccountNewResponseSanitizedXAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -291,13 +291,13 @@ type XAccountNewResponseSanitizedXAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountNewResponseSanitizedXAccount) RawJSON() string { return r.JSON.raw }
 func (r *XAccountNewResponseSanitizedXAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The connection is still in progress.
+// XAccountNewResponseXAccountConnectionAttemptPending means the connection is still in progress.
 type XAccountNewResponseXAccountConnectionAttemptPending struct {
 	ID          string                             `json:"id" api:"required"`
 	Object      constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
@@ -314,13 +314,13 @@ type XAccountNewResponseXAccountConnectionAttemptPending struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountNewResponseXAccountConnectionAttemptPending) RawJSON() string { return r.JSON.raw }
 func (r *XAccountNewResponseXAccountConnectionAttemptPending) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Resumable account connection challenge. Submit the email code to finish the same
+// XAccountNewResponseXAccountConnectionChallenge is a resumable account connection challenge. Submit the email code to finish the same
 // connection attempt.
 type XAccountNewResponseXAccountConnectionChallenge struct {
 	ID        string                               `json:"id" api:"required"`
@@ -342,7 +342,7 @@ type XAccountNewResponseXAccountConnectionChallenge struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountNewResponseXAccountConnectionChallenge) RawJSON() string { return r.JSON.raw }
 func (r *XAccountNewResponseXAccountConnectionChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -364,7 +364,7 @@ type XAccountListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountListResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -380,7 +380,7 @@ type XAccountDeleteResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -397,13 +397,13 @@ type XAccountBulkRetryResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountBulkRetryResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountBulkRetryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sanitized X account summary returned by connect and reauth.
+// XAccountReauthResponse is a sanitized X account summary returned by connect and reauth.
 type XAccountReauthResponse struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -426,7 +426,7 @@ type XAccountReauthResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAccountReauthResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountReauthResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

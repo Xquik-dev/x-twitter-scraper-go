@@ -20,7 +20,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// X write actions (tweets, likes, follows, DMs)
+// XWriteActionService covers X write actions (tweets, likes, follows, DMs).
 //
 // XWriteActionService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -40,7 +40,7 @@ func NewXWriteActionService(opts ...option.RequestOption) (r XWriteActionService
 	return
 }
 
-// Returns the current state of an asynchronous write action.
+// Get returns the current state of an asynchronous write action.
 func (r *XWriteActionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *XWriteActionGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -52,7 +52,7 @@ func (r *XWriteActionService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XWriteActionGetResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XWriteActionGetResponse struct {
@@ -176,13 +176,13 @@ type XWriteActionGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XWriteActionGetResponseAccount is a connected account selected for the write.
 type XWriteActionGetResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -195,7 +195,7 @@ type XWriteActionGetResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -225,7 +225,7 @@ const (
 	XWriteActionGetResponseActionLeaveCommunity  XWriteActionGetResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XWriteActionGetResponseBilling is the type of [XWriteActionGetResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XWriteActionGetResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -244,13 +244,13 @@ type XWriteActionGetResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XWriteActionGetResponseNextAction is the type of [XWriteActionGetResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XWriteActionGetResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -268,13 +268,13 @@ type XWriteActionGetResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XWriteActionGetResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XWriteActionGetResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -289,13 +289,13 @@ type XWriteActionGetResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XWriteActionGetResponseResult is a confirmed result produced by the write, when available.
 type XWriteActionGetResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -311,7 +311,7 @@ type XWriteActionGetResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -328,7 +328,7 @@ const (
 	XWriteActionGetResponseStatusExpired             XWriteActionGetResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XWriteActionGetResponseTarget is an existing X resource targeted by the write, when applicable.
 type XWriteActionGetResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -342,7 +342,7 @@ type XWriteActionGetResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XWriteActionGetResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

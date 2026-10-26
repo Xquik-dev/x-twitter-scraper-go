@@ -19,7 +19,7 @@ import (
 // EncodedAsDate is not be stable and shouldn't be relied upon
 type EncodedAsDate Opt[time.Time]
 
-// If we want to set a literal key value into JSON using sjson, we need to make sure it doesn't have
+// EscapeSJSONKey escapes the characters sjson reads as path syntax. If we want to set a literal key value into JSON using sjson, we need to make sure it doesn't have
 // special characters that sjson interprets as a path.
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
@@ -32,7 +32,7 @@ func (m EncodedAsDate) MarshalJSON() ([]byte, error) {
 	return underlying.MarshalJSON()
 }
 
-// Stability for the API of MarshalObject is not guaranteed.
+// MarshalObject comes with no guarantee of API stability.
 func MarshalObject[T ParamStruct, U any](f T, underlying U) ([]byte, error) {
 	return MarshalWithExtras(f, underlying, f.extraFields())
 }
@@ -68,7 +68,7 @@ func MarshalWithExtras[T ParamStruct, R any, U any](f T, underlying U, extras ma
 	}
 }
 
-// Stability for the API of MarshalUnion is not guaranteed.
+// MarshalUnion comes with no guarantee of API stability.
 func MarshalUnion[T ParamStruct](metadata T, variants ...json.Marshaler) ([]byte, error) {
 	nPresent := 0
 	presentIdx := -1

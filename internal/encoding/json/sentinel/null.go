@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package sentinel makes and detects the sentinel values that stand for an
+// explicit JSON null.
 package sentinel
 
 import (

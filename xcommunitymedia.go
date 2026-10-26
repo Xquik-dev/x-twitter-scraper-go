@@ -20,7 +20,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// Find X Communities & read their info, members, posts & media
+// XCommunityMediaService lets you find X Communities & read their info, members, posts & media.
 //
 // XCommunityMediaService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -40,7 +40,7 @@ func NewXCommunityMediaService(opts ...option.RequestOption) (r XCommunityMediaS
 	return
 }
 
-// Returns the tweets with photos or videos on 1 community's Media tab, newest
+// List returns the tweets with photos or videos on 1 community's Media tab, newest
 // first. Each tweet costs 1 credit.
 func (r *XCommunityMediaService) List(ctx context.Context, id string, query XCommunityMediaListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -164,7 +164,7 @@ func (r XCommunityMediaListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Its aliases are has_video & has_media.
+// XCommunityMediaListParamsMediaType is the type of [XCommunityMediaListParams.MediaType]. Filter media. Its aliases are has_video & has_media.
 type XCommunityMediaListParamsMediaType string
 
 const (
@@ -176,7 +176,7 @@ const (
 	XCommunityMediaListParamsMediaTypeNone   XCommunityMediaListParamsMediaType = "none"
 )
 
-// Only when the caller requests a quote mode.
+// XCommunityMediaListParamsQuotes applies only when the caller requests a quote mode.
 type XCommunityMediaListParamsQuotes string
 
 const (
@@ -185,7 +185,7 @@ const (
 	XCommunityMediaListParamsQuotesOnly    XCommunityMediaListParamsQuotes = "only"
 )
 
-// Reply mode. Exclude keeps own-thread replies.
+// XCommunityMediaListParamsReplies is a reply mode. Exclude keeps own-thread replies.
 type XCommunityMediaListParamsReplies string
 
 const (
@@ -194,7 +194,7 @@ const (
 	XCommunityMediaListParamsRepliesOnly    XCommunityMediaListParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XCommunityMediaListParamsRetweets applies only when the caller requests a repost mode.
 type XCommunityMediaListParamsRetweets string
 
 const (

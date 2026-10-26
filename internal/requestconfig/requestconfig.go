@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package requestconfig builds, sends and retries the HTTP request behind each
+// service method.
 package requestconfig
 
 import (

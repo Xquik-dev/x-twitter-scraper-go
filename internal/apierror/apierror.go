@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package apierror defines Error, the error the client returns for an
+// unsuccessful API response. Its dumps redact credential headers.
 package apierror
 
 import (

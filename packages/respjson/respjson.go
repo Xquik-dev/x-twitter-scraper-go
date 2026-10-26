@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package respjson defines [Field], which records whether a response field was
+// present, null or invalid, and keeps its raw JSON.
 package respjson
 
 // A Field provides metadata to indicate the presence of a value.
@@ -72,7 +74,7 @@ func (j Field) Valid() bool { return j.status > invalid }
 const Null string = "null"
 const Omitted string = ""
 
-// Returns the raw JSON value of the field.
+// Raw returns the raw JSON value of the field.
 func (j Field) Raw() string {
 	if j.status == omitted {
 		return ""

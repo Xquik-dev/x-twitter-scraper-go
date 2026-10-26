@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// AI tweet composition, drafts, writing styles, and radar
+// StyleService covers AI tweet composition, drafts, writing styles, and radar.
 //
 // StyleService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewStyleService(opts ...option.RequestOption) (r StyleService) {
 	return
 }
 
-// Returns one cached writing style profile.
+// Get returns one cached writing style profile.
 func (r *StyleService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *StyleProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -53,7 +53,7 @@ func (r *StyleService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Creates or replaces a style profile from supplied posts.
+// Update creates or replaces a style profile from supplied posts.
 func (r *StyleService) Update(ctx context.Context, id string, body StyleUpdateParams, opts ...option.RequestOption) (res *StyleProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -65,7 +65,7 @@ func (r *StyleService) Update(ctx context.Context, id string, body StyleUpdatePa
 	return res, err
 }
 
-// Returns cached writing style profiles for the account.
+// List returns cached writing style profiles for the account.
 func (r *StyleService) List(ctx context.Context, opts ...option.RequestOption) (res *StyleListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "styles"
@@ -73,7 +73,7 @@ func (r *StyleService) List(ctx context.Context, opts ...option.RequestOption) (
 	return res, err
 }
 
-// Permanently removes one cached style profile.
+// Delete permanently removes one cached style profile.
 func (r *StyleService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -86,7 +86,7 @@ func (r *StyleService) Delete(ctx context.Context, id string, opts ...option.Req
 	return err
 }
 
-// Builds a writing style profile from recent public posts.
+// Analyze builds a writing style profile from recent public posts.
 func (r *StyleService) Analyze(ctx context.Context, body StyleAnalyzeParams, opts ...option.RequestOption) (res *StyleProfile, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "styles"
@@ -94,7 +94,7 @@ func (r *StyleService) Analyze(ctx context.Context, body StyleAnalyzeParams, opt
 	return res, err
 }
 
-// Compares language and engagement signals across two style profiles.
+// Compare compares language and engagement signals across two style profiles.
 func (r *StyleService) Compare(ctx context.Context, query StyleCompareParams, opts ...option.RequestOption) (res *StyleCompareResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "styles/compare"
@@ -102,7 +102,7 @@ func (r *StyleService) Compare(ctx context.Context, query StyleCompareParams, op
 	return res, err
 }
 
-// Returns engagement metrics for an analyzed public X profile.
+// GetPerformance returns engagement metrics for an analyzed public X profile.
 func (r *StyleService) GetPerformance(ctx context.Context, id string, opts ...option.RequestOption) (res *StyleGetPerformanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -114,7 +114,7 @@ func (r *StyleService) GetPerformance(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-// Full style profile with sampled tweets used for tone analysis.
+// StyleProfile is a full style profile with sampled tweets used for tone analysis.
 type StyleProfile struct {
 	Tweets []StyleProfileTweet `json:"tweets" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -126,7 +126,7 @@ type StyleProfile struct {
 	StyleProfileSummary
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r StyleProfile) RawJSON() string { return r.JSON.raw }
 func (r *StyleProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -148,13 +148,13 @@ type StyleProfileTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r StyleProfileTweet) RawJSON() string { return r.JSON.raw }
 func (r *StyleProfileTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Style profile summary with tweet count and ownership flag.
+// StyleProfileSummary is a style profile summary with tweet count and ownership flag.
 type StyleProfileSummary struct {
 	FetchedAt    time.Time `json:"fetchedAt" api:"required" format:"date-time"`
 	IsOwnAccount bool      `json:"isOwnAccount" api:"required"`
@@ -171,7 +171,7 @@ type StyleProfileSummary struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r StyleProfileSummary) RawJSON() string { return r.JSON.raw }
 func (r *StyleProfileSummary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -191,7 +191,7 @@ type StyleListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r StyleListResponse) RawJSON() string { return r.JSON.raw }
 func (r *StyleListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -211,7 +211,7 @@ type StyleCompareResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r StyleCompareResponse) RawJSON() string { return r.JSON.raw }
 func (r *StyleCompareResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -231,7 +231,7 @@ type StyleGetPerformanceResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r StyleGetPerformanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *StyleGetPerformanceResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -263,7 +263,7 @@ type StyleGetPerformanceResponseTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r StyleGetPerformanceResponseTweet) RawJSON() string { return r.JSON.raw }
 func (r *StyleGetPerformanceResponseTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -285,7 +285,7 @@ func (r *StyleUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// The property Text is required.
+// StyleUpdateParamsTweet requires the property Text.
 type StyleUpdateParamsTweet struct {
 	Text string `json:"text" api:"required"`
 	paramObj

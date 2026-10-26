@@ -23,7 +23,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// Activity events from monitored accounts
+// EventService covers activity events from monitored accounts.
 //
 // EventService contains methods and other services that help with interacting with
 // the x-twitter-scraper API.
@@ -43,7 +43,7 @@ func NewEventService(opts ...option.RequestOption) (r EventService) {
 	return
 }
 
-// Returns one monitor event owned by the account.
+// Get returns one monitor event owned by the account.
 func (r *EventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EventDetail, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -55,7 +55,7 @@ func (r *EventService) Get(ctx context.Context, id string, opts ...option.Reques
 	return res, err
 }
 
-// Returns monitor events with cursor pagination and filters.
+// List returns monitor events with cursor pagination and filters.
 func (r *EventService) List(ctx context.Context, query EventListParams, opts ...option.RequestOption) (res *EventListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "events"
@@ -63,7 +63,7 @@ func (r *EventService) List(ctx context.Context, query EventListParams, opts ...
 	return res, err
 }
 
-// Streams the account's monitor events as server-sent events, each named by its
+// StreamStreaming streams the account's monitor events as server-sent events, each named by its
 // event type and numbered by its event ID. A reconnect that sends Last-Event-ID
 // first gets every event after that one from the last 30 days, then each new
 // event. A connection lasts up to 30 minutes and sends a comment every 15 seconds
@@ -84,7 +84,7 @@ func (r *EventService) StreamStreaming(ctx context.Context, params EventStreamPa
 	return ssestream.NewStream[Event](ssestream.NewDecoder(raw), err)
 }
 
-// Monitor event summary with source metadata and occurrence time.
+// Event is a monitor event summary with source metadata and occurrence time.
 type Event struct {
 	ID   string         `json:"id" api:"required"`
 	Data PublicMetadata `json:"data" api:"required"`
@@ -149,13 +149,13 @@ type Event struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r Event) RawJSON() string { return r.JSON.raw }
 func (r *Event) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Source monitor type.
+// EventMonitorType is a source monitor type.
 type EventMonitorType string
 
 const (
@@ -164,7 +164,7 @@ const (
 	EventMonitorTypePost    EventMonitorType = "post"
 )
 
-// Full monitor event including payload data and optional X event ID.
+// EventDetail is a full monitor event including payload data and optional X event ID.
 type EventDetail struct {
 	ID string `json:"id" api:"required"`
 	// Event payload - shape varies by event type (JSON)
@@ -220,13 +220,13 @@ type EventDetail struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EventDetail) RawJSON() string { return r.JSON.raw }
 func (r *EventDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Source monitor type for this detailed event.
+// EventDetailMonitorType is a source monitor type for this detailed event.
 type EventDetailMonitorType string
 
 const (
@@ -249,7 +249,7 @@ type EventListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EventListResponse) RawJSON() string { return r.JSON.raw }
 func (r *EventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

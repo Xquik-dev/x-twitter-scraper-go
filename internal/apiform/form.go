@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package apiform encodes request params as multipart form data.
 package apiform
 
 import (

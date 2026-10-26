@@ -85,7 +85,7 @@ func (o *Opt[T]) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// Prefer to use [Opt.MarshalJSON] instead.
+// MarshalJSONWithTimeLayout encodes a time option as a JSON string in the given layout. Prefer to use [Opt.MarshalJSON] instead.
 func (o Opt[T]) MarshalJSONWithTimeLayout(format string) []byte {
 	t, ok := reflect.TypeAssert[time.Time](reflect.ValueOf(&o.Value).Elem())
 	if !ok || o.null() {

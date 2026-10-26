@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package apiquery encodes request params as URL query values.
 package apiquery
 
 import (

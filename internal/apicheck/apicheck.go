@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package apicheck compares the operations in the Xquik OpenAPI spec with the
+// requests the SDK's service methods send. The api-coverage and api-fields
+// commands run it.
 package apicheck
 
 import (

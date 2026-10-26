@@ -20,7 +20,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// X Community info, members, and tweets
+// XCommunityTweetService covers X Community info, members, and tweets.
 //
 // XCommunityTweetService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -40,7 +40,7 @@ func NewXCommunityTweetService(opts ...option.RequestOption) (r XCommunityTweetS
 	return
 }
 
-// One resumable page. Requires a Community ID and query.
+// List returns one resumable page. Requires a Community ID and query.
 func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweetListParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/communities/tweets"
@@ -48,7 +48,7 @@ func (r *XCommunityTweetService) List(ctx context.Context, query XCommunityTweet
 	return res, err
 }
 
-// Returns public tweets posted within one community.
+// ListByCommunity returns public tweets posted within one community.
 func (r *XCommunityTweetService) ListByCommunity(ctx context.Context, id string, query XCommunityTweetListByCommunityParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -179,7 +179,7 @@ func (r XCommunityTweetListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XCommunityTweetListParamsMediaType is the type of [XCommunityTweetListParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XCommunityTweetListParamsMediaType string
 
 const (
@@ -191,7 +191,7 @@ const (
 	XCommunityTweetListParamsMediaTypeNone   XCommunityTweetListParamsMediaType = "none"
 )
 
-// Sort order (Latest or Top)
+// XCommunityTweetListParamsQueryType is a sort order (Latest or Top).
 type XCommunityTweetListParamsQueryType string
 
 const (
@@ -316,7 +316,7 @@ func (r XCommunityTweetListByCommunityParams) URLQuery() (v url.Values, err erro
 	})
 }
 
-// Filter media. Aliases: has_video, has_media.
+// XCommunityTweetListByCommunityParamsMediaType is the type of [XCommunityTweetListByCommunityParams.MediaType]. Filter media. Aliases: has_video, has_media.
 type XCommunityTweetListByCommunityParamsMediaType string
 
 const (
@@ -328,7 +328,7 @@ const (
 	XCommunityTweetListByCommunityParamsMediaTypeNone   XCommunityTweetListByCommunityParamsMediaType = "none"
 )
 
-// Reply mode. Exclude keeps own-thread replies.
+// XCommunityTweetListParamsReplies is a reply mode. Exclude keeps own-thread replies.
 type XCommunityTweetListParamsReplies string
 
 const (
@@ -337,7 +337,7 @@ const (
 	XCommunityTweetListParamsRepliesOnly    XCommunityTweetListParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XCommunityTweetListParamsRetweets applies only when the caller requests a repost mode.
 type XCommunityTweetListParamsRetweets string
 
 const (
@@ -346,7 +346,7 @@ const (
 	XCommunityTweetListParamsRetweetsOnly    XCommunityTweetListParamsRetweets = "only"
 )
 
-// Only when the caller requests a quote mode.
+// XCommunityTweetListParamsQuotes applies only when the caller requests a quote mode.
 type XCommunityTweetListParamsQuotes string
 
 const (
@@ -355,7 +355,7 @@ const (
 	XCommunityTweetListParamsQuotesOnly    XCommunityTweetListParamsQuotes = "only"
 )
 
-// Latest for newest first, or Top for the posts X ranks highest. Any case works.
+// XCommunityTweetListByCommunityParamsQueryType is the type of [XCommunityTweetListByCommunityParams.QueryType]. Latest for newest first, or Top for the posts X ranks highest. Any case works.
 // Aliases ranking & sort, which also take Recency & Relevance. Send the same value
 // with each cursor.
 type XCommunityTweetListByCommunityParamsQueryType string
@@ -365,7 +365,7 @@ const (
 	XCommunityTweetListByCommunityParamsQueryTypeTop    XCommunityTweetListByCommunityParamsQueryType = "Top"
 )
 
-// Reply mode. Exclude keeps own-thread replies.
+// XCommunityTweetListByCommunityParamsReplies is a reply mode. Exclude keeps own-thread replies.
 type XCommunityTweetListByCommunityParamsReplies string
 
 const (
@@ -374,7 +374,7 @@ const (
 	XCommunityTweetListByCommunityParamsRepliesOnly    XCommunityTweetListByCommunityParamsReplies = "only"
 )
 
-// Only when the caller requests a repost mode.
+// XCommunityTweetListByCommunityParamsRetweets applies only when the caller requests a repost mode.
 type XCommunityTweetListByCommunityParamsRetweets string
 
 const (
@@ -383,7 +383,7 @@ const (
 	XCommunityTweetListByCommunityParamsRetweetsOnly    XCommunityTweetListByCommunityParamsRetweets = "only"
 )
 
-// Only when the caller requests a quote mode.
+// XCommunityTweetListByCommunityParamsQuotes applies only when the caller requests a quote mode.
 type XCommunityTweetListByCommunityParamsQuotes string
 
 const (

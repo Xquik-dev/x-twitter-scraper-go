@@ -1,6 +1,8 @@
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
+// Package coveragegate measures statement, branch, function and line coverage,
+// and fails when any of them falls below the parent revision's.
 package coveragegate
 
 import (

@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package paramutil converts response fields to param options and finds the
+// variant a union param holds.
 package paramutil
 
 import (

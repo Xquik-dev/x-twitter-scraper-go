@@ -21,27 +21,27 @@ type Error = apierror.Error
 // expect.
 type PublicMetadata = shared.PublicMetadata
 
-// Public X Community, as every Community read returns it.
+// Community is a public X Community, as every Community read returns it.
 type Community = shared.Community
 
-// Community activity & growth for X's latest period.
+// CommunityAnalytics holds community activity & growth for X's latest period.
 type CommunityAnalytics = shared.CommunityAnalytics
 
-// The period's activity, each metric with its count and changePercent. likes
+// CommunityAnalyticsMetrics is the period's activity, each metric with its count and changePercent. likes
 // counts likes on community posts and newMembers the accounts that joined. posts
 // counts the community posts and replies the replies to them. uniquePosters counts
 // the distinct accounts that posted.
 type CommunityAnalyticsMetrics = shared.CommunityAnalyticsMetrics
 
-// A community metric for X's latest period & its percent change.
+// CommunityAnalyticsMetric is a community metric for X's latest period & its percent change.
 type CommunityAnalyticsMetric = shared.CommunityAnalyticsMetric
 
-// The banner X shows for a community, with its size & colors.
+// CommunityBanner is the banner X shows for a community, with its size & colors.
 type CommunityBanner = shared.CommunityBanner
 
 type CommunityBannerColor = shared.CommunityBannerColor
 
-// Area X keeps in view when it crops the banner, in pixels from the top left
+// CommunityBannerFocus is an area X keeps in view when it crops the banner, in pixels from the top left.
 type CommunityBannerFocus = shared.CommunityBannerFocus
 
 // CommunityCreatorUnion contains all possible properties and values from
@@ -58,24 +58,24 @@ type CommunityCreatorObject = shared.CommunityCreatorObject
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type CommunityMembersFacepileUnion = shared.CommunityMembersFacepileUnion
 
-// A member X previews by ID & profile picture only.
+// CommunityMembersFacepileCommunityMemberPreview is a member X previews by ID & profile picture only.
 type CommunityMembersFacepileCommunityMemberPreview = shared.CommunityMembersFacepileCommunityMemberPreview
 
-// Primary topic. Its id is absent when X lists the community in a keyword or topic
+// CommunityPrimaryTopic is a primary topic. Its id is absent when X lists the community in a keyword or topic
 // result.
 type CommunityPrimaryTopic = shared.CommunityPrimaryTopic
 
 type CommunityRule = shared.CommunityRule
 
-// 1 page of X Communities, in X's order.
+// CommunityPage is 1 page of X Communities, in X's order.
 type CommunityPage = shared.CommunityPage
 
-// A topic X groups communities under, with its subtopics.
+// CommunityTopic is a topic X groups communities under, with its subtopics.
 type CommunityTopic = shared.CommunityTopic
 
 type CommunityTopicSubtopic = shared.CommunityTopicSubtopic
 
-// Content disclosure metadata shown by X when a tweet is labeled as paid
+// ContentDisclosure holds content disclosure metadata shown by X when a tweet is labeled as paid
 // partnership content or AI-generated media.
 type ContentDisclosure = shared.ContentDisclosure
 
@@ -83,33 +83,33 @@ type ContentDisclosureAdvertising = shared.ContentDisclosureAdvertising
 
 type ContentDisclosureAIGenerated = shared.ContentDisclosureAIGenerated
 
-// Quoted or retweeted tweet context.
+// EmbeddedTweet holds quoted or retweeted tweet context.
 type EmbeddedTweet = shared.EmbeddedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetArticle = shared.EmbeddedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetCard = shared.EmbeddedTweetCard
 
 type EmbeddedTweetCardUserReferenceError = shared.EmbeddedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetCommunityNote = shared.EmbeddedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetConversationControl = shared.EmbeddedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetEdit = shared.EmbeddedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetEntities = shared.EmbeddedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetEntitiesHashtag = shared.EmbeddedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetEntitiesSmarttag = shared.EmbeddedTweetEntitiesSmarttag
 
 type EmbeddedTweetEntitiesSmarttagTag = shared.EmbeddedTweetEntitiesSmarttagTag
@@ -118,7 +118,7 @@ type EmbeddedTweetEntitiesSmarttagTagInfo = shared.EmbeddedTweetEntitiesSmarttag
 
 type EmbeddedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetEntitiesSymbol = shared.EmbeddedTweetEntitiesSymbol
 
 type EmbeddedTweetEntitiesSymbolTag = shared.EmbeddedTweetEntitiesSymbolTag
@@ -127,7 +127,7 @@ type EmbeddedTweetEntitiesSymbolTagInfo = shared.EmbeddedTweetEntitiesSymbolTagI
 
 type EmbeddedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetEntitiesTimestamp = shared.EmbeddedTweetEntitiesTimestamp
 
 type EmbeddedTweetEntitiesTimestampTag = shared.EmbeddedTweetEntitiesTimestampTag
@@ -136,26 +136,26 @@ type EmbeddedTweetEntitiesTimestampTagInfo = shared.EmbeddedTweetEntitiesTimesta
 
 type EmbeddedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetEntitiesURL = shared.EmbeddedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetEntitiesUserMention = shared.EmbeddedTweetEntitiesUserMention
 
 type EmbeddedTweetLimitedAction = shared.EmbeddedTweetLimitedAction
 
 type EmbeddedTweetLimitedActionPrompt = shared.EmbeddedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetNoteTweet = shared.EmbeddedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetNoteTweetEntities = shared.EmbeddedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetNoteTweetEntitiesSmarttagTag
@@ -164,7 +164,7 @@ type EmbeddedTweetNoteTweetEntitiesSmarttagTagInfo = shared.EmbeddedTweetNoteTwe
 
 type EmbeddedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetNoteTweetEntitiesSymbolTag
@@ -173,7 +173,7 @@ type EmbeddedTweetNoteTweetEntitiesSymbolTagInfo = shared.EmbeddedTweetNoteTweet
 
 type EmbeddedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetNoteTweetEntitiesTimestampTag
@@ -182,49 +182,49 @@ type EmbeddedTweetNoteTweetEntitiesTimestampTagInfo = shared.EmbeddedTweetNoteTw
 
 type EmbeddedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetNoteTweetInlineMedia = shared.EmbeddedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetNoteTweetRichtextTag = shared.EmbeddedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetPlace = shared.EmbeddedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetPreviousCounts = shared.EmbeddedTweetPreviousCounts
 
-// Nested tweet context at depth 2.
+// EmbeddedTweetQuotedTweet holds nested tweet context at depth 2.
 type EmbeddedTweetQuotedTweet = shared.EmbeddedTweetQuotedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetArticle = shared.EmbeddedTweetQuotedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetCard = shared.EmbeddedTweetQuotedTweetCard
 
 type EmbeddedTweetQuotedTweetCardUserReferenceError = shared.EmbeddedTweetQuotedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetCommunityNote = shared.EmbeddedTweetQuotedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetConversationControl = shared.EmbeddedTweetQuotedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetEdit = shared.EmbeddedTweetQuotedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetEntities = shared.EmbeddedTweetQuotedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetEntitiesSmarttagTag
@@ -233,7 +233,7 @@ type EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfo = shared.EmbeddedTweetQuote
 
 type EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetEntitiesSymbolTag
@@ -242,7 +242,7 @@ type EmbeddedTweetQuotedTweetEntitiesSymbolTagInfo = shared.EmbeddedTweetQuotedT
 
 type EmbeddedTweetQuotedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetEntitiesTimestampTag
@@ -251,26 +251,26 @@ type EmbeddedTweetQuotedTweetEntitiesTimestampTagInfo = shared.EmbeddedTweetQuot
 
 type EmbeddedTweetQuotedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetLimitedAction = shared.EmbeddedTweetQuotedTweetLimitedAction
 
 type EmbeddedTweetQuotedTweetLimitedActionPrompt = shared.EmbeddedTweetQuotedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetNoteTweet = shared.EmbeddedTweetQuotedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetNoteTweetEntities = shared.EmbeddedTweetQuotedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTag
@@ -279,7 +279,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo = shared.EmbeddedT
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTag
@@ -288,7 +288,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo = shared.EmbeddedTwe
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTag
@@ -297,49 +297,49 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo = shared.Embedded
 
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetNoteTweetInlineMedia = shared.EmbeddedTweetQuotedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetQuotedTweetNoteTweetRichtextTag = shared.EmbeddedTweetQuotedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetPlace = shared.EmbeddedTweetQuotedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetPreviousCounts = shared.EmbeddedTweetQuotedTweetPreviousCounts
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetQuotedTweetQuotedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetQuotedTweetQuotedTweet = shared.EmbeddedTweetQuotedTweetQuotedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetArticle = shared.EmbeddedTweetQuotedTweetQuotedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetQuotedTweetCard = shared.EmbeddedTweetQuotedTweetQuotedTweetCard
 
 type EmbeddedTweetQuotedTweetQuotedTweetCardUserReferenceError = shared.EmbeddedTweetQuotedTweetQuotedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetQuotedTweetCommunityNote = shared.EmbeddedTweetQuotedTweetQuotedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetConversationControl = shared.EmbeddedTweetQuotedTweetQuotedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetQuotedTweetEdit = shared.EmbeddedTweetQuotedTweetQuotedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetEntities = shared.EmbeddedTweetQuotedTweetQuotedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag
@@ -348,7 +348,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo = shared.Embedde
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTag
@@ -357,7 +357,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo = shared.EmbeddedT
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTag
@@ -366,26 +366,26 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo = shared.Embedd
 
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetQuotedTweetLimitedAction = shared.EmbeddedTweetQuotedTweetQuotedTweetLimitedAction
 
 type EmbeddedTweetQuotedTweetQuotedTweetLimitedActionPrompt = shared.EmbeddedTweetQuotedTweetQuotedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweet = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag
@@ -394,7 +394,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo = share
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag
@@ -403,7 +403,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo = shared.
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag
@@ -412,49 +412,49 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo = shar
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag = shared.EmbeddedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetPlace = shared.EmbeddedTweetQuotedTweetQuotedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts = shared.EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCardUserReferenceError = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag
@@ -463,7 +463,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo = sha
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTag
@@ -472,7 +472,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo = share
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTag
@@ -481,26 +481,26 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo = sh
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedAction = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedAction
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedActionPrompt = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag
@@ -509,7 +509,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagI
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag
@@ -518,7 +518,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInf
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag
@@ -527,34 +527,34 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneText = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneText
@@ -563,36 +563,36 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntity = shared.
 
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetReactionContext = shared.EmbeddedTweetQuotedTweetQuotedTweetReactionContext
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCardUserReferenceError = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag
@@ -601,7 +601,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo = 
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag
@@ -610,7 +610,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo = sh
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag
@@ -619,26 +619,26 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo =
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedAction = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedAction
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedActionPrompt = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag
@@ -647,7 +647,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagT
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
@@ -656,7 +656,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag
@@ -665,34 +665,34 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneText = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneText
@@ -701,15 +701,15 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntity = shar
 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetQuotedTweetSportsContext
 
 type EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetTombstone = shared.EmbeddedTweetQuotedTweetQuotedTweetTombstone
 
 type EmbeddedTweetQuotedTweetQuotedTweetTombstoneText = shared.EmbeddedTweetQuotedTweetQuotedTweetTombstoneText
@@ -718,36 +718,36 @@ type EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntity = shared.EmbeddedTwe
 
 type EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetReactionContext = shared.EmbeddedTweetQuotedTweetReactionContext
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetQuotedTweetRetweetedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetQuotedTweetRetweetedTweet = shared.EmbeddedTweetQuotedTweetRetweetedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetArticle = shared.EmbeddedTweetQuotedTweetRetweetedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetRetweetedTweetCard = shared.EmbeddedTweetQuotedTweetRetweetedTweetCard
 
 type EmbeddedTweetQuotedTweetRetweetedTweetCardUserReferenceError = shared.EmbeddedTweetQuotedTweetRetweetedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote = shared.EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetConversationControl = shared.EmbeddedTweetQuotedTweetRetweetedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetRetweetedTweetEdit = shared.EmbeddedTweetQuotedTweetRetweetedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntities = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag
@@ -756,7 +756,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo = shared.Embe
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag
@@ -765,7 +765,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo = shared.Embedd
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag
@@ -774,26 +774,26 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo = shared.Emb
 
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetRetweetedTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetRetweetedTweetLimitedAction = shared.EmbeddedTweetQuotedTweetRetweetedTweetLimitedAction
 
 type EmbeddedTweetQuotedTweetRetweetedTweetLimitedActionPrompt = shared.EmbeddedTweetQuotedTweetRetweetedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag
@@ -802,7 +802,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo = sh
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
@@ -811,7 +811,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo = shar
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag
@@ -820,49 +820,49 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo = s
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetPlace = shared.EmbeddedTweetQuotedTweetRetweetedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts = shared.EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCardUserReferenceError = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag
@@ -871,7 +871,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo = 
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag
@@ -880,7 +880,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo = sh
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag
@@ -889,26 +889,26 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo =
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedAction = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedAction
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedActionPrompt = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag
@@ -917,7 +917,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag
@@ -926,7 +926,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag
@@ -935,34 +935,34 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneText = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneText
@@ -971,36 +971,36 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntity = shar
 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetReactionContext
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCardUserReferenceError = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag
@@ -1009,7 +1009,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag
@@ -1018,7 +1018,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo =
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag
@@ -1027,26 +1027,26 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInf
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedAction = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedAction
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag
@@ -1055,7 +1055,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmartt
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
@@ -1064,7 +1064,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag
@@ -1073,34 +1073,34 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimest
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneText = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneText
@@ -1109,15 +1109,15 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity = s
 
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetQuotedTweetRetweetedTweetSportsContext
 
 type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetTombstone = shared.EmbeddedTweetQuotedTweetRetweetedTweetTombstone
 
 type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneText = shared.EmbeddedTweetQuotedTweetRetweetedTweetTombstoneText
@@ -1126,15 +1126,15 @@ type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntity = shared.Embedded
 
 type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetSportsContext = shared.EmbeddedTweetQuotedTweetSportsContext
 
 type EmbeddedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetQuotedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetTombstone = shared.EmbeddedTweetQuotedTweetTombstone
 
 type EmbeddedTweetQuotedTweetTombstoneText = shared.EmbeddedTweetQuotedTweetTombstoneText
@@ -1143,36 +1143,36 @@ type EmbeddedTweetQuotedTweetTombstoneTextEntity = shared.EmbeddedTweetQuotedTwe
 
 type EmbeddedTweetQuotedTweetTombstoneTextEntityRef = shared.EmbeddedTweetQuotedTweetTombstoneTextEntityRef
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetReactionContext = shared.EmbeddedTweetReactionContext
 
-// Nested tweet context at depth 2.
+// EmbeddedTweetRetweetedTweet holds nested tweet context at depth 2.
 type EmbeddedTweetRetweetedTweet = shared.EmbeddedTweetRetweetedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetArticle = shared.EmbeddedTweetRetweetedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetCard = shared.EmbeddedTweetRetweetedTweetCard
 
 type EmbeddedTweetRetweetedTweetCardUserReferenceError = shared.EmbeddedTweetRetweetedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetCommunityNote = shared.EmbeddedTweetRetweetedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetConversationControl = shared.EmbeddedTweetRetweetedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetEdit = shared.EmbeddedTweetRetweetedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetEntities = shared.EmbeddedTweetRetweetedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetEntitiesSmarttagTag
@@ -1181,7 +1181,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfo = shared.EmbeddedTweetRe
 
 type EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetEntitiesSymbolTag
@@ -1190,7 +1190,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfo = shared.EmbeddedTweetRetw
 
 type EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetEntitiesTimestampTag
@@ -1199,26 +1199,26 @@ type EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfo = shared.EmbeddedTweetR
 
 type EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetLimitedAction = shared.EmbeddedTweetRetweetedTweetLimitedAction
 
 type EmbeddedTweetRetweetedTweetLimitedActionPrompt = shared.EmbeddedTweetRetweetedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetNoteTweet = shared.EmbeddedTweetRetweetedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetNoteTweetEntities = shared.EmbeddedTweetRetweetedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag
@@ -1227,7 +1227,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo = shared.Embedd
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
@@ -1236,7 +1236,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo = shared.Embedded
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTag
@@ -1245,49 +1245,49 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo = shared.Embed
 
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetNoteTweetInlineMedia = shared.EmbeddedTweetRetweetedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetRetweetedTweetNoteTweetRichtextTag = shared.EmbeddedTweetRetweetedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetPlace = shared.EmbeddedTweetRetweetedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetPreviousCounts = shared.EmbeddedTweetRetweetedTweetPreviousCounts
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetRetweetedTweetQuotedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetRetweetedTweetQuotedTweet = shared.EmbeddedTweetRetweetedTweetQuotedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetArticle = shared.EmbeddedTweetRetweetedTweetQuotedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetQuotedTweetCard = shared.EmbeddedTweetRetweetedTweetQuotedTweetCard
 
 type EmbeddedTweetRetweetedTweetQuotedTweetCardUserReferenceError = shared.EmbeddedTweetRetweetedTweetQuotedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote = shared.EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetConversationControl = shared.EmbeddedTweetRetweetedTweetQuotedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetQuotedTweetEdit = shared.EmbeddedTweetRetweetedTweetQuotedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntities = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag
@@ -1296,7 +1296,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo = shared.Embe
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag
@@ -1305,7 +1305,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo = shared.Embedd
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag
@@ -1314,26 +1314,26 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo = shared.Emb
 
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetQuotedTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetQuotedTweetLimitedAction = shared.EmbeddedTweetRetweetedTweetQuotedTweetLimitedAction
 
 type EmbeddedTweetRetweetedTweetQuotedTweetLimitedActionPrompt = shared.EmbeddedTweetRetweetedTweetQuotedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag
@@ -1342,7 +1342,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo = sh
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag
@@ -1351,7 +1351,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo = shar
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag
@@ -1360,49 +1360,49 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo = s
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetPlace = shared.EmbeddedTweetRetweetedTweetQuotedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts = shared.EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCardUserReferenceError = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag
@@ -1411,7 +1411,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo = 
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTag
@@ -1420,7 +1420,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo = sh
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTag
@@ -1429,26 +1429,26 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo =
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedAction = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedAction
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedActionPrompt = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag
@@ -1457,7 +1457,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag
@@ -1466,7 +1466,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag
@@ -1475,34 +1475,34 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneText = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneText
@@ -1511,36 +1511,36 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntity = shar
 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetReactionContext
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCardUserReferenceError = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag
@@ -1549,7 +1549,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag
@@ -1558,7 +1558,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo =
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag
@@ -1567,26 +1567,26 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInf
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedAction = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedAction
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedActionPrompt = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag
@@ -1595,7 +1595,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmartt
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
@@ -1604,7 +1604,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag
@@ -1613,34 +1613,34 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimest
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneText = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneText
@@ -1649,15 +1649,15 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntity = s
 
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetQuotedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetQuotedTweetSportsContext
 
 type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetTombstone = shared.EmbeddedTweetRetweetedTweetQuotedTweetTombstone
 
 type EmbeddedTweetRetweetedTweetQuotedTweetTombstoneText = shared.EmbeddedTweetRetweetedTweetQuotedTweetTombstoneText
@@ -1666,36 +1666,36 @@ type EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntity = shared.Embedded
 
 type EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetReactionContext
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetRetweetedTweetRetweetedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetRetweetedTweetRetweetedTweet = shared.EmbeddedTweetRetweetedTweetRetweetedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetArticle = shared.EmbeddedTweetRetweetedTweetRetweetedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetRetweetedTweetCard = shared.EmbeddedTweetRetweetedTweetRetweetedTweetCard
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetCardUserReferenceError = shared.EmbeddedTweetRetweetedTweetRetweetedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote = shared.EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl = shared.EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEdit = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntities = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag
@@ -1704,7 +1704,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo = shared.E
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag
@@ -1713,7 +1713,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo = shared.Emb
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag
@@ -1722,26 +1722,26 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo = shared.
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetLimitedAction = shared.EmbeddedTweetRetweetedTweetRetweetedTweetLimitedAction
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt = shared.EmbeddedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag
@@ -1750,7 +1750,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo =
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
@@ -1759,7 +1759,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo = s
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag
@@ -1768,49 +1768,49 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo 
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetPlace = shared.EmbeddedTweetRetweetedTweetRetweetedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts = shared.EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCardUserReferenceError = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag
@@ -1819,7 +1819,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag
@@ -1828,7 +1828,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo =
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag
@@ -1837,26 +1837,26 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInf
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedAction = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedAction
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedActionPrompt = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag
@@ -1865,7 +1865,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmartt
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag
@@ -1874,7 +1874,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag
@@ -1883,34 +1883,34 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimest
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneText = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneText
@@ -1919,36 +1919,36 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntity = s
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCardUserReferenceError = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag
@@ -1957,7 +1957,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagI
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag
@@ -1966,7 +1966,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInf
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag
@@ -1975,26 +1975,26 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedAction = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedAction
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntities = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag
@@ -2003,7 +2003,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSma
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
@@ -2012,7 +2012,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSym
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag
@@ -2021,34 +2021,34 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTim
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneText = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneText
@@ -2057,15 +2057,15 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity 
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetTombstone = shared.EmbeddedTweetRetweetedTweetRetweetedTweetTombstone
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneText = shared.EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneText
@@ -2074,15 +2074,15 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity = shared.Embed
 
 type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetSportsContext = shared.EmbeddedTweetRetweetedTweetSportsContext
 
 type EmbeddedTweetRetweetedTweetSportsContextCompetitor = shared.EmbeddedTweetRetweetedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetTombstone = shared.EmbeddedTweetRetweetedTweetTombstone
 
 type EmbeddedTweetRetweetedTweetTombstoneText = shared.EmbeddedTweetRetweetedTweetTombstoneText
@@ -2091,15 +2091,15 @@ type EmbeddedTweetRetweetedTweetTombstoneTextEntity = shared.EmbeddedTweetRetwee
 
 type EmbeddedTweetRetweetedTweetTombstoneTextEntityRef = shared.EmbeddedTweetRetweetedTweetTombstoneTextEntityRef
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetSportsContext = shared.EmbeddedTweetSportsContext
 
 type EmbeddedTweetSportsContextCompetitor = shared.EmbeddedTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// EmbeddedTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type EmbeddedTweetSportsContextScheduledAtMsUnion = shared.EmbeddedTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetTombstone = shared.EmbeddedTweetTombstone
 
 type EmbeddedTweetTombstoneText = shared.EmbeddedTweetTombstoneText
@@ -2108,122 +2108,122 @@ type EmbeddedTweetTombstoneTextEntity = shared.EmbeddedTweetTombstoneTextEntity
 
 type EmbeddedTweetTombstoneTextEntityRef = shared.EmbeddedTweetTombstoneTextEntityRef
 
-// Type of monitor event fired when account activity occurs.
+// EventType is a type of monitor event fired when account activity occurs.
 type EventType = shared.EventType
 
-// Equals "tweet.new"
+// EventTypeTweetNew equals "tweet.new".
 const EventTypeTweetNew = shared.EventTypeTweetNew
 
-// Equals "tweet.reply"
+// EventTypeTweetReply equals "tweet.reply".
 const EventTypeTweetReply = shared.EventTypeTweetReply
 
-// Equals "tweet.retweet"
+// EventTypeTweetRetweet equals "tweet.retweet".
 const EventTypeTweetRetweet = shared.EventTypeTweetRetweet
 
-// Equals "tweet.quote"
+// EventTypeTweetQuote equals "tweet.quote".
 const EventTypeTweetQuote = shared.EventTypeTweetQuote
 
-// Equals "tweet.media"
+// EventTypeTweetMedia equals "tweet.media".
 const EventTypeTweetMedia = shared.EventTypeTweetMedia
 
-// Equals "tweet.link"
+// EventTypeTweetLink equals "tweet.link".
 const EventTypeTweetLink = shared.EventTypeTweetLink
 
-// Equals "tweet.poll"
+// EventTypeTweetPoll equals "tweet.poll".
 const EventTypeTweetPoll = shared.EventTypeTweetPoll
 
-// Equals "tweet.mention"
+// EventTypeTweetMention equals "tweet.mention".
 const EventTypeTweetMention = shared.EventTypeTweetMention
 
-// Equals "tweet.hashtag"
+// EventTypeTweetHashtag equals "tweet.hashtag".
 const EventTypeTweetHashtag = shared.EventTypeTweetHashtag
 
-// Equals "tweet.longform"
+// EventTypeTweetLongform equals "tweet.longform".
 const EventTypeTweetLongform = shared.EventTypeTweetLongform
 
-// Equals "profile.avatar.changed"
+// EventTypeProfileAvatarChanged equals "profile.avatar.changed".
 const EventTypeProfileAvatarChanged = shared.EventTypeProfileAvatarChanged
 
-// Equals "profile.banner.changed"
+// EventTypeProfileBannerChanged equals "profile.banner.changed".
 const EventTypeProfileBannerChanged = shared.EventTypeProfileBannerChanged
 
-// Equals "profile.name.changed"
+// EventTypeProfileNameChanged equals "profile.name.changed".
 const EventTypeProfileNameChanged = shared.EventTypeProfileNameChanged
 
-// Equals "profile.username.changed"
+// EventTypeProfileUsernameChanged equals "profile.username.changed".
 const EventTypeProfileUsernameChanged = shared.EventTypeProfileUsernameChanged
 
-// Equals "profile.bio.changed"
+// EventTypeProfileBioChanged equals "profile.bio.changed".
 const EventTypeProfileBioChanged = shared.EventTypeProfileBioChanged
 
-// Equals "profile.location.changed"
+// EventTypeProfileLocationChanged equals "profile.location.changed".
 const EventTypeProfileLocationChanged = shared.EventTypeProfileLocationChanged
 
-// Equals "profile.url.changed"
+// EventTypeProfileURLChanged equals "profile.url.changed".
 const EventTypeProfileURLChanged = shared.EventTypeProfileURLChanged
 
-// Equals "profile.verified.changed"
+// EventTypeProfileVerifiedChanged equals "profile.verified.changed".
 const EventTypeProfileVerifiedChanged = shared.EventTypeProfileVerifiedChanged
 
-// Equals "profile.protected.changed"
+// EventTypeProfileProtectedChanged equals "profile.protected.changed".
 const EventTypeProfileProtectedChanged = shared.EventTypeProfileProtectedChanged
 
-// Equals "profile.pinned_tweet.changed"
+// EventTypeProfilePinnedTweetChanged equals "profile.pinned_tweet.changed".
 const EventTypeProfilePinnedTweetChanged = shared.EventTypeProfilePinnedTweetChanged
 
-// Equals "profile.unavailable.changed"
+// EventTypeProfileUnavailableChanged equals "profile.unavailable.changed".
 const EventTypeProfileUnavailableChanged = shared.EventTypeProfileUnavailableChanged
 
-// Equals "tweet.deleted"
+// EventTypeTweetDeleted equals "tweet.deleted".
 const EventTypeTweetDeleted = shared.EventTypeTweetDeleted
 
-// Equals "broadcast.started"
+// EventTypeBroadcastStarted equals "broadcast.started".
 const EventTypeBroadcastStarted = shared.EventTypeBroadcastStarted
 
-// Equals "space.started"
+// EventTypeSpaceStarted equals "space.started".
 const EventTypeSpaceStarted = shared.EventTypeSpaceStarted
 
-// Equals "following.added"
+// EventTypeFollowingAdded equals "following.added".
 const EventTypeFollowingAdded = shared.EventTypeFollowingAdded
 
-// Equals "following.removed"
+// EventTypeFollowingRemoved equals "following.removed".
 const EventTypeFollowingRemoved = shared.EventTypeFollowingRemoved
 
-// Equals "follower.added"
+// EventTypeFollowerAdded equals "follower.added".
 const EventTypeFollowerAdded = shared.EventTypeFollowerAdded
 
-// Equals "follower.removed"
+// EventTypeFollowerRemoved equals "follower.removed".
 const EventTypeFollowerRemoved = shared.EventTypeFollowerRemoved
 
-// Equals "profile.followers.changed"
+// EventTypeProfileFollowersChanged equals "profile.followers.changed".
 const EventTypeProfileFollowersChanged = shared.EventTypeProfileFollowersChanged
 
-// Equals "profile.following.changed"
+// EventTypeProfileFollowingChanged equals "profile.following.changed".
 const EventTypeProfileFollowingChanged = shared.EventTypeProfileFollowingChanged
 
-// Automatic search, user Tweet, and reply coverage preserves shape, filters,
+// PaginatedTweets is an alias for [shared.PaginatedTweets]. Automatic search, user Tweet, and reply coverage preserves shape, filters,
 // aliases, and billing. Follow next_cursor while the response reports more pages.
 // An empty filtered page can still require continuation. Unprefixed cursors are
 // legacy.
 type PaginatedTweets = shared.PaginatedTweets
 
-// What X shows beside a search's posts that is the same for every reader. Present
+// PaginatedTweetsSearchContext describes what X shows beside a search's posts that is the same for every reader. Present
 // on a search for a cashtag X has a card for, such as $BTC.
 type PaginatedTweetsSearchContext = shared.PaginatedTweetsSearchContext
 
-// X's card for the cashtag the search names.
+// PaginatedTweetsSearchContextSmartTag is X's card for the cashtag the search names.
 type PaginatedTweetsSearchContextSmartTag = shared.PaginatedTweetsSearchContextSmartTag
 
-// Profile coverage preserves shape, billing, aliases, and filters. Follow
+// PaginatedUsers is an alias for [shared.PaginatedUsers]. Profile coverage preserves shape, billing, aliases, and filters. Follow
 // next_cursor while the response reports more pages. Unprefixed cursors remain
 // legacy.
 type PaginatedUsers = shared.PaginatedUsers
 
-// Tweet returned from search results with inline author info. A zero metric can
+// SearchTweet is a tweet returned from search results with inline author info. A zero metric can
 // mean X did not report the count.
 type SearchTweet = shared.SearchTweet
 
-// The notice x.com covers the post with until the reader views it, such as X's
+// SearchTweetInterstitial is the notice x.com covers the post with until the reader views it, such as X's
 // public interest notice on a post that broke its rules but stays up.
 type SearchTweetInterstitial = shared.SearchTweetInterstitial
 
@@ -2233,61 +2233,61 @@ type SearchTweetInterstitialTextEntity = shared.SearchTweetInterstitialTextEntit
 
 type SearchTweetInterstitialTextEntityRef = shared.SearchTweetInterstitialTextEntityRef
 
-// The Subscriber badge X shows on a reply. The reply's author subscribes to the
+// SearchTweetSubscriberBadge is the Subscriber badge X shows on a reply. The reply's author subscribes to the
 // creator who started the conversation. Omitted on a post without the badge.
 type SearchTweetSubscriberBadge = shared.SearchTweetSubscriberBadge
 
-// Author-published point, with latitude before longitude.
+// SearchTweetGeo is an author-published point, with latitude before longitude.
 type SearchTweetGeo = shared.SearchTweetGeo
 
-// Author-published point, with longitude before latitude.
+// SearchTweetCoordinates is an author-published point, with longitude before latitude.
 type SearchTweetCoordinates = shared.SearchTweetCoordinates
 
-// Marks a subscriber-only post with the creator whose subscription unlocks it.
+// SearchTweetExclusiveContent marks a subscriber-only post with the creator whose subscription unlocks it.
 // Non-subscribers get the preview text & the subscribe link. Omitted on public
 // posts.
 type SearchTweetExclusiveContent = shared.SearchTweetExclusiveContent
 
 type SearchTweetCashtagAttachment = shared.SearchTweetCashtagAttachment
 
-// Why the tweet has no author. X serves a suspended or deleted account as an
+// SearchTweetAuthorUnavailable describes why the tweet has no author. X serves a suspended or deleted account as an
 // unavailable user with a reason such as Suspended or NotFound. Omitted when the
 // author is available.
 type SearchTweetAuthorUnavailable = shared.SearchTweetAuthorUnavailable
 
 type SearchTweetTextHighlight = shared.SearchTweetTextHighlight
 
-// Why X shows no quoted post. Omitted when X names no reason, as its legacy
+// SearchTweetQuotedTweetUnavailable describes why X shows no quoted post. Omitted when X names no reason, as its legacy
 // answers never do.
 type SearchTweetQuotedTweetUnavailable = shared.SearchTweetQuotedTweetUnavailable
 
-// The quoted post's link, kept when X withholds that post.
+// SearchTweetQuotedTweetPermalink is the quoted post's link, kept when X withholds that post.
 type SearchTweetQuotedTweetPermalink = shared.SearchTweetQuotedTweetPermalink
 
-// Describes an X Article preview and its lifecycle metadata.
+// SearchTweetArticle describes an X Article preview and its lifecycle metadata.
 type SearchTweetArticle = shared.SearchTweetArticle
 
-// Describes a public card and its referenced profiles.
+// SearchTweetCard describes a public card and its referenced profiles.
 type SearchTweetCard = shared.SearchTweetCard
 
 type SearchTweetCardUserReferenceError = shared.SearchTweetCardUserReferenceError
 
-// Community Note presentation metadata returned by X.
+// SearchTweetCommunityNote holds Community Note presentation metadata returned by X.
 type SearchTweetCommunityNote = shared.SearchTweetCommunityNote
 
-// Public reply policy and conversation owner.
+// SearchTweetConversationControl holds public reply policy and conversation owner.
 type SearchTweetConversationControl = shared.SearchTweetConversationControl
 
-// Lists edit-chain identifiers and the remaining edit window.
+// SearchTweetEdit lists edit-chain identifiers and the remaining edit window.
 type SearchTweetEdit = shared.SearchTweetEdit
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// SearchTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type SearchTweetEntities = shared.SearchTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// SearchTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type SearchTweetEntitiesHashtag = shared.SearchTweetEntitiesHashtag
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// SearchTweetEntitiesHashtagTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type SearchTweetEntitiesHashtagTag = shared.SearchTweetEntitiesHashtagTag
 
@@ -2295,7 +2295,7 @@ type SearchTweetEntitiesHashtagTagInfo = shared.SearchTweetEntitiesHashtagTagInf
 
 type SearchTweetEntitiesHashtagTagInfoInfo = shared.SearchTweetEntitiesHashtagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetEntitiesSmarttag = shared.SearchTweetEntitiesSmarttag
 
 type SearchTweetEntitiesSmarttagTag = shared.SearchTweetEntitiesSmarttagTag
@@ -2304,7 +2304,7 @@ type SearchTweetEntitiesSmarttagTagInfo = shared.SearchTweetEntitiesSmarttagTagI
 
 type SearchTweetEntitiesSmarttagTagInfoInfo = shared.SearchTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetEntitiesSymbol = shared.SearchTweetEntitiesSymbol
 
 type SearchTweetEntitiesSymbolTag = shared.SearchTweetEntitiesSymbolTag
@@ -2313,7 +2313,7 @@ type SearchTweetEntitiesSymbolTagInfo = shared.SearchTweetEntitiesSymbolTagInfo
 
 type SearchTweetEntitiesSymbolTagInfoInfo = shared.SearchTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetEntitiesTimestamp = shared.SearchTweetEntitiesTimestamp
 
 type SearchTweetEntitiesTimestampTag = shared.SearchTweetEntitiesTimestampTag
@@ -2322,26 +2322,26 @@ type SearchTweetEntitiesTimestampTagInfo = shared.SearchTweetEntitiesTimestampTa
 
 type SearchTweetEntitiesTimestampTagInfoInfo = shared.SearchTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// SearchTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type SearchTweetEntitiesURL = shared.SearchTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// SearchTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type SearchTweetEntitiesUserMention = shared.SearchTweetEntitiesUserMention
 
 type SearchTweetLimitedAction = shared.SearchTweetLimitedAction
 
 type SearchTweetLimitedActionPrompt = shared.SearchTweetLimitedActionPrompt
 
-// Complete Note Tweet content and rich-text metadata.
+// SearchTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type SearchTweetNoteTweet = shared.SearchTweetNoteTweet
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// SearchTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type SearchTweetNoteTweetEntities = shared.SearchTweetNoteTweetEntities
 
-// Provides hashtag text and source offsets within a tweet.
+// SearchTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type SearchTweetNoteTweetEntitiesHashtag = shared.SearchTweetNoteTweetEntitiesHashtag
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// SearchTweetNoteTweetEntitiesHashtagTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type SearchTweetNoteTweetEntitiesHashtagTag = shared.SearchTweetNoteTweetEntitiesHashtagTag
 
@@ -2349,7 +2349,7 @@ type SearchTweetNoteTweetEntitiesHashtagTagInfo = shared.SearchTweetNoteTweetEnt
 
 type SearchTweetNoteTweetEntitiesHashtagTagInfoInfo = shared.SearchTweetNoteTweetEntitiesHashtagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetNoteTweetEntitiesSmarttag = shared.SearchTweetNoteTweetEntitiesSmarttag
 
 type SearchTweetNoteTweetEntitiesSmarttagTag = shared.SearchTweetNoteTweetEntitiesSmarttagTag
@@ -2358,7 +2358,7 @@ type SearchTweetNoteTweetEntitiesSmarttagTagInfo = shared.SearchTweetNoteTweetEn
 
 type SearchTweetNoteTweetEntitiesSmarttagTagInfoInfo = shared.SearchTweetNoteTweetEntitiesSmarttagTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetNoteTweetEntitiesSymbol = shared.SearchTweetNoteTweetEntitiesSymbol
 
 type SearchTweetNoteTweetEntitiesSymbolTag = shared.SearchTweetNoteTweetEntitiesSymbolTag
@@ -2367,7 +2367,7 @@ type SearchTweetNoteTweetEntitiesSymbolTagInfo = shared.SearchTweetNoteTweetEnti
 
 type SearchTweetNoteTweetEntitiesSymbolTagInfoInfo = shared.SearchTweetNoteTweetEntitiesSymbolTagInfoInfo
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetNoteTweetEntitiesTimestamp = shared.SearchTweetNoteTweetEntitiesTimestamp
 
 type SearchTweetNoteTweetEntitiesTimestampTag = shared.SearchTweetNoteTweetEntitiesTimestampTag
@@ -2376,34 +2376,34 @@ type SearchTweetNoteTweetEntitiesTimestampTagInfo = shared.SearchTweetNoteTweetE
 
 type SearchTweetNoteTweetEntitiesTimestampTagInfoInfo = shared.SearchTweetNoteTweetEntitiesTimestampTagInfoInfo
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// SearchTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type SearchTweetNoteTweetEntitiesURL = shared.SearchTweetNoteTweetEntitiesURL
 
-// Provides profile identity and source offsets for a mention.
+// SearchTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type SearchTweetNoteTweetEntitiesUserMention = shared.SearchTweetNoteTweetEntitiesUserMention
 
 type SearchTweetNoteTweetInlineMedia = shared.SearchTweetNoteTweetInlineMedia
 
 type SearchTweetNoteTweetRichtextTag = shared.SearchTweetNoteTweetRichtextTag
 
-// Describes public place metadata on a geotagged tweet.
+// SearchTweetPlace describes public place metadata on a geotagged tweet.
 type SearchTweetPlace = shared.SearchTweetPlace
 
-// Engagement counts retained from a prior tweet edit.
+// SearchTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type SearchTweetPreviousCounts = shared.SearchTweetPreviousCounts
 
-// Public post and user referenced by this reaction.
+// SearchTweetReactionContext holds public post and user referenced by this reaction.
 type SearchTweetReactionContext = shared.SearchTweetReactionContext
 
-// Sports game context attached to the post, when available.
+// SearchTweetSportsContext holds sports game context attached to the post, when available.
 type SearchTweetSportsContext = shared.SearchTweetSportsContext
 
 type SearchTweetSportsContextCompetitor = shared.SearchTweetSportsContextCompetitor
 
-// Scheduled Unix time in milliseconds, preserving the source representation.
+// SearchTweetSportsContextScheduledAtMsUnion is a scheduled Unix time in milliseconds, preserving the source representation.
 type SearchTweetSportsContextScheduledAtMsUnion = shared.SearchTweetSportsContextScheduledAtMsUnion
 
-// Public visibility notice attached to an available tweet.
+// SearchTweetTombstone is a public visibility notice attached to an available tweet.
 type SearchTweetTombstone = shared.SearchTweetTombstone
 
 type SearchTweetTombstoneText = shared.SearchTweetTombstoneText
@@ -2412,30 +2412,30 @@ type SearchTweetTombstoneTextEntity = shared.SearchTweetTombstoneTextEntity
 
 type SearchTweetTombstoneTextEntityRef = shared.SearchTweetTombstoneTextEntityRef
 
-// The label X shows under a post whose reach it limits. It links to the page that
+// SoftIntervention is the label X shows under a post whose reach it limits. It links to the page that
 // explains it.
 type SoftIntervention = shared.SoftIntervention
 
 type SoftInterventionText = shared.SoftInterventionText
 
-// The page that explains the label.
+// SoftInterventionURL is the page that explains the label.
 type SoftInterventionURL = shared.SoftInterventionURL
 
-// Tweet media.
+// TweetMedia holds tweet media.
 type TweetMedia = shared.TweetMedia
 
-// Prompt a Grok image came from. Absent on other media & when X sends no prompt.
+// TweetMediaGrokImageAnnotation is a prompt a Grok image came from. Absent on other media & when X sends no prompt.
 type TweetMediaGrokImageAnnotation = shared.TweetMediaGrokImageAnnotation
 
 type TweetMediaType = shared.TweetMediaType
 
-// Equals "photo"
+// TweetMediaTypePhoto equals "photo".
 const TweetMediaTypePhoto = shared.TweetMediaTypePhoto
 
-// Equals "video"
+// TweetMediaTypeVideo equals "video".
 const TweetMediaTypeVideo = shared.TweetMediaTypeVideo
 
-// Equals "animated_gif"
+// TweetMediaTypeAnimatedGif equals "animated_gif".
 const TweetMediaTypeAnimatedGif = shared.TweetMediaTypeAnimatedGif
 
 type TweetMediaFaceRect = shared.TweetMediaFaceRect
@@ -2448,100 +2448,100 @@ type TweetMediaTag = shared.TweetMediaTag
 
 type TweetMediaVideoVariant = shared.TweetMediaVideoVariant
 
-// Count X did not send for this post.
+// TweetUnknownCount is a count X did not send for this post.
 type TweetUnknownCount = shared.TweetUnknownCount
 
-// Equals "retweetCount"
+// TweetUnknownCountRetweetCount equals "retweetCount".
 const TweetUnknownCountRetweetCount = shared.TweetUnknownCountRetweetCount
 
-// Equals "replyCount"
+// TweetUnknownCountReplyCount equals "replyCount".
 const TweetUnknownCountReplyCount = shared.TweetUnknownCountReplyCount
 
-// Equals "likeCount"
+// TweetUnknownCountLikeCount equals "likeCount".
 const TweetUnknownCountLikeCount = shared.TweetUnknownCountLikeCount
 
-// Equals "quoteCount"
+// TweetUnknownCountQuoteCount equals "quoteCount".
 const TweetUnknownCountQuoteCount = shared.TweetUnknownCountQuoteCount
 
-// Equals "viewCount"
+// TweetUnknownCountViewCount equals "viewCount".
 const TweetUnknownCountViewCount = shared.TweetUnknownCountViewCount
 
-// Equals "bookmarkCount"
+// TweetUnknownCountBookmarkCount equals "bookmarkCount".
 const TweetUnknownCountBookmarkCount = shared.TweetUnknownCountBookmarkCount
 
-// Public X profile.
+// UserProfile is a public X profile.
 type UserProfile = shared.UserProfile
 
-// X's text on why the profile is verified, with its links.
+// UserProfileVerificationReason is X's text on why the profile is verified, with its links.
 type UserProfileVerificationReason = shared.UserProfileVerificationReason
 
 type UserProfileVerificationReasonEntity = shared.UserProfileVerificationReasonEntity
 
-// The parts of the birthday the account made public.
+// UserProfileBirthdate holds the parts of the birthday the account made public.
 type UserProfileBirthdate = shared.UserProfileBirthdate
 
-// How often the account changed its username.
+// UserProfileUsernameChanges describes how often the account changed its username.
 type UserProfileUsernameChanges = shared.UserProfileUsernameChanges
 
-// Emails, phone numbers & links the account publishes on its own profile. Omitted
+// UserProfileContactInfo holds emails, phone numbers & links the account publishes on its own profile. Omitted
 // when it publishes none.
 type UserProfileContactInfo = shared.UserProfileContactInfo
 
 type UserProfileContactInfoEmail = shared.UserProfileContactInfoEmail
 
-// Profile field that holds the email.
+// UserProfileContactInfoEmailSource is a profile field that holds the email.
 type UserProfileContactInfoEmailSource = shared.UserProfileContactInfoEmailSource
 
-// Equals "bio"
+// UserProfileContactInfoEmailSourceBio equals "bio".
 const UserProfileContactInfoEmailSourceBio = shared.UserProfileContactInfoEmailSourceBio
 
-// Equals "name"
+// UserProfileContactInfoEmailSourceName equals "name".
 const UserProfileContactInfoEmailSourceName = shared.UserProfileContactInfoEmailSourceName
 
-// Equals "location"
+// UserProfileContactInfoEmailSourceLocation equals "location".
 const UserProfileContactInfoEmailSourceLocation = shared.UserProfileContactInfoEmailSourceLocation
 
 type UserProfileContactInfoLink = shared.UserProfileContactInfoLink
 
-// `url` for the website field, `bio` for a bio link.
+// UserProfileContactInfoLinkSource is an alias for [shared.UserProfileContactInfoLinkSource]. `url` for the website field, `bio` for a bio link.
 type UserProfileContactInfoLinkSource = shared.UserProfileContactInfoLinkSource
 
-// Equals "url"
+// UserProfileContactInfoLinkSourceURL equals "url".
 const UserProfileContactInfoLinkSourceURL = shared.UserProfileContactInfoLinkSourceURL
 
-// Equals "bio"
+// UserProfileContactInfoLinkSourceBio equals "bio".
 const UserProfileContactInfoLinkSourceBio = shared.UserProfileContactInfoLinkSourceBio
 
 type UserProfileContactInfoPhone = shared.UserProfileContactInfoPhone
 
-// Profile field that holds the number.
+// UserProfileContactInfoPhoneSource is a profile field that holds the number.
 type UserProfileContactInfoPhoneSource = shared.UserProfileContactInfoPhoneSource
 
-// Equals "bio"
+// UserProfileContactInfoPhoneSourceBio equals "bio".
 const UserProfileContactInfoPhoneSourceBio = shared.UserProfileContactInfoPhoneSourceBio
 
-// Equals "name"
+// UserProfileContactInfoPhoneSourceName equals "name".
 const UserProfileContactInfoPhoneSourceName = shared.UserProfileContactInfoPhoneSourceName
 
-// Equals "location"
+// UserProfileContactInfoPhoneSourceLocation equals "location".
 const UserProfileContactInfoPhoneSourceLocation = shared.UserProfileContactInfoPhoneSourceLocation
 
-// Equals "url"
+// UserProfileContactInfoPhoneSourceURL equals "url".
 const UserProfileContactInfoPhoneSourceURL = shared.UserProfileContactInfoPhoneSourceURL
 
-// X's best-effort public label inferred from aggregated account-access IP
+// UserProfileAccountBasedIn is X's best-effort public label inferred from aggregated account-access IP
 // addresses. It does not state nationality, residence, identity, registration,
 // post location, or exact location.
 type UserProfileAccountBasedIn = shared.UserProfileAccountBasedIn
 
-// Organization affiliation label shown on an X profile.
+// UserProfileAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type UserProfileAffiliatesHighlightedLabel = shared.UserProfileAffiliatesHighlightedLabel
 
-// Profile highlight availability and count metadata.
+// UserProfileHighlightsInfo holds profile highlight availability and count metadata.
 type UserProfileHighlightsInfo = shared.UserProfileHighlightsInfo
 
-// Identity verification metadata displayed by X.
+// UserProfileIdentityVerification holds identity verification metadata displayed by X.
 type UserProfileIdentityVerification = shared.UserProfileIdentityVerification
 
-// Public payment and creator-support handles shown on X.
+// UserProfileTipJar holds public payment and creator-support handles shown on X.
 type UserProfileTipJar = shared.UserProfileTipJar

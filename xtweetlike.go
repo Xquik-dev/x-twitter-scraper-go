@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// X write actions (tweets, likes, follows, DMs)
+// XTweetLikeService covers X write actions (tweets, likes, follows, DMs).
 //
 // XTweetLikeService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewXTweetLikeService(opts ...option.RequestOption) (r XTweetLikeService) {
 	return
 }
 
-// Likes a post through a connected X account.
+// New likes a post through a connected X account.
 func (r *XTweetLikeService) New(ctx context.Context, id string, params XTweetLikeNewParams, opts ...option.RequestOption) (res *XTweetLikeNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -56,7 +56,7 @@ func (r *XTweetLikeService) New(ctx context.Context, id string, params XTweetLik
 	return res, err
 }
 
-// Removes a like through a connected X account.
+// Delete removes a like through a connected X account.
 func (r *XTweetLikeService) Delete(ctx context.Context, id string, params XTweetLikeDeleteParams, opts ...option.RequestOption) (res *XTweetLikeDeleteResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -71,7 +71,7 @@ func (r *XTweetLikeService) Delete(ctx context.Context, id string, params XTweet
 	return res, err
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XTweetLikeNewResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XTweetLikeNewResponse struct {
@@ -195,13 +195,13 @@ type XTweetLikeNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XTweetLikeNewResponseAccount is a connected account selected for the write.
 type XTweetLikeNewResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -214,7 +214,7 @@ type XTweetLikeNewResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeNewResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeNewResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -244,7 +244,7 @@ const (
 	XTweetLikeNewResponseActionLeaveCommunity  XTweetLikeNewResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XTweetLikeNewResponseBilling is the type of [XTweetLikeNewResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XTweetLikeNewResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -263,13 +263,13 @@ type XTweetLikeNewResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeNewResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeNewResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XTweetLikeNewResponseNextAction is the type of [XTweetLikeNewResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XTweetLikeNewResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -287,13 +287,13 @@ type XTweetLikeNewResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeNewResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeNewResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XTweetLikeNewResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XTweetLikeNewResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -308,13 +308,13 @@ type XTweetLikeNewResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeNewResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeNewResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XTweetLikeNewResponseResult is a confirmed result produced by the write, when available.
 type XTweetLikeNewResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -330,7 +330,7 @@ type XTweetLikeNewResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeNewResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeNewResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -347,7 +347,7 @@ const (
 	XTweetLikeNewResponseStatusExpired             XTweetLikeNewResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XTweetLikeNewResponseTarget is an existing X resource targeted by the write, when applicable.
 type XTweetLikeNewResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -361,13 +361,13 @@ type XTweetLikeNewResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeNewResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XTweetLikeDeleteResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XTweetLikeDeleteResponse struct {
@@ -491,13 +491,13 @@ type XTweetLikeDeleteResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XTweetLikeDeleteResponseAccount is a connected account selected for the write.
 type XTweetLikeDeleteResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -510,7 +510,7 @@ type XTweetLikeDeleteResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeDeleteResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeDeleteResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -540,7 +540,7 @@ const (
 	XTweetLikeDeleteResponseActionLeaveCommunity  XTweetLikeDeleteResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XTweetLikeDeleteResponseBilling is the type of [XTweetLikeDeleteResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XTweetLikeDeleteResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -559,13 +559,13 @@ type XTweetLikeDeleteResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeDeleteResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeDeleteResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XTweetLikeDeleteResponseNextAction is the type of [XTweetLikeDeleteResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XTweetLikeDeleteResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -583,13 +583,13 @@ type XTweetLikeDeleteResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeDeleteResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeDeleteResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XTweetLikeDeleteResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XTweetLikeDeleteResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -604,13 +604,13 @@ type XTweetLikeDeleteResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeDeleteResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeDeleteResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XTweetLikeDeleteResponseResult is a confirmed result produced by the write, when available.
 type XTweetLikeDeleteResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -626,7 +626,7 @@ type XTweetLikeDeleteResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeDeleteResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeDeleteResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -643,7 +643,7 @@ const (
 	XTweetLikeDeleteResponseStatusExpired             XTweetLikeDeleteResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XTweetLikeDeleteResponseTarget is an existing X resource targeted by the write, when applicable.
 type XTweetLikeDeleteResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -657,7 +657,7 @@ type XTweetLikeDeleteResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XTweetLikeDeleteResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XTweetLikeDeleteResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

@@ -24,7 +24,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// Saved or bulk data extraction (23 tool types)
+// ExtractionService covers saved or bulk data extraction (23 tool types).
 //
 // ExtractionService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -44,7 +44,7 @@ func NewExtractionService(opts ...option.RequestOption) (r ExtractionService) {
 	return
 }
 
-// Returns status and up to 1,000 results. Follow nextCursor when hasMore is true.
+// Get returns status and up to 1,000 results. Follow nextCursor when hasMore is true.
 func (r *ExtractionService) Get(ctx context.Context, id string, query ExtractionGetParams, opts ...option.RequestOption) (res *ExtractionGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -56,7 +56,7 @@ func (r *ExtractionService) Get(ctx context.Context, id string, query Extraction
 	return res, err
 }
 
-// Returns extraction jobs with status and result counts.
+// List returns extraction jobs with status and result counts.
 func (r *ExtractionService) List(ctx context.Context, query ExtractionListParams, opts ...option.RequestOption) (res *ExtractionListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "extractions"
@@ -64,7 +64,7 @@ func (r *ExtractionService) List(ctx context.Context, query ExtractionListParams
 	return res, err
 }
 
-// Cancels an active extraction without charging or saving rows.
+// Cancel cancels an active extraction without charging or saving rows.
 func (r *ExtractionService) Cancel(ctx context.Context, id string, opts ...option.RequestOption) (res *ExtractionCancelResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -76,7 +76,7 @@ func (r *ExtractionService) Cancel(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Estimates extraction cost without creating a job.
+// EstimateCost estimates extraction cost without creating a job.
 func (r *ExtractionService) EstimateCost(ctx context.Context, body ExtractionEstimateCostParams, opts ...option.RequestOption) (res *ExtractionEstimateCostResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "extractions/estimate"
@@ -84,7 +84,7 @@ func (r *ExtractionService) EstimateCost(ctx context.Context, body ExtractionEst
 	return res, err
 }
 
-// Downloads completed extraction results in the requested format.
+// ExportResults downloads completed extraction results in the requested format.
 func (r *ExtractionService) ExportResults(ctx context.Context, id string, query ExtractionExportResultsParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
@@ -97,7 +97,7 @@ func (r *ExtractionService) ExportResults(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Starts one single-target or multi-target extraction. Follow waitUrl, then page
+// Run starts one single-target or multi-target extraction. Follow waitUrl, then page
 // statusUrl after completion.
 func (r *ExtractionService) Run(ctx context.Context, params ExtractionRunParams, opts ...option.RequestOption) (res *ExtractionRunResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
@@ -109,7 +109,7 @@ func (r *ExtractionService) Run(ctx context.Context, params ExtractionRunParams,
 	return res, err
 }
 
-// Extraction job tracking status, tool type, and result count.
+// ExtractionJob holds extraction job tracking status, tool type, and result count.
 type ExtractionJob struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -157,7 +157,7 @@ type ExtractionJob struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ExtractionJob) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionJob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -173,7 +173,7 @@ const (
 	ExtractionJobStatusFailed    ExtractionJobStatus = "failed"
 )
 
-// Identifier for the extraction tool used to run a job.
+// ExtractionJobToolType is an identifier for the extraction tool used to run a job.
 type ExtractionJobToolType string
 
 const (
@@ -202,7 +202,7 @@ const (
 	ExtractionJobToolTypeVerifiedFollowerExplorer   ExtractionJobToolType = "verified_follower_explorer"
 )
 
-// Why a terminal job stopped.
+// ExtractionJobCompletionReason describes why a terminal job stopped.
 type ExtractionJobCompletionReason string
 
 const (
@@ -237,13 +237,13 @@ type ExtractionGetResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ExtractionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Represents a public row across supported extraction modes.
+// ExtractionGetResponseResult represents a public row across supported extraction modes.
 type ExtractionGetResponseResult struct {
 	ID            string    `json:"id" api:"required"`
 	CreatedAt     time.Time `json:"createdAt" api:"required" format:"date-time"`
@@ -301,7 +301,7 @@ type ExtractionGetResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ExtractionGetResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionGetResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -321,7 +321,7 @@ type ExtractionListResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ExtractionListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -339,13 +339,13 @@ type ExtractionCancelResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ExtractionCancelResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionCancelResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Free conservative cost estimate. Post estimates use the supported cap without a
+// ExtractionEstimateCostResponse is a free conservative cost estimate. Post estimates use the supported cap without a
 // live profile lookup. It never creates a job or charges.
 type ExtractionEstimateCostResponse struct {
 	// Whether the balance covers the full estimate.
@@ -372,7 +372,7 @@ type ExtractionEstimateCostResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ExtractionEstimateCostResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionEstimateCostResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -393,7 +393,7 @@ const (
 	ExtractionEstimateCostResponseSourceUnknown       ExtractionEstimateCostResponseSource = "unknown"
 )
 
-// Free conservative cost estimate. Post estimates use the supported cap without a
+// ExtractionRunResponse is a free conservative cost estimate. Post estimates use the supported cap without a
 // live profile lookup. It never creates a job or charges.
 type ExtractionRunResponse struct {
 	ID string `json:"id"`
@@ -443,7 +443,7 @@ type ExtractionRunResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ExtractionRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -507,7 +507,7 @@ func (r ExtractionGetParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Preserve source keys or convert result field names.
+// ExtractionGetParamsFieldStyle is the type of [ExtractionGetParams.FieldStyle]. Preserve source keys or convert result field names.
 type ExtractionGetParamsFieldStyle string
 
 const (
@@ -516,7 +516,7 @@ const (
 	ExtractionGetParamsFieldStyleSnakeCase ExtractionGetParamsFieldStyle = "snake_case"
 )
 
-// Use compact for core fields and tweet counts, full for nested enrichment, or raw
+// ExtractionGetParamsOutputMode is the type of [ExtractionGetParams.OutputMode]. Use compact for core fields and tweet counts, full for nested enrichment, or raw
 // for a source copy.
 type ExtractionGetParamsOutputMode string
 
@@ -526,7 +526,7 @@ const (
 	ExtractionGetParamsOutputModeRaw     ExtractionGetParamsOutputMode = "raw"
 )
 
-// Keep enrichment nested or merge it into each result.
+// ExtractionGetParamsOutputPreset is the type of [ExtractionGetParams.OutputPreset]. Keep enrichment nested or merge it into each result.
 type ExtractionGetParamsOutputPreset string
 
 const (
@@ -566,7 +566,7 @@ func (r ExtractionListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by job status
+// ExtractionListParamsStatus is the type of [ExtractionListParams.Status]. Filter by job status.
 type ExtractionListParamsStatus string
 
 const (
@@ -577,7 +577,7 @@ const (
 	ExtractionListParamsStatusFailed    ExtractionListParamsStatus = "failed"
 )
 
-// Filter by extraction tool type
+// ExtractionListParamsToolType is the type of [ExtractionListParams.ToolType]. Filter by extraction tool type.
 type ExtractionListParamsToolType string
 
 const (
@@ -850,7 +850,7 @@ func (r *ExtractionEstimateCostParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, nil)
 }
 
-// Identifier for the extraction tool used to run a job.
+// ExtractionEstimateCostParamsToolType is an identifier for the extraction tool used to run a job.
 type ExtractionEstimateCostParamsToolType string
 
 const (
@@ -879,7 +879,7 @@ const (
 	ExtractionEstimateCostParamsToolTypeVerifiedFollowerExplorer   ExtractionEstimateCostParamsToolType = "verified_follower_explorer"
 )
 
-// Reply collection strategy.
+// ExtractionEstimateCostParamsCollectionStrategy is a reply collection strategy.
 type ExtractionEstimateCostParamsCollectionStrategy string
 
 const (
@@ -890,7 +890,7 @@ const (
 	ExtractionEstimateCostParamsCollectionStrategyThread   ExtractionEstimateCostParamsCollectionStrategy = "thread"
 )
 
-// Keep target duplicates, first rows, or merged overlap.
+// ExtractionEstimateCostParamsDedupeMode is the type of [ExtractionEstimateCostParams.DedupeMode]. Keep target duplicates, first rows, or merged overlap.
 type ExtractionEstimateCostParamsDedupeMode string
 
 const (
@@ -899,7 +899,7 @@ const (
 	ExtractionEstimateCostParamsDedupeModeMerge ExtractionEstimateCostParamsDedupeMode = "merge"
 )
 
-// Tweet or Community search media.
+// ExtractionEstimateCostParamsMediaType holds tweet or Community search media.
 type ExtractionEstimateCostParamsMediaType string
 
 const (
@@ -911,7 +911,7 @@ const (
 	ExtractionEstimateCostParamsMediaTypeNone   ExtractionEstimateCostParamsMediaType = "none"
 )
 
-// Use Top for engagement. The relevance alias maps to Top.
+// ExtractionEstimateCostParamsQueryType is the type of [ExtractionEstimateCostParams.QueryType]. Use Top for engagement. The relevance alias maps to Top.
 type ExtractionEstimateCostParamsQueryType string
 
 const (
@@ -921,7 +921,7 @@ const (
 	ExtractionEstimateCostParamsQueryTypeRelevance ExtractionEstimateCostParamsQueryType = "relevance"
 )
 
-// Choose whether tweet search includes, excludes, or isolates quotes.
+// ExtractionEstimateCostParamsQuotes is the type of [ExtractionEstimateCostParams.Quotes]. Choose whether tweet search includes, excludes, or isolates quotes.
 type ExtractionEstimateCostParamsQuotes string
 
 const (
@@ -930,7 +930,7 @@ const (
 	ExtractionEstimateCostParamsQuotesOnly    ExtractionEstimateCostParamsQuotes = "only"
 )
 
-// One target and relation in a mixed profile collection.
+// ExtractionEstimateCostParamsRelationTarget holds one target and relation in a mixed profile collection.
 //
 // The properties Relation, Value are required.
 type ExtractionEstimateCostParamsRelationTarget struct {
@@ -955,7 +955,7 @@ func init() {
 	)
 }
 
-// Choose whether tweet search includes, excludes, or isolates replies.
+// ExtractionEstimateCostParamsReplies is the type of [ExtractionEstimateCostParams.Replies]. Choose whether tweet search includes, excludes, or isolates replies.
 type ExtractionEstimateCostParamsReplies string
 
 const (
@@ -964,7 +964,7 @@ const (
 	ExtractionEstimateCostParamsRepliesOnly    ExtractionEstimateCostParamsReplies = "only"
 )
 
-// Choose whether tweet search includes, excludes, or isolates reposts.
+// ExtractionEstimateCostParamsRetweets is the type of [ExtractionEstimateCostParams.Retweets]. Choose whether tweet search includes, excludes, or isolates reposts.
 type ExtractionEstimateCostParamsRetweets string
 
 const (
@@ -973,7 +973,7 @@ const (
 	ExtractionEstimateCostParamsRetweetsOnly    ExtractionEstimateCostParamsRetweets = "only"
 )
 
-// Reply depth scope.
+// ExtractionEstimateCostParamsScope is a reply depth scope.
 type ExtractionEstimateCostParamsScope string
 
 const (
@@ -982,7 +982,7 @@ const (
 	ExtractionEstimateCostParamsScopeNested ExtractionEstimateCostParamsScope = "nested"
 )
 
-// Only one field can be non-zero.
+// ExtractionEstimateCostParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ExtractionEstimateCostParamsSinceTimeUnion struct {
@@ -998,7 +998,7 @@ func (u *ExtractionEstimateCostParamsSinceTimeUnion) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Reply result order.
+// ExtractionEstimateCostParamsSort is a reply result order.
 type ExtractionEstimateCostParamsSort string
 
 const (
@@ -1008,7 +1008,7 @@ const (
 	ExtractionEstimateCostParamsSortLikes     ExtractionEstimateCostParamsSort = "likes"
 )
 
-// Only one field can be non-zero.
+// ExtractionEstimateCostParamsTargetUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ExtractionEstimateCostParamsTargetUnion struct {
@@ -1024,7 +1024,7 @@ func (u *ExtractionEstimateCostParamsTargetUnion) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The properties Kind, Value are required.
+// ExtractionEstimateCostParamsTargetObject requires the properties Kind, Value.
 type ExtractionEstimateCostParamsTargetObject struct {
 	// Any of "favoriters", "list", "profile", "profile_likes", "profile_media",
 	// "profile_replies", "quotes", "replies", "retweeters", "search", "thread",
@@ -1048,7 +1048,7 @@ func init() {
 	)
 }
 
-// Only one field can be non-zero.
+// ExtractionEstimateCostParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ExtractionEstimateCostParamsUntilTimeUnion struct {
@@ -1124,7 +1124,7 @@ func (r ExtractionExportResultsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Export file format
+// ExtractionExportResultsParamsFormat is an export file format.
 type ExtractionExportResultsParamsFormat string
 
 const (
@@ -1392,7 +1392,7 @@ func (r ExtractionRunParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Identifier for the extraction tool used to run a job.
+// ExtractionRunParamsToolType is an identifier for the extraction tool used to run a job.
 type ExtractionRunParamsToolType string
 
 const (
@@ -1421,7 +1421,7 @@ const (
 	ExtractionRunParamsToolTypeVerifiedFollowerExplorer   ExtractionRunParamsToolType = "verified_follower_explorer"
 )
 
-// Reply collection strategy.
+// ExtractionRunParamsCollectionStrategy is a reply collection strategy.
 type ExtractionRunParamsCollectionStrategy string
 
 const (
@@ -1432,7 +1432,7 @@ const (
 	ExtractionRunParamsCollectionStrategyThread   ExtractionRunParamsCollectionStrategy = "thread"
 )
 
-// Keep target duplicates, first rows, or merged overlap.
+// ExtractionRunParamsDedupeMode is the type of [ExtractionRunParams.DedupeMode]. Keep target duplicates, first rows, or merged overlap.
 type ExtractionRunParamsDedupeMode string
 
 const (
@@ -1441,7 +1441,7 @@ const (
 	ExtractionRunParamsDedupeModeMerge ExtractionRunParamsDedupeMode = "merge"
 )
 
-// Tweet or Community search media.
+// ExtractionRunParamsMediaType holds tweet or Community search media.
 type ExtractionRunParamsMediaType string
 
 const (
@@ -1453,7 +1453,7 @@ const (
 	ExtractionRunParamsMediaTypeNone   ExtractionRunParamsMediaType = "none"
 )
 
-// Use Top for engagement. The relevance alias maps to Top.
+// ExtractionRunParamsQueryType is the type of [ExtractionRunParams.QueryType]. Use Top for engagement. The relevance alias maps to Top.
 type ExtractionRunParamsQueryType string
 
 const (
@@ -1463,7 +1463,7 @@ const (
 	ExtractionRunParamsQueryTypeRelevance ExtractionRunParamsQueryType = "relevance"
 )
 
-// Choose whether tweet search includes, excludes, or isolates quotes.
+// ExtractionRunParamsQuotes is the type of [ExtractionRunParams.Quotes]. Choose whether tweet search includes, excludes, or isolates quotes.
 type ExtractionRunParamsQuotes string
 
 const (
@@ -1472,7 +1472,7 @@ const (
 	ExtractionRunParamsQuotesOnly    ExtractionRunParamsQuotes = "only"
 )
 
-// One target and relation in a mixed profile collection.
+// ExtractionRunParamsRelationTarget holds one target and relation in a mixed profile collection.
 //
 // The properties Relation, Value are required.
 type ExtractionRunParamsRelationTarget struct {
@@ -1497,7 +1497,7 @@ func init() {
 	)
 }
 
-// Choose whether tweet search includes, excludes, or isolates replies.
+// ExtractionRunParamsReplies is the type of [ExtractionRunParams.Replies]. Choose whether tweet search includes, excludes, or isolates replies.
 type ExtractionRunParamsReplies string
 
 const (
@@ -1506,7 +1506,7 @@ const (
 	ExtractionRunParamsRepliesOnly    ExtractionRunParamsReplies = "only"
 )
 
-// Choose whether tweet search includes, excludes, or isolates reposts.
+// ExtractionRunParamsRetweets is the type of [ExtractionRunParams.Retweets]. Choose whether tweet search includes, excludes, or isolates reposts.
 type ExtractionRunParamsRetweets string
 
 const (
@@ -1515,7 +1515,7 @@ const (
 	ExtractionRunParamsRetweetsOnly    ExtractionRunParamsRetweets = "only"
 )
 
-// Reply depth scope.
+// ExtractionRunParamsScope is a reply depth scope.
 type ExtractionRunParamsScope string
 
 const (
@@ -1524,7 +1524,7 @@ const (
 	ExtractionRunParamsScopeNested ExtractionRunParamsScope = "nested"
 )
 
-// Only one field can be non-zero.
+// ExtractionRunParamsSinceTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ExtractionRunParamsSinceTimeUnion struct {
@@ -1540,7 +1540,7 @@ func (u *ExtractionRunParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// Reply result order.
+// ExtractionRunParamsSort is a reply result order.
 type ExtractionRunParamsSort string
 
 const (
@@ -1550,7 +1550,7 @@ const (
 	ExtractionRunParamsSortLikes     ExtractionRunParamsSort = "likes"
 )
 
-// Only one field can be non-zero.
+// ExtractionRunParamsTargetUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ExtractionRunParamsTargetUnion struct {
@@ -1566,7 +1566,7 @@ func (u *ExtractionRunParamsTargetUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, nil)
 }
 
-// The properties Kind, Value are required.
+// ExtractionRunParamsTargetObject requires the properties Kind, Value.
 type ExtractionRunParamsTargetObject struct {
 	// Any of "favoriters", "list", "profile", "profile_likes", "profile_media",
 	// "profile_replies", "quotes", "replies", "retweeters", "search", "thread",
@@ -1590,7 +1590,7 @@ func init() {
 	)
 }
 
-// Only one field can be non-zero.
+// ExtractionRunParamsUntilTimeUnion is a union. Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ExtractionRunParamsUntilTimeUnion struct {

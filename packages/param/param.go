@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package param holds the types that build request params, such as [Opt] for an
+// optional field and [Null] for an explicit null.
 package param
 
 import (

@@ -92,7 +92,7 @@ func NewXService(opts ...option.RequestOption) (r XService) {
 	return
 }
 
-// Returns the accounts, topics, hashtags & cashtags X suggests while someone types
+// AutocompleteSearch returns the accounts, topics, hashtags & cashtags X suggests while someone types
 // a search. X may rank them differently per request. Costs 1 credit per
 // suggestion.
 func (r *XService) AutocompleteSearch(ctx context.Context, query XAutocompleteSearchParams, opts ...option.RequestOption) (res *XAutocompleteSearchResponse, err error) {
@@ -102,7 +102,7 @@ func (r *XService) AutocompleteSearch(ctx context.Context, query XAutocompleteSe
 	return res, err
 }
 
-// Retrieve the full content of an X Article (long-form post) by numeric tweet ID.
+// GetArticle retrieves the full content of an X Article (long-form post) by numeric tweet ID.
 // Returns article_not_found when the tweet is valid but is not an X Article.
 func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...option.RequestOption) (res *XGetArticleResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -115,7 +115,7 @@ func (r *XService) GetArticle(ctx context.Context, tweetID string, opts ...optio
 	return res, err
 }
 
-// Returns X's hashflags, the custom emoji X shows after some hashtags. Lists the
+// GetHashflags returns X's hashflags, the custom emoji X shows after some hashtags. Lists the
 // ones running now unless activeOnly is false. Each returned hashflag costs 1
 // credit.
 func (r *XService) GetHashflags(ctx context.Context, query XGetHashflagsParams, opts ...option.RequestOption) (res *XGetHashflagsResponse, err error) {
@@ -125,7 +125,7 @@ func (r *XService) GetHashflags(ctx context.Context, query XGetHashflagsParams, 
 	return res, err
 }
 
-// Returns the home timeline for the connected X account.
+// GetHomeTimeline returns the home timeline for the connected X account.
 func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelineParams, opts ...option.RequestOption) (res *shared.PaginatedTweets, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/timeline"
@@ -133,7 +133,7 @@ func (r *XService) GetHomeTimeline(ctx context.Context, query XGetHomeTimelinePa
 	return res, err
 }
 
-// Returns each version X wrote of 1 news story, the AI trends x.com shows under
+// GetNewsStoryVersions returns each version X wrote of 1 news story, the AI trends x.com shows under
 // Explore & News. Each version has its time, headline & text, oldest first, so you
 // can see how the story changed. X lists every version at once. Each request costs
 // 1 credit.
@@ -148,7 +148,7 @@ func (r *XService) GetNewsStoryVersions(ctx context.Context, id string, query XG
 	return res, err
 }
 
-// Returns notifications for the connected X account.
+// GetNotifications returns notifications for the connected X account.
 func (r *XService) GetNotifications(ctx context.Context, query XGetNotificationsParams, opts ...option.RequestOption) (res *XGetNotificationsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/notifications"
@@ -156,7 +156,7 @@ func (r *XService) GetNotifications(ctx context.Context, query XGetNotifications
 	return res, err
 }
 
-// Returns the places X offers trends for. Pass a location's woeid to /x/trends.
+// GetTrendLocations returns the places X offers trends for. Pass a location's woeid to /x/trends.
 // Each returned location costs 1 credit.
 func (r *XService) GetTrendLocations(ctx context.Context, query XGetTrendLocationsParams, opts ...option.RequestOption) (res *XGetTrendLocationsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -165,7 +165,7 @@ func (r *XService) GetTrendLocations(ctx context.Context, query XGetTrendLocatio
 	return res, err
 }
 
-// Returns X's current trends for a place you choose. Pick it by woeid, country or
+// GetTrends returns X's current trends for a place you choose. Pick it by woeid, country or
 // location name. Without one, trends are worldwide. Add at to read what was
 // trending on Twitter at a past time, such as yesterday. Xquik keeps a Twitter
 // trends archive from 2026-10-13 02:20 UTC on, with 1 list per place every 5
@@ -177,7 +177,7 @@ func (r *XService) GetTrends(ctx context.Context, query XGetTrendsParams, opts .
 	return res, err
 }
 
-// Returns the Twitter trends archive of a place, as the lists X showed there over
+// GetTrendsHistory returns the Twitter trends archive of a place, as the lists X showed there over
 // a range of time. Use it for trending on Twitter yesterday, last week or any day
 // since 2026-10-13 02:20 UTC. Xquik stores 1 list per place every 5 minutes and
 // keeps it for 25 months. Pick the place by woeid, country or location name, the
@@ -194,7 +194,7 @@ func (r *XService) GetTrendsHistory(ctx context.Context, query XGetTrendsHistory
 	return res, err
 }
 
-// Finds places on X by name. Pass a place's id as place to /x/tweets/search to
+// SearchPlaces finds places on X by name. Pass a place's id as place to /x/tweets/search to
 // read posts tagged there. X ranks the places, so their order can differ between
 // requests. Each returned place costs 1 credit.
 func (r *XService) SearchPlaces(ctx context.Context, query XSearchPlacesParams, opts ...option.RequestOption) (res *XSearchPlacesResponse, err error) {
@@ -217,7 +217,7 @@ type XGetArticleResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetArticleResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -277,7 +277,7 @@ type XGetArticleResponseArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetArticleResponseArticle) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -334,7 +334,7 @@ type XGetArticleResponseArticleContent struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetArticleResponseArticleContent) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -354,13 +354,13 @@ type XGetArticleResponseArticleContentLink struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetArticleResponseArticleContentLink) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContentLink) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// What a media block holds
+// XGetArticleResponseArticleContentMediaType describes what a media block holds.
 type XGetArticleResponseArticleContentMediaType string
 
 const (
@@ -383,13 +383,13 @@ type XGetArticleResponseArticleContentInlineStyleRange struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetArticleResponseArticleContentInlineStyleRange) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContentInlineStyleRange) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X Article author profile fields returned when available.
+// XGetArticleResponseAuthor holds X Article author profile fields returned when available.
 type XGetArticleResponseAuthor struct {
 	ID               string `json:"id" api:"required"`
 	Name             string `json:"name" api:"required"`
@@ -437,7 +437,7 @@ type XGetArticleResponseAuthor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetArticleResponseAuthor) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -457,7 +457,7 @@ type XGetNotificationsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetNotificationsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetNotificationsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -479,7 +479,7 @@ type XGetNotificationsResponseNotification struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetNotificationsResponseNotification) RawJSON() string { return r.JSON.raw }
 func (r *XGetNotificationsResponseNotification) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -511,7 +511,7 @@ type XGetTrendsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -542,13 +542,13 @@ type XGetTrendsResponseTrend struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendsResponseTrend) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsResponseTrend) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The place country or location named. Absent when woeid picked the place or the
+// XGetTrendsResponseLocation is the place country or location named. Absent when woeid picked the place or the
 // request named none.
 type XGetTrendsResponseLocation struct {
 	// Country name. Null for Worldwide.
@@ -581,13 +581,13 @@ type XGetTrendsResponseLocation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendsResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsResponseLocation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// What X suggests for a partial search query. Each list keeps X's order. A list is
+// XAutocompleteSearchResponse describes what X suggests for a partial search query. Each list keeps X's order. A list is
 // empty when X suggests none of its type or types leaves it out.
 type XAutocompleteSearchResponse struct {
 	// Suggested stocks & crypto tokens.
@@ -615,13 +615,13 @@ type XAutocompleteSearchResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAutocompleteSearchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A stock or crypto token X suggests for the query.
+// XAutocompleteSearchResponseCashtag is a stock or crypto token X suggests for the query.
 type XAutocompleteSearchResponseCashtag struct {
 	// Ticker symbol without the $.
 	Ticker string `json:"ticker" api:"required"`
@@ -663,13 +663,13 @@ type XAutocompleteSearchResponseCashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAutocompleteSearchResponseCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseCashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A hashtag X suggests for the query.
+// XAutocompleteSearchResponseHashtag is a hashtag X suggests for the query.
 type XAutocompleteSearchResponseHashtag struct {
 	// Suggested hashtag, with its
 	Hashtag string `json:"hashtag" api:"required"`
@@ -690,13 +690,13 @@ type XAutocompleteSearchResponseHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAutocompleteSearchResponseHashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A search phrase X suggests for the query.
+// XAutocompleteSearchResponseTopic is a search phrase X suggests for the query.
 type XAutocompleteSearchResponseTopic struct {
 	// Suggested search phrase.
 	Topic string `json:"topic" api:"required"`
@@ -717,13 +717,13 @@ type XAutocompleteSearchResponseTopic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAutocompleteSearchResponseTopic) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseTopic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// An account X suggests for the query.
+// XAutocompleteSearchResponseUser is an account X suggests for the query.
 type XAutocompleteSearchResponseUser struct {
 	// X user ID.
 	ID string `json:"id" api:"required"`
@@ -781,13 +781,13 @@ type XAutocompleteSearchResponseUser struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAutocompleteSearchResponseUser) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 affiliation badge.
+// XAutocompleteSearchResponseUserBadge is 1 affiliation badge.
 type XAutocompleteSearchResponseUserBadge struct {
 	// Kind of badge.
 	BadgeType string `json:"badgeType"`
@@ -805,7 +805,7 @@ type XAutocompleteSearchResponseUserBadge struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XAutocompleteSearchResponseUserBadge) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseUserBadge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -830,13 +830,13 @@ type XGetHashflagsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetHashflagsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetHashflagsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A custom emoji X shows after a hashtag for a set time.
+// XGetHashflagsResponseHashflag is a custom emoji X shows after a hashtag for a set time.
 type XGetHashflagsResponseHashflag struct {
 	// Animations X plays for the hashtag, such as on a like. Often empty.
 	Animations []XGetHashflagsResponseHashflagAnimation `json:"animations" api:"required"`
@@ -863,7 +863,7 @@ type XGetHashflagsResponseHashflag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetHashflagsResponseHashflag) RawJSON() string { return r.JSON.raw }
 func (r *XGetHashflagsResponseHashflag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -886,7 +886,7 @@ type XGetHashflagsResponseHashflagAnimation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetHashflagsResponseHashflagAnimation) RawJSON() string { return r.JSON.raw }
 func (r *XGetHashflagsResponseHashflagAnimation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -908,13 +908,13 @@ type XGetNewsStoryVersionsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetNewsStoryVersionsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetNewsStoryVersionsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 version X wrote of a news story.
+// XGetNewsStoryVersionsResponseVersion is 1 version X wrote of a news story.
 type XGetNewsStoryVersionsResponseVersion struct {
 	// The version's ID.
 	ID string `json:"id" api:"required"`
@@ -936,7 +936,7 @@ type XGetNewsStoryVersionsResponseVersion struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetNewsStoryVersionsResponseVersion) RawJSON() string { return r.JSON.raw }
 func (r *XGetNewsStoryVersionsResponseVersion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -961,13 +961,13 @@ type XGetTrendLocationsResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendLocationsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendLocationsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A place X offers trends for.
+// XGetTrendLocationsResponseLocation is a place X offers trends for.
 type XGetTrendLocationsResponseLocation struct {
 	// Country name. Null for Worldwide.
 	Country string `json:"country" api:"required"`
@@ -999,7 +999,7 @@ type XGetTrendLocationsResponseLocation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendLocationsResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendLocationsResponseLocation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1039,7 +1039,7 @@ type XGetTrendsHistoryResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendsHistoryResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1061,7 +1061,7 @@ type XGetTrendsHistoryResponseSnapshot struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendsHistoryResponseSnapshot) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponseSnapshot) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1093,13 +1093,13 @@ type XGetTrendsHistoryResponseSnapshotTrend struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendsHistoryResponseSnapshotTrend) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponseSnapshotTrend) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The place the request named by country or location. Absent when it sent a woeid
+// XGetTrendsHistoryResponseLocation is the place the request named by country or location. Absent when it sent a woeid
 // or named no place.
 type XGetTrendsHistoryResponseLocation struct {
 	// Country name. Null for Worldwide.
@@ -1132,7 +1132,7 @@ type XGetTrendsHistoryResponseLocation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XGetTrendsHistoryResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponseLocation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1157,13 +1157,13 @@ type XSearchPlacesResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSearchPlacesResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A place X found, with the larger places it lies in.
+// XSearchPlacesResponsePlace is a place X found, with the larger places it lies in.
 type XSearchPlacesResponsePlace struct {
 	// Place ID. Pass it as place to /x/tweets/search.
 	ID string `json:"id" api:"required"`
@@ -1205,13 +1205,13 @@ type XSearchPlacesResponsePlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSearchPlacesResponsePlace) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Outline of the place as GeoJSON. Each point holds longitude, then latitude.
+// XSearchPlacesResponsePlaceBoundingBox is an outline of the place as GeoJSON. Each point holds longitude, then latitude.
 type XSearchPlacesResponsePlaceBoundingBox struct {
 	// Rings of points that draw the outline.
 	Coordinates [][][]float64 `json:"coordinates" api:"required"`
@@ -1226,13 +1226,13 @@ type XSearchPlacesResponsePlaceBoundingBox struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSearchPlacesResponsePlaceBoundingBox) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlaceBoundingBox) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A place on X, such as a city or a neighborhood.
+// XSearchPlacesResponsePlaceContainedWithin is a place on X, such as a city or a neighborhood.
 type XSearchPlacesResponsePlaceContainedWithin struct {
 	// Place ID. Pass it as place to /x/tweets/search.
 	ID string `json:"id" api:"required"`
@@ -1271,13 +1271,13 @@ type XSearchPlacesResponsePlaceContainedWithin struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSearchPlacesResponsePlaceContainedWithin) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlaceContainedWithin) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Outline of the place as GeoJSON. Each point holds longitude, then latitude.
+// XSearchPlacesResponsePlaceContainedWithinBoundingBox is an outline of the place as GeoJSON. Each point holds longitude, then latitude.
 type XSearchPlacesResponsePlaceContainedWithinBoundingBox struct {
 	// Rings of points that draw the outline.
 	Coordinates [][][]float64 `json:"coordinates" api:"required"`
@@ -1292,7 +1292,7 @@ type XSearchPlacesResponsePlaceContainedWithinBoundingBox struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XSearchPlacesResponsePlaceContainedWithinBoundingBox) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlaceContainedWithinBoundingBox) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1333,7 +1333,7 @@ func (r XGetNotificationsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Notification type filter. Unrecognized values fall back to All.
+// XGetNotificationsParamsType is a notification type filter. Unrecognized values fall back to All.
 type XGetNotificationsParamsType string
 
 const (
@@ -1504,7 +1504,7 @@ func (r XGetTrendLocationsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Kind of place. Case insensitive. X labels a few towns unknown.
+// XGetTrendLocationsParamsPlaceType is a kind of place. Case insensitive. X labels a few towns unknown.
 type XGetTrendLocationsParamsPlaceType string
 
 const (

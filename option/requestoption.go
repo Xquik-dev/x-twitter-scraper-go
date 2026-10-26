@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package option holds the request options that configure the client or a
+// single request, such as the API key, base URL, retries, headers and
+// middleware.
 package option
 
 import (

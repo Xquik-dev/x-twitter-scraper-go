@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package testutil checks for the mock API server that the SDK's tests run
+// against.
 package testutil
 
 import (

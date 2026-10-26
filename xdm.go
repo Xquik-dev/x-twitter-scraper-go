@@ -40,7 +40,7 @@ func NewXDmService(opts ...option.RequestOption) (r XDmService) {
 	return
 }
 
-// Deletes 1 DM from the account's side. The other person keeps it. Success means
+// DeleteMessage deletes 1 DM from the account's side. The other person keeps it. Success means
 // the account's conversation no longer shows it. A DM still shown gets 422
 // `x_dm_not_deleted`, and Xquik charges nothing.
 func (r *XDmService) DeleteMessage(ctx context.Context, messageID string, params XDmDeleteMessageParams, opts ...option.RequestOption) (res *XDmDeleteMessageResponse, err error) {
@@ -61,7 +61,7 @@ func (r *XDmService) DeleteMessage(ctx context.Context, messageID string, params
 	return res, err
 }
 
-// Returns message history with one user for the connected X account.
+// GetHistory returns message history with one user for the connected X account.
 func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGetHistoryParams, opts ...option.RequestOption) (res *XDmGetHistoryResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if userID == "" {
@@ -73,7 +73,7 @@ func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGet
 	return res, err
 }
 
-// Sends a direct message through a connected X account.
+// Send sends a direct message through a connected X account.
 func (r *XDmService) Send(ctx context.Context, userID string, params XDmSendParams, opts ...option.RequestOption) (res *XDmSendResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -102,7 +102,7 @@ type XDmGetHistoryResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmGetHistoryResponse) RawJSON() string { return r.JSON.raw }
 func (r *XDmGetHistoryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -130,13 +130,13 @@ type XDmGetHistoryResponseMessage struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmGetHistoryResponseMessage) RawJSON() string { return r.JSON.raw }
 func (r *XDmGetHistoryResponseMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XDmSendResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XDmSendResponse struct {
@@ -260,13 +260,13 @@ type XDmSendResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmSendResponse) RawJSON() string { return r.JSON.raw }
 func (r *XDmSendResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XDmSendResponseAccount is a connected account selected for the write.
 type XDmSendResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -279,7 +279,7 @@ type XDmSendResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmSendResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XDmSendResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -309,7 +309,7 @@ const (
 	XDmSendResponseActionLeaveCommunity  XDmSendResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XDmSendResponseBilling is the type of [XDmSendResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XDmSendResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -328,13 +328,13 @@ type XDmSendResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmSendResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XDmSendResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XDmSendResponseNextAction is the type of [XDmSendResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XDmSendResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -352,13 +352,13 @@ type XDmSendResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmSendResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XDmSendResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XDmSendResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XDmSendResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -373,13 +373,13 @@ type XDmSendResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmSendResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XDmSendResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XDmSendResponseResult is a confirmed result produced by the write, when available.
 type XDmSendResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -395,7 +395,7 @@ type XDmSendResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmSendResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XDmSendResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -412,7 +412,7 @@ const (
 	XDmSendResponseStatusExpired             XDmSendResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XDmSendResponseTarget is an existing X resource targeted by the write, when applicable.
 type XDmSendResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -426,13 +426,13 @@ type XDmSendResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmSendResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XDmSendResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XDmDeleteMessageResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XDmDeleteMessageResponse struct {
@@ -558,13 +558,13 @@ type XDmDeleteMessageResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmDeleteMessageResponse) RawJSON() string { return r.JSON.raw }
 func (r *XDmDeleteMessageResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XDmDeleteMessageResponseAccount is a connected account selected for the write.
 type XDmDeleteMessageResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -577,7 +577,7 @@ type XDmDeleteMessageResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmDeleteMessageResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XDmDeleteMessageResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -607,7 +607,7 @@ const (
 	XDmDeleteMessageResponseActionLeaveCommunity  XDmDeleteMessageResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XDmDeleteMessageResponseBilling is the type of [XDmDeleteMessageResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Xquik charges nothing for pending or failed writes.
 type XDmDeleteMessageResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -626,7 +626,7 @@ type XDmDeleteMessageResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmDeleteMessageResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XDmDeleteMessageResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -642,7 +642,7 @@ const (
 	XDmDeleteMessageResponseBillingStatusRefunded     XDmDeleteMessageResponseBillingStatus = "refunded"
 )
 
-// Exact follow-up an API client or agent should perform.
+// XDmDeleteMessageResponseNextAction is the type of [XDmDeleteMessageResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XDmDeleteMessageResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type XDmDeleteMessageResponseNextActionType `json:"type" api:"required"`
@@ -661,7 +661,7 @@ type XDmDeleteMessageResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmDeleteMessageResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XDmDeleteMessageResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -676,7 +676,7 @@ const (
 	XDmDeleteMessageResponseNextActionTypeFixRequest   XDmDeleteMessageResponseNextActionType = "fix_request"
 )
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XDmDeleteMessageResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XDmDeleteMessageResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -691,13 +691,13 @@ type XDmDeleteMessageResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmDeleteMessageResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XDmDeleteMessageResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XDmDeleteMessageResponseResult is a confirmed result produced by the write, when available.
 type XDmDeleteMessageResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -713,7 +713,7 @@ type XDmDeleteMessageResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmDeleteMessageResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XDmDeleteMessageResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -740,7 +740,7 @@ const (
 	XDmDeleteMessageResponseStatusExpired             XDmDeleteMessageResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XDmDeleteMessageResponseTarget is an existing X resource targeted by the write, when applicable.
 type XDmDeleteMessageResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -754,7 +754,7 @@ type XDmDeleteMessageResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XDmDeleteMessageResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XDmDeleteMessageResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

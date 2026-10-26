@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package shared holds the types that several services return or accept, such
+// as tweets, users and communities.
 package shared
 
 import (
@@ -17,7 +19,7 @@ import (
 // raw JSON, so decode a key with [json.Unmarshal] into the type you expect.
 type PublicMetadata map[string]json.RawMessage
 
-// Public X Community, as every Community read returns it.
+// Community is a public X Community, as every Community read returns it.
 type Community struct {
 	// Unique community identifier
 	ID string `json:"id" api:"required"`
@@ -83,13 +85,13 @@ type Community struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r Community) RawJSON() string { return r.JSON.raw }
 func (r *Community) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community activity & growth for X's latest period.
+// CommunityAnalytics holds community activity & growth for X's latest period.
 type CommunityAnalytics struct {
 	// The community ID from your request.
 	ID string `json:"id" api:"required"`
@@ -110,13 +112,13 @@ type CommunityAnalytics struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityAnalytics) RawJSON() string { return r.JSON.raw }
 func (r *CommunityAnalytics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The period's activity, each metric with its count and changePercent. likes
+// CommunityAnalyticsMetrics is the period's activity, each metric with its count and changePercent. likes
 // counts likes on community posts and newMembers the accounts that joined. posts
 // counts the community posts and replies the replies to them. uniquePosters counts
 // the distinct accounts that posted.
@@ -143,13 +145,13 @@ type CommunityAnalyticsMetrics struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityAnalyticsMetrics) RawJSON() string { return r.JSON.raw }
 func (r *CommunityAnalyticsMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A community metric for X's latest period & its percent change.
+// CommunityAnalyticsMetric is a community metric for X's latest period & its percent change.
 type CommunityAnalyticsMetric struct {
 	// Change in percent from the same figure 1 day earlier. Values stay unrounded.
 	ChangePercent float64 `json:"changePercent" api:"required"`
@@ -164,13 +166,13 @@ type CommunityAnalyticsMetric struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityAnalyticsMetric) RawJSON() string { return r.JSON.raw }
 func (r *CommunityAnalyticsMetric) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The banner X shows for a community, with its size & colors.
+// CommunityBanner is the banner X shows for a community, with its size & colors.
 type CommunityBanner struct {
 	// Banner image URL at its original size
 	URL string `json:"url" api:"required"`
@@ -194,7 +196,7 @@ type CommunityBanner struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityBanner) RawJSON() string { return r.JSON.raw }
 func (r *CommunityBanner) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -220,13 +222,13 @@ type CommunityBannerColor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityBannerColor) RawJSON() string { return r.JSON.raw }
 func (r *CommunityBannerColor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Area X keeps in view when it crops the banner, in pixels from the top left
+// CommunityBannerFocus is an area X keeps in view when it crops the banner, in pixels from the top left.
 type CommunityBannerFocus struct {
 	// Height of the area
 	Height int64 `json:"height"`
@@ -247,7 +249,7 @@ type CommunityBannerFocus struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityBannerFocus) RawJSON() string { return r.JSON.raw }
 func (r *CommunityBannerFocus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -501,7 +503,7 @@ func (u CommunityCreatorUnion) AsCommunityCreatorObject() (v CommunityCreatorObj
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u CommunityCreatorUnion) RawJSON() string { return u.JSON.raw }
 
 func (u *CommunityCreatorUnion) UnmarshalJSON(data []byte) error {
@@ -525,7 +527,7 @@ type CommunityCreatorObject struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityCreatorObject) RawJSON() string { return r.JSON.raw }
 func (r *CommunityCreatorObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -779,14 +781,14 @@ func (u CommunityMembersFacepileUnion) AsCommunityMembersFacepileCommunityMember
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u CommunityMembersFacepileUnion) RawJSON() string { return u.JSON.raw }
 
 func (u *CommunityMembersFacepileUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// A member X previews by ID & profile picture only.
+// CommunityMembersFacepileCommunityMemberPreview is a member X previews by ID & profile picture only.
 type CommunityMembersFacepileCommunityMemberPreview struct {
 	// Numeric X user ID of the member
 	ID string `json:"id" api:"required"`
@@ -804,13 +806,13 @@ type CommunityMembersFacepileCommunityMemberPreview struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityMembersFacepileCommunityMemberPreview) RawJSON() string { return r.JSON.raw }
 func (r *CommunityMembersFacepileCommunityMemberPreview) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Primary topic. Its id is absent when X lists the community in a keyword or topic
+// CommunityPrimaryTopic is a primary topic. Its id is absent when X lists the community in a keyword or topic
 // result.
 type CommunityPrimaryTopic struct {
 	// Topic name X shows on the community
@@ -826,7 +828,7 @@ type CommunityPrimaryTopic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityPrimaryTopic) RawJSON() string { return r.JSON.raw }
 func (r *CommunityPrimaryTopic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -849,13 +851,13 @@ type CommunityRule struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityRule) RawJSON() string { return r.JSON.raw }
 func (r *CommunityRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// 1 page of X Communities, in X's order.
+// CommunityPage is 1 page of X Communities, in X's order.
 type CommunityPage struct {
 	// Communities in X's order
 	Communities []Community `json:"communities" api:"required"`
@@ -873,13 +875,13 @@ type CommunityPage struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityPage) RawJSON() string { return r.JSON.raw }
 func (r *CommunityPage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// A topic X groups communities under, with its subtopics.
+// CommunityTopic is a topic X groups communities under, with its subtopics.
 type CommunityTopic struct {
 	// Topic ID. Pass it as topicId to /x/communities/popular.
 	ID string `json:"id" api:"required"`
@@ -897,7 +899,7 @@ type CommunityTopic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityTopic) RawJSON() string { return r.JSON.raw }
 func (r *CommunityTopic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -917,13 +919,13 @@ type CommunityTopicSubtopic struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r CommunityTopicSubtopic) RawJSON() string { return r.JSON.raw }
 func (r *CommunityTopicSubtopic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Content disclosure metadata shown by X when a tweet is labeled as paid
+// ContentDisclosure holds content disclosure metadata shown by X when a tweet is labeled as paid
 // partnership content or AI-generated media.
 type ContentDisclosure struct {
 	Advertising ContentDisclosureAdvertising `json:"advertising"`
@@ -937,7 +939,7 @@ type ContentDisclosure struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ContentDisclosure) RawJSON() string { return r.JSON.raw }
 func (r *ContentDisclosure) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -954,7 +956,7 @@ type ContentDisclosureAdvertising struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ContentDisclosureAdvertising) RawJSON() string { return r.JSON.raw }
 func (r *ContentDisclosureAdvertising) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -974,13 +976,13 @@ type ContentDisclosureAIGenerated struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r ContentDisclosureAIGenerated) RawJSON() string { return r.JSON.raw }
 func (r *ContentDisclosureAIGenerated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Quoted or retweeted tweet context.
+// EmbeddedTweet holds quoted or retweeted tweet context.
 type EmbeddedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -1159,13 +1161,13 @@ type EmbeddedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -1191,13 +1193,13 @@ type EmbeddedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -1223,7 +1225,7 @@ type EmbeddedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1241,13 +1243,13 @@ type EmbeddedTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetCardUserReferenceError) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetCardUserReferenceError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -1277,13 +1279,13 @@ type EmbeddedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -1304,13 +1306,13 @@ type EmbeddedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetConversationControl) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetConversationControl) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -1325,13 +1327,13 @@ type EmbeddedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetEntities struct {
 	Hashtags     []EmbeddedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -1352,13 +1354,13 @@ type EmbeddedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -1373,13 +1375,13 @@ type EmbeddedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetEntitiesSmarttag struct {
 	Indices []int64                          `json:"indices"`
 	Seconds float64                          `json:"seconds"`
@@ -1396,7 +1398,7 @@ type EmbeddedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1414,7 +1416,7 @@ type EmbeddedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1430,7 +1432,7 @@ type EmbeddedTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1450,13 +1452,13 @@ type EmbeddedTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetEntitiesSymbol struct {
 	Indices []int64                        `json:"indices"`
 	Seconds float64                        `json:"seconds"`
@@ -1473,7 +1475,7 @@ type EmbeddedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1491,7 +1493,7 @@ type EmbeddedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1507,7 +1509,7 @@ type EmbeddedTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1527,13 +1529,13 @@ type EmbeddedTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetEntitiesTimestamp struct {
 	Indices []int64                           `json:"indices"`
 	Seconds float64                           `json:"seconds"`
@@ -1550,7 +1552,7 @@ type EmbeddedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1568,7 +1570,7 @@ type EmbeddedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1584,7 +1586,7 @@ type EmbeddedTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1604,13 +1606,13 @@ type EmbeddedTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -1627,13 +1629,13 @@ type EmbeddedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -1650,7 +1652,7 @@ type EmbeddedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1668,7 +1670,7 @@ type EmbeddedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1691,13 +1693,13 @@ type EmbeddedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetLimitedActionPrompt) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetLimitedActionPrompt) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -1722,13 +1724,13 @@ type EmbeddedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -1749,13 +1751,13 @@ type EmbeddedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -1770,13 +1772,13 @@ type EmbeddedTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                   `json:"indices"`
 	Seconds float64                                   `json:"seconds"`
@@ -1793,7 +1795,7 @@ type EmbeddedTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1811,7 +1813,7 @@ type EmbeddedTweetNoteTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1827,7 +1829,7 @@ type EmbeddedTweetNoteTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1847,13 +1849,13 @@ type EmbeddedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                 `json:"indices"`
 	Seconds float64                                 `json:"seconds"`
@@ -1870,7 +1872,7 @@ type EmbeddedTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1888,7 +1890,7 @@ type EmbeddedTweetNoteTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1904,7 +1906,7 @@ type EmbeddedTweetNoteTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1924,13 +1926,13 @@ type EmbeddedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                    `json:"indices"`
 	Seconds float64                                    `json:"seconds"`
@@ -1947,7 +1949,7 @@ type EmbeddedTweetNoteTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1965,7 +1967,7 @@ type EmbeddedTweetNoteTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -1981,7 +1983,7 @@ type EmbeddedTweetNoteTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2001,13 +2003,13 @@ type EmbeddedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -2024,13 +2026,13 @@ type EmbeddedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -2047,7 +2049,7 @@ type EmbeddedTweetNoteTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2065,7 +2067,7 @@ type EmbeddedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetInlineMedia) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetInlineMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2085,13 +2087,13 @@ type EmbeddedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetNoteTweetRichtextTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -2117,13 +2119,13 @@ type EmbeddedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -2142,13 +2144,13 @@ type EmbeddedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Nested tweet context at depth 2.
+// EmbeddedTweetQuotedTweet holds nested tweet context at depth 2.
 type EmbeddedTweetQuotedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -2327,13 +2329,13 @@ type EmbeddedTweetQuotedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -2359,13 +2361,13 @@ type EmbeddedTweetQuotedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -2391,7 +2393,7 @@ type EmbeddedTweetQuotedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2409,13 +2411,13 @@ type EmbeddedTweetQuotedTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetCardUserReferenceError) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetCardUserReferenceError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -2445,13 +2447,13 @@ type EmbeddedTweetQuotedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -2472,13 +2474,13 @@ type EmbeddedTweetQuotedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetConversationControl) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetConversationControl) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -2493,13 +2495,13 @@ type EmbeddedTweetQuotedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -2520,13 +2522,13 @@ type EmbeddedTweetQuotedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -2541,13 +2543,13 @@ type EmbeddedTweetQuotedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetEntitiesSmarttag struct {
 	Indices []int64                                     `json:"indices"`
 	Seconds float64                                     `json:"seconds"`
@@ -2564,7 +2566,7 @@ type EmbeddedTweetQuotedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2582,7 +2584,7 @@ type EmbeddedTweetQuotedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2598,7 +2600,7 @@ type EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2618,13 +2620,13 @@ type EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetEntitiesSymbol struct {
 	Indices []int64                                   `json:"indices"`
 	Seconds float64                                   `json:"seconds"`
@@ -2641,7 +2643,7 @@ type EmbeddedTweetQuotedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2659,7 +2661,7 @@ type EmbeddedTweetQuotedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2675,7 +2677,7 @@ type EmbeddedTweetQuotedTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2695,13 +2697,13 @@ type EmbeddedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetEntitiesTimestamp struct {
 	Indices []int64                                      `json:"indices"`
 	Seconds float64                                      `json:"seconds"`
@@ -2718,7 +2720,7 @@ type EmbeddedTweetQuotedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2736,7 +2738,7 @@ type EmbeddedTweetQuotedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2752,7 +2754,7 @@ type EmbeddedTweetQuotedTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2772,13 +2774,13 @@ type EmbeddedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -2795,13 +2797,13 @@ type EmbeddedTweetQuotedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -2818,7 +2820,7 @@ type EmbeddedTweetQuotedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2836,7 +2838,7 @@ type EmbeddedTweetQuotedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2859,13 +2861,13 @@ type EmbeddedTweetQuotedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetLimitedActionPrompt) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetLimitedActionPrompt) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -2890,13 +2892,13 @@ type EmbeddedTweetQuotedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -2917,13 +2919,13 @@ type EmbeddedTweetQuotedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -2938,13 +2940,13 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                              `json:"indices"`
 	Seconds float64                                              `json:"seconds"`
@@ -2961,7 +2963,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2979,7 +2981,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -2995,7 +2997,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3015,7 +3017,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3023,7 +3025,7 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                            `json:"indices"`
 	Seconds float64                                            `json:"seconds"`
@@ -3040,7 +3042,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3058,7 +3060,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3074,7 +3076,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3094,7 +3096,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3102,7 +3104,7 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                               `json:"indices"`
 	Seconds float64                                               `json:"seconds"`
@@ -3119,7 +3121,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3137,7 +3139,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3153,7 +3155,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3175,7 +3177,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3183,7 +3185,7 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -3200,13 +3202,13 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -3223,7 +3225,7 @@ type EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3241,7 +3243,7 @@ type EmbeddedTweetQuotedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetInlineMedia) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetInlineMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3261,13 +3263,13 @@ type EmbeddedTweetQuotedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetNoteTweetRichtextTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -3293,13 +3295,13 @@ type EmbeddedTweetQuotedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -3318,13 +3320,13 @@ type EmbeddedTweetQuotedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetQuotedTweetQuotedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -3503,13 +3505,13 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -3535,13 +3537,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -3567,7 +3569,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3585,7 +3587,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3593,7 +3595,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetCardUserReferenceError) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -3623,13 +3625,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -3650,13 +3652,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetConversationControl) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetConversationControl) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetQuotedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -3671,13 +3673,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -3698,13 +3700,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -3719,13 +3721,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag struct {
 	Indices []int64                                                `json:"indices"`
 	Seconds float64                                                `json:"seconds"`
@@ -3742,7 +3744,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3760,7 +3762,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3776,7 +3778,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3798,7 +3800,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3806,7 +3808,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) Unmarsh
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol struct {
 	Indices []int64                                              `json:"indices"`
 	Seconds float64                                              `json:"seconds"`
@@ -3823,7 +3825,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3841,7 +3843,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3857,7 +3859,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3877,7 +3879,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3885,7 +3887,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp struct {
 	Indices []int64                                                 `json:"indices"`
 	Seconds float64                                                 `json:"seconds"`
@@ -3902,7 +3904,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3920,7 +3922,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -3936,7 +3938,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3958,7 +3960,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -3966,7 +3968,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -3983,13 +3985,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -4006,7 +4008,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -4024,7 +4026,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -4047,13 +4049,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetLimitedActionPrompt) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetLimitedActionPrompt) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -4078,13 +4080,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -4105,13 +4107,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -4126,7 +4128,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4134,7 +4136,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                         `json:"indices"`
 	Seconds float64                                                         `json:"seconds"`
@@ -4151,7 +4153,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4171,7 +4173,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4189,7 +4191,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4211,7 +4213,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4219,7 +4221,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                       `json:"indices"`
 	Seconds float64                                                       `json:"seconds"`
@@ -4236,7 +4238,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4256,7 +4258,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4274,7 +4276,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4296,7 +4298,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4304,7 +4306,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                          `json:"indices"`
 	Seconds float64                                                          `json:"seconds"`
@@ -4321,7 +4323,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4341,7 +4343,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4359,7 +4361,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4381,7 +4383,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4389,7 +4391,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInf
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -4406,13 +4408,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -4429,7 +4431,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4449,7 +4451,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -4469,13 +4471,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -4501,13 +4503,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -4526,13 +4528,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -4705,13 +4707,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -4737,13 +4739,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -4769,7 +4771,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -4787,7 +4789,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCardUserReferenceError struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4795,7 +4797,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCardUserReferenceError) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -4825,7 +4827,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4833,7 +4835,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -4854,7 +4856,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4862,7 +4864,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetConversationControl) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -4877,13 +4879,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -4904,13 +4906,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -4925,7 +4927,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4933,7 +4935,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesHashtag) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag struct {
 	Indices []int64                                                           `json:"indices"`
 	Seconds float64                                                           `json:"seconds"`
@@ -4950,7 +4952,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4970,7 +4972,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -4988,7 +4990,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5010,7 +5012,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5018,7 +5020,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol struct {
 	Indices []int64                                                         `json:"indices"`
 	Seconds float64                                                         `json:"seconds"`
@@ -5035,7 +5037,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5055,7 +5057,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5073,7 +5075,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5095,7 +5097,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5103,7 +5105,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp struct {
 	Indices []int64                                                            `json:"indices"`
 	Seconds float64                                                            `json:"seconds"`
@@ -5120,7 +5122,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5140,7 +5142,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5158,7 +5160,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5180,7 +5182,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5188,7 +5190,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoI
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -5205,7 +5207,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5213,7 +5215,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesURL) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -5230,7 +5232,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5250,7 +5252,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5275,7 +5277,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5283,7 +5285,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedActionPrompt) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -5308,13 +5310,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -5335,7 +5337,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5343,7 +5345,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntities) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -5358,7 +5360,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5366,7 +5368,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag)
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                    `json:"indices"`
 	Seconds float64                                                                    `json:"seconds"`
@@ -5383,7 +5385,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5403,7 +5405,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5421,7 +5423,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagI
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5443,7 +5445,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagI
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5451,7 +5453,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                  `json:"indices"`
 	Seconds float64                                                                  `json:"seconds"`
@@ -5468,7 +5470,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5488,7 +5490,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5506,7 +5508,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5528,7 +5530,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5536,7 +5538,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                     `json:"indices"`
 	Seconds float64                                                                     `json:"seconds"`
@@ -5553,7 +5555,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5573,7 +5575,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5591,7 +5593,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5613,7 +5615,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5621,7 +5623,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestam
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -5638,7 +5640,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5646,7 +5648,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -5663,7 +5665,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5683,7 +5685,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5705,7 +5707,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5713,7 +5715,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -5739,13 +5741,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -5764,7 +5766,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5772,7 +5774,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -5787,7 +5789,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5795,7 +5797,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
@@ -5827,7 +5829,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5867,7 +5869,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5875,8 +5877,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextCompetitor) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -5904,7 +5905,7 @@ func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMs
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -5913,7 +5914,7 @@ func (u *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtM
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone struct {
 	Text EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -5927,7 +5928,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -5949,7 +5950,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5971,7 +5972,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -5997,7 +5998,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6005,7 +6006,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -6020,13 +6021,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -6199,13 +6200,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -6231,13 +6232,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -6263,7 +6264,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -6281,7 +6282,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCardUserReferenceError str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6289,7 +6290,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCardUserReferenceError
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -6319,7 +6320,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6327,7 +6328,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote) Unmarsh
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -6348,7 +6349,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6356,7 +6357,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetConversationControl) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -6371,13 +6372,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -6398,7 +6399,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6406,7 +6407,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntities) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -6421,7 +6422,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6429,7 +6430,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesHashtag) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag struct {
 	Indices []int64                                                              `json:"indices"`
 	Seconds float64                                                              `json:"seconds"`
@@ -6446,7 +6447,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6466,7 +6467,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6484,7 +6485,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6506,7 +6507,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6514,7 +6515,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInf
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol struct {
 	Indices []int64                                                            `json:"indices"`
 	Seconds float64                                                            `json:"seconds"`
@@ -6531,7 +6532,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6551,7 +6552,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6569,7 +6570,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6591,7 +6592,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6599,7 +6600,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoI
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp struct {
 	Indices []int64                                                               `json:"indices"`
 	Seconds float64                                                               `json:"seconds"`
@@ -6616,7 +6617,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6636,7 +6637,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6654,7 +6655,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6676,7 +6677,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoIn
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6684,7 +6685,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -6701,7 +6702,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6709,7 +6710,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesURL) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -6726,7 +6727,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesUserMention struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6746,7 +6747,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6771,7 +6772,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedActionPrompt struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6779,7 +6780,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedActionPrompt) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -6804,7 +6805,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6812,7 +6813,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweet) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -6833,7 +6834,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6841,7 +6842,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntities) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -6856,7 +6857,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6864,7 +6865,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHasht
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                       `json:"indices"`
 	Seconds float64                                                                       `json:"seconds"`
@@ -6881,7 +6882,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6901,7 +6902,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6919,7 +6920,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6941,7 +6942,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6949,7 +6950,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmart
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                     `json:"indices"`
 	Seconds float64                                                                     `json:"seconds"`
@@ -6966,7 +6967,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -6986,7 +6987,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7004,7 +7005,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7026,7 +7027,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7034,7 +7035,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                        `json:"indices"`
 	Seconds float64                                                                        `json:"seconds"`
@@ -7051,7 +7052,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7071,7 +7072,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7089,7 +7090,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7111,7 +7112,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7119,7 +7120,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimes
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -7136,7 +7137,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7144,7 +7145,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -7161,7 +7162,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMenti
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7181,7 +7182,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7203,7 +7204,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7211,7 +7212,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -7237,13 +7238,13 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -7262,7 +7263,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7270,7 +7271,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -7285,7 +7286,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7293,7 +7294,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
@@ -7325,7 +7326,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7365,7 +7366,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7373,8 +7374,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextCompetito
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -7402,7 +7402,7 @@ func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledA
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -7411,7 +7411,7 @@ func (u *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduled
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone struct {
 	Text EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -7425,7 +7425,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstone) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7449,7 +7449,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7471,7 +7471,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntity struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7497,7 +7497,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7505,7 +7505,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetQuotedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
@@ -7537,7 +7537,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -7575,7 +7575,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7612,7 +7612,7 @@ func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsSt
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -7621,7 +7621,7 @@ func (u *EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) Unm
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetQuotedTweetTombstone struct {
 	Text EmbeddedTweetQuotedTweetQuotedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -7635,7 +7635,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -7657,7 +7657,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -7677,7 +7677,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntity) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -7701,7 +7701,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7709,7 +7709,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -7724,13 +7724,13 @@ type EmbeddedTweetQuotedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetQuotedTweetRetweetedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -7909,13 +7909,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -7941,13 +7941,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -7973,7 +7973,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -7991,7 +7991,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -7999,7 +7999,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetCardUserReferenceError) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -8029,13 +8029,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -8056,7 +8056,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8064,7 +8064,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetConversationControl) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetRetweetedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -8079,13 +8079,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -8106,13 +8106,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -8127,13 +8127,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag struct {
 	Indices []int64                                                   `json:"indices"`
 	Seconds float64                                                   `json:"seconds"`
@@ -8150,7 +8150,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -8168,7 +8168,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8186,7 +8186,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8208,7 +8208,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8216,7 +8216,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol struct {
 	Indices []int64                                                 `json:"indices"`
 	Seconds float64                                                 `json:"seconds"`
@@ -8233,7 +8233,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -8251,7 +8251,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -8267,7 +8267,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8289,7 +8289,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8297,7 +8297,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp struct {
 	Indices []int64                                                    `json:"indices"`
 	Seconds float64                                                    `json:"seconds"`
@@ -8314,7 +8314,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -8332,7 +8332,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8350,7 +8350,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8372,7 +8372,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8380,7 +8380,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -8397,13 +8397,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -8420,7 +8420,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8440,7 +8440,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -8463,7 +8463,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8471,7 +8471,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetLimitedActionPrompt) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -8496,13 +8496,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -8523,13 +8523,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -8544,7 +8544,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8552,7 +8552,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag) Unmarsh
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                            `json:"indices"`
 	Seconds float64                                                            `json:"seconds"`
@@ -8569,7 +8569,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8589,7 +8589,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8607,7 +8607,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8629,7 +8629,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8637,7 +8637,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoI
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                          `json:"indices"`
 	Seconds float64                                                          `json:"seconds"`
@@ -8654,7 +8654,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8674,7 +8674,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8692,7 +8692,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8714,7 +8714,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8722,7 +8722,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInf
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                             `json:"indices"`
 	Seconds float64                                                             `json:"seconds"`
@@ -8739,7 +8739,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8759,7 +8759,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8777,7 +8777,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8799,7 +8799,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8807,7 +8807,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -8824,7 +8824,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8832,7 +8832,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -8849,7 +8849,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8869,7 +8869,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8891,7 +8891,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -8899,7 +8899,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -8925,13 +8925,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -8950,13 +8950,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -9129,13 +9129,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -9161,13 +9161,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -9193,7 +9193,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -9211,7 +9211,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCardUserReferenceError str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9219,7 +9219,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCardUserReferenceError
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -9249,7 +9249,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9257,7 +9257,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote) Unmarsh
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -9278,7 +9278,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9286,7 +9286,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetConversationControl) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -9301,13 +9301,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -9328,7 +9328,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9336,7 +9336,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntities) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -9351,7 +9351,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9359,7 +9359,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesHashtag) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag struct {
 	Indices []int64                                                              `json:"indices"`
 	Seconds float64                                                              `json:"seconds"`
@@ -9376,7 +9376,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9396,7 +9396,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9414,7 +9414,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9436,7 +9436,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9444,7 +9444,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInf
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol struct {
 	Indices []int64                                                            `json:"indices"`
 	Seconds float64                                                            `json:"seconds"`
@@ -9461,7 +9461,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9481,7 +9481,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9499,7 +9499,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9521,7 +9521,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9529,7 +9529,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoI
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp struct {
 	Indices []int64                                                               `json:"indices"`
 	Seconds float64                                                               `json:"seconds"`
@@ -9546,7 +9546,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9566,7 +9566,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9584,7 +9584,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9606,7 +9606,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoIn
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9614,7 +9614,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -9631,7 +9631,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9639,7 +9639,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesURL) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -9656,7 +9656,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesUserMention struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9676,7 +9676,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9701,7 +9701,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedActionPrompt struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9709,7 +9709,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedActionPrompt) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -9734,7 +9734,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9742,7 +9742,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweet) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -9763,7 +9763,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9771,7 +9771,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntities) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -9786,7 +9786,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9794,7 +9794,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHasht
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                       `json:"indices"`
 	Seconds float64                                                                       `json:"seconds"`
@@ -9811,7 +9811,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9831,7 +9831,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9849,7 +9849,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9871,7 +9871,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9879,7 +9879,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmart
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                     `json:"indices"`
 	Seconds float64                                                                     `json:"seconds"`
@@ -9896,7 +9896,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9916,7 +9916,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9934,7 +9934,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9956,7 +9956,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -9964,7 +9964,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                        `json:"indices"`
 	Seconds float64                                                                        `json:"seconds"`
@@ -9981,7 +9981,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10001,7 +10001,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10019,7 +10019,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10041,7 +10041,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10049,7 +10049,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimes
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -10066,7 +10066,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10074,7 +10074,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -10091,7 +10091,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMenti
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10111,7 +10111,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10133,7 +10133,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10141,7 +10141,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -10167,13 +10167,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -10192,7 +10192,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10200,7 +10200,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -10215,7 +10215,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10223,7 +10223,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
@@ -10255,7 +10255,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10295,7 +10295,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10303,8 +10303,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextCompetito
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -10332,7 +10331,7 @@ func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledA
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -10341,7 +10340,7 @@ func (u *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduled
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone struct {
 	Text EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -10355,7 +10354,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstone) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10379,7 +10378,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10401,7 +10400,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntity struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10427,7 +10426,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10435,7 +10434,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -10450,13 +10449,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -10629,13 +10628,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -10661,7 +10660,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10669,7 +10668,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -10695,7 +10694,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -10713,7 +10712,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCardUserReferenceError 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10721,7 +10720,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCardUserReferenceEr
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -10751,7 +10750,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10759,7 +10758,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -10780,7 +10779,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10788,7 +10787,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetConversationControl
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -10803,13 +10802,13 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -10830,7 +10829,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10838,7 +10837,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntities) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -10853,7 +10852,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10861,7 +10860,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesHashtag) Un
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag struct {
 	Indices []int64                                                                 `json:"indices"`
 	Seconds float64                                                                 `json:"seconds"`
@@ -10878,7 +10877,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10898,7 +10897,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10916,7 +10915,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10938,7 +10937,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10946,7 +10945,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol struct {
 	Indices []int64                                                               `json:"indices"`
 	Seconds float64                                                               `json:"seconds"`
@@ -10963,7 +10962,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -10983,7 +10982,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11001,7 +11000,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11023,7 +11022,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoIn
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11031,7 +11030,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp struct {
 	Indices []int64                                                                  `json:"indices"`
 	Seconds float64                                                                  `json:"seconds"`
@@ -11048,7 +11047,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11068,7 +11067,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11086,7 +11085,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11108,7 +11107,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11116,7 +11115,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -11133,7 +11132,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11141,7 +11140,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesURL) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -11158,7 +11157,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesUserMention str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11178,7 +11177,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11203,7 +11202,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11211,7 +11210,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -11236,7 +11235,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11244,7 +11243,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweet) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -11265,7 +11264,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11273,7 +11272,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntities) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -11288,7 +11287,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashta
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11296,7 +11295,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                          `json:"indices"`
 	Seconds float64                                                                          `json:"seconds"`
@@ -11313,7 +11312,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11333,7 +11332,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11351,7 +11350,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11373,7 +11372,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11381,7 +11380,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                        `json:"indices"`
 	Seconds float64                                                                        `json:"seconds"`
@@ -11398,7 +11397,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11418,7 +11417,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11436,7 +11435,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11458,7 +11457,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11466,7 +11465,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSy
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                           `json:"indices"`
 	Seconds float64                                                                           `json:"seconds"`
@@ -11483,7 +11482,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11503,7 +11502,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11521,7 +11520,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11543,7 +11542,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11551,7 +11550,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTi
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -11568,7 +11567,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11576,7 +11575,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUR
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -11593,7 +11592,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMe
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11613,7 +11612,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11635,7 +11634,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11643,7 +11642,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -11669,7 +11668,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11677,7 +11676,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -11696,7 +11695,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11704,7 +11703,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -11719,7 +11718,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11727,7 +11726,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext) Un
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
@@ -11759,7 +11758,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11799,7 +11798,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11807,8 +11806,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextCompet
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -11836,7 +11834,7 @@ func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextSchedul
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -11845,7 +11843,7 @@ func (u *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextSchedu
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone struct {
 	Text EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -11859,7 +11857,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstone) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11883,7 +11881,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11905,7 +11903,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11931,7 +11929,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -11939,7 +11937,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
@@ -11971,7 +11969,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12009,7 +12007,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -12046,7 +12044,7 @@ func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) A
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -12055,7 +12053,7 @@ func (u *EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) 
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetRetweetedTweetTombstone struct {
 	Text EmbeddedTweetQuotedTweetRetweetedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -12069,7 +12067,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12091,7 +12089,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetRetweetedTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12111,7 +12109,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -12137,7 +12135,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -12145,7 +12143,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetQuotedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
@@ -12177,7 +12175,7 @@ type EmbeddedTweetQuotedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12215,7 +12213,7 @@ type EmbeddedTweetQuotedTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetSportsContextCompetitor) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetSportsContextCompetitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12250,14 +12248,14 @@ func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v s
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
 
 func (u *EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetQuotedTweetTombstone struct {
 	Text EmbeddedTweetQuotedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -12271,7 +12269,7 @@ type EmbeddedTweetQuotedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12293,7 +12291,7 @@ type EmbeddedTweetQuotedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12313,7 +12311,7 @@ type EmbeddedTweetQuotedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetTombstoneTextEntity) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetTombstoneTextEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12337,13 +12335,13 @@ type EmbeddedTweetQuotedTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetQuotedTweetTombstoneTextEntityRef) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetQuotedTweetTombstoneTextEntityRef) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -12358,13 +12356,13 @@ type EmbeddedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Nested tweet context at depth 2.
+// EmbeddedTweetRetweetedTweet holds nested tweet context at depth 2.
 type EmbeddedTweetRetweetedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -12543,13 +12541,13 @@ type EmbeddedTweetRetweetedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -12575,13 +12573,13 @@ type EmbeddedTweetRetweetedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -12607,7 +12605,7 @@ type EmbeddedTweetRetweetedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12625,13 +12623,13 @@ type EmbeddedTweetRetweetedTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetCardUserReferenceError) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetCardUserReferenceError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -12661,13 +12659,13 @@ type EmbeddedTweetRetweetedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -12688,13 +12686,13 @@ type EmbeddedTweetRetweetedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetConversationControl) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetConversationControl) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -12709,13 +12707,13 @@ type EmbeddedTweetRetweetedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -12736,13 +12734,13 @@ type EmbeddedTweetRetweetedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -12757,13 +12755,13 @@ type EmbeddedTweetRetweetedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetEntitiesSmarttag struct {
 	Indices []int64                                        `json:"indices"`
 	Seconds float64                                        `json:"seconds"`
@@ -12780,7 +12778,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12798,7 +12796,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12814,7 +12812,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12834,13 +12832,13 @@ type EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetEntitiesSymbol struct {
 	Indices []int64                                      `json:"indices"`
 	Seconds float64                                      `json:"seconds"`
@@ -12857,7 +12855,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12875,7 +12873,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12891,7 +12889,7 @@ type EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12911,13 +12909,13 @@ type EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetEntitiesTimestamp struct {
 	Indices []int64                                         `json:"indices"`
 	Seconds float64                                         `json:"seconds"`
@@ -12934,7 +12932,7 @@ type EmbeddedTweetRetweetedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12952,7 +12950,7 @@ type EmbeddedTweetRetweetedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12968,7 +12966,7 @@ type EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -12988,13 +12986,13 @@ type EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -13011,13 +13009,13 @@ type EmbeddedTweetRetweetedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -13034,7 +13032,7 @@ type EmbeddedTweetRetweetedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13052,7 +13050,7 @@ type EmbeddedTweetRetweetedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13075,13 +13073,13 @@ type EmbeddedTweetRetweetedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetLimitedActionPrompt) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetLimitedActionPrompt) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -13106,13 +13104,13 @@ type EmbeddedTweetRetweetedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -13133,13 +13131,13 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -13154,13 +13152,13 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                 `json:"indices"`
 	Seconds float64                                                 `json:"seconds"`
@@ -13177,7 +13175,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13195,7 +13193,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13211,7 +13209,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13233,7 +13231,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13241,7 +13239,7 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                               `json:"indices"`
 	Seconds float64                                               `json:"seconds"`
@@ -13258,7 +13256,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13276,7 +13274,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13292,7 +13290,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13314,7 +13312,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13322,7 +13320,7 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                  `json:"indices"`
 	Seconds float64                                                  `json:"seconds"`
@@ -13339,7 +13337,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13357,7 +13355,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13373,7 +13371,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13395,7 +13393,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13403,7 +13401,7 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -13420,13 +13418,13 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -13443,7 +13441,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13461,7 +13459,7 @@ type EmbeddedTweetRetweetedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetInlineMedia) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetInlineMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13481,13 +13479,13 @@ type EmbeddedTweetRetweetedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetNoteTweetRichtextTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -13513,13 +13511,13 @@ type EmbeddedTweetRetweetedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -13538,13 +13536,13 @@ type EmbeddedTweetRetweetedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetRetweetedTweetQuotedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -13723,13 +13721,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -13755,13 +13753,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -13787,7 +13785,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13805,7 +13803,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13813,7 +13811,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetCardUserReferenceError) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -13843,13 +13841,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -13870,7 +13868,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -13878,7 +13876,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetConversationControl) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetQuotedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -13893,13 +13891,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -13920,13 +13918,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -13941,13 +13939,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag struct {
 	Indices []int64                                                   `json:"indices"`
 	Seconds float64                                                   `json:"seconds"`
@@ -13964,7 +13962,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -13982,7 +13980,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14000,7 +13998,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14022,7 +14020,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14030,7 +14028,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol struct {
 	Indices []int64                                                 `json:"indices"`
 	Seconds float64                                                 `json:"seconds"`
@@ -14047,7 +14045,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -14065,7 +14063,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -14081,7 +14079,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14103,7 +14101,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14111,7 +14109,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp struct {
 	Indices []int64                                                    `json:"indices"`
 	Seconds float64                                                    `json:"seconds"`
@@ -14128,7 +14126,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -14146,7 +14144,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14164,7 +14162,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14186,7 +14184,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14194,7 +14192,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -14211,13 +14209,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -14234,7 +14232,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14254,7 +14252,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -14277,7 +14275,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14285,7 +14283,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetLimitedActionPrompt) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -14310,13 +14308,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -14337,13 +14335,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -14358,7 +14356,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14366,7 +14364,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag) Unmarsh
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                            `json:"indices"`
 	Seconds float64                                                            `json:"seconds"`
@@ -14383,7 +14381,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14403,7 +14401,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14421,7 +14419,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14443,7 +14441,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14451,7 +14449,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoI
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                          `json:"indices"`
 	Seconds float64                                                          `json:"seconds"`
@@ -14468,7 +14466,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14488,7 +14486,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14506,7 +14504,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14528,7 +14526,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14536,7 +14534,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInf
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                             `json:"indices"`
 	Seconds float64                                                             `json:"seconds"`
@@ -14553,7 +14551,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14573,7 +14571,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14591,7 +14589,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14613,7 +14611,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14621,7 +14619,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -14638,7 +14636,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14646,7 +14644,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -14663,7 +14661,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14683,7 +14681,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14705,7 +14703,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -14713,7 +14711,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -14739,13 +14737,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -14764,13 +14762,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -14943,13 +14941,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -14975,13 +14973,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -15007,7 +15005,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -15025,7 +15023,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCardUserReferenceError str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15033,7 +15031,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCardUserReferenceError
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -15063,7 +15061,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15071,7 +15069,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote) Unmarsh
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -15092,7 +15090,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15100,7 +15098,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetConversationControl) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -15115,13 +15113,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -15142,7 +15140,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15150,7 +15148,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntities) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -15165,7 +15163,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15173,7 +15171,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesHashtag) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag struct {
 	Indices []int64                                                              `json:"indices"`
 	Seconds float64                                                              `json:"seconds"`
@@ -15190,7 +15188,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15210,7 +15208,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15228,7 +15226,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15250,7 +15248,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15258,7 +15256,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSmarttagTagInf
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol struct {
 	Indices []int64                                                            `json:"indices"`
 	Seconds float64                                                            `json:"seconds"`
@@ -15275,7 +15273,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15295,7 +15293,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15313,7 +15311,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15335,7 +15333,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15343,7 +15341,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesSymbolTagInfoI
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp struct {
 	Indices []int64                                                               `json:"indices"`
 	Seconds float64                                                               `json:"seconds"`
@@ -15360,7 +15358,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15380,7 +15378,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15398,7 +15396,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15420,7 +15418,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoIn
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15428,7 +15426,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesTimestampTagIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -15445,7 +15443,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15453,7 +15451,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesURL) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -15470,7 +15468,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesUserMention struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15490,7 +15488,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15515,7 +15513,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedActionPrompt struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15523,7 +15521,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedActionPrompt) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -15548,7 +15546,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15556,7 +15554,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweet) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -15577,7 +15575,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15585,7 +15583,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntities) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -15600,7 +15598,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15608,7 +15606,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesHasht
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                       `json:"indices"`
 	Seconds float64                                                                       `json:"seconds"`
@@ -15625,7 +15623,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15645,7 +15643,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15663,7 +15661,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15685,7 +15683,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagT
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15693,7 +15691,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSmart
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                     `json:"indices"`
 	Seconds float64                                                                     `json:"seconds"`
@@ -15710,7 +15708,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15730,7 +15728,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15748,7 +15746,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15770,7 +15768,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15778,7 +15776,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesSymbo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                        `json:"indices"`
 	Seconds float64                                                                        `json:"seconds"`
@@ -15795,7 +15793,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15815,7 +15813,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15833,7 +15831,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15855,7 +15853,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestamp
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15863,7 +15861,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesTimes
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -15880,7 +15878,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15888,7 +15886,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesURL) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -15905,7 +15903,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMenti
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15925,7 +15923,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15947,7 +15945,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -15955,7 +15953,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -15981,13 +15979,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -16006,7 +16004,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16014,7 +16012,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -16029,7 +16027,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16037,7 +16035,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
@@ -16069,7 +16067,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16109,7 +16107,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16117,8 +16115,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextCompetito
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -16146,7 +16143,7 @@ func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledA
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -16155,7 +16152,7 @@ func (u *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduled
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone struct {
 	Text EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -16169,7 +16166,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstone) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16193,7 +16190,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16215,7 +16212,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntity struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16241,7 +16238,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16249,7 +16246,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -16264,13 +16261,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -16443,13 +16440,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -16475,7 +16472,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16483,7 +16480,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -16509,7 +16506,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -16527,7 +16524,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCardUserReferenceError 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16535,7 +16532,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCardUserReferenceEr
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -16565,7 +16562,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16573,7 +16570,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -16594,7 +16591,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16602,7 +16599,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetConversationControl
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -16617,13 +16614,13 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -16644,7 +16641,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16652,7 +16649,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntities) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -16667,7 +16664,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16675,7 +16672,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesHashtag) Un
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag struct {
 	Indices []int64                                                                 `json:"indices"`
 	Seconds float64                                                                 `json:"seconds"`
@@ -16692,7 +16689,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16712,7 +16709,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16730,7 +16727,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16752,7 +16749,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16760,7 +16757,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSmarttagTag
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol struct {
 	Indices []int64                                                               `json:"indices"`
 	Seconds float64                                                               `json:"seconds"`
@@ -16777,7 +16774,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16797,7 +16794,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16815,7 +16812,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16837,7 +16834,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoIn
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16845,7 +16842,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesSymbolTagIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp struct {
 	Indices []int64                                                                  `json:"indices"`
 	Seconds float64                                                                  `json:"seconds"`
@@ -16862,7 +16859,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16882,7 +16879,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16900,7 +16897,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16922,7 +16919,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16930,7 +16927,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesTimestampTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -16947,7 +16944,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16955,7 +16952,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesURL) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -16972,7 +16969,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesUserMention str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -16992,7 +16989,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17017,7 +17014,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedActionPrompt str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17025,7 +17022,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedActionPrompt
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -17050,7 +17047,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17058,7 +17055,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweet) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -17079,7 +17076,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17087,7 +17084,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntities) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -17102,7 +17099,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashta
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17110,7 +17107,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesHa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                          `json:"indices"`
 	Seconds float64                                                                          `json:"seconds"`
@@ -17127,7 +17124,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17147,7 +17144,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17165,7 +17162,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17187,7 +17184,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17195,7 +17192,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                        `json:"indices"`
 	Seconds float64                                                                        `json:"seconds"`
@@ -17212,7 +17209,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17232,7 +17229,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17250,7 +17247,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17272,7 +17269,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17280,7 +17277,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesSy
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                           `json:"indices"`
 	Seconds float64                                                                           `json:"seconds"`
@@ -17297,7 +17294,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17317,7 +17314,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17335,7 +17332,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17357,7 +17354,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17365,7 +17362,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesTi
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -17382,7 +17379,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17390,7 +17387,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUR
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -17407,7 +17404,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMe
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17427,7 +17424,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17449,7 +17446,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17457,7 +17454,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -17483,7 +17480,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17491,7 +17488,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -17510,7 +17507,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17518,7 +17515,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -17533,7 +17530,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17541,7 +17538,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext) Un
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
@@ -17573,7 +17570,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17613,7 +17610,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17621,8 +17618,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextCompet
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -17650,7 +17646,7 @@ func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextSchedul
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -17659,7 +17655,7 @@ func (u *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextSchedu
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone struct {
 	Text EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -17673,7 +17669,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstone) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17697,7 +17693,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17719,7 +17715,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntity str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17745,7 +17741,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17753,7 +17749,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetTombstoneTextEntity
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
@@ -17785,7 +17781,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -17823,7 +17819,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17860,7 +17856,7 @@ func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) A
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -17869,7 +17865,7 @@ func (u *EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) 
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetQuotedTweetTombstone struct {
 	Text EmbeddedTweetRetweetedTweetQuotedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -17883,7 +17879,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -17905,7 +17901,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetQuotedTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -17925,7 +17921,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17951,7 +17947,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -17959,7 +17955,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -17974,13 +17970,13 @@ type EmbeddedTweetRetweetedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Nested tweet context at depth 3.
+// EmbeddedTweetRetweetedTweetRetweetedTweet holds nested tweet context at depth 3.
 type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -18159,13 +18155,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -18191,13 +18187,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -18223,7 +18219,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -18241,7 +18237,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18249,7 +18245,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetCardUserReferenceError) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -18279,13 +18275,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -18306,7 +18302,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18314,7 +18310,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetConversationControl) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -18329,13 +18325,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -18356,13 +18352,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -18377,13 +18373,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag struct {
 	Indices []int64                                                      `json:"indices"`
 	Seconds float64                                                      `json:"seconds"`
@@ -18400,7 +18396,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18420,7 +18416,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18438,7 +18434,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18460,7 +18456,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18468,7 +18464,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol struct {
 	Indices []int64                                                    `json:"indices"`
 	Seconds float64                                                    `json:"seconds"`
@@ -18485,7 +18481,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -18503,7 +18499,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18521,7 +18517,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18543,7 +18539,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18551,7 +18547,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp struct {
 	Indices []int64                                                       `json:"indices"`
 	Seconds float64                                                       `json:"seconds"`
@@ -18568,7 +18564,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18588,7 +18584,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18606,7 +18602,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18628,7 +18624,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18636,7 +18632,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -18653,13 +18649,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -18676,7 +18672,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18696,7 +18692,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -18719,7 +18715,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18727,7 +18723,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -18752,13 +18748,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -18779,7 +18775,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18787,7 +18783,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntities) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -18802,7 +18798,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18810,7 +18806,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                               `json:"indices"`
 	Seconds float64                                                               `json:"seconds"`
@@ -18827,7 +18823,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18847,7 +18843,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18865,7 +18861,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18887,7 +18883,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoIn
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18895,7 +18891,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                             `json:"indices"`
 	Seconds float64                                                             `json:"seconds"`
@@ -18912,7 +18908,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18932,7 +18928,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18950,7 +18946,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18972,7 +18968,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -18980,7 +18976,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                `json:"indices"`
 	Seconds float64                                                                `json:"seconds"`
@@ -18997,7 +18993,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19017,7 +19013,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19035,7 +19031,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19057,7 +19053,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoI
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19065,7 +19061,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagI
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -19082,7 +19078,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19090,7 +19086,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -19107,7 +19103,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19127,7 +19123,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19149,7 +19145,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19157,7 +19153,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -19183,13 +19179,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -19208,13 +19204,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -19387,13 +19383,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -19419,7 +19415,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19427,7 +19423,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -19453,7 +19449,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -19471,7 +19467,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCardUserReferenceError 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19479,7 +19475,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCardUserReferenceEr
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -19509,7 +19505,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19517,7 +19513,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote) Unma
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -19538,7 +19534,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19546,7 +19542,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetConversationControl
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -19561,13 +19557,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -19588,7 +19584,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19596,7 +19592,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntities) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -19611,7 +19607,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19619,7 +19615,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesHashtag) Un
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag struct {
 	Indices []int64                                                                 `json:"indices"`
 	Seconds float64                                                                 `json:"seconds"`
@@ -19636,7 +19632,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19656,7 +19652,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19674,7 +19670,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19696,7 +19692,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfo
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19704,7 +19700,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSmarttagTag
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol struct {
 	Indices []int64                                                               `json:"indices"`
 	Seconds float64                                                               `json:"seconds"`
@@ -19721,7 +19717,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19741,7 +19737,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19759,7 +19755,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo s
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19781,7 +19777,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoIn
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19789,7 +19785,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesSymbolTagIn
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp struct {
 	Indices []int64                                                                  `json:"indices"`
 	Seconds float64                                                                  `json:"seconds"`
@@ -19806,7 +19802,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19826,7 +19822,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19844,7 +19840,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19866,7 +19862,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19874,7 +19870,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesTimestampTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -19891,7 +19887,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19899,7 +19895,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesURL) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -19916,7 +19912,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesUserMention str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19936,7 +19932,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19961,7 +19957,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedActionPrompt str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -19969,7 +19965,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedActionPrompt
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -19994,7 +19990,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20002,7 +19998,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweet) Unmarsha
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -20023,7 +20019,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20031,7 +20027,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntities) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -20046,7 +20042,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashta
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20054,7 +20050,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesHa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                          `json:"indices"`
 	Seconds float64                                                                          `json:"seconds"`
@@ -20071,7 +20067,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20091,7 +20087,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20109,7 +20105,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20131,7 +20127,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmartt
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20139,7 +20135,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                        `json:"indices"`
 	Seconds float64                                                                        `json:"seconds"`
@@ -20156,7 +20152,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20176,7 +20172,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20194,7 +20190,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20216,7 +20212,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbol
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20224,7 +20220,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesSy
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                           `json:"indices"`
 	Seconds float64                                                                           `json:"seconds"`
@@ -20241,7 +20237,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20261,7 +20257,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20279,7 +20275,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20301,7 +20297,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimest
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20309,7 +20305,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesTi
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -20326,7 +20322,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20334,7 +20330,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUR
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -20351,7 +20347,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMe
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20371,7 +20367,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20393,7 +20389,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20401,7 +20397,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -20427,7 +20423,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20435,7 +20431,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -20454,7 +20450,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20462,7 +20458,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -20477,7 +20473,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext struct 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20485,7 +20481,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext) Un
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor `json:"competitors"`
@@ -20517,7 +20513,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20557,7 +20553,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20565,8 +20561,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextCompet
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -20594,7 +20589,7 @@ func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextSchedul
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -20603,7 +20598,7 @@ func (u *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextSchedu
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone struct {
 	Text EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -20617,7 +20612,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstone) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20641,7 +20636,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20663,7 +20658,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntity str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20689,7 +20684,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20697,7 +20692,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntity
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -20712,13 +20707,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Final nested tweet context at depth 4.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet holds the final nested tweet context at depth 4.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	ID            string `json:"id" api:"required"`
 	BookmarkCount int64  `json:"bookmarkCount" api:"required"`
@@ -20891,13 +20886,13 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle describes an X Article preview and its lifecycle metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -20923,7 +20918,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20931,7 +20926,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle) Unmarsh
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard describes a public card and its referenced profiles.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -20957,7 +20952,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20977,7 +20972,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCardUserReferenceErr
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCardUserReferenceError) RawJSON() string {
 	return r.JSON.raw
 }
@@ -20985,7 +20980,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCardUserReferenc
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote holds Community Note presentation metadata returned by X.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -21015,7 +21010,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21023,7 +21018,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote) U
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl holds public reply policy and conversation owner.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl struct {
 	AllowedCountryCodes []string `json:"allowedCountryCodes"`
 	InviteViaMention    bool     `json:"inviteViaMention"`
@@ -21044,7 +21039,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationControl) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21052,7 +21047,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetConversationCont
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit lists edit-chain identifiers and the remaining edit window.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -21067,7 +21062,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21075,7 +21070,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEdit) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag    `json:"smarttags"`
@@ -21096,7 +21091,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21104,7 +21099,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntities) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag struct {
 	Text    string                        `json:"text" api:"required"`
 	Indices []int64                       `json:"indices"`
@@ -21119,7 +21114,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21127,7 +21122,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesHashtag)
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag struct {
 	Indices []int64                                                                    `json:"indices"`
 	Seconds float64                                                                    `json:"seconds"`
@@ -21144,7 +21139,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag str
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21164,7 +21159,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21182,7 +21177,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagI
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21204,7 +21199,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagI
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21212,7 +21207,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSmarttag
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol struct {
 	Indices []int64                                                                  `json:"indices"`
 	Seconds float64                                                                  `json:"seconds"`
@@ -21229,7 +21224,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21249,7 +21244,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21267,7 +21262,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21289,7 +21284,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInf
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21297,7 +21292,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesSymbolTa
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp struct {
 	Indices []int64                                                                     `json:"indices"`
 	Seconds float64                                                                     `json:"seconds"`
@@ -21314,7 +21309,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21334,7 +21329,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21352,7 +21347,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21374,7 +21369,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21382,7 +21377,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesTimestam
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -21399,7 +21394,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21407,7 +21402,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesURL) Unm
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -21424,7 +21419,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesUserMention 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21444,7 +21439,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedAction struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedAction) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21469,7 +21464,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21477,7 +21472,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedActionPro
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -21502,7 +21497,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21510,7 +21505,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweet) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntities struct {
 	Hashtags     []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -21531,7 +21526,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntities st
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntities) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21539,7 +21534,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag struct {
 	Text    string                                 `json:"text" api:"required"`
 	Indices []int64                                `json:"indices"`
@@ -21554,7 +21549,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHas
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesHashtag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21562,7 +21557,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                                                             `json:"indices"`
 	Seconds float64                                                                             `json:"seconds"`
@@ -21579,7 +21574,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSma
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21599,7 +21594,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSma
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21617,7 +21612,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSma
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21639,7 +21634,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSma
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21647,7 +21642,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                                                                           `json:"indices"`
 	Seconds float64                                                                           `json:"seconds"`
@@ -21664,7 +21659,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSym
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbol) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21684,7 +21679,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSym
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21702,7 +21697,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSym
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21724,7 +21719,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSym
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21732,7 +21727,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                                                              `json:"indices"`
 	Seconds float64                                                                              `json:"seconds"`
@@ -21749,7 +21744,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTim
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestamp) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21769,7 +21764,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTim
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21787,7 +21782,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTim
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21809,7 +21804,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTim
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21817,7 +21812,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -21834,7 +21829,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesURL) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21842,7 +21837,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitie
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -21859,7 +21854,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUse
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetEntitiesUserMention) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21879,7 +21874,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetInlineMedia) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21901,7 +21896,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21909,7 +21904,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetRichtex
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace describes public place metadata on a geotagged tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -21935,7 +21930,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21943,7 +21938,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace) Unmarshal
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -21962,7 +21957,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts struc
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21970,7 +21965,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts) 
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -21985,7 +21980,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext stru
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -21993,7 +21988,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext)
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
@@ -22025,7 +22020,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContext) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22065,7 +22060,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompeti
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22073,8 +22068,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextCom
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -22102,7 +22096,7 @@ func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextSche
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -22111,7 +22105,7 @@ func (u *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextSch
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone struct {
 	Text EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -22125,7 +22119,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstone) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22149,7 +22143,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneText struct
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneText) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22171,7 +22165,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity 
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22197,7 +22191,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityR
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22205,7 +22199,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetTombstoneTextEnt
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
@@ -22237,7 +22231,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22275,7 +22269,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22283,8 +22277,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextCompetitor) Unmar
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
-// contains all possible properties and values from [float64], [string].
+// EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion contains all possible properties and values from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -22312,7 +22305,7 @@ func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -22321,7 +22314,7 @@ func (u *EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnio
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetRetweetedTweetTombstone struct {
 	Text EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -22335,7 +22328,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22357,7 +22350,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22377,7 +22370,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntity) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22403,7 +22396,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef) RawJSON() string {
 	return r.JSON.raw
 }
@@ -22411,7 +22404,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetTombstoneTextEntityRef) Unmars
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetRetweetedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetRetweetedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetRetweetedTweetSportsContextCompetitor `json:"competitors"`
@@ -22443,7 +22436,7 @@ type EmbeddedTweetRetweetedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22481,7 +22474,7 @@ type EmbeddedTweetRetweetedTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetSportsContextCompetitor) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetSportsContextCompetitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22516,7 +22509,7 @@ func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) RawJSON() string {
 	return u.JSON.raw
 }
@@ -22525,7 +22518,7 @@ func (u *EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) UnmarshalJS
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetRetweetedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetRetweetedTweetTombstone struct {
 	Text EmbeddedTweetRetweetedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -22539,7 +22532,7 @@ type EmbeddedTweetRetweetedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22561,7 +22554,7 @@ type EmbeddedTweetRetweetedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22581,7 +22574,7 @@ type EmbeddedTweetRetweetedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetTombstoneTextEntity) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetTombstoneTextEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22605,13 +22598,13 @@ type EmbeddedTweetRetweetedTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetRetweetedTweetTombstoneTextEntityRef) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetRetweetedTweetTombstoneTextEntityRef) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// EmbeddedTweetSportsContext holds sports game context attached to the post, when available.
 type EmbeddedTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []EmbeddedTweetSportsContextCompetitor `json:"competitors"`
@@ -22643,7 +22636,7 @@ type EmbeddedTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22681,7 +22674,7 @@ type EmbeddedTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetSportsContextCompetitor) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetSportsContextCompetitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22716,14 +22709,14 @@ func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u EmbeddedTweetSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
 
 func (u *EmbeddedTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// EmbeddedTweetTombstone is a public visibility notice attached to an available tweet.
 type EmbeddedTweetTombstone struct {
 	Text EmbeddedTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -22737,7 +22730,7 @@ type EmbeddedTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22759,7 +22752,7 @@ type EmbeddedTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22779,7 +22772,7 @@ type EmbeddedTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetTombstoneTextEntity) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetTombstoneTextEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -22803,13 +22796,13 @@ type EmbeddedTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r EmbeddedTweetTombstoneTextEntityRef) RawJSON() string { return r.JSON.raw }
 func (r *EmbeddedTweetTombstoneTextEntityRef) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Type of monitor event fired when account activity occurs.
+// EventType is a type of monitor event fired when account activity occurs.
 type EventType string
 
 const (
@@ -22845,7 +22838,7 @@ const (
 	EventTypeProfileFollowingChanged   EventType = "profile.following.changed"
 )
 
-// Automatic search, user Tweet, and reply coverage preserves shape, filters,
+// PaginatedTweets is a page of posts. Automatic search, user Tweet, and reply coverage preserves shape, filters,
 // aliases, and billing. Follow next_cursor while the response reports more pages.
 // An empty filtered page can still require continuation. Unprefixed cursors are
 // legacy.
@@ -22881,13 +22874,13 @@ type PaginatedTweets struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PaginatedTweets) RawJSON() string { return r.JSON.raw }
 func (r *PaginatedTweets) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// What X shows beside a search's posts that is the same for every reader. Present
+// PaginatedTweetsSearchContext describes what X shows beside a search's posts that is the same for every reader. Present
 // on a search for a cashtag X has a card for, such as $BTC.
 type PaginatedTweetsSearchContext struct {
 	// X's card for the cashtag the search names.
@@ -22900,13 +22893,13 @@ type PaginatedTweetsSearchContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PaginatedTweetsSearchContext) RawJSON() string { return r.JSON.raw }
 func (r *PaginatedTweetsSearchContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's card for the cashtag the search names.
+// PaginatedTweetsSearchContextSmartTag is X's card for the cashtag the search names.
 type PaginatedTweetsSearchContextSmartTag struct {
 	// The ticker X matched.
 	ID string `json:"id" api:"required"`
@@ -22924,13 +22917,13 @@ type PaginatedTweetsSearchContextSmartTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PaginatedTweetsSearchContextSmartTag) RawJSON() string { return r.JSON.raw }
 func (r *PaginatedTweetsSearchContextSmartTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Profile coverage preserves shape, billing, aliases, and filters. Follow
+// PaginatedUsers is a page of profiles. Profile coverage preserves shape, billing, aliases, and filters. Follow
 // next_cursor while the response reports more pages. Unprefixed cursors remain
 // legacy.
 type PaginatedUsers struct {
@@ -22949,13 +22942,13 @@ type PaginatedUsers struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r PaginatedUsers) RawJSON() string { return r.JSON.raw }
 func (r *PaginatedUsers) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Tweet returned from search results with inline author info. A zero metric can
+// SearchTweet is a tweet returned from search results with inline author info. A zero metric can
 // mean X did not report the count.
 type SearchTweet struct {
 	ID            string `json:"id" api:"required"`
@@ -23161,13 +23154,13 @@ type SearchTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweet) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The quoted post's link, kept when X withholds that post.
+// SearchTweetQuotedTweetPermalink is the quoted post's link, kept when X withholds that post.
 type SearchTweetQuotedTweetPermalink struct {
 	DisplayURL  string `json:"displayUrl"`
 	ExpandedURL string `json:"expandedUrl"`
@@ -23182,13 +23175,13 @@ type SearchTweetQuotedTweetPermalink struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetQuotedTweetPermalink) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetQuotedTweetPermalink) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Why X shows no quoted post. Omitted when X names no reason, as its legacy
+// SearchTweetQuotedTweetUnavailable describes why X shows no quoted post. Omitted when X names no reason, as its legacy
 // answers never do.
 type SearchTweetQuotedTweetUnavailable struct {
 	// X's reason, such as `Suspended` for a suspended author or `Protected` for an
@@ -23202,7 +23195,7 @@ type SearchTweetQuotedTweetUnavailable struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetQuotedTweetUnavailable) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetQuotedTweetUnavailable) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23222,13 +23215,13 @@ type SearchTweetTextHighlight struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetTextHighlight) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetTextHighlight) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Why the tweet has no author. X serves a suspended or deleted account as an
+// SearchTweetAuthorUnavailable describes why the tweet has no author. X serves a suspended or deleted account as an
 // unavailable user with a reason such as Suspended or NotFound. Omitted when the
 // author is available.
 type SearchTweetAuthorUnavailable struct {
@@ -23245,7 +23238,7 @@ type SearchTweetAuthorUnavailable struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetAuthorUnavailable) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetAuthorUnavailable) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23277,13 +23270,13 @@ type SearchTweetCashtagAttachment struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetCashtagAttachment) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetCashtagAttachment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Marks a subscriber-only post with the creator whose subscription unlocks it.
+// SearchTweetExclusiveContent marks a subscriber-only post with the creator whose subscription unlocks it.
 // Non-subscribers get the preview text & the subscribe link. Omitted on public
 // posts.
 type SearchTweetExclusiveContent struct {
@@ -23300,13 +23293,13 @@ type SearchTweetExclusiveContent struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetExclusiveContent) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetExclusiveContent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Author-published point, with longitude before latitude.
+// SearchTweetCoordinates is an author-published point, with longitude before latitude.
 type SearchTweetCoordinates struct {
 	Coordinates []float64      `json:"coordinates" api:"required"`
 	Type        constant.Point `json:"type" default:"Point"`
@@ -23319,13 +23312,13 @@ type SearchTweetCoordinates struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetCoordinates) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetCoordinates) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Author-published point, with latitude before longitude.
+// SearchTweetGeo is an author-published point, with latitude before longitude.
 type SearchTweetGeo struct {
 	Coordinates []float64      `json:"coordinates" api:"required"`
 	Type        constant.Point `json:"type" default:"Point"`
@@ -23338,13 +23331,13 @@ type SearchTweetGeo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetGeo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetGeo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The Subscriber badge X shows on a reply. The reply's author subscribes to the
+// SearchTweetSubscriberBadge is the Subscriber badge X shows on a reply. The reply's author subscribes to the
 // creator who started the conversation. Omitted on a post without the badge.
 type SearchTweetSubscriberBadge struct {
 	// Account ID of the creator the author subscribes to.
@@ -23357,13 +23350,13 @@ type SearchTweetSubscriberBadge struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetSubscriberBadge) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetSubscriberBadge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The notice x.com covers the post with until the reader views it, such as X's
+// SearchTweetInterstitial is the notice x.com covers the post with until the reader views it, such as X's
 // public interest notice on a post that broke its rules but stays up.
 type SearchTweetInterstitial struct {
 	// How x.com shows the notice. `NonCompliant` marks a post that broke X's rules.
@@ -23378,7 +23371,7 @@ type SearchTweetInterstitial struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetInterstitial) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetInterstitial) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23401,7 +23394,7 @@ type SearchTweetInterstitialText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetInterstitialText) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetInterstitialText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23423,7 +23416,7 @@ type SearchTweetInterstitialTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetInterstitialTextEntity) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetInterstitialTextEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23447,13 +23440,13 @@ type SearchTweetInterstitialTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetInterstitialTextEntityRef) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetInterstitialTextEntityRef) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes an X Article preview and its lifecycle metadata.
+// SearchTweetArticle describes an X Article preview and its lifecycle metadata.
 type SearchTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -23479,13 +23472,13 @@ type SearchTweetArticle struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetArticle) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetArticle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes a public card and its referenced profiles.
+// SearchTweetCard describes a public card and its referenced profiles.
 type SearchTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -23511,7 +23504,7 @@ type SearchTweetCard struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetCard) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23529,13 +23522,13 @@ type SearchTweetCardUserReferenceError struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetCardUserReferenceError) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetCardUserReferenceError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Community Note presentation metadata returned by X.
+// SearchTweetCommunityNote holds Community Note presentation metadata returned by X.
 type SearchTweetCommunityNote struct {
 	ID             string `json:"id"`
 	DestinationURL string `json:"destinationUrl"`
@@ -23565,13 +23558,13 @@ type SearchTweetCommunityNote struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetCommunityNote) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetCommunityNote) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public reply policy and conversation owner.
+// SearchTweetConversationControl holds public reply policy and conversation owner.
 type SearchTweetConversationControl struct {
 	// Regions whose accounts may reply, as country codes. Sent with the
 	// `country_of_origin` mode.
@@ -23597,13 +23590,13 @@ type SearchTweetConversationControl struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetConversationControl) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetConversationControl) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists edit-chain identifiers and the remaining edit window.
+// SearchTweetEdit lists edit-chain identifiers and the remaining edit window.
 type SearchTweetEdit struct {
 	EditableUntilMsecs string   `json:"editableUntilMsecs"`
 	EditTweetIDs       []string `json:"editTweetIds"`
@@ -23618,13 +23611,13 @@ type SearchTweetEdit struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEdit) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEdit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// SearchTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type SearchTweetEntities struct {
 	Hashtags     []SearchTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []SearchTweetEntitiesSmarttag    `json:"smarttags"`
@@ -23645,13 +23638,13 @@ type SearchTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// SearchTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type SearchTweetEntitiesHashtag struct {
 	Text    string  `json:"text" api:"required"`
 	Indices []int64 `json:"indices"`
@@ -23668,13 +23661,13 @@ type SearchTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// SearchTweetEntitiesHashtagTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type SearchTweetEntitiesHashtagTag struct {
 	// X's ID for the SmartTag.
@@ -23689,7 +23682,7 @@ type SearchTweetEntitiesHashtagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesHashtagTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesHashtagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23705,7 +23698,7 @@ type SearchTweetEntitiesHashtagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesHashtagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesHashtagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23726,13 +23719,13 @@ type SearchTweetEntitiesHashtagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesHashtagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesHashtagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetEntitiesSmarttag struct {
 	Indices []int64                        `json:"indices"`
 	Seconds float64                        `json:"seconds"`
@@ -23749,7 +23742,7 @@ type SearchTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23768,7 +23761,7 @@ type SearchTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23784,7 +23777,7 @@ type SearchTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23805,13 +23798,13 @@ type SearchTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetEntitiesSymbol struct {
 	Indices []int64                      `json:"indices"`
 	Seconds float64                      `json:"seconds"`
@@ -23828,7 +23821,7 @@ type SearchTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23847,7 +23840,7 @@ type SearchTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23863,7 +23856,7 @@ type SearchTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23884,13 +23877,13 @@ type SearchTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetEntitiesTimestamp struct {
 	Indices []int64                         `json:"indices"`
 	Seconds float64                         `json:"seconds"`
@@ -23907,7 +23900,7 @@ type SearchTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23926,7 +23919,7 @@ type SearchTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23942,7 +23935,7 @@ type SearchTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -23963,13 +23956,13 @@ type SearchTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// SearchTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type SearchTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -23986,13 +23979,13 @@ type SearchTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// SearchTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type SearchTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -24009,7 +24002,7 @@ type SearchTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24027,7 +24020,7 @@ type SearchTweetLimitedAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetLimitedAction) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetLimitedAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24050,13 +24043,13 @@ type SearchTweetLimitedActionPrompt struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetLimitedActionPrompt) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetLimitedActionPrompt) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Complete Note Tweet content and rich-text metadata.
+// SearchTweetNoteTweet holds complete Note Tweet content and rich-text metadata.
 type SearchTweetNoteTweet struct {
 	Text string `json:"text" api:"required"`
 	ID   string `json:"id"`
@@ -24082,13 +24075,13 @@ type SearchTweetNoteTweet struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweet) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Lists hashtags, symbols, links, and mentions from tweet text.
+// SearchTweetNoteTweetEntities lists hashtags, symbols, links, and mentions from tweet text.
 type SearchTweetNoteTweetEntities struct {
 	Hashtags     []SearchTweetNoteTweetEntitiesHashtag     `json:"hashtags"`
 	Smarttags    []SearchTweetNoteTweetEntitiesSmarttag    `json:"smarttags"`
@@ -24109,13 +24102,13 @@ type SearchTweetNoteTweetEntities struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntities) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntities) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides hashtag text and source offsets within a tweet.
+// SearchTweetNoteTweetEntitiesHashtag provides hashtag text and source offsets within a tweet.
 type SearchTweetNoteTweetEntitiesHashtag struct {
 	Text    string  `json:"text" api:"required"`
 	Indices []int64 `json:"indices"`
@@ -24132,13 +24125,13 @@ type SearchTweetNoteTweetEntitiesHashtag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesHashtag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
+// SearchTweetNoteTweetEntitiesHashtagTag is X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
 // platforms, which differ by reader.
 type SearchTweetNoteTweetEntitiesHashtagTag struct {
 	// X's ID for the SmartTag.
@@ -24153,7 +24146,7 @@ type SearchTweetNoteTweetEntitiesHashtagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesHashtagTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesHashtagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24169,7 +24162,7 @@ type SearchTweetNoteTweetEntitiesHashtagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesHashtagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesHashtagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24190,13 +24183,13 @@ type SearchTweetNoteTweetEntitiesHashtagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesHashtagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesHashtagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetNoteTweetEntitiesSmarttag holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetNoteTweetEntitiesSmarttag struct {
 	Indices []int64                                 `json:"indices"`
 	Seconds float64                                 `json:"seconds"`
@@ -24213,7 +24206,7 @@ type SearchTweetNoteTweetEntitiesSmarttag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSmarttag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24232,7 +24225,7 @@ type SearchTweetNoteTweetEntitiesSmarttagTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24248,7 +24241,7 @@ type SearchTweetNoteTweetEntitiesSmarttagTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSmarttagTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24269,13 +24262,13 @@ type SearchTweetNoteTweetEntitiesSmarttagTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSmarttagTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetNoteTweetEntitiesSymbol holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetNoteTweetEntitiesSymbol struct {
 	Indices []int64                               `json:"indices"`
 	Seconds float64                               `json:"seconds"`
@@ -24292,7 +24285,7 @@ type SearchTweetNoteTweetEntitiesSymbol struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSymbol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24311,7 +24304,7 @@ type SearchTweetNoteTweetEntitiesSymbolTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24327,7 +24320,7 @@ type SearchTweetNoteTweetEntitiesSymbolTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSymbolTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24348,13 +24341,13 @@ type SearchTweetNoteTweetEntitiesSymbolTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesSymbolTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Indexed smart-tag, cashtag, or video timestamp metadata.
+// SearchTweetNoteTweetEntitiesTimestamp holds indexed smart-tag, cashtag, or video timestamp metadata.
 type SearchTweetNoteTweetEntitiesTimestamp struct {
 	Indices []int64                                  `json:"indices"`
 	Seconds float64                                  `json:"seconds"`
@@ -24371,7 +24364,7 @@ type SearchTweetNoteTweetEntitiesTimestamp struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesTimestamp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24390,7 +24383,7 @@ type SearchTweetNoteTweetEntitiesTimestampTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24406,7 +24399,7 @@ type SearchTweetNoteTweetEntitiesTimestampTagInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesTimestampTagInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24427,13 +24420,13 @@ type SearchTweetNoteTweetEntitiesTimestampTagInfoInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesTimestampTagInfoInfo) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides shortened, display, and expanded URLs from tweet text.
+// SearchTweetNoteTweetEntitiesURL provides shortened, display, and expanded URLs from tweet text.
 type SearchTweetNoteTweetEntitiesURL struct {
 	DisplayURL  string  `json:"display_url"`
 	ExpandedURL string  `json:"expanded_url"`
@@ -24450,13 +24443,13 @@ type SearchTweetNoteTweetEntitiesURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Provides profile identity and source offsets for a mention.
+// SearchTweetNoteTweetEntitiesUserMention provides profile identity and source offsets for a mention.
 type SearchTweetNoteTweetEntitiesUserMention struct {
 	ScreenName string  `json:"screen_name" api:"required"`
 	IDStr      string  `json:"id_str"`
@@ -24473,7 +24466,7 @@ type SearchTweetNoteTweetEntitiesUserMention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetEntitiesUserMention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24491,7 +24484,7 @@ type SearchTweetNoteTweetInlineMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetInlineMedia) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetInlineMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24511,13 +24504,13 @@ type SearchTweetNoteTweetRichtextTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetNoteTweetRichtextTag) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Describes public place metadata on a geotagged tweet.
+// SearchTweetPlace describes public place metadata on a geotagged tweet.
 type SearchTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
@@ -24543,13 +24536,13 @@ type SearchTweetPlace struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetPlace) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetPlace) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Engagement counts retained from a prior tweet edit.
+// SearchTweetPreviousCounts holds engagement counts retained from a prior tweet edit.
 type SearchTweetPreviousCounts struct {
 	BookmarkCount int64 `json:"bookmarkCount"`
 	LikeCount     int64 `json:"likeCount"`
@@ -24568,13 +24561,13 @@ type SearchTweetPreviousCounts struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetPreviousCounts) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public post and user referenced by this reaction.
+// SearchTweetReactionContext holds public post and user referenced by this reaction.
 type SearchTweetReactionContext struct {
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
@@ -24589,13 +24582,13 @@ type SearchTweetReactionContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetReactionContext) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetReactionContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Sports game context attached to the post, when available.
+// SearchTweetSportsContext holds sports game context attached to the post, when available.
 type SearchTweetSportsContext struct {
 	// Teams and their reported scores.
 	Competitors []SearchTweetSportsContextCompetitor `json:"competitors"`
@@ -24628,7 +24621,7 @@ type SearchTweetSportsContext struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetSportsContext) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetSportsContext) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24669,7 +24662,7 @@ type SearchTweetSportsContextCompetitor struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetSportsContextCompetitor) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetSportsContextCompetitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24704,14 +24697,14 @@ func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
 	return
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (u SearchTweetSportsContextScheduledAtMsUnion) RawJSON() string { return u.JSON.raw }
 
 func (u *SearchTweetSportsContextScheduledAtMsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
 
-// Public visibility notice attached to an available tweet.
+// SearchTweetTombstone is a public visibility notice attached to an available tweet.
 type SearchTweetTombstone struct {
 	Text SearchTweetTombstoneText `json:"text"`
 	// Visibility notice type.
@@ -24725,7 +24718,7 @@ type SearchTweetTombstone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetTombstone) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetTombstone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24747,7 +24740,7 @@ type SearchTweetTombstoneText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetTombstoneText) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetTombstoneText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24767,7 +24760,7 @@ type SearchTweetTombstoneTextEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetTombstoneTextEntity) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetTombstoneTextEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24791,13 +24784,13 @@ type SearchTweetTombstoneTextEntityRef struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SearchTweetTombstoneTextEntityRef) RawJSON() string { return r.JSON.raw }
 func (r *SearchTweetTombstoneTextEntityRef) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The label X shows under a post whose reach it limits. It links to the page that
+// SoftIntervention is the label X shows under a post whose reach it limits. It links to the page that
 // explains it.
 type SoftIntervention struct {
 	// The label's kind. `Fosnr` marks a post X keeps up but shows to fewer people.
@@ -24818,7 +24811,7 @@ type SoftIntervention struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SoftIntervention) RawJSON() string { return r.JSON.raw }
 func (r *SoftIntervention) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -24841,13 +24834,13 @@ type SoftInterventionText struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SoftInterventionText) RawJSON() string { return r.JSON.raw }
 func (r *SoftInterventionText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The page that explains the label.
+// SoftInterventionURL is the page that explains the label.
 type SoftInterventionURL struct {
 	URL     string `json:"url"`
 	URLType string `json:"urlType"`
@@ -24860,13 +24853,13 @@ type SoftInterventionURL struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r SoftInterventionURL) RawJSON() string { return r.JSON.raw }
 func (r *SoftInterventionURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Tweet media.
+// TweetMedia holds tweet media.
 type TweetMedia struct {
 	// Preview URL.
 	MediaURL string `json:"mediaUrl" api:"required"`
@@ -24980,13 +24973,13 @@ type TweetMedia struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TweetMedia) RawJSON() string { return r.JSON.raw }
 func (r *TweetMedia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Prompt a Grok image came from. Absent on other media & when X sends no prompt.
+// TweetMediaGrokImageAnnotation is a prompt a Grok image came from. Absent on other media & when X sends no prompt.
 type TweetMediaGrokImageAnnotation struct {
 	// Prompt the image came from.
 	Prompt string `json:"prompt"`
@@ -25001,7 +24994,7 @@ type TweetMediaGrokImageAnnotation struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TweetMediaGrokImageAnnotation) RawJSON() string { return r.JSON.raw }
 func (r *TweetMediaGrokImageAnnotation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -25031,7 +25024,7 @@ type TweetMediaFaceRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TweetMediaFaceRect) RawJSON() string { return r.JSON.raw }
 func (r *TweetMediaFaceRect) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -25053,7 +25046,7 @@ type TweetMediaFocusRect struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TweetMediaFocusRect) RawJSON() string { return r.JSON.raw }
 func (r *TweetMediaFocusRect) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -25073,7 +25066,7 @@ type TweetMediaSize struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TweetMediaSize) RawJSON() string { return r.JSON.raw }
 func (r *TweetMediaSize) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -25095,7 +25088,7 @@ type TweetMediaTag struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TweetMediaTag) RawJSON() string { return r.JSON.raw }
 func (r *TweetMediaTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -25115,13 +25108,13 @@ type TweetMediaVideoVariant struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r TweetMediaVideoVariant) RawJSON() string { return r.JSON.raw }
 func (r *TweetMediaVideoVariant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Count X did not send for this post.
+// TweetUnknownCount is a count X did not send for this post.
 type TweetUnknownCount string
 
 const (
@@ -25133,7 +25126,7 @@ const (
 	TweetUnknownCountBookmarkCount TweetUnknownCount = "bookmarkCount"
 )
 
-// Public X profile.
+// UserProfile is a public X profile.
 type UserProfile struct {
 	ID       string `json:"id" api:"required"`
 	Name     string `json:"name" api:"required"`
@@ -25349,13 +25342,13 @@ type UserProfile struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfile) RawJSON() string { return r.JSON.raw }
 func (r *UserProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Emails, phone numbers & links the account publishes on its own profile. Omitted
+// UserProfileContactInfo holds emails, phone numbers & links the account publishes on its own profile. Omitted
 // when it publishes none.
 type UserProfileContactInfo struct {
 	// Emails in the bio, name or location, lowercased.
@@ -25374,7 +25367,7 @@ type UserProfileContactInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileContactInfo) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileContactInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -25402,13 +25395,13 @@ type UserProfileContactInfoEmail struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileContactInfoEmail) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileContactInfoEmail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Profile field that holds the email.
+// UserProfileContactInfoEmailSource is a profile field that holds the email.
 type UserProfileContactInfoEmailSource string
 
 const (
@@ -25437,13 +25430,13 @@ type UserProfileContactInfoLink struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileContactInfoLink) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileContactInfoLink) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// `url` for the website field, `bio` for a bio link.
+// UserProfileContactInfoLinkSource is the type of [UserProfileContactInfoLink.Source]. `url` for the website field, `bio` for a bio link.
 type UserProfileContactInfoLinkSource string
 
 const (
@@ -25470,13 +25463,13 @@ type UserProfileContactInfoPhone struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileContactInfoPhone) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileContactInfoPhone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Profile field that holds the number.
+// UserProfileContactInfoPhoneSource is a profile field that holds the number.
 type UserProfileContactInfoPhoneSource string
 
 const (
@@ -25486,7 +25479,7 @@ const (
 	UserProfileContactInfoPhoneSourceURL      UserProfileContactInfoPhoneSource = "url"
 )
 
-// How often the account changed its username.
+// UserProfileUsernameChanges describes how often the account changed its username.
 type UserProfileUsernameChanges struct {
 	// Whole number from 0.
 	Count int64 `json:"count" api:"required"`
@@ -25501,13 +25494,13 @@ type UserProfileUsernameChanges struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileUsernameChanges) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileUsernameChanges) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// The parts of the birthday the account made public.
+// UserProfileBirthdate holds the parts of the birthday the account made public.
 type UserProfileBirthdate struct {
 	Day   int64 `json:"day"`
 	Month int64 `json:"month"`
@@ -25522,13 +25515,13 @@ type UserProfileBirthdate struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileBirthdate) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileBirthdate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's text on why the profile is verified, with its links.
+// UserProfileVerificationReason is X's text on why the profile is verified, with its links.
 type UserProfileVerificationReason struct {
 	// Links inside the text, by character range.
 	Entities []UserProfileVerificationReasonEntity `json:"entities"`
@@ -25542,7 +25535,7 @@ type UserProfileVerificationReason struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileVerificationReason) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileVerificationReason) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -25566,13 +25559,13 @@ type UserProfileVerificationReasonEntity struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileVerificationReasonEntity) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileVerificationReasonEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// X's best-effort public label inferred from aggregated account-access IP
+// UserProfileAccountBasedIn is X's best-effort public label inferred from aggregated account-access IP
 // addresses. It does not state nationality, residence, identity, registration,
 // post location, or exact location.
 type UserProfileAccountBasedIn struct {
@@ -25590,13 +25583,13 @@ type UserProfileAccountBasedIn struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileAccountBasedIn) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileAccountBasedIn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Organization affiliation label shown on an X profile.
+// UserProfileAffiliatesHighlightedLabel is an organization affiliation label shown on an X profile.
 type UserProfileAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
@@ -25620,13 +25613,13 @@ type UserProfileAffiliatesHighlightedLabel struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Profile highlight availability and count metadata.
+// UserProfileHighlightsInfo holds profile highlight availability and count metadata.
 type UserProfileHighlightsInfo struct {
 	CanHighlightTweets bool   `json:"canHighlightTweets"`
 	HighlightedTweets  string `json:"highlightedTweets"`
@@ -25639,13 +25632,13 @@ type UserProfileHighlightsInfo struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileHighlightsInfo) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileHighlightsInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Identity verification metadata displayed by X.
+// UserProfileIdentityVerification holds identity verification metadata displayed by X.
 type UserProfileIdentityVerification struct {
 	Description        string `json:"description"`
 	IsIdentityVerified bool   `json:"isIdentityVerified"`
@@ -25663,13 +25656,13 @@ type UserProfileIdentityVerification struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileIdentityVerification) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileIdentityVerification) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Public payment and creator-support handles shown on X.
+// UserProfileTipJar holds public payment and creator-support handles shown on X.
 type UserProfileTipJar struct {
 	BandcampHandle string `json:"bandcampHandle"`
 	BitcoinHandle  string `json:"bitcoinHandle"`
@@ -25696,7 +25689,7 @@ type UserProfileTipJar struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r UserProfileTipJar) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileTipJar) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

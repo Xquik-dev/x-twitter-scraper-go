@@ -21,7 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
-// X write actions (tweets, likes, follows, DMs)
+// XCommunityJoinService covers X write actions (tweets, likes, follows, DMs).
 //
 // XCommunityJoinService contains methods and other services that help with
 // interacting with the x-twitter-scraper API.
@@ -41,7 +41,7 @@ func NewXCommunityJoinService(opts ...option.RequestOption) (r XCommunityJoinSer
 	return
 }
 
-// Joins an X Community through a connected account.
+// New joins an X Community through a connected account.
 func (r *XCommunityJoinService) New(ctx context.Context, id string, params XCommunityJoinNewParams, opts ...option.RequestOption) (res *XCommunityJoinNewResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -56,7 +56,7 @@ func (r *XCommunityJoinService) New(ctx context.Context, id string, params XComm
 	return res, err
 }
 
-// Leaves an X Community through a connected account.
+// DeleteAll leaves an X Community through a connected account.
 func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, params XCommunityJoinDeleteAllParams, opts ...option.RequestOption) (res *XCommunityJoinDeleteAllResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
@@ -71,7 +71,7 @@ func (r *XCommunityJoinService) DeleteAll(ctx context.Context, id string, params
 	return res, err
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XCommunityJoinNewResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XCommunityJoinNewResponse struct {
@@ -195,13 +195,13 @@ type XCommunityJoinNewResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XCommunityJoinNewResponseAccount is a connected account selected for the write.
 type XCommunityJoinNewResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -214,7 +214,7 @@ type XCommunityJoinNewResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinNewResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -244,7 +244,7 @@ const (
 	XCommunityJoinNewResponseActionLeaveCommunity  XCommunityJoinNewResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XCommunityJoinNewResponseBilling is the type of [XCommunityJoinNewResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XCommunityJoinNewResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -263,13 +263,13 @@ type XCommunityJoinNewResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinNewResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XCommunityJoinNewResponseNextAction is the type of [XCommunityJoinNewResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XCommunityJoinNewResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -287,13 +287,13 @@ type XCommunityJoinNewResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinNewResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XCommunityJoinNewResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XCommunityJoinNewResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -308,13 +308,13 @@ type XCommunityJoinNewResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinNewResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XCommunityJoinNewResponseResult is a confirmed result produced by the write, when available.
 type XCommunityJoinNewResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -330,7 +330,7 @@ type XCommunityJoinNewResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinNewResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -347,7 +347,7 @@ const (
 	XCommunityJoinNewResponseStatusExpired             XCommunityJoinNewResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XCommunityJoinNewResponseTarget is an existing X resource targeted by the write, when applicable.
 type XCommunityJoinNewResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -361,13 +361,13 @@ type XCommunityJoinNewResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinNewResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XCommunityJoinDeleteAllResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XCommunityJoinDeleteAllResponse struct {
@@ -491,13 +491,13 @@ type XCommunityJoinDeleteAllResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinDeleteAllResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XCommunityJoinDeleteAllResponseAccount is a connected account selected for the write.
 type XCommunityJoinDeleteAllResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -510,7 +510,7 @@ type XCommunityJoinDeleteAllResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinDeleteAllResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -540,7 +540,7 @@ const (
 	XCommunityJoinDeleteAllResponseActionLeaveCommunity  XCommunityJoinDeleteAllResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XCommunityJoinDeleteAllResponseBilling is the type of [XCommunityJoinDeleteAllResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XCommunityJoinDeleteAllResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -559,13 +559,13 @@ type XCommunityJoinDeleteAllResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinDeleteAllResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XCommunityJoinDeleteAllResponseNextAction is the type of [XCommunityJoinDeleteAllResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XCommunityJoinDeleteAllResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -583,13 +583,13 @@ type XCommunityJoinDeleteAllResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinDeleteAllResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XCommunityJoinDeleteAllResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XCommunityJoinDeleteAllResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -604,13 +604,13 @@ type XCommunityJoinDeleteAllResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinDeleteAllResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XCommunityJoinDeleteAllResponseResult is a confirmed result produced by the write, when available.
 type XCommunityJoinDeleteAllResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -626,7 +626,7 @@ type XCommunityJoinDeleteAllResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinDeleteAllResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -643,7 +643,7 @@ const (
 	XCommunityJoinDeleteAllResponseStatusExpired             XCommunityJoinDeleteAllResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XCommunityJoinDeleteAllResponseTarget is an existing X resource targeted by the write, when applicable.
 type XCommunityJoinDeleteAllResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -657,7 +657,7 @@ type XCommunityJoinDeleteAllResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XCommunityJoinDeleteAllResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

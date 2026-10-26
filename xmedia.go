@@ -42,7 +42,7 @@ func NewXMediaService(opts ...option.RequestOption) (r XMediaService) {
 	return
 }
 
-// Downloads images and videos attached to selected tweets.
+// Download downloads images and videos attached to selected tweets.
 func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams, opts ...option.RequestOption) (res *XMediaDownloadResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/media/download"
@@ -50,7 +50,7 @@ func (r *XMediaService) Download(ctx context.Context, body XMediaDownloadParams,
 	return res, err
 }
 
-// Uploads media and returns an identifier for later writes.
+// Upload uploads media and returns an identifier for later writes.
 func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, opts ...option.RequestOption) (res *XMediaUploadResponse, err error) {
 	if err = validateMediaUpload(params.URL, params.File); err != nil {
 		return nil, err
@@ -85,13 +85,13 @@ type XMediaDownloadResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaDownloadResponse) RawJSON() string { return r.JSON.raw }
 func (r *XMediaDownloadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Durable write record. Poll statusUrl until terminal is true. Reusing its
+// XMediaUploadResponse is a durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
 // is true.
 type XMediaUploadResponse struct {
@@ -215,13 +215,13 @@ type XMediaUploadResponse struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaUploadResponse) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Connected account selected for the write.
+// XMediaUploadResponseAccount is a connected account selected for the write.
 type XMediaUploadResponseAccount struct {
 	ID       string `json:"id" api:"required"`
 	Username string `json:"username" api:"required"`
@@ -234,7 +234,7 @@ type XMediaUploadResponseAccount struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaUploadResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -264,7 +264,7 @@ const (
 	XMediaUploadResponseActionLeaveCommunity  XMediaUploadResponseAction = "leave_community"
 )
 
-// plannedCredits is the approved maximum. chargedCredits comes from the settled
+// XMediaUploadResponseBilling is the type of [XMediaUploadResponse.Billing]. plannedCredits is the approved maximum. chargedCredits comes from the settled
 // credit ledger. Pending or failed writes are not charged.
 type XMediaUploadResponseBilling struct {
 	Charged        bool   `json:"charged" api:"required"`
@@ -283,13 +283,13 @@ type XMediaUploadResponseBilling struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaUploadResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseBilling) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Exact follow-up an API client or agent should perform.
+// XMediaUploadResponseNextAction is the type of [XMediaUploadResponse.NextAction]. Exact follow-up an API client or agent should perform.
 type XMediaUploadResponseNextAction struct {
 	// Any of "poll", "retry", "verify_result", "fix_request".
 	Type                      string `json:"type" api:"required"`
@@ -307,13 +307,13 @@ type XMediaUploadResponseNextAction struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaUploadResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseNextAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Stable fingerprint and sanitized payload for replay checks.
+// XMediaUploadResponseRequest holds stable fingerprint and sanitized payload for replay checks.
 type XMediaUploadResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
@@ -328,13 +328,13 @@ type XMediaUploadResponseRequest struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaUploadResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// Confirmed result produced by the write, when available.
+// XMediaUploadResponseResult is a confirmed result produced by the write, when available.
 type XMediaUploadResponseResult struct {
 	ID    string `json:"id"`
 	State string `json:"state"`
@@ -350,7 +350,7 @@ type XMediaUploadResponseResult struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaUploadResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
@@ -367,7 +367,7 @@ const (
 	XMediaUploadResponseStatusExpired             XMediaUploadResponseStatus = "expired"
 )
 
-// Existing X resource targeted by the write, when applicable.
+// XMediaUploadResponseTarget is an existing X resource targeted by the write, when applicable.
 type XMediaUploadResponseTarget struct {
 	ID string `json:"id" api:"required"`
 	// Any of "tweet", "user", "community".
@@ -381,7 +381,7 @@ type XMediaUploadResponseTarget struct {
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
+// RawJSON returns the unmodified JSON received from the API.
 func (r XMediaUploadResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)

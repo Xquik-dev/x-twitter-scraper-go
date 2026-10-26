@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package ssestream decodes the server-sent event streams the API sends.
 package ssestream
 
 import (

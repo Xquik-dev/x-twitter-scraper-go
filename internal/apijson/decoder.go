@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// Package apijson decodes API responses into SDK types and encodes params as
+// JSON. It records whether each field was present, null or invalid.
 package apijson
 
 import (
