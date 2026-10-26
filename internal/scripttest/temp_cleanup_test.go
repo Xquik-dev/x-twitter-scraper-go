@@ -18,45 +18,41 @@ import (
 
 type cleanupCase struct {
 	name    string
-	command []string
+	command func(root string) *exec.Cmd
 	tools   []string
 	setup   func(t *testing.T, root string) []string
 }
 
-func repositoryRoot(t *testing.T) string {
-	t.Helper()
-	root, err := filepath.Abs("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-	return root
-}
-
-func cleanupCases(t *testing.T) []cleanupCase {
-	repo := repositoryRoot(t)
-	script := func(path string) string { return filepath.Join(repo, path) }
+func cleanupCases() []cleanupCase {
 	return []cleanupCase{
-		{name: "check-local", command: []string{script("bin/check-local"), "--no-status"}, tools: []string{"go", "jq", "uv"}},
-		{name: "test", command: []string{script("scripts/test")}, tools: []string{"go"}},
-		{name: "fuzz", command: []string{script("scripts/fuzz")}, tools: []string{"go"}},
-		{name: "lint", command: []string{script("scripts/lint")}, tools: []string{"go", "gofmt"}},
-		{name: "collect-coverage", command: []string{script("scripts/collect-coverage")}, tools: []string{"go"}},
-		{name: "collect-branches", command: []string{script("scripts/collect-branches")}, tools: []string{"go"}},
-		{name: "coverage-baseline", command: []string{script("scripts/coverage-baseline"), "HEAD"}, tools: []string{"go"}},
-		{name: "codeql-security", command: []string{script("scripts/codeql-security")}, tools: []string{"codeql"}, setup: func(t *testing.T, root string) []string {
+		{name: "check-local", command: func(string) *exec.Cmd { return exec.Command("../../bin/check-local", "--no-status") }, tools: []string{"go", "jq", "uv"}},
+		{name: "test", command: func(string) *exec.Cmd { return exec.Command("../../scripts/test") }, tools: []string{"go"}},
+		{name: "fuzz", command: func(string) *exec.Cmd { return exec.Command("../../scripts/fuzz") }, tools: []string{"go"}},
+		{name: "lint", command: func(string) *exec.Cmd { return exec.Command("../../scripts/lint") }, tools: []string{"go", "gofmt"}},
+		{name: "collect-coverage", command: func(string) *exec.Cmd { return exec.Command("../../scripts/collect-coverage") }, tools: []string{"go"}},
+		{name: "collect-branches", command: func(string) *exec.Cmd { return exec.Command("../../scripts/collect-branches") }, tools: []string{"go"}},
+		{name: "coverage-baseline", command: func(string) *exec.Cmd { return exec.Command("../../scripts/coverage-baseline", "HEAD") }, tools: []string{"go"}},
+		{name: "codeql-security", command: func(string) *exec.Cmd { return exec.Command("../../scripts/codeql-security") }, tools: []string{"codeql"}, setup: func(t *testing.T, root string) []string {
 			return []string{"XQUIK_CODEQL_BIN=" + filepath.Join(root, "bin", "codeql")}
 		}},
-		{name: "source-security", command: []string{script("scripts/source-security")}, tools: []string{"go"}},
-		{name: "signing-audit", command: []string{"bash", script("scripts/signing-audit")}, tools: []string{"uv"}},
-		{name: "dependency-audit", command: []string{script("scripts/dependency-audit")}, tools: []string{"go"}, setup: func(t *testing.T, root string) []string {
+		{name: "source-security", command: func(string) *exec.Cmd { return exec.Command("../../scripts/source-security") }, tools: []string{"go"}},
+		{name: "signing-audit", command: func(string) *exec.Cmd { return exec.Command("bash", "../../scripts/signing-audit") }, tools: []string{"uv"}},
+		{name: "dependency-audit", command: func(root string) *exec.Cmd {
+			command := exec.Command("scripts/dependency-audit", ".")
+			command.Dir = filepath.Join(root, "project")
+			return command
+		}, tools: []string{"go"}, setup: func(t *testing.T, root string) []string {
 			project := filepath.Join(root, "project")
 			if err := os.MkdirAll(project, 0o750); err != nil {
 				t.Fatal(err)
 			}
-			return []string{"FAKE_ARGUMENT=" + project}
+			linkAuditScript(t, project)
+			return nil
 		}},
-		{name: "reproducible-build", command: []string{script("scripts/reproducible-build")}, tools: []string{"go"}},
-		{name: "verify-release", command: []string{"bash", script("scripts/verify-release"), "v1.2.3", "0123456789abcdef0123456789abcdef01234567"}, tools: []string{"go"}},
+		{name: "reproducible-build", command: func(string) *exec.Cmd { return exec.Command("../../scripts/reproducible-build") }, tools: []string{"go"}},
+		{name: "verify-release", command: func(string) *exec.Cmd {
+			return exec.Command("bash", "../../scripts/verify-release", "v1.2.3", "0123456789abcdef0123456789abcdef01234567")
+		}, tools: []string{"go"}},
 	}
 }
 
@@ -84,17 +80,10 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 	if started != "" {
 		env = append(env, "FAKE_STARTED="+started)
 	}
-	command := append([]string(nil), test.command...)
 	if test.setup != nil {
-		for _, variable := range test.setup(t, root) {
-			if argument, ok := strings.CutPrefix(variable, "FAKE_ARGUMENT="); ok {
-				command = append(command, argument)
-				continue
-			}
-			env = append(env, variable)
-		}
+		env = append(env, test.setup(t, root)...)
 	}
-	cmd := exec.Command(command[0], command[1:]...)
+	cmd := test.command(root)
 	cmd.Env = append(os.Environ(), env...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	var stdout, stderr bytes.Buffer
@@ -189,7 +178,7 @@ func terminateRun(t *testing.T, cmd *exec.Cmd, started string, signal syscall.Si
 }
 
 func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
-	for _, test := range cleanupCases(t) {
+	for _, test := range cleanupCases() {
 		t.Run(test.name, func(t *testing.T) {
 			cmd, private := startCleanupCase(t, test, "")
 			if code := exitCode(t, cmd, cmd.Wait()); code == 0 {
@@ -201,7 +190,7 @@ func TestChecksRemoveTheirTempDirsWhenAStepFails(t *testing.T) {
 }
 
 func TestChecksRemoveTheirTempDirsWhenTerminated(t *testing.T) {
-	for _, test := range cleanupCases(t) {
+	for _, test := range cleanupCases() {
 		t.Run(test.name, func(t *testing.T) {
 			for _, signal := range []syscall.Signal{syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM} {
 				t.Run(signal.String(), func(t *testing.T) {
@@ -220,8 +209,11 @@ func TestInterruptStopsBashParent(t *testing.T) {
 	started := filepath.Join(root, "started")
 	continued := filepath.Join(root, "continued")
 	test := cleanupCase{
-		command: []string{"bash", "-c", "\"$1\"\n: >\"$2\"\n", "bash", filepath.Join(repositoryRoot(t), "scripts/test"), continued},
-		tools:   []string{"go"},
+		command: func(string) *exec.Cmd {
+			return exec.Command("bash", "-c", "\"$1\"\n: >\"$FAKE_CONTINUED\"\n", "bash", "../../scripts/test")
+		},
+		tools: []string{"go"},
+		setup: func(*testing.T, string) []string { return []string{"FAKE_CONTINUED=" + continued} },
 	}
 	cmd, private := startCleanupCase(t, test, started)
 	terminateRun(t, cmd, started, syscall.SIGINT)
@@ -293,7 +285,7 @@ func TestCoverageReportsOnlyRetainedProfiles(t *testing.T) {
 				output = t.TempDir()
 			}
 			test := cleanupCase{
-				command: []string{filepath.Join(repositoryRoot(t), "scripts/collect-coverage")},
+				command: func(string) *exec.Cmd { return exec.Command("../../scripts/collect-coverage") },
 				tools:   []string{"go"},
 				setup: func(t *testing.T, root string) []string {
 					return []string{"FAKE_COVERAGE=true", "XQUIK_COVERAGE_DIR=" + output}

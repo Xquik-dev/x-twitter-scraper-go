@@ -82,10 +82,11 @@ func encode[T any](value T) []byte {
 	return data
 }
 
-func runAudit[E any](t *testing.T, goCommand string, findings []finding, exceptions E) auditResult {
+// linkAuditScript links the dependency audit script and the helper it sources
+// into directory/scripts, so a test runs it by a literal relative path.
+func linkAuditScript(t *testing.T, directory string) {
 	t.Helper()
-	root := t.TempDir()
-	if err := os.Mkdir(filepath.Join(root, "scripts"), 0o750); err != nil {
+	if err := os.Mkdir(filepath.Join(directory, "scripts"), 0o750); err != nil {
 		t.Fatal(err)
 	}
 	for _, name := range []string{"dependency-audit", "temp-paths"} {
@@ -93,10 +94,16 @@ func runAudit[E any](t *testing.T, goCommand string, findings []finding, excepti
 		if err != nil {
 			t.Fatal(err)
 		}
-		if err := os.Symlink(target, filepath.Join(root, "scripts", name)); err != nil {
+		if err := os.Symlink(target, filepath.Join(directory, "scripts", name)); err != nil {
 			t.Fatal(err)
 		}
 	}
+}
+
+func runAudit[E any](t *testing.T, goCommand string, findings []finding, exceptions E) auditResult {
+	t.Helper()
+	root := t.TempDir()
+	linkAuditScript(t, root)
 	write := func(name string, data []byte, mode os.FileMode) string {
 		t.Helper()
 		path := filepath.Join(root, name)
