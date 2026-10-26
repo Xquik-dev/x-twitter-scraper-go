@@ -188,6 +188,14 @@ func TestExtraFieldsForceOmitted(t *testing.T) {
 	assertJSON(t, v, `{"a":""}`)
 }
 
+func TestNilExtraFieldSendsNull(t *testing.T) {
+	v := Struct{B: 5}
+	v.SetExtraFields(map[string]json.RawMessage{
+		"b": nil,
+	})
+	assertJSON(t, v, `{"a":"","b":null}`)
+}
+
 type UnionWithDates struct {
 	OfDate param.Opt[time.Time]
 	OfTime param.Opt[time.Time]

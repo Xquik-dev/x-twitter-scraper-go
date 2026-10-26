@@ -146,8 +146,8 @@ func (m metadata) ExtraFields() map[string]json.RawMessage {
 }
 
 // Omit can be used with [metadata.SetExtraFields] to ensure that a
-// required field is omitted. It is the nil raw message.
-var Omit json.RawMessage
+// required field is omitted. A nil [json.RawMessage] sends null instead.
+var Omit = json.RawMessage("\x00omit")
 
 // SetExtraFields adds extra fields to the JSON object.
 //
