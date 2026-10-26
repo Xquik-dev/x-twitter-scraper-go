@@ -40,10 +40,6 @@ func codeqlReport(diagnostics string, notifications ...string) string {
 
 func runCodeQLSecurity(t *testing.T, report string) auditResult {
 	t.Helper()
-	script, err := filepath.Abs("../../scripts/codeql-security")
-	if err != nil {
-		t.Fatal(err)
-	}
 	root := t.TempDir()
 	codeql := filepath.Join(root, "codeql")
 	reportPath := filepath.Join(root, "report.sarif")
@@ -53,7 +49,7 @@ func runCodeQLSecurity(t *testing.T, report string) auditResult {
 	if err := os.WriteFile(reportPath, []byte(report), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	command := exec.Command(script)
+	command := exec.Command("../../scripts/codeql-security")
 	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "TMPDIR="+root)
 	var stdout, stderr bytes.Buffer
 	command.Stdout, command.Stderr = &stdout, &stderr
