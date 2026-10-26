@@ -96,12 +96,12 @@ func (r *XMediaDownloadResponse) UnmarshalJSON(data []byte) error {
 
 // XMediaDownloadResponseItem holds 1 file of the post saved to your gallery.
 type XMediaDownloadResponseItem struct {
-	// Gallery file ID
+	// The gallery file's ID.
 	ID      string `json:"id" api:"required"`
 	TweetID string `json:"tweetId" api:"required"`
 	// Any of "photo", "video", "animated_gif".
 	MediaType XMediaDownloadResponseItemMediaType `json:"mediaType" api:"required"`
-	// Saved copy of the file
+	// The saved copy of the file.
 	MediaURL string `json:"mediaUrl" api:"required"`
 	// File size in bytes, as a string
 	FileSize string `json:"fileSize" api:"required"`

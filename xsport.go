@@ -162,8 +162,8 @@ func (r *XSportService) GetPlayerProps(ctx context.Context, id string, params XS
 }
 
 // GetPosts returns the posts X shows on a game's page, with the X search that
-// finds them. Works before, during & after the game. Pages hold up to 20 posts, &
-// each post costs 1 credit.
+// finds them. It works before, during and after the game. Pages hold up to 20
+// posts, & each post costs 1 credit.
 func (r *XSportService) GetPosts(ctx context.Context, id string, params XSportGetPostsParams, opts ...option.RequestOption) (res *SportsGamePosts, err error) {
 	opts = slices.Concat(r.options, opts)
 	if params.League == "" {
@@ -2152,8 +2152,8 @@ type XSportGetPostsParams struct {
 	// maxItems, max_items & per_page.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Top for the posts X ranks highest, or Latest for the newest. Any case works, &
-	// so do Relevance & Recency. Alias order or sort. Send the same value with each
-	// cursor.
+	// so do Relevance & Recency. order and sort are aliases. Send the same value with
+	// each cursor.
 	//
 	// Any of "Top", "Latest".
 	QueryType XSportGetPostsParamsQueryType `query:"queryType,omitzero" json:"-"`

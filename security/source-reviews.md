@@ -18,7 +18,6 @@ On 2026-10-17, the embedded post fields and the bulk retry `AccountIDs` moved 39
 On 2026-10-17, the bulk retry doc comment fix moved 3 findings in `xaccount.go` to its new file hash. Their code & reasons are unchanged.
 On 2026-10-22, the `softIntervention` field, the `X-Xquik-SDK` header and its test moved 46 findings the same way, 32 in `shared/shared.go`, 4 in `xtweet.go`, 5 in `internal/requestconfig/requestconfig.go` and 1 in `client_test.go`. Their code & reasons are unchanged.
 On 2026-10-22, the `SoftInterventionText` type moved 36 findings in `shared/shared.go` the same way. Their code & reasons are unchanged.
-On 2026-10-26, the contract field fixes moved 40 findings the same way, 36 in `shared/shared.go` and 4 in `xtweet.go`. Their code & reasons are unchanged.
 The temp cleanup tests have 6 reviewed findings for test-controlled script runners, executable fixtures, retained coverage files and restoring owner access to isolated module caches. Their records match the current source hashes and line numbers.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
