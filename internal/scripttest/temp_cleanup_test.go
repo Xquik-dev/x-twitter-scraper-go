@@ -229,8 +229,8 @@ func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string) (*ex
 	if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	fixture.git(fixture.repo, "commit", "--quiet", "--all", "--message", "check-local")
-	fixture.git(fixture.repo, "push", "--quiet", "origin", "main")
+	fixture.git(fixture.repo, exec.Command("git", "commit", "--quiet", "--all", "--message", "check-local"))
+	fixture.git(fixture.repo, exec.Command("git", "push", "--quiet", "origin", "main"))
 	root := t.TempDir()
 	private := filepath.Join(root, "tmp")
 	if err := os.MkdirAll(private, 0o750); err != nil {

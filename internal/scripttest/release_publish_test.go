@@ -21,8 +21,8 @@ func TestReleasePublishRefusesBeforeRunningChecks(t *testing.T) {
 			name: "a commit missing from main",
 			want: "Merge the release into main first.\n",
 			prepare: func(fixture *releaseFixture) {
-				fixture.git(fixture.repo, "commit", "--quiet", "--allow-empty", "--message", "unmerged")
-				fixture.git(fixture.repo, "tag", "v1.2.3")
+				fixture.git(fixture.repo, exec.Command("git", "commit", "--quiet", "--allow-empty", "--message", "unmerged"))
+				fixture.git(fixture.repo, exec.Command("git", "tag", "v1.2.3"))
 			},
 		},
 		{
@@ -34,7 +34,7 @@ func TestReleasePublishRefusesBeforeRunningChecks(t *testing.T) {
 			name: "a missing signing identity",
 			want: "XQUIK_RELEASE_IDENTITY: Set the authorized signing identity.\n",
 			prepare: func(fixture *releaseFixture) {
-				fixture.git(fixture.repo, "tag", "v1.2.3")
+				fixture.git(fixture.repo, exec.Command("git", "tag", "v1.2.3"))
 			},
 		},
 	} {
@@ -52,9 +52,9 @@ func TestReleasePublishRefusesBeforeRunningChecks(t *testing.T) {
 			if err := repository.WriteFile("scripts/release", script, 0o600); err != nil {
 				t.Fatal(err)
 			}
-			fixture.git(fixture.repo, "add", "scripts/release")
-			fixture.git(fixture.repo, "commit", "--quiet", "--message", "release script")
-			fixture.git(fixture.repo, "push", "--quiet", "origin", "main")
+			fixture.git(fixture.repo, exec.Command("git", "add", "scripts/release"))
+			fixture.git(fixture.repo, exec.Command("git", "commit", "--quiet", "--message", "release script"))
+			fixture.git(fixture.repo, exec.Command("git", "push", "--quiet", "origin", "main"))
 			test.prepare(fixture)
 
 			command := exec.Command("bash", "scripts/release", "publish")

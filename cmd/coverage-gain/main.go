@@ -18,15 +18,14 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/coveragegate"
 )
 
-func git(args ...string) (string, error) {
-	command := exec.Command("git", args...)
+func git(command *exec.Cmd) (string, error) {
 	command.Env = append(os.Environ(), "LC_ALL=C")
 	data, err := command.Output()
 	return strings.TrimSpace(string(data)), err
 }
 
 func run(directory string) error {
-	status, err := git("status", "--porcelain", "--untracked-files=all")
+	status, err := git(exec.Command("git", "status", "--porcelain", "--untracked-files=all"))
 	if err != nil {
 		return err
 	}
@@ -34,11 +33,11 @@ func run(directory string) error {
 	if status != "" {
 		ref = "HEAD"
 	}
-	parent, err := git("rev-parse", "--verify", ref)
+	parent, err := git(exec.Command("git", "rev-parse", "--verify", ref))
 	if err != nil {
 		return err
 	}
-	common, err := git("rev-parse", "--git-common-dir")
+	common, err := git(exec.Command("git", "rev-parse", "--git-common-dir"))
 	if err != nil {
 		return err
 	}
@@ -61,7 +60,7 @@ func run(directory string) error {
 	if err := coveragegate.Compare(baseline.Total, metrics); err != nil {
 		return err
 	}
-	return checkLOC(parent)
+	return checkLOC(parent, status != "")
 }
 
 func main() {
@@ -105,7 +104,7 @@ func record(revision, directory string) error {
 	if !commitID.MatchString(revision) {
 		return fmt.Errorf("revision %q is not a full commit id", revision)
 	}
-	common, err := git("rev-parse", "--path-format=absolute", "--git-common-dir")
+	common, err := git(exec.Command("git", "rev-parse", "--path-format=absolute", "--git-common-dir"))
 	if err != nil {
 		return err
 	}

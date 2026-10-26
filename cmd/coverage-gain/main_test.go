@@ -44,7 +44,7 @@ func TestRunAgainstGitParent(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if err := checkLOC("HEAD"); err == nil {
+	if err := checkLOC("HEAD", true); err == nil {
 		t.Fatal("LOC check outside Git passed")
 	}
 	gitCommand(exec.Command("git", "init", "-q", "--initial-branch=main"))
@@ -59,7 +59,7 @@ func TestRunAgainstGitParent(t *testing.T) {
 	if err := run(directory); err == nil || !strings.Contains(err.Error(), "read verified coverage") {
 		t.Fatalf("missing baseline error = %v", err)
 	}
-	parent, err := git("rev-parse", "HEAD")
+	parent, err := git(exec.Command("git", "rev-parse", "HEAD"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -123,13 +123,13 @@ func TestRunAgainstGitParent(t *testing.T) {
 					}
 				})
 			}
-			err := checkLOC(parent)
+			err := checkLOC(parent, true)
 			if test.failure == "" && err != nil || test.failure != "" && (err == nil || !strings.Contains(err.Error(), test.failure)) {
 				t.Fatalf("LOC error = %v, want %q", err, test.failure)
 			}
 		})
 	}
-	if err := checkLOC("missing-parent"); err == nil {
+	if err := checkLOC("missing-parent", false); err == nil {
 		t.Fatal("missing parent passed")
 	}
 	write("fixture.go", "package fixture\n")
@@ -269,7 +269,7 @@ func TestCLIRecordsAndCompares(t *testing.T) {
 			t.Fatalf("%v: %v\n%s", command.Args, err, data)
 		}
 	}
-	parent, err := git("rev-parse", "HEAD^")
+	parent, err := git(exec.Command("git", "rev-parse", "HEAD^"))
 	if err != nil {
 		t.Fatal(err)
 	}
