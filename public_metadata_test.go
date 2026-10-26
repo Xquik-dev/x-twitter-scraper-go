@@ -40,8 +40,9 @@ func TestPublicMetadataReadsRecordedPayloads(t *testing.T) {
 	t.Run("event data", func(t *testing.T) {
 		var event xtwitterscraper.EventDetail
 		decodeFixture(t, "getEvent.json", &event)
-		if got := metadataValue[string](t, event.Data, "tweetId"); got != "1234567890" {
-			t.Fatalf("tweetId = %q", got)
+		post, err := event.Data.AsMonitorPost()
+		if err != nil || post.JSON.ExtraFields["tweetId"].Raw() != `"1234567890"` {
+			t.Fatalf("post = %+v, err = %v", post, err)
 		}
 	})
 	t.Run("article metadata", func(t *testing.T) {
