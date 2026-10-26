@@ -144,7 +144,7 @@ run audit "Dependency audit" "Fix each blocked finding above, or review audit-ex
 passed="${passed%audit}$(audit_label)"
 run "signing audit" "Signing tool audit" "Update the locked dependency in tools/signing, then rerun." \
   bash scripts/signing-audit
-run "source scan" "Source scan" "Fix each new gosec finding above, or review it into security/source-reviews.md and .json." \
+run "source scan" "Source scan" "Fix each gosec finding above." \
   scripts/source-security
 run archive "Reproducible module archive" "Remove the build input that differs between the archives." \
   scripts/reproducible-build
