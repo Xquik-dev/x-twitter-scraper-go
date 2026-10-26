@@ -39,7 +39,6 @@ func (MonitorLegacyPost) implMonitorEventDataUnion()       {}
 //	case shared.MonitorPostDeleted:
 //	case shared.MonitorLegacyPost:
 //	default:
-//	  fmt.Errorf("no variant present")
 //	}
 func (u MonitorEventDataUnion) AsAny(eventType EventType) (anyMonitorEventData, error) {
 	switch eventType {
