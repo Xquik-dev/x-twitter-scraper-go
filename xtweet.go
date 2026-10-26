@@ -2046,12 +2046,14 @@ type TweetDetailSportsContextScheduledAtMsUnion struct {
 	} `json:"-"`
 }
 
-func (u TweetDetailSportsContextScheduledAtMsUnion) AsFloat() float64 {
-	return u.OfFloat
+func (u TweetDetailSportsContextScheduledAtMsUnion) AsFloat() (v float64, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
+	return
 }
 
-func (u TweetDetailSportsContextScheduledAtMsUnion) AsString() string {
-	return u.OfString
+func (u TweetDetailSportsContextScheduledAtMsUnion) AsString() (v string, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
+	return
 }
 
 // RawJSON returns the unmodified JSON received from the API.

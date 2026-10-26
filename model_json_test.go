@@ -206,28 +206,31 @@ func TestNumericOrStringResponseValues(t *testing.T) {
 	for _, modelType := range rawJSONModelTypes() {
 		model, ok := reflect.New(modelType).Interface().(interface {
 			rawJSONModel
-			AsFloat() float64
-			AsString() string
+			AsFloat() (float64, error)
+			AsString() (string, error)
 		})
 		if !ok {
 			continue
 		}
 		matched++
 		for _, test := range []struct {
-			raw, text string
-			number    float64
+			raw, text   string
+			number      float64
+			numberFails bool
 		}{
 			{raw: "1789187722000", number: 1789187722000, text: "1789187722000"},
 			{raw: `"1789187722000"`, number: 1789187722000, text: "1789187722000"},
-			{raw: `"scheduled"`, text: "scheduled"},
+			{raw: `"scheduled"`, text: "scheduled", numberFails: true},
 			{raw: "null"},
 		} {
 			t.Run(modelType.Name()+"/"+test.raw, func(t *testing.T) {
 				if err := model.UnmarshalJSON([]byte(test.raw)); err != nil {
 					t.Fatal(err)
 				}
-				if model.AsFloat() != test.number || model.AsString() != test.text || model.RawJSON() != test.raw {
-					t.Fatalf("decoded number = %v, text = %q, raw = %q; want %v, %q, %q", model.AsFloat(), model.AsString(), model.RawJSON(), test.number, test.text, test.raw)
+				number, numberErr := model.AsFloat()
+				text, textErr := model.AsString()
+				if number != test.number || (numberErr != nil) != test.numberFails || text != test.text || textErr != nil || model.RawJSON() != test.raw {
+					t.Fatalf("decoded number = %v, %v, text = %q, %v, raw = %q; want %v, %q, %q", number, numberErr, text, textErr, model.RawJSON(), test.number, test.text, test.raw)
 				}
 			})
 		}

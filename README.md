@@ -303,7 +303,11 @@ if animal.Owner.Address.ZipCode == "" {
 }
 
 // Select the variant.
-switch variant := animal.AsAny().(type) {
+variant, err := animal.AsAny()
+if err != nil {
+	panic(err)
+}
+switch variant := variant.(type) {
 case Dog:
 case Cat:
 default:
