@@ -21,14 +21,11 @@ import (
 
 var decoders paramutil.SyncMap[decoderEntry, decoderFunc]
 
-// Unmarshal decodes raw into to.
 func Unmarshal[T any](raw []byte, to *T) error {
 	d := &decoderBuilder{dateFormat: time.RFC3339}
 	return d.unmarshal(gjson.ParseBytes(raw), reflect.ValueOf(to).Elem())
 }
 
-// UnmarshalRoot decodes raw into to without calling the UnmarshalJSON method of
-// to itself. When rawJSON is not nil, it receives the raw JSON that to holds.
 func UnmarshalRoot[T any](raw []byte, to *T, rawJSON *string) error {
 	d := &decoderBuilder{dateFormat: time.RFC3339, root: true}
 	result := gjson.ParseBytes(raw)

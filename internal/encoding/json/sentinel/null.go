@@ -11,7 +11,6 @@ import (
 	"sync"
 )
 
-// nullCache holds the sentinel of each map or slice type, keyed by that type.
 var nullCache = struct {
 	sync.RWMutex
 	m map[reflect.Type]reflect.Value
@@ -47,7 +46,6 @@ func IsNull[T any](v T) bool {
 	return false
 }
 
-// isNull reports whether v, a map or slice of type t, is the sentinel of t.
 func isNull(t reflect.Type, v reflect.Value) bool {
 	nullCache.RLock()
 	defer nullCache.RUnlock()

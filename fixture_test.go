@@ -86,9 +86,6 @@ func (r *capturedRequest) expectBody(t *testing.T, want string) {
 	}
 }
 
-// canonicalJSON writes a JSON value with sorted object keys, no spaces and
-// each number and string in one form, so 2 values that decode to the same data
-// give the same text.
 func canonicalJSON(raw []byte) (string, error) {
 	raw = bytes.TrimSpace(raw)
 	if len(raw) == 0 {

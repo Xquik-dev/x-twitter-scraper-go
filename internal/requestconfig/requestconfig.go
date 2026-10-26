@@ -110,8 +110,6 @@ func sendsMultipart(body apiform.Marshaler) bool {
 	return !ok || files.HasFiles()
 }
 
-// NewRequestConfig builds the request for one API call. It serializes body
-// into the request and stores the response body in dst as [Into] describes.
 func NewRequestConfig[D any](ctx context.Context, method string, u string, body param.ParamStruct, dst D, opts ...RequestOption) (*RequestConfig, error) {
 	var reader io.Reader
 
@@ -445,22 +443,11 @@ func (cfg *RequestConfig) Execute() (err error) {
 	return cfg.ResponseBodyInto.decode(res.Header.Get("content-type"), contents)
 }
 
-// ResponseBody stores a successful response in the destination given to [Into].
-// Its zero value leaves the response body unread.
 type ResponseBody struct {
 	raw    **http.Response
 	decode func(contentType string, contents []byte) error
 }
 
-// Into returns where a request stores its response, depending on the type of dst.
-//
-//   - A pointer to a [*http.Response] receives the raw response with its body unread.
-//   - A pointer to a byte slice receives the body as is.
-//   - A pointer to a string receives the body of a response that is not JSON.
-//   - A pointer to any other type receives the JSON decoding of the body, which
-//     respects UnmarshalJSON if it is defined on the type.
-//   - A nil interface leaves the response body unread.
-//   - A ResponseBody is used as is.
 func Into[D any](dst D) ResponseBody {
 	value := reflect.ValueOf(dst)
 	if !value.IsValid() {
@@ -502,7 +489,6 @@ func decodeBody[D any](dst D, contentType string, contents []byte) error {
 	return nil
 }
 
-// ExecuteNewRequest builds the request with [NewRequestConfig] and sends it.
 func ExecuteNewRequest[D any](ctx context.Context, method string, u string, body param.ParamStruct, dst D, opts ...RequestOption) error {
 	cfg, err := NewRequestConfig(ctx, method, u, body, dst, opts...)
 	if err != nil {

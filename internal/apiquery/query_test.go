@@ -143,7 +143,6 @@ type StructUnion struct {
 	param.APIUnion
 }
 
-// queryValue is a value of a field whose type is an interface.
 type queryValue interface{ queryValue() }
 
 type (

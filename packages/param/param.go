@@ -176,10 +176,8 @@ func (m metadata) null() bool {
 	return false
 }
 
-// metadata holds what replaces the fields of a param struct, if anything.
 type metadata struct{ value metadataValue }
 
-// metadataValue is an explicit null, extra fields or raw JSON.
 type metadataValue interface{ isMetadata() }
 
 type metadataNull struct{}

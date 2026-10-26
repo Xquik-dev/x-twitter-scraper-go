@@ -25,14 +25,11 @@ var encoders paramutil.SyncMap[encoderEntry, encoderFunc]
 
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
-// Marshal encodes value as JSON.
 func Marshal[T any](value T) ([]byte, error) {
 	e := &encoder{dateFormat: time.RFC3339}
 	return e.marshal(reflect.ValueOf(value))
 }
 
-// MarshalRoot encodes value as JSON without calling the MarshalJSON method of
-// value itself.
 func MarshalRoot[T any](value T) ([]byte, error) {
 	e := &encoder{root: true, dateFormat: time.RFC3339}
 	return e.marshal(reflect.ValueOf(value))
@@ -290,7 +287,6 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
 	return func(value reflect.Value) (json []byte, err error) {
-		// The conversion to time.Time makes the assertion hold.
 		t, _ := reflect.TypeAssert[time.Time](value.Convert(reflect.TypeFor[time.Time]()))
 		return []byte(`"` + t.Format(format) + `"`), nil
 	}

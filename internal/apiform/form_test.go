@@ -152,7 +152,6 @@ func expectedForm(fields ...[2]string) string {
 	return body.String()
 }
 
-// formValue is a value of a field whose type is an interface.
 type formValue interface{ formValue() }
 
 type (
