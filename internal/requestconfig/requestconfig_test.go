@@ -6,6 +6,7 @@ package requestconfig
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
@@ -15,9 +16,12 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
 type jsonMarshalerBody struct {
+	param.APIObject
 	data []byte
 	err  error
 }
@@ -27,6 +31,7 @@ func (body jsonMarshalerBody) MarshalJSON() ([]byte, error) {
 }
 
 type multipartBody struct {
+	param.APIObject
 	data        []byte
 	contentType string
 	err         error
@@ -37,6 +42,7 @@ func (body multipartBody) MarshalMultipart() ([]byte, string, error) {
 }
 
 type jsonMultipartBody struct {
+	param.APIObject
 	jsonMarshalerBody
 	multipartBody
 }
@@ -51,6 +57,7 @@ func (body optionalFilesBody) HasFiles() bool {
 }
 
 type queryBody struct {
+	param.APIObject
 	values url.Values
 	err    error
 }
@@ -77,7 +84,17 @@ func (errorReadCloser) Close() error {
 	return nil
 }
 
-func testConfig(t *testing.T, method string, path string, body any, dst any) *RequestConfig {
+type fallbackBody struct {
+	param.APIObject
+	Query string `json:"query"`
+}
+
+type unsupportedBody struct {
+	param.APIObject
+	Unsupported chan int `json:"unsupported"`
+}
+
+func testConfig[D any](t *testing.T, method string, path string, body param.ParamStruct, dst D) *RequestConfig {
 	t.Helper()
 	cfg, err := NewRequestConfig(context.Background(), method, path, body, dst)
 	if err != nil {
@@ -86,12 +103,12 @@ func testConfig(t *testing.T, method string, path string, body any, dst any) *Re
 	return cfg
 }
 
-func executeWithServer(
+func executeWithServer[D any](
 	t *testing.T,
 	handler http.HandlerFunc,
 	method string,
-	body any,
-	dst any,
+	body param.ParamStruct,
+	dst D,
 ) (*RequestConfig, error) {
 	t.Helper()
 	server := httptest.NewServer(handler)
@@ -105,7 +122,7 @@ func executeWithServer(
 func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 	wantErr := errors.New("serialization failed")
 	tests := map[string]struct {
-		body        any
+		body        param.ParamStruct
 		path        string
 		contentType string
 		wantBody    string
@@ -180,20 +197,8 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 			path:    "/tweets",
 			wantErr: wantErr,
 		},
-		"serialized JSON": {
-			body:        []byte(`{"body":"Please help."}`),
-			path:        "/support/tickets",
-			contentType: "application/json",
-			wantBody:    `{"body":"Please help."}`,
-		},
-		"reader": {
-			body:        strings.NewReader("reader"),
-			path:        "/tweets",
-			contentType: "application/json",
-			wantBody:    "reader",
-		},
 		"fallback JSON": {
-			body:        map[string]string{"query": "timeline"},
+			body:        fallbackBody{Query: "timeline"},
 			path:        "/tweets",
 			contentType: "application/json",
 			wantBody:    "{\"query\":\"timeline\"}\n",
@@ -207,7 +212,7 @@ func TestNewRequestConfigSerializesSupportedBodies(t *testing.T) {
 				http.MethodPost,
 				test.path,
 				test.body,
-				nil,
+				ResponseBody{},
 			)
 			if test.wantErr != nil {
 				if !errors.Is(err, test.wantErr) {
@@ -243,11 +248,11 @@ func TestNewRequestConfigRejectsInvalidInput(t *testing.T) {
 		name    string
 		method  string
 		path    string
-		body    any
+		body    param.ParamStruct
 		option  RequestOption
 		wantErr error
 	}{
-		{"unsupported JSON body", http.MethodPost, "/tweets", map[string]any{"unsupported": make(chan int)}, nil, nil},
+		{"unsupported JSON body", http.MethodPost, "/tweets", unsupportedBody{Unsupported: make(chan int)}, nil, nil},
 		{"invalid method", "bad\nmethod", "/tweets", nil, nil, nil},
 		{"invalid query URL", http.MethodGet, "/%zz", queryBody{values: url.Values{"limit": {"1"}}}, nil, url.EscapeError("%zz")},
 		{"option failure", http.MethodGet, "/tweets", nil, RequestOptionFunc(func(*RequestConfig) error { return wantErr }), wantErr},
@@ -257,7 +262,7 @@ func TestNewRequestConfigRejectsInvalidInput(t *testing.T) {
 			if test.option != nil {
 				options = append(options, test.option)
 			}
-			_, err := NewRequestConfig(context.Background(), test.method, test.path, test.body, nil, options...)
+			_, err := NewRequestConfig(context.Background(), test.method, test.path, test.body, ResponseBody{}, options...)
 			if err == nil || test.wantErr != nil && !errors.Is(err, test.wantErr) {
 				t.Fatalf("error = %v, expected rejection with cause %v", err, test.wantErr)
 			}
@@ -278,7 +283,7 @@ func TestNewRequestConfigAppliesTimeoutAndSecurity(t *testing.T) {
 			want = map[string]string{"X-Stainless-Timeout": "custom", "X-API-Key": "caller", "Authorization": "caller"}
 		}
 		t.Run(name, func(t *testing.T) {
-			cfg, err := NewRequestConfig(context.Background(), http.MethodGet, "/tweets", nil, nil,
+			cfg, err := NewRequestConfig(context.Background(), http.MethodGet, "/tweets", nil, ResponseBody{},
 				RequestOptionFunc(func(cfg *RequestConfig) error {
 					cfg.RequestTimeout = 3 * time.Second
 					cfg.APIKey = "api-key"
@@ -302,46 +307,58 @@ func TestNewRequestConfigAppliesTimeoutAndSecurity(t *testing.T) {
 	}
 }
 
+func expectDecoded[D any](t *testing.T, contentType string, body string, want D, wantErr bool, errorText string) {
+	t.Helper()
+	dst := new(D)
+	_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", contentType)
+		_, _ = io.WriteString(w, body)
+	}, http.MethodGet, nil, dst)
+	if (err != nil) != wantErr {
+		t.Fatalf("error = %v, want error = %t", err, wantErr)
+	}
+	if err != nil {
+		if !strings.Contains(err.Error(), errorText) {
+			t.Fatalf("error = %v, want containing %q", err, errorText)
+		}
+		return
+	}
+	if !reflect.DeepEqual(*dst, want) {
+		t.Fatalf("destination = %#v, want %#v", *dst, want)
+	}
+}
+
 func TestExecuteDecodesResponses(t *testing.T) {
 	type tweet struct {
 		ID string `json:"id"`
 	}
 	followers := "followers"
-	for _, test := range []struct {
-		name        string
-		contentType string
-		body        string
-		dst         any
-		want        any
-		wantErr     bool
-		errorText   string
-	}{
-		{"JSON object", "application/json", `{"id":"tweet-1"}`, new(tweet), tweet{ID: "tweet-1"}, false, ""},
-		{"JSON bytes", "application/problem+json", `{"ok":true}`, new([]byte), []byte(`{"ok":true}`), false, ""},
-		{"plain string", "text/plain; charset=utf-8", "timeline", new(string), "timeline", false, ""},
-		{"plain string pointer", "text/plain", "followers", new(*string), &followers, false, ""},
-		{"plain bytes", "application/octet-stream", "media", new([]byte), []byte("media"), false, ""},
-		{"unsupported plain destination", "text/plain", "42", new(int), nil, true, ""},
-		{"invalid JSON", "application/json", "{", new(map[string]any), nil, true, "error parsing response json"},
-	} {
-		t.Run(test.name, func(t *testing.T) {
-			_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
-				w.Header().Set("Content-Type", test.contentType)
-				_, _ = io.WriteString(w, test.body)
-			}, http.MethodGet, nil, test.dst)
-			if (err != nil) != test.wantErr {
-				t.Fatalf("error = %v, want error = %t", err, test.wantErr)
-			}
-			if err != nil {
-				if !strings.Contains(err.Error(), test.errorText) {
-					t.Fatalf("error = %v, want containing %q", err, test.errorText)
-				}
-				return
-			}
-			if got := reflect.ValueOf(test.dst).Elem().Interface(); !reflect.DeepEqual(got, test.want) {
-				t.Fatalf("destination = %#v, want %#v", got, test.want)
-			}
-		})
+	t.Run("JSON object", func(t *testing.T) {
+		expectDecoded(t, "application/json", `{"id":"tweet-1"}`, tweet{ID: "tweet-1"}, false, "")
+	})
+	t.Run("JSON bytes", func(t *testing.T) {
+		expectDecoded(t, "application/problem+json", `{"ok":true}`, []byte(`{"ok":true}`), false, "")
+	})
+	t.Run("plain string", func(t *testing.T) {
+		expectDecoded(t, "text/plain; charset=utf-8", "timeline", "timeline", false, "")
+	})
+	t.Run("plain string pointer", func(t *testing.T) {
+		expectDecoded(t, "text/plain", "followers", &followers, false, "")
+	})
+	t.Run("plain bytes", func(t *testing.T) {
+		expectDecoded(t, "application/octet-stream", "media", []byte("media"), false, "")
+	})
+	t.Run("unsupported plain destination", func(t *testing.T) {
+		expectDecoded(t, "text/plain", "42", 0, true, "")
+	})
+	t.Run("invalid JSON", func(t *testing.T) {
+		expectDecoded(t, "application/json", "{", json.RawMessage(nil), true, "error parsing response json")
+	})
+}
+
+func TestIntoLeavesNilInterfacesUnread(t *testing.T) {
+	if body := Into(io.Reader(nil)); body.raw != nil || body.decode != nil {
+		t.Fatal("a nil destination reads the response body")
 	}
 }
 
@@ -371,7 +388,7 @@ func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = io.WriteString(w, `{"message":"bad request"}`)
-		}, http.MethodGet, nil, nil)
+		}, http.MethodGet, nil, ResponseBody{})
 		if err == nil || !strings.Contains(err.Error(), "400 Bad Request") {
 			t.Fatalf("error = %v", err)
 		}
@@ -385,14 +402,14 @@ func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = io.WriteString(w, "{")
-		}, http.MethodGet, nil, nil)
+		}, http.MethodGet, nil, ResponseBody{})
 		if err == nil {
 			t.Fatal("invalid API error JSON was accepted")
 		}
 	})
 
 	t.Run("read error", func(t *testing.T) {
-		var dst map[string]any
+		var dst json.RawMessage
 		cfg := testConfig(t, http.MethodGet, "/resource", nil, &dst)
 		cfg.BaseURL, _ = url.Parse("https://example.com/")
 		cfg.MaxRetries = 0
@@ -432,12 +449,13 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 	}))
 	defer server.Close()
 
-	var dst map[string]any
+	var dst json.RawMessage
 	reader := bytes.NewReader([]byte("skipbody"))
 	if _, err := reader.Seek(4, io.SeekStart); err != nil {
 		t.Fatal(err)
 	}
-	cfg := testConfig(t, http.MethodPost, "/resource", reader, &dst)
+	cfg := testConfig(t, http.MethodPost, "/resource", nil, &dst)
+	cfg.Body = reader
 	cfg.BaseURL, _ = url.Parse(server.URL + "/")
 	cfg.MaxRetries = 1
 	if err := cfg.Execute(); err != nil {
@@ -454,7 +472,8 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 		"read closer":   io.NopCloser(strings.NewReader("body")),
 	} {
 		t.Run(name, func(t *testing.T) {
-			readerCfg := testConfig(t, http.MethodPost, "/resource", body, nil)
+			readerCfg := testConfig(t, http.MethodPost, "/resource", nil, ResponseBody{})
+			readerCfg.Body = body
 			readerCfg.BaseURL = cfg.BaseURL
 			readerCfg.MaxRetries = 0
 			if err := readerCfg.Execute(); err != nil {
@@ -465,7 +484,7 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 }
 
 func TestExecuteErrorsWithoutBaseURLOrAfterTransportFailure(t *testing.T) {
-	cfg := testConfig(t, http.MethodGet, "/resource", nil, nil)
+	cfg := testConfig(t, http.MethodGet, "/resource", nil, ResponseBody{})
 	if err := cfg.Execute(); err == nil || !strings.Contains(err.Error(), "base url is not set") {
 		t.Fatalf("error = %v", err)
 	}

@@ -82,7 +82,7 @@ func (r *StyleService) Delete(ctx context.Context, id string, opts ...option.Req
 		return err
 	}
 	path := fmt.Sprintf("styles/%s", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, requestconfig.ResponseBody{}, opts...)
 	return err
 }
 

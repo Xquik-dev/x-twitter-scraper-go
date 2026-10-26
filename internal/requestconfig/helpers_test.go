@@ -126,7 +126,8 @@ func TestRequestConfigUtilities(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	}))
 	defer server.Close()
-	cfg := testConfig(t, http.MethodPost, "/resource", bytes.NewBufferString("body"), nil)
+	cfg := testConfig(t, http.MethodPost, "/resource", nil, ResponseBody{})
+	cfg.Body = bytes.NewBufferString("body")
 	cfg.BaseURL, _ = url.Parse(server.URL + "/")
 	if err := cfg.Execute(); err != nil {
 		t.Fatal(err)
@@ -246,7 +247,7 @@ func TestMiddlewareAndExecuteNewRequest(t *testing.T) {
 		"bad\nmethod",
 		"/resource",
 		nil,
-		nil,
+		ResponseBody{},
 	); err == nil {
 		t.Fatal("ExecuteNewRequest() accepted an invalid method")
 	}

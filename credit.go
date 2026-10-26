@@ -44,7 +44,7 @@ func (r *CreditService) RedirectTopupCheckout(ctx context.Context, query CreditR
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "credits/topup/redirect"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, requestconfig.ResponseBody{}, opts...)
 	return err
 }
 

@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"time"
 
@@ -169,7 +170,7 @@ func WithQueryDel(key string) RequestOption {
 // The key accepts a string as defined by the [sjson format].
 //
 // [sjson format]: https://github.com/tidwall/sjson
-func WithJSONSet(key string, value any) RequestOption {
+func WithJSONSet[V any](key string, value V) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) (err error) {
 		var b []byte
 
@@ -215,9 +216,10 @@ func WithJSONDel(key string) RequestOption {
 
 // WithResponseBodyInto returns a RequestOption that overwrites the deserialization target with
 // the given destination. If provided, we don't deserialize into the default struct.
-func WithResponseBodyInto(dst any) RequestOption {
+func WithResponseBodyInto[D any](dst D) RequestOption {
+	into := requestconfig.Into(dst)
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.ResponseBodyInto = dst
+		r.ResponseBodyInto = into
 		return nil
 	})
 }
@@ -234,14 +236,15 @@ func WithResponseInto(dst **http.Response) RequestOption {
 // content type.
 //
 // body accepts an io.Reader or raw []bytes.
-func WithRequestBody(contentType string, body any) RequestOption {
+func WithRequestBody[B any](contentType string, body B) RequestOption {
+	value := reflect.ValueOf(&body).Elem()
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		if reader, ok := body.(io.Reader); ok {
+		if reader, ok := reflect.TypeAssert[io.Reader](value); ok {
 			r.Body = reader
 			return r.Apply(WithHeader("Content-Type", contentType))
 		}
 
-		if b, ok := body.([]byte); ok {
+		if b, ok := reflect.TypeAssert[[]byte](value); ok {
 			r.Body = bytes.NewBuffer(b)
 			return r.Apply(WithHeader("Content-Type", contentType))
 		}

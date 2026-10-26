@@ -132,14 +132,27 @@ func TestRequestOptions(t *testing.T) {
 	})
 
 	t.Run("response destinations and request bodies", func(t *testing.T) {
-		cfg := newOptionTestConfig(t)
+		received := newOptionTestConfig(t)
+		received.BaseURL, _ = url.Parse("https://example.com/")
+		received.CustomHTTPDoer = testHTTPDoer(func(*http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Header:     http.Header{"Content-Type": {"text/plain"}},
+				Body:       io.NopCloser(strings.NewReader("timeline")),
+			}, nil
+		})
 		var response *http.Response
 		var bodyDestination string
-		applyOption(t, cfg, WithResponseBodyInto(&bodyDestination))
-		applyOption(t, cfg, WithResponseInto(&response))
-		if cfg.ResponseBodyInto != &bodyDestination || cfg.ResponseInto != &response {
+		applyOption(t, received, WithResponseBodyInto(&bodyDestination))
+		applyOption(t, received, WithResponseInto(&response))
+		if err := received.Execute(); err != nil {
+			t.Fatal(err)
+		}
+		if bodyDestination != "timeline" || response == nil {
 			t.Fatal("response destination was not retained")
 		}
+
+		cfg := newOptionTestConfig(t)
 
 		applyOption(t, cfg, WithRequestBody("text/plain", strings.NewReader("reader")))
 		if cfg.Request.Header.Get("Content-Type") != "text/plain" {
