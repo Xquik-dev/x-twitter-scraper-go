@@ -198,7 +198,7 @@ type XCommunityJoinNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -217,7 +217,7 @@ type XCommunityJoinNewResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinNewResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityJoinNewResponseAction string
@@ -266,7 +266,7 @@ type XCommunityJoinNewResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinNewResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -290,7 +290,7 @@ type XCommunityJoinNewResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinNewResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -311,7 +311,7 @@ type XCommunityJoinNewResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinNewResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -333,7 +333,7 @@ type XCommunityJoinNewResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinNewResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityJoinNewResponseStatus string
@@ -364,7 +364,7 @@ type XCommunityJoinNewResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinNewResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinNewResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Durable write record. Poll statusUrl until terminal is true. Reusing its
@@ -494,7 +494,7 @@ type XCommunityJoinDeleteAllResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinDeleteAllResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -513,7 +513,7 @@ type XCommunityJoinDeleteAllResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinDeleteAllResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityJoinDeleteAllResponseAction string
@@ -562,7 +562,7 @@ type XCommunityJoinDeleteAllResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinDeleteAllResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -586,7 +586,7 @@ type XCommunityJoinDeleteAllResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinDeleteAllResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -607,7 +607,7 @@ type XCommunityJoinDeleteAllResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinDeleteAllResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -629,7 +629,7 @@ type XCommunityJoinDeleteAllResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinDeleteAllResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityJoinDeleteAllResponseStatus string
@@ -660,7 +660,7 @@ type XCommunityJoinDeleteAllResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityJoinDeleteAllResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityJoinDeleteAllResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityJoinNewParams struct {
@@ -675,7 +675,7 @@ func (r XCommunityJoinNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XCommunityJoinNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XCommunityJoinDeleteAllParams struct {
@@ -690,5 +690,5 @@ func (r XCommunityJoinDeleteAllParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XCommunityJoinDeleteAllParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

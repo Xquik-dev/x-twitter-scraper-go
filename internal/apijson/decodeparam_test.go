@@ -71,7 +71,7 @@ type BasicObject struct {
 	paramObject
 }
 
-func (o *BasicObject) UnmarshalJSON(data []byte) error { return apijson.UnmarshalRoot(data, o) }
+func (o *BasicObject) UnmarshalJSON(data []byte) error { return apijson.UnmarshalRoot(data, o, nil) }
 
 func TestBasicObjectWithNull(t *testing.T) {
 	raw := `{"opt_int":null,"opt_string":null,"opt_bool":null}`
@@ -110,7 +110,7 @@ type ComplexObject struct {
 	paramObject
 }
 
-func (o *ComplexObject) UnmarshalJSON(data []byte) error { return apijson.UnmarshalRoot(data, o) }
+func (o *ComplexObject) UnmarshalJSON(data []byte) error { return apijson.UnmarshalRoot(data, o, nil) }
 
 func init() {
 	apijson.RegisterFieldValidator[ComplexObject]("enum", "a", "b", "c")
@@ -188,7 +188,7 @@ type UnionStruct struct {
 }
 
 func (union *UnionStruct) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, union)
+	return apijson.UnmarshalRoot(data, union, nil)
 }
 
 func TestUnionStruct(t *testing.T) {
@@ -356,11 +356,11 @@ func init() {
 }
 
 func (m *MultiDiscriminatorUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, m)
+	return apijson.UnmarshalRoot(data, m, nil)
 }
 
 func (d *DiscriminatedUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, d)
+	return apijson.UnmarshalRoot(data, d, nil)
 }
 
 func TestDiscriminatedUnion(t *testing.T) {

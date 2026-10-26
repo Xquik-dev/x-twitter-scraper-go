@@ -198,7 +198,7 @@ type XUserFollowNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -217,7 +217,7 @@ type XUserFollowNewResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowNewResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowNewResponseAction string
@@ -266,7 +266,7 @@ type XUserFollowNewResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowNewResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -290,7 +290,7 @@ type XUserFollowNewResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowNewResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -311,7 +311,7 @@ type XUserFollowNewResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowNewResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -333,7 +333,7 @@ type XUserFollowNewResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowNewResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowNewResponseStatus string
@@ -364,7 +364,7 @@ type XUserFollowNewResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowNewResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowNewResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Durable write record. Poll statusUrl until terminal is true. Reusing its
@@ -494,7 +494,7 @@ type XUserFollowDeleteAllResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowDeleteAllResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -513,7 +513,7 @@ type XUserFollowDeleteAllResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowDeleteAllResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowDeleteAllResponseAction string
@@ -562,7 +562,7 @@ type XUserFollowDeleteAllResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowDeleteAllResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -586,7 +586,7 @@ type XUserFollowDeleteAllResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowDeleteAllResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -607,7 +607,7 @@ type XUserFollowDeleteAllResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowDeleteAllResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -629,7 +629,7 @@ type XUserFollowDeleteAllResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowDeleteAllResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowDeleteAllResponseStatus string
@@ -660,7 +660,7 @@ type XUserFollowDeleteAllResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XUserFollowDeleteAllResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XUserFollowDeleteAllResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserFollowNewParams struct {
@@ -675,7 +675,7 @@ func (r XUserFollowNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XUserFollowNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XUserFollowDeleteAllParams struct {
@@ -690,5 +690,5 @@ func (r XUserFollowDeleteAllParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XUserFollowDeleteAllParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

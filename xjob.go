@@ -90,7 +90,7 @@ type XJobGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XJobGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Public X job listing. A search returns the fields down to the salary, plus
@@ -175,7 +175,7 @@ type XJobGetResponseJob struct {
 // Returns the unmodified JSON received from the API
 func (r XJobGetResponseJob) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponseJob) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The X account that posted a job. A job has none when X imported it from a job
@@ -218,7 +218,7 @@ type XJobGetResponseJobAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XJobGetResponseJobAccount) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponseJobAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The company profile of a job X imported from a job board.
@@ -242,7 +242,7 @@ type XJobGetResponseJobCompany struct {
 // Returns the unmodified JSON received from the API
 func (r XJobGetResponseJobCompany) RawJSON() string { return r.JSON.raw }
 func (r *XJobGetResponseJobCompany) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The places whose names match a query.
@@ -263,7 +263,7 @@ type XJobListLocationsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XJobListLocationsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XJobListLocationsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A place a job search can name by its ID.
@@ -284,7 +284,7 @@ type XJobListLocationsResponseLocation struct {
 // Returns the unmodified JSON received from the API
 func (r XJobListLocationsResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XJobListLocationsResponseLocation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 page of job listings. Follow next_cursor while the response reports more
@@ -306,7 +306,7 @@ type XJobSearchResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XJobSearchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Public X job listing. A search returns the fields down to the salary, plus
@@ -391,7 +391,7 @@ type XJobSearchResponseJob struct {
 // Returns the unmodified JSON received from the API
 func (r XJobSearchResponseJob) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponseJob) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The X account that posted a job. A job has none when X imported it from a job
@@ -434,7 +434,7 @@ type XJobSearchResponseJobAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XJobSearchResponseJobAccount) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponseJobAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The company profile of a job X imported from a job board.
@@ -458,7 +458,7 @@ type XJobSearchResponseJobCompany struct {
 // Returns the unmodified JSON received from the API
 func (r XJobSearchResponseJobCompany) RawJSON() string { return r.JSON.raw }
 func (r *XJobSearchResponseJobCompany) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XJobGetParams struct {

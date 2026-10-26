@@ -100,7 +100,7 @@ type XCommunityNoteGetContributorResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteGetContributorResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteGetContributorResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A Community Notes contributor. X names contributors by an alias, never by their
@@ -135,7 +135,7 @@ type XCommunityNoteGetContributorResponseContributor struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteGetContributorResponseContributor) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteGetContributorResponseContributor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How many notes a contributor wrote, by X's current rating.
@@ -164,7 +164,7 @@ func (r XCommunityNoteGetContributorResponseContributorNotesCount) RawJSON() str
 	return r.JSON.raw
 }
 func (r *XCommunityNoteGetContributorResponseContributorNotesCount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How a contributor's ratings of other notes went.
@@ -196,7 +196,7 @@ func (r XCommunityNoteGetContributorResponseContributorRatingsCount) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XCommunityNoteGetContributorResponseContributorRatingsCount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Ratings that matched the rating X gave the note.
@@ -222,7 +222,7 @@ func (r XCommunityNoteGetContributorResponseContributorRatingsCountSuccessful) R
 	return r.JSON.raw
 }
 func (r *XCommunityNoteGetContributorResponseContributorRatingsCountSuccessful) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Ratings that went against the rating X gave the note.
@@ -248,7 +248,7 @@ func (r XCommunityNoteGetContributorResponseContributorRatingsCountUnsuccessful)
 	return r.JSON.raw
 }
 func (r *XCommunityNoteGetContributorResponseContributorRatingsCountUnsuccessful) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 page of Community Notes. Follow next_cursor while the response reports more
@@ -270,7 +270,7 @@ type XCommunityNoteListContributorDeletedNotesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteListContributorDeletedNotesResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteListContributorDeletedNotesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A Community Note as its writer's page lists it, with the post it is on. A
@@ -375,7 +375,7 @@ type XCommunityNoteListContributorDeletedNotesResponseNote struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteListContributorDeletedNotesResponseNote) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNote) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The note's writer, with the counts X sends beside a note. GET
@@ -411,7 +411,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNoteContributor) RawJSO
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNoteContributor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How many notes a contributor wrote, by X's current rating.
@@ -440,7 +440,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNoteContributorNotesCou
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNoteContributorNotesCount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How a contributor's ratings of other notes went.
@@ -472,7 +472,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNoteContributorRatingsC
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNoteContributorRatingsCount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Ratings that matched the rating X gave the note.
@@ -498,7 +498,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNoteContributorRatingsC
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNoteContributorRatingsCountSuccessful) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Ratings that went against the rating X gave the note.
@@ -524,7 +524,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNoteContributorRatingsC
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNoteContributorRatingsCountUnsuccessful) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A link, tag or account inside a note's text.
@@ -550,7 +550,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNoteEntity) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNoteEntity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What it points at.
@@ -582,7 +582,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNoteEntityRef) RawJSON(
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNoteEntityRef) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Why X shows no post, when X says.
@@ -602,7 +602,7 @@ func (r XCommunityNoteListContributorDeletedNotesResponseNotePostUnavailable) Ra
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorDeletedNotesResponseNotePostUnavailable) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 page of Community Notes. Follow next_cursor while the response reports more
@@ -624,7 +624,7 @@ type XCommunityNoteListContributorNotesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteListContributorNotesResponse) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteListContributorNotesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A Community Note as its writer's page lists it, with the post it is on. A
@@ -729,7 +729,7 @@ type XCommunityNoteListContributorNotesResponseNote struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteListContributorNotesResponseNote) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteListContributorNotesResponseNote) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The note's writer, with the counts X sends beside a note. GET
@@ -765,7 +765,7 @@ func (r XCommunityNoteListContributorNotesResponseNoteContributor) RawJSON() str
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorNotesResponseNoteContributor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How many notes a contributor wrote, by X's current rating.
@@ -794,7 +794,7 @@ func (r XCommunityNoteListContributorNotesResponseNoteContributorNotesCount) Raw
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorNotesResponseNoteContributorNotesCount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How a contributor's ratings of other notes went.
@@ -826,7 +826,7 @@ func (r XCommunityNoteListContributorNotesResponseNoteContributorRatingsCount) R
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorNotesResponseNoteContributorRatingsCount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Ratings that matched the rating X gave the note.
@@ -852,7 +852,7 @@ func (r XCommunityNoteListContributorNotesResponseNoteContributorRatingsCountSuc
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorNotesResponseNoteContributorRatingsCountSuccessful) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Ratings that went against the rating X gave the note.
@@ -878,7 +878,7 @@ func (r XCommunityNoteListContributorNotesResponseNoteContributorRatingsCountUns
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorNotesResponseNoteContributorRatingsCountUnsuccessful) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A link, tag or account inside a note's text.
@@ -902,7 +902,7 @@ type XCommunityNoteListContributorNotesResponseNoteEntity struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteListContributorNotesResponseNoteEntity) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteListContributorNotesResponseNoteEntity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What it points at.
@@ -932,7 +932,7 @@ type XCommunityNoteListContributorNotesResponseNoteEntityRef struct {
 // Returns the unmodified JSON received from the API
 func (r XCommunityNoteListContributorNotesResponseNoteEntityRef) RawJSON() string { return r.JSON.raw }
 func (r *XCommunityNoteListContributorNotesResponseNoteEntityRef) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Why X shows no post, when X says.
@@ -952,7 +952,7 @@ func (r XCommunityNoteListContributorNotesResponseNotePostUnavailable) RawJSON()
 	return r.JSON.raw
 }
 func (r *XCommunityNoteListContributorNotesResponseNotePostUnavailable) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XCommunityNoteGetContributorParams struct {

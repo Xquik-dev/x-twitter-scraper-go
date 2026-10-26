@@ -88,7 +88,7 @@ type XMediaDownloadResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaDownloadResponse) RawJSON() string { return r.JSON.raw }
 func (r *XMediaDownloadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Durable write record. Poll statusUrl until terminal is true. Reusing its
@@ -218,7 +218,7 @@ type XMediaUploadResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaUploadResponse) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -237,7 +237,7 @@ type XMediaUploadResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaUploadResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XMediaUploadResponseAction string
@@ -286,7 +286,7 @@ type XMediaUploadResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaUploadResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -310,7 +310,7 @@ type XMediaUploadResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaUploadResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -331,7 +331,7 @@ type XMediaUploadResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaUploadResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -353,7 +353,7 @@ type XMediaUploadResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaUploadResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XMediaUploadResponseStatus string
@@ -384,7 +384,7 @@ type XMediaUploadResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XMediaUploadResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XMediaUploadResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XMediaDownloadParams struct {
@@ -404,7 +404,7 @@ func (r XMediaDownloadParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XMediaDownloadParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 var (
@@ -431,7 +431,7 @@ func (r XMediaUploadParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XMediaUploadParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func (r XMediaUploadParams) HasFiles() bool {

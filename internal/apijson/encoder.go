@@ -25,14 +25,17 @@ var encoders paramutil.SyncMap[encoderEntry, encoderFunc]
 
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
-func Marshal(value any) ([]byte, error) {
+// Marshal encodes value as JSON.
+func Marshal[T any](value T) ([]byte, error) {
 	e := &encoder{dateFormat: time.RFC3339}
-	return e.marshal(value)
+	return e.marshal(reflect.ValueOf(value))
 }
 
-func MarshalRoot(value any) ([]byte, error) {
+// MarshalRoot encodes value as JSON without calling the MarshalJSON method of
+// value itself.
+func MarshalRoot[T any](value T) ([]byte, error) {
 	e := &encoder{root: true, dateFormat: time.RFC3339}
-	return e.marshal(value)
+	return e.marshal(reflect.ValueOf(value))
 }
 
 type encoder struct {
@@ -54,8 +57,7 @@ type encoderEntry struct {
 	root       bool
 }
 
-func (e *encoder) marshal(value any) ([]byte, error) {
-	val := reflect.ValueOf(value)
+func (e *encoder) marshal(val reflect.Value) ([]byte, error) {
 	if !val.IsValid() {
 		return nil, nil
 	}
@@ -95,11 +97,15 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 }
 
 func marshalerEncoder(v reflect.Value) ([]byte, error) {
-	return v.Interface().(json.Marshaler).MarshalJSON()
+	marshaler, ok := reflect.TypeAssert[json.Marshaler](v)
+	if !ok {
+		return nil, fmt.Errorf("apijson: %s does not implement json.Marshaler", v.Type())
+	}
+	return marshaler.MarshalJSON()
 }
 
 func indirectMarshalerEncoder(v reflect.Value) ([]byte, error) {
-	return v.Addr().Interface().(json.Marshaler).MarshalJSON()
+	return marshalerEncoder(v.Addr())
 }
 
 func (e *encoder) newTypeEncoder(t reflect.Type) encoderFunc {
@@ -284,7 +290,9 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
 	return func(value reflect.Value) (json []byte, err error) {
-		return []byte(`"` + value.Convert(reflect.TypeOf(time.Time{})).Interface().(time.Time).Format(format) + `"`), nil
+		// The conversion to time.Time makes the assertion hold.
+		t, _ := reflect.TypeAssert[time.Time](value.Convert(reflect.TypeFor[time.Time]()))
+		return []byte(`"` + t.Format(format) + `"`), nil
 	}
 }
 

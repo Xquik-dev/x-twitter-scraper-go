@@ -159,7 +159,7 @@ type ExtractionJob struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionJob) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionJob) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type ExtractionJobStatus string
@@ -239,7 +239,7 @@ type ExtractionGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Represents a public row across supported extraction modes.
@@ -303,7 +303,7 @@ type ExtractionGetResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionGetResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionGetResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type ExtractionListResponse struct {
@@ -323,7 +323,7 @@ type ExtractionListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type ExtractionCancelResponse struct {
@@ -341,7 +341,7 @@ type ExtractionCancelResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionCancelResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionCancelResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Free conservative cost estimate. Post estimates use the supported cap without a
@@ -374,7 +374,7 @@ type ExtractionEstimateCostResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionEstimateCostResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionEstimateCostResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type ExtractionEstimateCostResponseSource string
@@ -445,7 +445,7 @@ type ExtractionRunResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExtractionRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type ExtractionRunResponseStatus string
@@ -846,7 +846,7 @@ func (r ExtractionEstimateCostParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ExtractionEstimateCostParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Identifier for the extraction tool used to run a job.
@@ -945,7 +945,7 @@ func (r ExtractionEstimateCostParamsRelationTarget) MarshalJSON() (data []byte, 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ExtractionEstimateCostParamsRelationTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -994,7 +994,7 @@ func (u ExtractionEstimateCostParamsSinceTimeUnion) MarshalJSON() ([]byte, error
 	return param.MarshalUnion(u, u.OfTime, u.OfInt)
 }
 func (u *ExtractionEstimateCostParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Reply result order.
@@ -1020,7 +1020,7 @@ func (u ExtractionEstimateCostParamsTargetUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfExtractionEstimateCostsTargetObject)
 }
 func (u *ExtractionEstimateCostParamsTargetUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The properties Kind, Value are required.
@@ -1038,7 +1038,7 @@ func (r ExtractionEstimateCostParamsTargetObject) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ExtractionEstimateCostParamsTargetObject) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -1060,7 +1060,7 @@ func (u ExtractionEstimateCostParamsUntilTimeUnion) MarshalJSON() ([]byte, error
 	return param.MarshalUnion(u, u.OfTime, u.OfInt)
 }
 func (u *ExtractionEstimateCostParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type ExtractionExportResultsParams struct {
@@ -1380,7 +1380,7 @@ func (r ExtractionRunParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ExtractionRunParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // URLQuery serializes [ExtractionRunParams]'s query parameters as `url.Values`.
@@ -1487,7 +1487,7 @@ func (r ExtractionRunParamsRelationTarget) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ExtractionRunParamsRelationTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -1536,7 +1536,7 @@ func (u ExtractionRunParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfTime, u.OfInt)
 }
 func (u *ExtractionRunParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Reply result order.
@@ -1562,7 +1562,7 @@ func (u ExtractionRunParamsTargetUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfExtractionRunsTargetObject)
 }
 func (u *ExtractionRunParamsTargetUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The properties Kind, Value are required.
@@ -1580,7 +1580,7 @@ func (r ExtractionRunParamsTargetObject) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ExtractionRunParamsTargetObject) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -1602,5 +1602,5 @@ func (u ExtractionRunParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfTime, u.OfInt)
 }
 func (u *ExtractionRunParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }

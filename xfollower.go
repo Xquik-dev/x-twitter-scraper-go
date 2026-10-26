@@ -71,7 +71,7 @@ type XFollowerCheckResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XFollowerCheckResponse) RawJSON() string { return r.JSON.raw }
 func (r *XFollowerCheckResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XFollowerCheckParams struct {

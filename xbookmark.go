@@ -74,7 +74,7 @@ type XBookmarkGetFoldersResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XBookmarkGetFoldersResponse) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Bookmark folder and its optional public cover image.
@@ -98,7 +98,7 @@ type XBookmarkGetFoldersResponseFolder struct {
 // Returns the unmodified JSON received from the API
 func (r XBookmarkGetFoldersResponseFolder) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolder) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Public folder cover image metadata.
@@ -137,7 +137,7 @@ type XBookmarkGetFoldersResponseFolderMedia struct {
 // Returns the unmodified JSON received from the API
 func (r XBookmarkGetFoldersResponseFolderMedia) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolderMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBookmarkGetFoldersResponseFolderMediaPalette struct {
@@ -155,7 +155,7 @@ type XBookmarkGetFoldersResponseFolderMediaPalette struct {
 // Returns the unmodified JSON received from the API
 func (r XBookmarkGetFoldersResponseFolderMediaPalette) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolderMediaPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBookmarkGetFoldersResponseFolderMediaPaletteRgb struct {
@@ -175,7 +175,7 @@ type XBookmarkGetFoldersResponseFolderMediaPaletteRgb struct {
 // Returns the unmodified JSON received from the API
 func (r XBookmarkGetFoldersResponseFolderMediaPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XBookmarkGetFoldersResponseFolderMediaPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBookmarkListParams struct {

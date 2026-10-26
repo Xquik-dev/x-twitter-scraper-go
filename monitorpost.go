@@ -131,7 +131,7 @@ type PostMetricReading struct {
 // Returns the unmodified JSON received from the API
 func (r PostMetricReading) RawJSON() string { return r.JSON.raw }
 func (r *PostMetricReading) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The 6 metrics of a post.
@@ -170,7 +170,7 @@ type PostMetrics struct {
 // Returns the unmodified JSON received from the API
 func (r PostMetrics) RawJSON() string { return r.JSON.raw }
 func (r *PostMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Post monitor that tracks 1 X post's replies, quotes, edits & metrics.
@@ -230,7 +230,7 @@ type PostMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r PostMonitor) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A metric's value at the hour's end & its gain over that hour. Both are null
@@ -250,7 +250,7 @@ type PostMetricPoint struct {
 // Returns the unmodified JSON received from the API
 func (r PostMetricPoint) RawJSON() string { return r.JSON.raw }
 func (r *PostMetricPoint) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type PostMonitorMetricsBucketMetrics struct {
@@ -288,7 +288,7 @@ type PostMonitorMetricsBucketMetrics struct {
 // Returns the unmodified JSON received from the API
 func (r PostMonitorMetricsBucketMetrics) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorMetricsBucketMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type PostMonitorMetricsBucket struct {
@@ -307,7 +307,7 @@ type PostMonitorMetricsBucket struct {
 // Returns the unmodified JSON received from the API
 func (r PostMonitorMetricsBucket) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorMetricsBucket) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Hourly metric buckets of 1 post monitor, oldest first.
@@ -326,7 +326,7 @@ type PostMonitorMetrics struct {
 // Returns the unmodified JSON received from the API
 func (r PostMonitorMetrics) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitorMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorPostListResponse struct {
@@ -349,7 +349,7 @@ type MonitorPostListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorPostListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorPostListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorPostDeleteResponse struct {
@@ -370,7 +370,7 @@ type MonitorPostDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorPostDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorPostDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorPostNewParams struct {
@@ -390,7 +390,7 @@ func (r MonitorPostNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorPostNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorPostUpdateParams struct {
@@ -408,7 +408,7 @@ func (r MonitorPostUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorPostUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorPostListParams struct {

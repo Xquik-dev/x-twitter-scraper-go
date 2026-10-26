@@ -220,7 +220,7 @@ type XGetArticleResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetArticleResponseArticle struct {
@@ -280,7 +280,7 @@ type XGetArticleResponseArticle struct {
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponseArticle) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetArticleResponseArticleContent struct {
@@ -337,7 +337,7 @@ type XGetArticleResponseArticleContent struct {
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponseArticleContent) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetArticleResponseArticleContentLink struct {
@@ -357,7 +357,7 @@ type XGetArticleResponseArticleContentLink struct {
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponseArticleContentLink) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContentLink) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What a media block holds
@@ -386,7 +386,7 @@ type XGetArticleResponseArticleContentInlineStyleRange struct {
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponseArticleContentInlineStyleRange) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseArticleContentInlineStyleRange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X Article author profile fields returned when available.
@@ -440,7 +440,7 @@ type XGetArticleResponseAuthor struct {
 // Returns the unmodified JSON received from the API
 func (r XGetArticleResponseAuthor) RawJSON() string { return r.JSON.raw }
 func (r *XGetArticleResponseAuthor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetNotificationsResponse struct {
@@ -460,7 +460,7 @@ type XGetNotificationsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XGetNotificationsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetNotificationsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetNotificationsResponseNotification struct {
@@ -482,7 +482,7 @@ type XGetNotificationsResponseNotification struct {
 // Returns the unmodified JSON received from the API
 func (r XGetNotificationsResponseNotification) RawJSON() string { return r.JSON.raw }
 func (r *XGetNotificationsResponseNotification) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetTrendsResponse struct {
@@ -514,7 +514,7 @@ type XGetTrendsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetTrendsResponseTrend struct {
@@ -545,7 +545,7 @@ type XGetTrendsResponseTrend struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendsResponseTrend) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsResponseTrend) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The place country or location named. Absent when woeid picked the place or the
@@ -584,7 +584,7 @@ type XGetTrendsResponseLocation struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendsResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsResponseLocation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What X suggests for a partial search query. Each list keeps X's order. A list is
@@ -618,7 +618,7 @@ type XAutocompleteSearchResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAutocompleteSearchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A stock or crypto token X suggests for the query.
@@ -666,7 +666,7 @@ type XAutocompleteSearchResponseCashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAutocompleteSearchResponseCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A hashtag X suggests for the query.
@@ -693,7 +693,7 @@ type XAutocompleteSearchResponseHashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAutocompleteSearchResponseHashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseHashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A search phrase X suggests for the query.
@@ -720,7 +720,7 @@ type XAutocompleteSearchResponseTopic struct {
 // Returns the unmodified JSON received from the API
 func (r XAutocompleteSearchResponseTopic) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseTopic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // An account X suggests for the query.
@@ -784,7 +784,7 @@ type XAutocompleteSearchResponseUser struct {
 // Returns the unmodified JSON received from the API
 func (r XAutocompleteSearchResponseUser) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 affiliation badge.
@@ -808,7 +808,7 @@ type XAutocompleteSearchResponseUserBadge struct {
 // Returns the unmodified JSON received from the API
 func (r XAutocompleteSearchResponseUserBadge) RawJSON() string { return r.JSON.raw }
 func (r *XAutocompleteSearchResponseUserBadge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetHashflagsResponse struct {
@@ -833,7 +833,7 @@ type XGetHashflagsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XGetHashflagsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetHashflagsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A custom emoji X shows after a hashtag for a set time.
@@ -866,7 +866,7 @@ type XGetHashflagsResponseHashflag struct {
 // Returns the unmodified JSON received from the API
 func (r XGetHashflagsResponseHashflag) RawJSON() string { return r.JSON.raw }
 func (r *XGetHashflagsResponseHashflag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetHashflagsResponseHashflagAnimation struct {
@@ -889,7 +889,7 @@ type XGetHashflagsResponseHashflagAnimation struct {
 // Returns the unmodified JSON received from the API
 func (r XGetHashflagsResponseHashflagAnimation) RawJSON() string { return r.JSON.raw }
 func (r *XGetHashflagsResponseHashflagAnimation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetNewsStoryVersionsResponse struct {
@@ -911,7 +911,7 @@ type XGetNewsStoryVersionsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XGetNewsStoryVersionsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetNewsStoryVersionsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 version X wrote of a news story.
@@ -939,7 +939,7 @@ type XGetNewsStoryVersionsResponseVersion struct {
 // Returns the unmodified JSON received from the API
 func (r XGetNewsStoryVersionsResponseVersion) RawJSON() string { return r.JSON.raw }
 func (r *XGetNewsStoryVersionsResponseVersion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetTrendLocationsResponse struct {
@@ -964,7 +964,7 @@ type XGetTrendLocationsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendLocationsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendLocationsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A place X offers trends for.
@@ -1002,7 +1002,7 @@ type XGetTrendLocationsResponseLocation struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendLocationsResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendLocationsResponseLocation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetTrendsHistoryResponse struct {
@@ -1042,7 +1042,7 @@ type XGetTrendsHistoryResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendsHistoryResponse) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetTrendsHistoryResponseSnapshot struct {
@@ -1064,7 +1064,7 @@ type XGetTrendsHistoryResponseSnapshot struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendsHistoryResponseSnapshot) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponseSnapshot) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetTrendsHistoryResponseSnapshotTrend struct {
@@ -1096,7 +1096,7 @@ type XGetTrendsHistoryResponseSnapshotTrend struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendsHistoryResponseSnapshotTrend) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponseSnapshotTrend) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The place the request named by country or location. Absent when it sent a woeid
@@ -1135,7 +1135,7 @@ type XGetTrendsHistoryResponseLocation struct {
 // Returns the unmodified JSON received from the API
 func (r XGetTrendsHistoryResponseLocation) RawJSON() string { return r.JSON.raw }
 func (r *XGetTrendsHistoryResponseLocation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSearchPlacesResponse struct {
@@ -1160,7 +1160,7 @@ type XSearchPlacesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XSearchPlacesResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A place X found, with the larger places it lies in.
@@ -1208,7 +1208,7 @@ type XSearchPlacesResponsePlace struct {
 // Returns the unmodified JSON received from the API
 func (r XSearchPlacesResponsePlace) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlace) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Outline of the place as GeoJSON. Each point holds longitude, then latitude.
@@ -1229,7 +1229,7 @@ type XSearchPlacesResponsePlaceBoundingBox struct {
 // Returns the unmodified JSON received from the API
 func (r XSearchPlacesResponsePlaceBoundingBox) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlaceBoundingBox) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A place on X, such as a city or a neighborhood.
@@ -1274,7 +1274,7 @@ type XSearchPlacesResponsePlaceContainedWithin struct {
 // Returns the unmodified JSON received from the API
 func (r XSearchPlacesResponsePlaceContainedWithin) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlaceContainedWithin) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Outline of the place as GeoJSON. Each point holds longitude, then latitude.
@@ -1295,7 +1295,7 @@ type XSearchPlacesResponsePlaceContainedWithinBoundingBox struct {
 // Returns the unmodified JSON received from the API
 func (r XSearchPlacesResponsePlaceContainedWithinBoundingBox) RawJSON() string { return r.JSON.raw }
 func (r *XSearchPlacesResponsePlaceContainedWithinBoundingBox) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XGetHomeTimelineParams struct {

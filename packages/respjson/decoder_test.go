@@ -29,7 +29,7 @@ type UnionOfStringIntOrObject struct {
 
 func (r UnionOfStringIntOrObject) RawJSON() string { return r.JSON.raw }
 func (r *UnionOfStringIntOrObject) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SubFields struct {
@@ -45,7 +45,7 @@ type SubFields struct {
 
 func (r SubFields) RawJSON() string { return r.JSON.raw }
 func (r *SubFields) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 func TestUnmarshalUnion(t *testing.T) {

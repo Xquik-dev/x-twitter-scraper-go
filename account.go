@@ -95,7 +95,7 @@ type AccountGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AccountGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Subscription state without billing provider identifiers.
@@ -121,7 +121,7 @@ type AccountGetResponseSubscription struct {
 // Returns the unmodified JSON received from the API
 func (r AccountGetResponseSubscription) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponseSubscription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountGetResponseSubscriptionStatus string
@@ -174,7 +174,7 @@ type AccountGetResponseMonitorBilling struct {
 // Returns the unmodified JSON received from the API
 func (r AccountGetResponseMonitorBilling) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponseMonitorBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountGetResponsePlan string
@@ -217,7 +217,7 @@ type AccountGetResponseCreditInfo struct {
 // Returns the unmodified JSON received from the API
 func (r AccountGetResponseCreditInfo) RawJSON() string { return r.JSON.raw }
 func (r *AccountGetResponseCreditInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountSetXUsernameResponse struct {
@@ -235,7 +235,7 @@ type AccountSetXUsernameResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AccountSetXUsernameResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountSetXUsernameResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountUpdateLocaleResponse struct {
@@ -255,7 +255,7 @@ type AccountUpdateLocaleResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AccountUpdateLocaleResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountUpdateLocaleResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type AccountSetXUsernameParams struct {
@@ -269,7 +269,7 @@ func (r AccountSetXUsernameParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AccountSetXUsernameParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type AccountUpdateLocaleParams struct {
@@ -283,7 +283,7 @@ func (r AccountUpdateLocaleParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AccountUpdateLocaleParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type AccountUpdateLocaleParamsLocale string

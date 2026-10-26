@@ -96,7 +96,7 @@ type XSpaceGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X Space
@@ -200,7 +200,7 @@ type XSpaceGetResponseSpace struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpace) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpace) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // An account on a Space's stage or in its audience, as X lists it there.
@@ -252,7 +252,7 @@ type XSpaceGetResponseSpaceAdmin struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpaceAdmin) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Organization affiliation label shown on an X profile.
@@ -282,7 +282,7 @@ type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // An account on a Space's stage or in its audience, as X lists it there.
@@ -334,7 +334,7 @@ type XSpaceGetResponseSpaceListener struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpaceListener) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Organization affiliation label shown on an X profile.
@@ -364,7 +364,7 @@ type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // An account on a Space's stage or in its audience, as X lists it there.
@@ -416,7 +416,7 @@ type XSpaceGetResponseSpaceSpeaker struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpaceSpeaker) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Organization affiliation label shown on an X profile.
@@ -446,7 +446,7 @@ type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A post shared in a Space, & the account that shared it.
@@ -476,7 +476,7 @@ type XSpaceGetResponseSpaceSharing struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetResponseSpaceSharing) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetResponseSpaceSharing) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSpaceGetReplayResponse struct {
@@ -493,7 +493,7 @@ type XSpaceGetReplayResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetReplayResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetReplayResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Recording of an ended Space
@@ -517,7 +517,7 @@ type XSpaceGetReplayResponseReplay struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceGetReplayResponseReplay) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceGetReplayResponseReplay) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSpaceSearchResponse struct {
@@ -538,7 +538,7 @@ type XSpaceSearchResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceSearchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X Space
@@ -642,7 +642,7 @@ type XSpaceSearchResponseSpace struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceSearchResponseSpace) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpace) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // An account on a Space's stage or in its audience, as X lists it there.
@@ -694,7 +694,7 @@ type XSpaceSearchResponseSpaceAdmin struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceSearchResponseSpaceAdmin) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Organization affiliation label shown on an X profile.
@@ -724,7 +724,7 @@ type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // An account on a Space's stage or in its audience, as X lists it there.
@@ -776,7 +776,7 @@ type XSpaceSearchResponseSpaceListener struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceSearchResponseSpaceListener) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Organization affiliation label shown on an X profile.
@@ -808,7 +808,7 @@ func (r XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // An account on a Space's stage or in its audience, as X lists it there.
@@ -860,7 +860,7 @@ type XSpaceSearchResponseSpaceSpeaker struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceSearchResponseSpaceSpeaker) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Organization affiliation label shown on an X profile.
@@ -892,7 +892,7 @@ func (r XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel) RawJSON() st
 	return r.JSON.raw
 }
 func (r *XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A post shared in a Space, & the account that shared it.
@@ -922,7 +922,7 @@ type XSpaceSearchResponseSpaceSharing struct {
 // Returns the unmodified JSON received from the API
 func (r XSpaceSearchResponseSpaceSharing) RawJSON() string { return r.JSON.raw }
 func (r *XSpaceSearchResponseSpaceSharing) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XSpaceGetParams struct {

@@ -117,17 +117,17 @@ type ComposeNewResponseUnion struct {
 }
 
 func (u ComposeNewResponseUnion) AsComposeNewResponseComposePrepareResult() (v ComposeNewResponseComposePrepareResult) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
 func (u ComposeNewResponseUnion) AsComposeNewResponseComposeRefineResult() (v ComposeNewResponseComposeRefineResult) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
 func (u ComposeNewResponseUnion) AsComposeNewResponseComposeScoreResult() (v ComposeNewResponseComposeScoreResult) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -135,7 +135,7 @@ func (u ComposeNewResponseUnion) AsComposeNewResponseComposeScoreResult() (v Com
 func (u ComposeNewResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *ComposeNewResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Rules, questions, and research guidance for drafting a post.
@@ -189,7 +189,7 @@ type ComposeNewResponseComposePrepareResult struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposePrepareResult) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // One source-backed ranking fact returned during preparation.
@@ -206,7 +206,7 @@ type ComposeNewResponseComposePrepareResultContentRule struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposePrepareResultContentRule) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResultContentRule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // One ranking signal and its source-value limit.
@@ -228,7 +228,7 @@ func (r ComposeNewResponseComposePrepareResultEngagementMultiplier) RawJSON() st
 	return r.JSON.raw
 }
 func (r *ComposeNewResponseComposePrepareResultEngagementMultiplier) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Deprecated compatibility schema. The response array is empty.
@@ -260,7 +260,7 @@ func (r ComposeNewResponseComposePrepareResultRadarRecommendation) RawJSON() str
 	return r.JSON.raw
 }
 func (r *ComposeNewResponseComposePrepareResultRadarRecommendation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // One source ranking signal without a production claim.
@@ -284,7 +284,7 @@ type ComposeNewResponseComposePrepareResultScorerWeight struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposePrepareResultScorerWeight) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResultScorerWeight) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A saved username style and analyzed post count.
@@ -303,7 +303,7 @@ type ComposeNewResponseComposePrepareResultSavedStyle struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposePrepareResultSavedStyle) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposePrepareResultSavedStyle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Source-backed guidance for refining a post.
@@ -329,7 +329,7 @@ type ComposeNewResponseComposeRefineResult struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposeRefineResult) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeRefineResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Deprecated example-pattern schema. The response array is empty.
@@ -350,7 +350,7 @@ type ComposeNewResponseComposeRefineResultExamplePattern struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposeRefineResultExamplePattern) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeRefineResultExamplePattern) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posting validation without a fabricated ranking score.
@@ -381,7 +381,7 @@ type ComposeNewResponseComposeScoreResult struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposeScoreResult) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeScoreResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // One deterministic draft check.
@@ -403,7 +403,7 @@ type ComposeNewResponseComposeScoreResultChecklist struct {
 // Returns the unmodified JSON received from the API
 func (r ComposeNewResponseComposeScoreResultChecklist) RawJSON() string { return r.JSON.raw }
 func (r *ComposeNewResponseComposeScoreResultChecklist) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type ComposeNewParams struct {
@@ -425,7 +425,7 @@ func (u ComposeNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfComposePrepareRequest, u.OfComposeRefineRequest, u.OfComposeScoreRequest)
 }
 func (r *ComposeNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Inputs for preparing source-backed post guidance.
@@ -451,7 +451,7 @@ func (r ComposeNewParamsBodyComposePrepareRequest) MarshalJSON() (data []byte, e
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *ComposeNewParamsBodyComposePrepareRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -491,7 +491,7 @@ func (r ComposeNewParamsBodyComposeRefineRequest) MarshalJSON() (data []byte, er
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *ComposeNewParamsBodyComposeRefineRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -528,5 +528,5 @@ func (r ComposeNewParamsBodyComposeScoreRequest) MarshalJSON() (data []byte, err
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *ComposeNewParamsBodyComposeScoreRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

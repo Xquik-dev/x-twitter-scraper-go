@@ -117,7 +117,7 @@ type RadarItem struct {
 // Returns the unmodified JSON received from the API
 func (r RadarItem) RawJSON() string { return r.JSON.raw }
 func (r *RadarItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type RadarItemCategory string
@@ -189,7 +189,7 @@ type RadarItemMetadata struct {
 // Returns the unmodified JSON received from the API
 func (r RadarItemMetadata) RawJSON() string { return r.JSON.raw }
 func (r *RadarItemMetadata) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type RadarItemSource string
@@ -222,7 +222,7 @@ type RadarGetTrendingTopicsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r RadarGetTrendingTopicsResponse) RawJSON() string { return r.JSON.raw }
 func (r *RadarGetTrendingTopicsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type RadarGetTrendingTopicsParams struct {

@@ -133,7 +133,7 @@ type MonitorKeywordNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorKeywordNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Keyword monitor that tracks matching public X activity.
@@ -172,7 +172,7 @@ type MonitorKeywordGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorKeywordGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Keyword monitor that tracks matching public X activity.
@@ -211,7 +211,7 @@ type MonitorKeywordUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorKeywordUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorKeywordListResponse struct {
@@ -233,7 +233,7 @@ type MonitorKeywordListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorKeywordListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Keyword monitor that tracks matching public X activity.
@@ -272,7 +272,7 @@ type MonitorKeywordListResponseMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorKeywordListResponseMonitor) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordListResponseMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorKeywordDeactivateResponse struct {
@@ -293,7 +293,7 @@ type MonitorKeywordDeactivateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorKeywordDeactivateResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorKeywordDeactivateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorKeywordNewParams struct {
@@ -311,7 +311,7 @@ func (r MonitorKeywordNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorKeywordNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorKeywordUpdateParams struct {
@@ -328,5 +328,5 @@ func (r MonitorKeywordUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorKeywordUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

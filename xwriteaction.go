@@ -179,7 +179,7 @@ type XWriteActionGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XWriteActionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -198,7 +198,7 @@ type XWriteActionGetResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XWriteActionGetResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XWriteActionGetResponseAction string
@@ -247,7 +247,7 @@ type XWriteActionGetResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XWriteActionGetResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -271,7 +271,7 @@ type XWriteActionGetResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XWriteActionGetResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -292,7 +292,7 @@ type XWriteActionGetResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XWriteActionGetResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -314,7 +314,7 @@ type XWriteActionGetResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XWriteActionGetResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XWriteActionGetResponseStatus string
@@ -345,5 +345,5 @@ type XWriteActionGetResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XWriteActionGetResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XWriteActionGetResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }

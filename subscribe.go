@@ -63,7 +63,7 @@ type SubscribeNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SubscribeNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *SubscribeNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SubscribeNewResponseStatus string
@@ -87,7 +87,7 @@ func (r SubscribeNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SubscribeNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Subscription tier to pre-select.

@@ -70,7 +70,7 @@ type XBroadcastGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XBroadcastGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *XBroadcastGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X broadcast, a live video
@@ -160,7 +160,7 @@ type XBroadcastGetResponseBroadcast struct {
 // Returns the unmodified JSON received from the API
 func (r XBroadcastGetResponseBroadcast) RawJSON() string { return r.JSON.raw }
 func (r *XBroadcastGetResponseBroadcast) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Broadcaster, as X's live video service names the account
@@ -190,7 +190,7 @@ type XBroadcastGetResponseBroadcastPeriscopeUser struct {
 // Returns the unmodified JSON received from the API
 func (r XBroadcastGetResponseBroadcastPeriscopeUser) RawJSON() string { return r.JSON.raw }
 func (r *XBroadcastGetResponseBroadcastPeriscopeUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XBroadcastGetParams struct {

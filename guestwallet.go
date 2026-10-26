@@ -96,7 +96,7 @@ type GuestWalletAmount struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletAmount) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletAmount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Initial guest wallet response containing the one-time key.
@@ -151,7 +151,7 @@ type GuestWalletNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletNewResponseAuthorization struct {
@@ -171,7 +171,7 @@ type GuestWalletNewResponseAuthorization struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletNewResponseAuthorization) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletNewResponseAuthorization) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletNewResponseStatus string
@@ -224,7 +224,7 @@ type GuestWalletGetStatusResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletGetStatusResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletGetStatusResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Latest guest wallet purchase fulfillment state.
@@ -255,7 +255,7 @@ type GuestWalletGetStatusResponseLatestPurchase struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletGetStatusResponseLatestPurchase) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletGetStatusResponseLatestPurchase) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Combined wallet and pending-checkout state. A pending top-up can coexist with
@@ -287,7 +287,7 @@ type GuestWalletGetStatusResponseTopUp struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletGetStatusResponseTopUp) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletGetStatusResponseTopUp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Pending hosted checkout and guest wallet purchase details.
@@ -344,7 +344,7 @@ type GuestWalletTopupResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletTopupResponse) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletTopupResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletTopupResponseStatus string
@@ -376,7 +376,7 @@ type GuestWalletTopupResponseAuthorization struct {
 // Returns the unmodified JSON received from the API
 func (r GuestWalletTopupResponseAuthorization) RawJSON() string { return r.JSON.raw }
 func (r *GuestWalletTopupResponseAuthorization) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type GuestWalletTopupResponseCredentialNotice string
@@ -399,7 +399,7 @@ func (r GuestWalletNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GuestWalletNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type GuestWalletTopupParams struct {
@@ -416,5 +416,5 @@ func (r GuestWalletTopupParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GuestWalletTopupParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

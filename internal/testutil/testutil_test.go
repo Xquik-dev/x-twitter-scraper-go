@@ -14,7 +14,9 @@ func TestCheckTestServerClosesResponse(t *testing.T) {
 	closed := make(chan struct{})
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.(http.Flusher).Flush()
+		if err := http.NewResponseController(w).Flush(); err != nil {
+			t.Error(err)
+		}
 		<-r.Context().Done()
 		close(closed)
 	}))

@@ -63,7 +63,7 @@ func (d *decoderBuilder) newStructUnionDecoder(t reflect.Type) decoderFunc {
 
 	type discriminatedDecoder struct {
 		variantDecoder
-		discriminator any
+		discriminator string
 	}
 	discriminatedDecoders := []discriminatedDecoder{}
 	unionEntry, discriminated := unionRegistry[t]
@@ -81,9 +81,9 @@ func (d *decoderBuilder) newStructUnionDecoder(t reflect.Type) decoderFunc {
 
 	return func(n gjson.Result, v reflect.Value, state *decoderState) error {
 		if discriminated && n.Type == gjson.JSON && len(unionEntry.discriminatorKey) != 0 {
-			discriminator := n.Get(EscapeSJSONKey(unionEntry.discriminatorKey)).Value()
+			discriminator := n.Get(EscapeSJSONKey(unionEntry.discriminatorKey))
 			for _, decoder := range discriminatedDecoders {
-				if discriminator == decoder.discriminator {
+				if discriminator.Type == gjson.String && discriminator.Str == decoder.discriminator {
 					inner := v.FieldByIndex(decoder.field.Index)
 					return decoder.decoder(n, inner, state)
 				}
@@ -152,8 +152,8 @@ func (d *decoderBuilder) newUnionDecoder(t reflect.Type) decoderFunc {
 			}
 
 			if len(unionEntry.discriminatorKey) != 0 {
-				discriminatorValue := n.Get(EscapeSJSONKey(unionEntry.discriminatorKey)).Value()
-				if discriminatorValue == variant.DiscriminatorValue {
+				discriminatorValue := n.Get(EscapeSJSONKey(unionEntry.discriminatorKey))
+				if discriminatorValue.Type == gjson.String && discriminatorValue.Str == variant.DiscriminatorValue {
 					inner := reflect.New(variant.Type).Elem()
 					err := decoder(n, inner, state)
 					v.Set(inner)

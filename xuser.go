@@ -500,7 +500,7 @@ type XUserRemoveFollowerResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserRemoveFollowerResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -519,7 +519,7 @@ type XUserRemoveFollowerResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XUserRemoveFollowerResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserRemoveFollowerResponseAction string
@@ -568,7 +568,7 @@ type XUserRemoveFollowerResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XUserRemoveFollowerResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -592,7 +592,7 @@ type XUserRemoveFollowerResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XUserRemoveFollowerResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -613,7 +613,7 @@ type XUserRemoveFollowerResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XUserRemoveFollowerResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -635,7 +635,7 @@ type XUserRemoveFollowerResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XUserRemoveFollowerResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserRemoveFollowerResponseStatus string
@@ -666,7 +666,7 @@ type XUserRemoveFollowerResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XUserRemoveFollowerResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XUserRemoveFollowerResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Batch lookup preserves first-seen ID order and ignores duplicate IDs.
@@ -714,7 +714,7 @@ type XUserGetBatchResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetBatchResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetBatchResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XUserGetFollowersResponseUnion contains all possible properties and values from
@@ -748,12 +748,12 @@ type XUserGetFollowersResponseUnion struct {
 }
 
 func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
 func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -761,7 +761,7 @@ func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCover
 func (u XUserGetFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XUserGetFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once
@@ -790,7 +790,7 @@ type XUserGetFollowersResponseScanLimit struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Terminal relationship coverage response with diagnostics.
@@ -815,7 +815,7 @@ type XUserGetFollowersResponseUserListCoverageResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetFollowersResponseUserListCoverageResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowersResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Coverage evidence across parallel relationship strategies.
@@ -862,7 +862,7 @@ func (r XUserGetFollowersResponseUserListCoverageResponseDiagnostic) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XUserGetFollowersResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Result counts and stop reason for one relationship strategy.
@@ -893,7 +893,7 @@ func (r XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) Raw
 	return r.JSON.raw
 }
 func (r *XUserGetFollowersResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XUserGetFollowingResponseUnion contains all possible properties and values from
@@ -927,12 +927,12 @@ type XUserGetFollowingResponseUnion struct {
 }
 
 func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
 func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -940,7 +940,7 @@ func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCover
 func (u XUserGetFollowingResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XUserGetFollowingResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once
@@ -969,7 +969,7 @@ type XUserGetFollowingResponseScanLimit struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetFollowingResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowingResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Terminal relationship coverage response with diagnostics.
@@ -994,7 +994,7 @@ type XUserGetFollowingResponseUserListCoverageResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetFollowingResponseUserListCoverageResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowingResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Coverage evidence across parallel relationship strategies.
@@ -1041,7 +1041,7 @@ func (r XUserGetFollowingResponseUserListCoverageResponseDiagnostic) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XUserGetFollowingResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Result counts and stop reason for one relationship strategy.
@@ -1072,7 +1072,7 @@ func (r XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy) Raw
 	return r.JSON.raw
 }
 func (r *XUserGetFollowingResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XUserGetVerifiedFollowersResponseUnion contains all possible properties and
@@ -1108,12 +1108,12 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 }
 
 func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
 func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -1121,7 +1121,7 @@ func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersRespo
 func (u XUserGetVerifiedFollowersResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XUserGetVerifiedFollowersResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Present on the last page of a filtered automatic read that sent no maxScan, once
@@ -1150,7 +1150,7 @@ type XUserGetVerifiedFollowersResponseScanLimit struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetVerifiedFollowersResponseScanLimit) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetVerifiedFollowersResponseScanLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Terminal relationship coverage response with diagnostics.
@@ -1177,7 +1177,7 @@ func (r XUserGetVerifiedFollowersResponseUserListCoverageResponse) RawJSON() str
 	return r.JSON.raw
 }
 func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Coverage evidence across parallel relationship strategies.
@@ -1224,7 +1224,7 @@ func (r XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic) Raw
 	return r.JSON.raw
 }
 func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Result counts and stop reason for one relationship strategy.
@@ -1255,7 +1255,7 @@ func (r XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrat
 	return r.JSON.raw
 }
 func (r *XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnosticStrategy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Each user's newest posts, in the order the users were named, with the pinned
@@ -1290,7 +1290,7 @@ type XUserGetBatchTweetsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetBatchTweetsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetBatchTweetsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A page of user IDs without profiles. Follow next_cursor while the response
@@ -1313,7 +1313,7 @@ type XUserGetFollowerIDsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetFollowerIDsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowerIDsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // A page of user IDs without profiles. Follow next_cursor while the response
@@ -1336,7 +1336,7 @@ type XUserGetFollowingIDsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetFollowingIDsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetFollowingIDsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetInsightsResponse struct {
@@ -1358,7 +1358,7 @@ type XUserGetInsightsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetInsightsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Engagement insights of 1 profile. Engagements are likes, replies, reposts and
@@ -1415,7 +1415,7 @@ type XUserGetInsightsResponseInsights struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetInsightsResponseInsights) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponseInsights) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Each count per post of the sample. Null without posts.
@@ -1451,7 +1451,7 @@ type XUserGetInsightsResponseInsightsAverages struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetInsightsResponseInsightsAverages) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponseInsightsAverages) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The recent posts the averages read.
@@ -1475,7 +1475,7 @@ type XUserGetInsightsResponseInsightsSample struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetInsightsResponseInsightsSample) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetInsightsResponseInsightsSample) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 page of public X Lists. Follow next_cursor while the response reports more
@@ -1497,7 +1497,7 @@ type XUserGetListMembershipsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListMembershipsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Public X List with its owner's public profile. Leaves out what X tells the
@@ -1553,7 +1553,7 @@ type XUserGetListMembershipsResponseList struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListMembershipsResponseList) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Banner the owner uploaded.
@@ -1589,7 +1589,7 @@ type XUserGetListMembershipsResponseListCustomBanner struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListMembershipsResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListCustomBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListMembershipsResponseListCustomBannerPalette struct {
@@ -1609,7 +1609,7 @@ type XUserGetListMembershipsResponseListCustomBannerPalette struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListMembershipsResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The color's red, green and blue values.
@@ -1632,7 +1632,7 @@ func (r XUserGetListMembershipsResponseListCustomBannerPaletteRgb) RawJSON() str
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Area X marks as the subject of the banner, in pixels.
@@ -1661,7 +1661,7 @@ func (r XUserGetListMembershipsResponseListCustomBannerSalientRect) RawJSON() st
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Banner X shows when the owner uploaded none. X picks it per reading account, so
@@ -1698,7 +1698,7 @@ type XUserGetListMembershipsResponseListDefaultBanner struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListMembershipsResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListMembershipsResponseListDefaultBannerPalette struct {
@@ -1718,7 +1718,7 @@ type XUserGetListMembershipsResponseListDefaultBannerPalette struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListMembershipsResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListMembershipsResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The color's red, green and blue values.
@@ -1741,7 +1741,7 @@ func (r XUserGetListMembershipsResponseListDefaultBannerPaletteRgb) RawJSON() st
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Area X marks as the subject of the banner, in pixels.
@@ -1770,7 +1770,7 @@ func (r XUserGetListMembershipsResponseListDefaultBannerSalientRect) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XUserGetListMembershipsResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 page of public X Lists. Follow next_cursor while the response reports more
@@ -1792,7 +1792,7 @@ type XUserGetListsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Public X List with its owner's public profile. Leaves out what X tells the
@@ -1848,7 +1848,7 @@ type XUserGetListsResponseList struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseList) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Banner the owner uploaded.
@@ -1884,7 +1884,7 @@ type XUserGetListsResponseListCustomBanner struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListCustomBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListsResponseListCustomBannerPalette struct {
@@ -1904,7 +1904,7 @@ type XUserGetListsResponseListCustomBannerPalette struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListCustomBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The color's red, green and blue values.
@@ -1925,7 +1925,7 @@ type XUserGetListsResponseListCustomBannerPaletteRgb struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListCustomBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Area X marks as the subject of the banner, in pixels.
@@ -1952,7 +1952,7 @@ type XUserGetListsResponseListCustomBannerSalientRect struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListCustomBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListCustomBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Banner X shows when the owner uploaded none. X picks it per reading account, so
@@ -1989,7 +1989,7 @@ type XUserGetListsResponseListDefaultBanner struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListDefaultBanner) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBanner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserGetListsResponseListDefaultBannerPalette struct {
@@ -2009,7 +2009,7 @@ type XUserGetListsResponseListDefaultBannerPalette struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListDefaultBannerPalette) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBannerPalette) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The color's red, green and blue values.
@@ -2030,7 +2030,7 @@ type XUserGetListsResponseListDefaultBannerPaletteRgb struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListDefaultBannerPaletteRgb) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBannerPaletteRgb) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Area X marks as the subject of the banner, in pixels.
@@ -2057,7 +2057,7 @@ type XUserGetListsResponseListDefaultBannerSalientRect struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetListsResponseListDefaultBannerSalientRect) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetListsResponseListDefaultBannerSalientRect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Says whether a user broadcasts live video on X now. `broadcast` is their latest
@@ -2085,7 +2085,7 @@ type XUserGetLiveResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetLiveResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetLiveResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Latest broadcast, live or ended. Null when X shows none.
@@ -2175,7 +2175,7 @@ type XUserGetLiveResponseBroadcast struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetLiveResponseBroadcast) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetLiveResponseBroadcast) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Broadcaster, as X's live video service names the account
@@ -2205,7 +2205,7 @@ type XUserGetLiveResponseBroadcastPeriscopeUser struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetLiveResponseBroadcastPeriscopeUser) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetLiveResponseBroadcastPeriscopeUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponse struct {
@@ -2225,7 +2225,7 @@ type XUserTranslateBioResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Null when the profile has no bio.
@@ -2258,7 +2258,7 @@ type XUserTranslateBioResponseTranslation struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslation) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Lists hashtags, symbols, links, and mentions from tweet text.
@@ -2285,7 +2285,7 @@ type XUserTranslateBioResponseTranslationEntities struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntities) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntities) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Hashtag text and its source offsets in a tweet.
@@ -2308,7 +2308,7 @@ type XUserTranslateBioResponseTranslationEntitiesHashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesHashtag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
@@ -2329,7 +2329,7 @@ type XUserTranslateBioResponseTranslationEntitiesHashtagTag struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesHashtagTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo struct {
@@ -2347,7 +2347,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo) RawJSON() st
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo struct {
@@ -2370,7 +2370,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo) RawJSON(
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesHashtagTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Indexed smart-tag, cashtag, or video timestamp metadata.
@@ -2395,7 +2395,7 @@ type XUserTranslateBioResponseTranslationEntitiesSmarttag struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesSmarttag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
@@ -2416,7 +2416,7 @@ type XUserTranslateBioResponseTranslationEntitiesSmarttagTag struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo struct {
@@ -2434,7 +2434,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo struct {
@@ -2457,7 +2457,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo) RawJSON
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSmarttagTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Indexed smart-tag, cashtag, or video timestamp metadata.
@@ -2482,7 +2482,7 @@ type XUserTranslateBioResponseTranslationEntitiesSymbol struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesSymbol) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbol) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
@@ -2503,7 +2503,7 @@ type XUserTranslateBioResponseTranslationEntitiesSymbolTag struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesSymbolTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo struct {
@@ -2521,7 +2521,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo) RawJSON() str
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo struct {
@@ -2544,7 +2544,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo) RawJSON()
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesSymbolTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Indexed smart-tag, cashtag, or video timestamp metadata.
@@ -2569,7 +2569,7 @@ type XUserTranslateBioResponseTranslationEntitiesTimestamp struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesTimestamp) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestamp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // X's SmartTag for a cashtag, smarttag or hashtag. Xquik leaves out X's trading
@@ -2590,7 +2590,7 @@ type XUserTranslateBioResponseTranslationEntitiesTimestampTag struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesTimestampTag) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo struct {
@@ -2608,7 +2608,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo) RawJSON() 
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTagInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo struct {
@@ -2631,7 +2631,7 @@ func (r XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo) RawJSO
 	return r.JSON.raw
 }
 func (r *XUserTranslateBioResponseTranslationEntitiesTimestampTagInfoInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Shortened, display, and expanded URLs from tweet text.
@@ -2654,7 +2654,7 @@ type XUserTranslateBioResponseTranslationEntitiesURL struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesURL) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesURL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Profile identity and source offsets of a mention.
@@ -2677,7 +2677,7 @@ type XUserTranslateBioResponseTranslationEntitiesUserMention struct {
 // Returns the unmodified JSON received from the API
 func (r XUserTranslateBioResponseTranslationEntitiesUserMention) RawJSON() string { return r.JSON.raw }
 func (r *XUserTranslateBioResponseTranslationEntitiesUserMention) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XUserRemoveFollowerParams struct {
@@ -2692,7 +2692,7 @@ func (r XUserRemoveFollowerParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XUserRemoveFollowerParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XUserGetBatchParams struct {

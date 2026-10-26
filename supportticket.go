@@ -121,7 +121,7 @@ type SupportTicketNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Attachment identifier and initial processing state.
@@ -141,7 +141,7 @@ type SupportTicketNewResponseAttachment struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketNewResponseAttachment) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketNewResponseAttachment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SupportTicketGetResponse struct {
@@ -168,7 +168,7 @@ type SupportTicketGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SupportTicketGetResponseMessage struct {
@@ -191,7 +191,7 @@ type SupportTicketGetResponseMessage struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketGetResponseMessage) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketGetResponseMessage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Downloadable image or video attached to a support message.
@@ -230,7 +230,7 @@ type SupportTicketGetResponseMessageAttachment struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketGetResponseMessageAttachment) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketGetResponseMessageAttachment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SupportTicketGetResponseStatus string
@@ -258,7 +258,7 @@ type SupportTicketUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SupportTicketUpdateResponseStatus string
@@ -286,7 +286,7 @@ type SupportTicketListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketListResponse) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SupportTicketListResponseTicket struct {
@@ -313,7 +313,7 @@ type SupportTicketListResponseTicket struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketListResponseTicket) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketListResponseTicket) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type SupportTicketReplyResponse struct {
@@ -331,7 +331,7 @@ type SupportTicketReplyResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketReplyResponse) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketReplyResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Attachment identifier and initial processing state.
@@ -351,7 +351,7 @@ type SupportTicketReplyResponseAttachment struct {
 // Returns the unmodified JSON received from the API
 func (r SupportTicketReplyResponseAttachment) RawJSON() string { return r.JSON.raw }
 func (r *SupportTicketReplyResponseAttachment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 var ErrTicketNeedsBodyOrAttachments = errors.New("missing required body or attachments parameter")
@@ -380,7 +380,7 @@ func (r SupportTicketNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SupportTicketNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func (r SupportTicketNewParams) HasFiles() bool {
@@ -402,7 +402,7 @@ func (r SupportTicketUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SupportTicketUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type SupportTicketUpdateParamsStatus string
@@ -428,7 +428,7 @@ func (r SupportTicketReplyParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SupportTicketReplyParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func (r SupportTicketReplyParams) HasFiles() bool {

@@ -140,7 +140,7 @@ type XAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XAccount) RawJSON() string { return r.JSON.raw }
 func (r *XAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Derived health. `healthy` is ready. `needsReauth` needs credentials. `locked`
@@ -189,7 +189,7 @@ type XAccountDetail struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountDetail) RawJSON() string { return r.JSON.raw }
 func (r *XAccountDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAccountDetailHealth string
@@ -247,17 +247,17 @@ type XAccountNewResponseUnion struct {
 }
 
 func (u XAccountNewResponseUnion) AsXAccountNewResponseSanitizedXAccount() (v XAccountNewResponseSanitizedXAccount) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
 func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionAttemptPending() (v XAccountNewResponseXAccountConnectionAttemptPending) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
 func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionChallenge() (v XAccountNewResponseXAccountConnectionChallenge) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -265,7 +265,7 @@ func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionChallen
 func (u XAccountNewResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAccountNewResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Sanitized X account summary returned by connect and reauth.
@@ -294,7 +294,7 @@ type XAccountNewResponseSanitizedXAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountNewResponseSanitizedXAccount) RawJSON() string { return r.JSON.raw }
 func (r *XAccountNewResponseSanitizedXAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The connection is still in progress.
@@ -317,7 +317,7 @@ type XAccountNewResponseXAccountConnectionAttemptPending struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountNewResponseXAccountConnectionAttemptPending) RawJSON() string { return r.JSON.raw }
 func (r *XAccountNewResponseXAccountConnectionAttemptPending) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Resumable account connection challenge. Submit the email code to finish the same
@@ -345,7 +345,7 @@ type XAccountNewResponseXAccountConnectionChallenge struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountNewResponseXAccountConnectionChallenge) RawJSON() string { return r.JSON.raw }
 func (r *XAccountNewResponseXAccountConnectionChallenge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAccountListResponse struct {
@@ -367,7 +367,7 @@ type XAccountListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountListResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAccountDeleteResponse struct {
@@ -383,7 +383,7 @@ type XAccountDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAccountBulkRetryResponse struct {
@@ -400,7 +400,7 @@ type XAccountBulkRetryResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountBulkRetryResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountBulkRetryResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Sanitized X account summary returned by connect and reauth.
@@ -429,7 +429,7 @@ type XAccountReauthResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountReauthResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountReauthResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAccountReauthResponseHealth string
@@ -460,7 +460,7 @@ func (r XAccountNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAccountNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XAccountListParams struct {
@@ -492,7 +492,7 @@ func (r XAccountBulkRetryParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAccountBulkRetryParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XAccountReauthParams struct {
@@ -510,5 +510,5 @@ func (r XAccountReauthParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAccountReauthParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

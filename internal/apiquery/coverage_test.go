@@ -173,3 +173,9 @@ func TestQueryTagBranches(t *testing.T) {
 		t.Fatalf("format = %q, %t", format, ok)
 	}
 }
+
+func TestMarshalerEncoderRejectsOtherTypes(t *testing.T) {
+	if _, err := marshalerEncoder("value", reflect.ValueOf(1)); err == nil {
+		t.Fatal("marshalerEncoder() accepted a type without MarshalJSON")
+	}
+}

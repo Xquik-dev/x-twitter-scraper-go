@@ -108,7 +108,7 @@ type CreditGetBalanceResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CreditGetBalanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *CreditGetBalanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type CreditGetTopupStatusResponse struct {
@@ -131,7 +131,7 @@ type CreditGetTopupStatusResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CreditGetTopupStatusResponse) RawJSON() string { return r.JSON.raw }
 func (r *CreditGetTopupStatusResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type CreditGetTopupStatusResponseStatus string
@@ -161,7 +161,7 @@ type CreditTopupBalanceResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CreditTopupBalanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *CreditTopupBalanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type CreditRedirectTopupCheckoutParams struct {
@@ -207,5 +207,5 @@ func (r CreditTopupBalanceParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CreditTopupBalanceParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

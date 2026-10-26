@@ -207,7 +207,7 @@ type XProfileUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -226,7 +226,7 @@ type XProfileUpdateResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XProfileUpdateResponseAction string
@@ -275,7 +275,7 @@ type XProfileUpdateResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -299,7 +299,7 @@ type XProfileUpdateResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -320,7 +320,7 @@ type XProfileUpdateResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -342,7 +342,7 @@ type XProfileUpdateResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XProfileUpdateResponseStatus string
@@ -373,7 +373,7 @@ type XProfileUpdateResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Durable write record. Poll statusUrl until terminal is true. Reusing its
@@ -503,7 +503,7 @@ type XProfileUpdateAvatarResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateAvatarResponse) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateAvatarResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -522,7 +522,7 @@ type XProfileUpdateAvatarResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateAvatarResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateAvatarResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XProfileUpdateAvatarResponseAction string
@@ -571,7 +571,7 @@ type XProfileUpdateAvatarResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateAvatarResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateAvatarResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -595,7 +595,7 @@ type XProfileUpdateAvatarResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateAvatarResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateAvatarResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -616,7 +616,7 @@ type XProfileUpdateAvatarResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateAvatarResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateAvatarResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -638,7 +638,7 @@ type XProfileUpdateAvatarResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateAvatarResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateAvatarResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XProfileUpdateAvatarResponseStatus string
@@ -669,7 +669,7 @@ type XProfileUpdateAvatarResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateAvatarResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateAvatarResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Durable write record. Poll statusUrl until terminal is true. Reusing its
@@ -799,7 +799,7 @@ type XProfileUpdateBannerResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateBannerResponse) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateBannerResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -818,7 +818,7 @@ type XProfileUpdateBannerResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateBannerResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateBannerResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XProfileUpdateBannerResponseAction string
@@ -867,7 +867,7 @@ type XProfileUpdateBannerResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateBannerResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateBannerResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -891,7 +891,7 @@ type XProfileUpdateBannerResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateBannerResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateBannerResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -912,7 +912,7 @@ type XProfileUpdateBannerResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateBannerResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateBannerResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -934,7 +934,7 @@ type XProfileUpdateBannerResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateBannerResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateBannerResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XProfileUpdateBannerResponseStatus string
@@ -965,7 +965,7 @@ type XProfileUpdateBannerResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XProfileUpdateBannerResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XProfileUpdateBannerResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XProfileUpdateParams struct {
@@ -987,7 +987,7 @@ func (r XProfileUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XProfileUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XProfileUpdateAvatarParams struct {
@@ -1006,7 +1006,7 @@ func (r XProfileUpdateAvatarParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XProfileUpdateAvatarParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func (r XProfileUpdateAvatarParams) HasFiles() bool {
@@ -1037,7 +1037,7 @@ func (r XProfileUpdateBannerParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XProfileUpdateBannerParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func (r XProfileUpdateBannerParams) HasFiles() bool {

@@ -159,7 +159,7 @@ type Delivery struct {
 // Returns the unmodified JSON received from the API
 func (r Delivery) RawJSON() string { return r.JSON.raw }
 func (r *Delivery) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Webhook endpoint registered to receive event deliveries.
@@ -197,7 +197,7 @@ type Webhook struct {
 // Returns the unmodified JSON received from the API
 func (r Webhook) RawJSON() string { return r.JSON.raw }
 func (r *Webhook) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Endpoint delivery state. paused means the user paused delivery. needs_attention
@@ -237,7 +237,7 @@ type WebhookNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookListResponse struct {
@@ -257,7 +257,7 @@ type WebhookListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookListResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookDeactivateResponse struct {
@@ -273,7 +273,7 @@ type WebhookDeactivateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookDeactivateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookDeactivateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookListDeliveriesResponse struct {
@@ -293,7 +293,7 @@ type WebhookListDeliveriesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookListDeliveriesResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookListDeliveriesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookResumeResponse struct {
@@ -314,7 +314,7 @@ type WebhookResumeResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookResumeResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookResumeResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookTestResponse struct {
@@ -334,7 +334,7 @@ type WebhookTestResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookTestResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookTestResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookNewTelegramLinkResponse struct {
@@ -354,7 +354,7 @@ type WebhookNewTelegramLinkResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookNewTelegramLinkResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookNewTelegramLinkResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type WebhookNewParams struct {
@@ -370,7 +370,7 @@ func (r WebhookNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type WebhookUpdateParams struct {
@@ -386,7 +386,7 @@ func (r WebhookUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type WebhookNewTelegramLinkParams struct {
@@ -400,5 +400,5 @@ func (r WebhookNewTelegramLinkParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookNewTelegramLinkParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

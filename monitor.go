@@ -143,7 +143,7 @@ type Monitor struct {
 // Returns the unmodified JSON received from the API
 func (r Monitor) RawJSON() string { return r.JSON.raw }
 func (r *Monitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Why Xquik automatically paused this monitor.
@@ -182,7 +182,7 @@ type MonitorNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorListResponse struct {
@@ -204,7 +204,7 @@ type MonitorListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorDeactivateResponse struct {
@@ -225,7 +225,7 @@ type MonitorDeactivateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MonitorDeactivateResponse) RawJSON() string { return r.JSON.raw }
 func (r *MonitorDeactivateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type MonitorNewParams struct {
@@ -244,7 +244,7 @@ func (r MonitorNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type MonitorUpdateParams struct {
@@ -261,5 +261,5 @@ func (r MonitorUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

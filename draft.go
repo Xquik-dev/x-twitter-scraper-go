@@ -104,7 +104,7 @@ type Draft struct {
 // Returns the unmodified JSON received from the API
 func (r Draft) RawJSON() string { return r.JSON.raw }
 func (r *Draft) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Full tweet draft including update timestamp.
@@ -126,7 +126,7 @@ type DraftDetail struct {
 // Returns the unmodified JSON received from the API
 func (r DraftDetail) RawJSON() string { return r.JSON.raw }
 func (r *DraftDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DraftListResponse struct {
@@ -146,7 +146,7 @@ type DraftListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DraftListResponse) RawJSON() string { return r.JSON.raw }
 func (r *DraftListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DraftNewParams struct {
@@ -162,7 +162,7 @@ func (r DraftNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DraftNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type DraftNewParamsGoal string

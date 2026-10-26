@@ -110,7 +110,7 @@ type DrawDetail struct {
 // Returns the unmodified JSON received from the API
 func (r DrawDetail) RawJSON() string { return r.JSON.raw }
 func (r *DrawDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Giveaway draw summary with entry counts and status.
@@ -140,7 +140,7 @@ type DrawListItem struct {
 // Returns the unmodified JSON received from the API
 func (r DrawListItem) RawJSON() string { return r.JSON.raw }
 func (r *DrawListItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Giveaway draw winner with position and backup flag.
@@ -163,7 +163,7 @@ type Winner struct {
 // Returns the unmodified JSON received from the API
 func (r Winner) RawJSON() string { return r.JSON.raw }
 func (r *Winner) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawGetResponse struct {
@@ -182,7 +182,7 @@ type DrawGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DrawGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *DrawGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawListResponse struct {
@@ -202,7 +202,7 @@ type DrawListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DrawListResponse) RawJSON() string { return r.JSON.raw }
 func (r *DrawListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawRunResponse struct {
@@ -230,7 +230,7 @@ type DrawRunResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DrawRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *DrawRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type DrawListParams struct {
@@ -314,5 +314,5 @@ func (r DrawRunParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DrawRunParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

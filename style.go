@@ -129,7 +129,7 @@ type StyleProfile struct {
 // Returns the unmodified JSON received from the API
 func (r StyleProfile) RawJSON() string { return r.JSON.raw }
 func (r *StyleProfile) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type StyleProfileTweet struct {
@@ -151,7 +151,7 @@ type StyleProfileTweet struct {
 // Returns the unmodified JSON received from the API
 func (r StyleProfileTweet) RawJSON() string { return r.JSON.raw }
 func (r *StyleProfileTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Style profile summary with tweet count and ownership flag.
@@ -174,7 +174,7 @@ type StyleProfileSummary struct {
 // Returns the unmodified JSON received from the API
 func (r StyleProfileSummary) RawJSON() string { return r.JSON.raw }
 func (r *StyleProfileSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type StyleListResponse struct {
@@ -194,7 +194,7 @@ type StyleListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r StyleListResponse) RawJSON() string { return r.JSON.raw }
 func (r *StyleListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type StyleCompareResponse struct {
@@ -214,7 +214,7 @@ type StyleCompareResponse struct {
 // Returns the unmodified JSON received from the API
 func (r StyleCompareResponse) RawJSON() string { return r.JSON.raw }
 func (r *StyleCompareResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type StyleGetPerformanceResponse struct {
@@ -234,7 +234,7 @@ type StyleGetPerformanceResponse struct {
 // Returns the unmodified JSON received from the API
 func (r StyleGetPerformanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *StyleGetPerformanceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type StyleGetPerformanceResponseTweet struct {
@@ -266,7 +266,7 @@ type StyleGetPerformanceResponseTweet struct {
 // Returns the unmodified JSON received from the API
 func (r StyleGetPerformanceResponseTweet) RawJSON() string { return r.JSON.raw }
 func (r *StyleGetPerformanceResponseTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type StyleUpdateParams struct {
@@ -282,7 +282,7 @@ func (r StyleUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *StyleUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Text is required.
@@ -296,7 +296,7 @@ func (r StyleUpdateParamsTweet) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *StyleUpdateParamsTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type StyleAnalyzeParams struct {
@@ -310,7 +310,7 @@ func (r StyleAnalyzeParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *StyleAnalyzeParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type StyleCompareParams struct {

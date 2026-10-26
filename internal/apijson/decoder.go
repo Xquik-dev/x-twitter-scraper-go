@@ -13,21 +13,27 @@ import (
 	"strconv"
 	"sync"
 	"time"
-	"unsafe"
 
 	"github.com/tidwall/gjson"
 )
 
 var decoders paramutil.SyncMap[decoderEntry, decoderFunc]
 
-func Unmarshal(raw []byte, to any) error {
+// Unmarshal decodes raw into to.
+func Unmarshal[T any](raw []byte, to *T) error {
 	d := &decoderBuilder{dateFormat: time.RFC3339}
-	return d.unmarshal(raw, to)
+	return d.unmarshal(gjson.ParseBytes(raw), reflect.ValueOf(to).Elem())
 }
 
-func UnmarshalRoot(raw []byte, to any) error {
+// UnmarshalRoot decodes raw into to without calling the UnmarshalJSON method of
+// to itself. When rawJSON is not nil, it receives the raw JSON that to holds.
+func UnmarshalRoot[T any](raw []byte, to *T, rawJSON *string) error {
 	d := &decoderBuilder{dateFormat: time.RFC3339, root: true}
-	return d.unmarshal(raw, to)
+	result := gjson.ParseBytes(raw)
+	if rawJSON != nil {
+		*rawJSON = result.Raw
+	}
+	return d.unmarshal(result, reflect.ValueOf(to).Elem())
 }
 
 type decoderBuilder struct {
@@ -64,17 +70,14 @@ type decoderEntry struct {
 	root       bool
 }
 
-func (d *decoderBuilder) unmarshal(raw []byte, to any) error {
-	value := reflect.ValueOf(to).Elem()
-	result := gjson.ParseBytes(raw)
+func (d *decoderBuilder) unmarshal(result gjson.Result, value reflect.Value) error {
 	if !value.IsValid() {
 		return fmt.Errorf("apijson: cannot marshal into invalid value")
 	}
 	return d.typeDecoder(value.Type())(result, value, &decoderState{strict: false, exactness: exact})
 }
 
-func (d *decoderBuilder) unmarshalWithExactness(raw []byte, to any) (exactness, error) {
-	value := reflect.ValueOf(to).Elem()
+func (d *decoderBuilder) unmarshalWithExactness(raw []byte, value reflect.Value) (exactness, error) {
 	result := gjson.ParseBytes(raw)
 	if !value.IsValid() {
 		return 0, fmt.Errorf("apijson: cannot marshal into invalid value")
@@ -129,14 +132,22 @@ func (d *decoderBuilder) validatedTypeDecoder(t reflect.Type, entry *validationE
 }
 
 func indirectUnmarshalerDecoder(n gjson.Result, v reflect.Value, state *decoderState) error {
-	return v.Addr().Interface().(json.Unmarshaler).UnmarshalJSON([]byte(n.Raw))
+	return unmarshalRaw(v.Addr(), n.Raw)
 }
 
 func unmarshalerDecoder(n gjson.Result, v reflect.Value, state *decoderState) error {
 	if v.Kind() == reflect.Pointer && v.CanSet() {
 		v.Set(reflect.New(v.Type().Elem()))
 	}
-	return v.Interface().(json.Unmarshaler).UnmarshalJSON([]byte(n.Raw))
+	return unmarshalRaw(v, n.Raw)
+}
+
+func unmarshalRaw(v reflect.Value, raw string) error {
+	unmarshaler, ok := reflect.TypeAssert[json.Unmarshaler](v)
+	if !ok {
+		return fmt.Errorf("apijson: %s does not implement json.Unmarshaler", v.Type())
+	}
+	return unmarshaler.UnmarshalJSON([]byte(raw))
 }
 
 func (d *decoderBuilder) newTypeDecoder(t reflect.Type) decoderFunc {
@@ -345,12 +356,6 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 	}
 
 	return func(node gjson.Result, value reflect.Value, state *decoderState) (err error) {
-		if field := value.FieldByName("JSON"); field.IsValid() {
-			if raw := field.FieldByName("raw"); raw.IsValid() {
-				setUnexportedField(raw, node.Raw)
-			}
-		}
-
 		for _, decoder := range anonymousDecoders {
 			_ = decoder.fn(node, value.FieldByIndex(decoder.idx), state)
 		}
@@ -419,7 +424,7 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 			}
 
 			if itemNode.Type == gjson.Null && dest.IsValid() && dest.Type().Implements(reflect.TypeOf((*param.Optional)(nil)).Elem()) {
-				_ = dest.Addr().Interface().(json.Unmarshaler).UnmarshalJSON([]byte(itemNode.Raw))
+				_ = unmarshalRaw(dest.Addr(), itemNode.Raw)
 				continue
 			}
 
@@ -561,7 +566,7 @@ func (d *decoderBuilder) newOptTypeDecoder(t reflect.Type) decoderFunc {
 	valueField, _ := t.FieldByName("Value")
 	return func(n gjson.Result, v reflect.Value, state *decoderState) error {
 		state.validateOptKind(n, valueField.Type)
-		return v.Addr().Interface().(json.Unmarshaler).UnmarshalJSON([]byte(n.Raw))
+		return unmarshalRaw(v.Addr(), n.Raw)
 	}
 }
 
@@ -598,10 +603,6 @@ func (d *decoderBuilder) newTimeTypeDecoder(t reflect.Type) decoderFunc {
 
 		return fmt.Errorf("unable to leniently parse date-time string: %s", n.Str)
 	}
-}
-
-func setUnexportedField(field reflect.Value, value any) {
-	reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Set(reflect.ValueOf(value))
 }
 
 func guardStrict(state *decoderState, cond bool) bool {

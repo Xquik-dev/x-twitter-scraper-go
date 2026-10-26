@@ -63,7 +63,7 @@ type TrendListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TrendListResponse) RawJSON() string { return r.JSON.raw }
 func (r *TrendListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type TrendListResponseTrend struct {
@@ -94,7 +94,7 @@ type TrendListResponseTrend struct {
 // Returns the unmodified JSON received from the API
 func (r TrendListResponseTrend) RawJSON() string { return r.JSON.raw }
 func (r *TrendListResponseTrend) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type TrendListParams struct {

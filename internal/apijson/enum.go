@@ -53,15 +53,15 @@ func RegisterFieldValidator[T any, V string | bool | int | float64](fieldName st
 	newEntry := validationEntry{field: field}
 	newEntry.legalValues.bools = -1
 
-	switch values := any(values).(type) {
-	case []string:
+	list := reflect.ValueOf(values)
+	if values, ok := reflect.TypeAssert[[]string](list); ok {
 		newEntry.legalValues.strings = values
-	case []int:
+	} else if values, ok := reflect.TypeAssert[[]int](list); ok {
 		newEntry.legalValues.ints = make([]int64, len(values))
 		for i, value := range values {
 			newEntry.legalValues.ints[i] = int64(value)
 		}
-	case []bool:
+	} else if values, ok := reflect.TypeAssert[[]bool](list); ok {
 		for i, value := range values {
 			var next int
 			if value {

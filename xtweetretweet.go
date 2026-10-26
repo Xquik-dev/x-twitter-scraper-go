@@ -198,7 +198,7 @@ type XTweetRetweetNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -217,7 +217,7 @@ type XTweetRetweetNewResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetNewResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetNewResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XTweetRetweetNewResponseAction string
@@ -266,7 +266,7 @@ type XTweetRetweetNewResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetNewResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetNewResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -290,7 +290,7 @@ type XTweetRetweetNewResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetNewResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetNewResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -311,7 +311,7 @@ type XTweetRetweetNewResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetNewResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetNewResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -333,7 +333,7 @@ type XTweetRetweetNewResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetNewResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetNewResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XTweetRetweetNewResponseStatus string
@@ -364,7 +364,7 @@ type XTweetRetweetNewResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetNewResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetNewResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Durable write record. Poll statusUrl until terminal is true. Reusing its
@@ -494,7 +494,7 @@ type XTweetRetweetDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Connected account selected for the write.
@@ -513,7 +513,7 @@ type XTweetRetweetDeleteResponseAccount struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetDeleteResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetDeleteResponseAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XTweetRetweetDeleteResponseAction string
@@ -562,7 +562,7 @@ type XTweetRetweetDeleteResponseBilling struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetDeleteResponseBilling) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetDeleteResponseBilling) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Exact follow-up an API client or agent should perform.
@@ -586,7 +586,7 @@ type XTweetRetweetDeleteResponseNextAction struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetDeleteResponseNextAction) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetDeleteResponseNextAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Stable fingerprint and sanitized payload for replay checks.
@@ -607,7 +607,7 @@ type XTweetRetweetDeleteResponseRequest struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetDeleteResponseRequest) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetDeleteResponseRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Confirmed result produced by the write, when available.
@@ -629,7 +629,7 @@ type XTweetRetweetDeleteResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetDeleteResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetDeleteResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XTweetRetweetDeleteResponseStatus string
@@ -660,7 +660,7 @@ type XTweetRetweetDeleteResponseTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XTweetRetweetDeleteResponseTarget) RawJSON() string { return r.JSON.raw }
 func (r *XTweetRetweetDeleteResponseTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XTweetRetweetNewParams struct {
@@ -675,7 +675,7 @@ func (r XTweetRetweetNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XTweetRetweetNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 type XTweetRetweetDeleteParams struct {
@@ -690,5 +690,5 @@ func (r XTweetRetweetDeleteParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XTweetRetweetDeleteParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

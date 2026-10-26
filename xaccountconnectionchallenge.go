@@ -87,7 +87,7 @@ type XAccountConnectionChallengeSubmitResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAccountConnectionChallengeSubmitResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAccountConnectionChallengeSubmitResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAccountConnectionChallengeSubmitResponseHealth string
@@ -112,5 +112,5 @@ func (r XAccountConnectionChallengeSubmitParams) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAccountConnectionChallengeSubmitParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }

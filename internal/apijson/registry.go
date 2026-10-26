@@ -12,19 +12,19 @@ import (
 
 type UnionVariant struct {
 	TypeFilter         gjson.Type
-	DiscriminatorValue any
+	DiscriminatorValue string
 	Type               reflect.Type
 }
 
 var unionRegistry = map[reflect.Type]unionEntry{}
-var unionVariants = map[reflect.Type]any{}
+var unionVariants = map[reflect.Type]reflect.Type{}
 
 type unionEntry struct {
 	discriminatorKey string
 	variants         []UnionVariant
 }
 
-func Discriminator[T any](value any) UnionVariant {
+func Discriminator[T any](value string) UnionVariant {
 	var zero T
 	return UnionVariant{
 		TypeFilter:         gjson.JSON,
@@ -49,5 +49,5 @@ type UnionUnmarshaler[T any] struct {
 }
 
 func (c *UnionUnmarshaler[T]) UnmarshalJSON(buf []byte) error {
-	return UnmarshalRoot(buf, &c.Value)
+	return UnmarshalRoot(buf, &c.Value, nil)
 }

@@ -12,7 +12,7 @@ type registryValue struct {
 	Kind string `json:"kind"`
 }
 
-type registryUnion interface{}
+type registryUnion interface{ registry() }
 
 func TestFieldAndRegistryHelpers(t *testing.T) {
 	field := Field{raw: `"tweet"`, status: valid}
@@ -36,5 +36,14 @@ func TestFieldAndRegistryHelpers(t *testing.T) {
 	}
 	if wrapper.Value.Kind != "timeline" {
 		t.Fatalf("union wrapper = %+v", wrapper.Value)
+	}
+}
+
+func TestMarshalerHelpersRejectOtherTypes(t *testing.T) {
+	if err := unmarshalRaw(reflect.ValueOf(1), "1"); err == nil {
+		t.Fatal("unmarshalRaw() accepted a type without UnmarshalJSON")
+	}
+	if _, err := marshalerEncoder(reflect.ValueOf(1)); err == nil {
+		t.Fatal("marshalerEncoder() accepted a type without MarshalJSON")
 	}
 }

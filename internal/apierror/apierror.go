@@ -28,7 +28,7 @@ type Error struct {
 
 func (r Error) RawJSON() string { return r.JSON.raw }
 func (r *Error) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 func (r *Error) Error() string {

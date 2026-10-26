@@ -152,7 +152,7 @@ type Event struct {
 // Returns the unmodified JSON received from the API
 func (r Event) RawJSON() string { return r.JSON.raw }
 func (r *Event) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Source monitor type.
@@ -223,7 +223,7 @@ type EventDetail struct {
 // Returns the unmodified JSON received from the API
 func (r EventDetail) RawJSON() string { return r.JSON.raw }
 func (r *EventDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Source monitor type for this detailed event.
@@ -252,7 +252,7 @@ type EventListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EventListResponse) RawJSON() string { return r.JSON.raw }
 func (r *EventListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type EventListParams struct {

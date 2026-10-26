@@ -130,7 +130,7 @@ type XAnalysisBrandResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Totals of the answers across the analyzed posts.
@@ -177,7 +177,7 @@ type XAnalysisBrandResponseAnalysisSummary struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryCashtag struct {
@@ -200,7 +200,7 @@ type XAnalysisBrandResponseAnalysisSummaryCashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryCashtagSignal struct {
@@ -221,7 +221,7 @@ type XAnalysisBrandResponseAnalysisSummaryCashtagSignal struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts per comparison status, & up to 50 changed posts with their changes. Null
@@ -242,7 +242,7 @@ type XAnalysisBrandResponseAnalysisSummaryMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow struct {
@@ -260,7 +260,7 @@ type XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -282,7 +282,7 @@ func (r XAnalysisBrandResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() 
 	return r.JSON.raw
 }
 func (r *XAnalysisBrandResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts by analysis outcome.
@@ -303,7 +303,7 @@ type XAnalysisBrandResponseAnalysisSummaryRows struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummarySourceDomain struct {
@@ -321,7 +321,7 @@ type XAnalysisBrandResponseAnalysisSummarySourceDomain struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseAnalysisSummaryTarget struct {
@@ -349,7 +349,7 @@ type XAnalysisBrandResponseAnalysisSummaryTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 analyzed post with its answers.
@@ -408,7 +408,7 @@ type XAnalysisBrandResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The answers in full, with their probabilities.
@@ -437,7 +437,7 @@ type XAnalysisBrandResponseResultAnalysis struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 question's answer. A probability has probability. A choice or score has value,
@@ -475,7 +475,7 @@ type XAnalysisBrandResponseResultAnalysisAnswer struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseResultAnalysisAnswerType string
@@ -506,12 +506,12 @@ type XAnalysisBrandResponseResultAnalysisAnswerValueUnion struct {
 }
 
 func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -519,7 +519,7 @@ func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsString() (v stri
 func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisBrandResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -554,7 +554,7 @@ type XAnalysisBrandResponseResultAnalysisContextAvailability struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseResultAnalysisContextAvailability) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseResultAnalysisContextAvailabilityArticle string
@@ -618,7 +618,7 @@ type XAnalysisBrandResponseResultAnalysisQuestion struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisBrandResponseResultAnswersUnion contains all possible properties and
@@ -641,12 +641,12 @@ type XAnalysisBrandResponseResultAnswersUnion struct {
 }
 
 func (u XAnalysisBrandResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisBrandResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -654,7 +654,7 @@ func (u XAnalysisBrandResponseResultAnswersUnion) AsString() (v string) {
 func (u XAnalysisBrandResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisBrandResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -691,7 +691,7 @@ type XAnalysisBrandResponseResultMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseResultMonitorChange struct {
@@ -711,7 +711,7 @@ type XAnalysisBrandResponseResultMonitorChange struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // first_run without baseline. new_to_baseline for a post baseline lacks. changed
@@ -762,7 +762,7 @@ type XAnalysisBrandResponseUnanalyzed struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisBrandResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisBrandResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisBrandResponseUnanalyzedStatus string
@@ -800,7 +800,7 @@ type XAnalysisClassifyResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Totals of the answers across the analyzed posts.
@@ -847,7 +847,7 @@ type XAnalysisClassifyResponseAnalysisSummary struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryCashtag struct {
@@ -870,7 +870,7 @@ type XAnalysisClassifyResponseAnalysisSummaryCashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryCashtagSignal struct {
@@ -891,7 +891,7 @@ type XAnalysisClassifyResponseAnalysisSummaryCashtagSignal struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts per comparison status, & up to 50 changed posts with their changes. Null
@@ -912,7 +912,7 @@ type XAnalysisClassifyResponseAnalysisSummaryMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow struct {
@@ -932,7 +932,7 @@ func (r XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow) RawJSON() str
 	return r.JSON.raw
 }
 func (r *XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -954,7 +954,7 @@ func (r XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRowChange) RawJSON
 	return r.JSON.raw
 }
 func (r *XAnalysisClassifyResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts by analysis outcome.
@@ -975,7 +975,7 @@ type XAnalysisClassifyResponseAnalysisSummaryRows struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummarySourceDomain struct {
@@ -993,7 +993,7 @@ type XAnalysisClassifyResponseAnalysisSummarySourceDomain struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseAnalysisSummaryTarget struct {
@@ -1021,7 +1021,7 @@ type XAnalysisClassifyResponseAnalysisSummaryTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 analyzed post with its answers.
@@ -1080,7 +1080,7 @@ type XAnalysisClassifyResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The answers in full, with their probabilities.
@@ -1109,7 +1109,7 @@ type XAnalysisClassifyResponseResultAnalysis struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 question's answer. A probability has probability. A choice or score has value,
@@ -1147,7 +1147,7 @@ type XAnalysisClassifyResponseResultAnalysisAnswer struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseResultAnalysisAnswerType string
@@ -1178,12 +1178,12 @@ type XAnalysisClassifyResponseResultAnalysisAnswerValueUnion struct {
 }
 
 func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -1191,7 +1191,7 @@ func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsString() (v s
 func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -1228,7 +1228,7 @@ func (r XAnalysisClassifyResponseResultAnalysisContextAvailability) RawJSON() st
 	return r.JSON.raw
 }
 func (r *XAnalysisClassifyResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseResultAnalysisContextAvailabilityArticle string
@@ -1292,7 +1292,7 @@ type XAnalysisClassifyResponseResultAnalysisQuestion struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisClassifyResponseResultAnswersUnion contains all possible properties and
@@ -1315,12 +1315,12 @@ type XAnalysisClassifyResponseResultAnswersUnion struct {
 }
 
 func (u XAnalysisClassifyResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisClassifyResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -1328,7 +1328,7 @@ func (u XAnalysisClassifyResponseResultAnswersUnion) AsString() (v string) {
 func (u XAnalysisClassifyResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisClassifyResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -1365,7 +1365,7 @@ type XAnalysisClassifyResponseResultMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseResultMonitorChange struct {
@@ -1385,7 +1385,7 @@ type XAnalysisClassifyResponseResultMonitorChange struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // first_run without baseline. new_to_baseline for a post baseline lacks. changed
@@ -1436,7 +1436,7 @@ type XAnalysisClassifyResponseUnanalyzed struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisClassifyResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisClassifyResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisClassifyResponseUnanalyzedStatus string
@@ -1474,7 +1474,7 @@ type XAnalysisMarketSignalsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Totals of the answers across the analyzed posts.
@@ -1521,7 +1521,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummary struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryCashtag struct {
@@ -1544,7 +1544,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryCashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal struct {
@@ -1567,7 +1567,7 @@ func (r XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal) RawJSON() st
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts per comparison status, & up to 50 changed posts with their changes. Null
@@ -1588,7 +1588,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow struct {
@@ -1608,7 +1608,7 @@ func (r XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow) RawJSON(
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -1630,7 +1630,7 @@ func (r XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRowChange) Ra
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts by analysis outcome.
@@ -1651,7 +1651,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryRows struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain struct {
@@ -1671,7 +1671,7 @@ func (r XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain) RawJSON() str
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryTarget struct {
@@ -1699,7 +1699,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummaryTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 analyzed post with its answers.
@@ -1758,7 +1758,7 @@ type XAnalysisMarketSignalsResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The answers in full, with their probabilities.
@@ -1787,7 +1787,7 @@ type XAnalysisMarketSignalsResponseResultAnalysis struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 question's answer. A probability has probability. A choice or score has value,
@@ -1825,7 +1825,7 @@ type XAnalysisMarketSignalsResponseResultAnalysisAnswer struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseResultAnalysisAnswerType string
@@ -1856,12 +1856,12 @@ type XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion struct {
 }
 
 func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -1871,7 +1871,7 @@ func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) RawJSON() 
 }
 
 func (r *XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -1908,7 +1908,7 @@ func (r XAnalysisMarketSignalsResponseResultAnalysisContextAvailability) RawJSON
 	return r.JSON.raw
 }
 func (r *XAnalysisMarketSignalsResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityArticle string
@@ -1972,7 +1972,7 @@ type XAnalysisMarketSignalsResponseResultAnalysisQuestion struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisMarketSignalsResponseResultAnswersUnion contains all possible
@@ -1995,12 +1995,12 @@ type XAnalysisMarketSignalsResponseResultAnswersUnion struct {
 }
 
 func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -2008,7 +2008,7 @@ func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsString() (v string) 
 func (u XAnalysisMarketSignalsResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisMarketSignalsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -2045,7 +2045,7 @@ type XAnalysisMarketSignalsResponseResultMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseResultMonitorChange struct {
@@ -2065,7 +2065,7 @@ type XAnalysisMarketSignalsResponseResultMonitorChange struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // first_run without baseline. new_to_baseline for a post baseline lacks. changed
@@ -2116,7 +2116,7 @@ type XAnalysisMarketSignalsResponseUnanalyzed struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisMarketSignalsResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisMarketSignalsResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisMarketSignalsResponseUnanalyzedStatus string
@@ -2154,7 +2154,7 @@ type XAnalysisNewsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Totals of the answers across the analyzed posts.
@@ -2201,7 +2201,7 @@ type XAnalysisNewsResponseAnalysisSummary struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryCashtag struct {
@@ -2224,7 +2224,7 @@ type XAnalysisNewsResponseAnalysisSummaryCashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryCashtagSignal struct {
@@ -2245,7 +2245,7 @@ type XAnalysisNewsResponseAnalysisSummaryCashtagSignal struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts per comparison status, & up to 50 changed posts with their changes. Null
@@ -2266,7 +2266,7 @@ type XAnalysisNewsResponseAnalysisSummaryMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow struct {
@@ -2284,7 +2284,7 @@ type XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -2306,7 +2306,7 @@ func (r XAnalysisNewsResponseAnalysisSummaryMonitorChangedRowChange) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XAnalysisNewsResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts by analysis outcome.
@@ -2327,7 +2327,7 @@ type XAnalysisNewsResponseAnalysisSummaryRows struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummarySourceDomain struct {
@@ -2345,7 +2345,7 @@ type XAnalysisNewsResponseAnalysisSummarySourceDomain struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseAnalysisSummaryTarget struct {
@@ -2373,7 +2373,7 @@ type XAnalysisNewsResponseAnalysisSummaryTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 analyzed post with its answers.
@@ -2432,7 +2432,7 @@ type XAnalysisNewsResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The answers in full, with their probabilities.
@@ -2461,7 +2461,7 @@ type XAnalysisNewsResponseResultAnalysis struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 question's answer. A probability has probability. A choice or score has value,
@@ -2499,7 +2499,7 @@ type XAnalysisNewsResponseResultAnalysisAnswer struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseResultAnalysisAnswerType string
@@ -2530,12 +2530,12 @@ type XAnalysisNewsResponseResultAnalysisAnswerValueUnion struct {
 }
 
 func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -2543,7 +2543,7 @@ func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsString() (v strin
 func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisNewsResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -2578,7 +2578,7 @@ type XAnalysisNewsResponseResultAnalysisContextAvailability struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseResultAnalysisContextAvailability) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseResultAnalysisContextAvailabilityArticle string
@@ -2642,7 +2642,7 @@ type XAnalysisNewsResponseResultAnalysisQuestion struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisNewsResponseResultAnswersUnion contains all possible properties and
@@ -2665,12 +2665,12 @@ type XAnalysisNewsResponseResultAnswersUnion struct {
 }
 
 func (u XAnalysisNewsResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisNewsResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -2678,7 +2678,7 @@ func (u XAnalysisNewsResponseResultAnswersUnion) AsString() (v string) {
 func (u XAnalysisNewsResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisNewsResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -2715,7 +2715,7 @@ type XAnalysisNewsResponseResultMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseResultMonitorChange struct {
@@ -2735,7 +2735,7 @@ type XAnalysisNewsResponseResultMonitorChange struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // first_run without baseline. new_to_baseline for a post baseline lacks. changed
@@ -2786,7 +2786,7 @@ type XAnalysisNewsResponseUnanalyzed struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisNewsResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisNewsResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisNewsResponseUnanalyzedStatus string
@@ -2824,7 +2824,7 @@ type XAnalysisSentimentResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Totals of the answers across the analyzed posts.
@@ -2871,7 +2871,7 @@ type XAnalysisSentimentResponseAnalysisSummary struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryCashtag struct {
@@ -2894,7 +2894,7 @@ type XAnalysisSentimentResponseAnalysisSummaryCashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryCashtagSignal struct {
@@ -2915,7 +2915,7 @@ type XAnalysisSentimentResponseAnalysisSummaryCashtagSignal struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts per comparison status, & up to 50 changed posts with their changes. Null
@@ -2936,7 +2936,7 @@ type XAnalysisSentimentResponseAnalysisSummaryMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow struct {
@@ -2956,7 +2956,7 @@ func (r XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow) RawJSON() st
 	return r.JSON.raw
 }
 func (r *XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -2978,7 +2978,7 @@ func (r XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRowChange) RawJSO
 	return r.JSON.raw
 }
 func (r *XAnalysisSentimentResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts by analysis outcome.
@@ -2999,7 +2999,7 @@ type XAnalysisSentimentResponseAnalysisSummaryRows struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummarySourceDomain struct {
@@ -3017,7 +3017,7 @@ type XAnalysisSentimentResponseAnalysisSummarySourceDomain struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseAnalysisSummaryTarget struct {
@@ -3045,7 +3045,7 @@ type XAnalysisSentimentResponseAnalysisSummaryTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 analyzed post with its answers.
@@ -3104,7 +3104,7 @@ type XAnalysisSentimentResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The answers in full, with their probabilities.
@@ -3133,7 +3133,7 @@ type XAnalysisSentimentResponseResultAnalysis struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 question's answer. A probability has probability. A choice or score has value,
@@ -3171,7 +3171,7 @@ type XAnalysisSentimentResponseResultAnalysisAnswer struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseResultAnalysisAnswerType string
@@ -3202,12 +3202,12 @@ type XAnalysisSentimentResponseResultAnalysisAnswerValueUnion struct {
 }
 
 func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -3215,7 +3215,7 @@ func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsString() (v 
 func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -3252,7 +3252,7 @@ func (r XAnalysisSentimentResponseResultAnalysisContextAvailability) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XAnalysisSentimentResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseResultAnalysisContextAvailabilityArticle string
@@ -3316,7 +3316,7 @@ type XAnalysisSentimentResponseResultAnalysisQuestion struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisSentimentResponseResultAnswersUnion contains all possible properties
@@ -3339,12 +3339,12 @@ type XAnalysisSentimentResponseResultAnswersUnion struct {
 }
 
 func (u XAnalysisSentimentResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisSentimentResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -3352,7 +3352,7 @@ func (u XAnalysisSentimentResponseResultAnswersUnion) AsString() (v string) {
 func (u XAnalysisSentimentResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisSentimentResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -3389,7 +3389,7 @@ type XAnalysisSentimentResponseResultMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseResultMonitorChange struct {
@@ -3409,7 +3409,7 @@ type XAnalysisSentimentResponseResultMonitorChange struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // first_run without baseline. new_to_baseline for a post baseline lacks. changed
@@ -3460,7 +3460,7 @@ type XAnalysisSentimentResponseUnanalyzed struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisSentimentResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisSentimentResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisSentimentResponseUnanalyzedStatus string
@@ -3498,7 +3498,7 @@ type XAnalysisViralScoreResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponse) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Totals of the answers across the analyzed posts.
@@ -3545,7 +3545,7 @@ type XAnalysisViralScoreResponseAnalysisSummary struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseAnalysisSummary) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryCashtag struct {
@@ -3568,7 +3568,7 @@ type XAnalysisViralScoreResponseAnalysisSummaryCashtag struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseAnalysisSummaryCashtag) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryCashtag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal struct {
@@ -3589,7 +3589,7 @@ type XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts per comparison status, & up to 50 changed posts with their changes. Null
@@ -3610,7 +3610,7 @@ type XAnalysisViralScoreResponseAnalysisSummaryMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseAnalysisSummaryMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow struct {
@@ -3630,7 +3630,7 @@ func (r XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow) RawJSON() s
 	return r.JSON.raw
 }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRowChange struct {
@@ -3652,7 +3652,7 @@ func (r XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRowChange) RawJS
 	return r.JSON.raw
 }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryMonitorChangedRowChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // Posts by analysis outcome.
@@ -3673,7 +3673,7 @@ type XAnalysisViralScoreResponseAnalysisSummaryRows struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseAnalysisSummaryRows) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryRows) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummarySourceDomain struct {
@@ -3691,7 +3691,7 @@ type XAnalysisViralScoreResponseAnalysisSummarySourceDomain struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseAnalysisSummarySourceDomain) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseAnalysisSummaryTarget struct {
@@ -3719,7 +3719,7 @@ type XAnalysisViralScoreResponseAnalysisSummaryTarget struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseAnalysisSummaryTarget) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseAnalysisSummaryTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 analyzed post with its answers.
@@ -3778,7 +3778,7 @@ type XAnalysisViralScoreResponseResult struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // The answers in full, with their probabilities.
@@ -3807,7 +3807,7 @@ type XAnalysisViralScoreResponseResultAnalysis struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseResultAnalysis) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // 1 question's answer. A probability has probability. A choice or score has value,
@@ -3845,7 +3845,7 @@ type XAnalysisViralScoreResponseResultAnalysisAnswer struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseResultAnalysisAnswer) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultAnalysisAnswer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseResultAnalysisAnswerType string
@@ -3876,12 +3876,12 @@ type XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion struct {
 }
 
 func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -3891,7 +3891,7 @@ func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) RawJSON() str
 }
 
 func (r *XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // What the AI read beside the post's text.
@@ -3928,7 +3928,7 @@ func (r XAnalysisViralScoreResponseResultAnalysisContextAvailability) RawJSON() 
 	return r.JSON.raw
 }
 func (r *XAnalysisViralScoreResponseResultAnalysisContextAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseResultAnalysisContextAvailabilityArticle string
@@ -3992,7 +3992,7 @@ type XAnalysisViralScoreResponseResultAnalysisQuestion struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseResultAnalysisQuestion) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // XAnalysisViralScoreResponseResultAnswersUnion contains all possible properties
@@ -4015,12 +4015,12 @@ type XAnalysisViralScoreResponseResultAnswersUnion struct {
 }
 
 func (u XAnalysisViralScoreResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
 func (u XAnalysisViralScoreResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
 	return
 }
 
@@ -4028,7 +4028,7 @@ func (u XAnalysisViralScoreResponseResultAnswersUnion) AsString() (v string) {
 func (u XAnalysisViralScoreResponseResultAnswersUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *XAnalysisViralScoreResponseResultAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // How the post's answers compare with its row in baseline, as the AI Actors
@@ -4065,7 +4065,7 @@ type XAnalysisViralScoreResponseResultMonitor struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseResultMonitor) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseResultMonitorChange struct {
@@ -4085,7 +4085,7 @@ type XAnalysisViralScoreResponseResultMonitorChange struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseResultMonitorChange) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseResultMonitorChange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 // first_run without baseline. new_to_baseline for a post baseline lacks. changed
@@ -4136,7 +4136,7 @@ type XAnalysisViralScoreResponseUnanalyzed struct {
 // Returns the unmodified JSON received from the API
 func (r XAnalysisViralScoreResponseUnanalyzed) RawJSON() string { return r.JSON.raw }
 func (r *XAnalysisViralScoreResponseUnanalyzed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type XAnalysisViralScoreResponseUnanalyzedStatus string
@@ -4194,7 +4194,7 @@ func (r XAnalysisBrandParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -4227,7 +4227,7 @@ func (r XAnalysisBrandParamsAnalysis) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4265,7 +4265,7 @@ func (r XAnalysisBrandParamsAnalysisQuestion) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4288,7 +4288,7 @@ func (r XAnalysisBrandParamsAnalysisQuestionCriteria) MarshalJSON() (data []byte
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Name is required.
@@ -4303,7 +4303,7 @@ func (r XAnalysisBrandParamsAnalysisTarget) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Answers is required.
@@ -4323,7 +4323,7 @@ func (r XAnalysisBrandParamsBaseline) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Only one field can be non-zero.
@@ -4339,7 +4339,7 @@ func (u XAnalysisBrandParamsBaselineAnswersUnion) MarshalJSON() ([]byte, error) 
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisBrandParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The earlier row's monitor, with its fingerprint.
@@ -4353,7 +4353,7 @@ func (r XAnalysisBrandParamsBaselineMonitor) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property ID is required.
@@ -4367,7 +4367,7 @@ func (r XAnalysisBrandParamsBaselineTweet) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisBrandParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Search order. Default Latest.
@@ -4391,7 +4391,7 @@ func (u XAnalysisBrandParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisBrandParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Only one field can be non-zero.
@@ -4407,7 +4407,7 @@ func (u XAnalysisBrandParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisBrandParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisClassifyParams struct {
@@ -4458,7 +4458,7 @@ func (r XAnalysisClassifyParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -4491,7 +4491,7 @@ func (r XAnalysisClassifyParamsAnalysis) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4529,7 +4529,7 @@ func (r XAnalysisClassifyParamsAnalysisQuestion) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4552,7 +4552,7 @@ func (r XAnalysisClassifyParamsAnalysisQuestionCriteria) MarshalJSON() (data []b
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Name is required.
@@ -4567,7 +4567,7 @@ func (r XAnalysisClassifyParamsAnalysisTarget) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Answers is required.
@@ -4587,7 +4587,7 @@ func (r XAnalysisClassifyParamsBaseline) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Only one field can be non-zero.
@@ -4603,7 +4603,7 @@ func (u XAnalysisClassifyParamsBaselineAnswersUnion) MarshalJSON() ([]byte, erro
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisClassifyParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The earlier row's monitor, with its fingerprint.
@@ -4617,7 +4617,7 @@ func (r XAnalysisClassifyParamsBaselineMonitor) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property ID is required.
@@ -4631,7 +4631,7 @@ func (r XAnalysisClassifyParamsBaselineTweet) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisClassifyParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Search order. Default Latest.
@@ -4655,7 +4655,7 @@ func (u XAnalysisClassifyParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisClassifyParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Only one field can be non-zero.
@@ -4671,7 +4671,7 @@ func (u XAnalysisClassifyParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisClassifyParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisMarketSignalsParams struct {
@@ -4722,7 +4722,7 @@ func (r XAnalysisMarketSignalsParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -4755,7 +4755,7 @@ func (r XAnalysisMarketSignalsParamsAnalysis) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4793,7 +4793,7 @@ func (r XAnalysisMarketSignalsParamsAnalysisQuestion) MarshalJSON() (data []byte
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -4816,7 +4816,7 @@ func (r XAnalysisMarketSignalsParamsAnalysisQuestionCriteria) MarshalJSON() (dat
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Name is required.
@@ -4831,7 +4831,7 @@ func (r XAnalysisMarketSignalsParamsAnalysisTarget) MarshalJSON() (data []byte, 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Answers is required.
@@ -4851,7 +4851,7 @@ func (r XAnalysisMarketSignalsParamsBaseline) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Only one field can be non-zero.
@@ -4867,7 +4867,7 @@ func (u XAnalysisMarketSignalsParamsBaselineAnswersUnion) MarshalJSON() ([]byte,
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisMarketSignalsParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The earlier row's monitor, with its fingerprint.
@@ -4881,7 +4881,7 @@ func (r XAnalysisMarketSignalsParamsBaselineMonitor) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property ID is required.
@@ -4895,7 +4895,7 @@ func (r XAnalysisMarketSignalsParamsBaselineTweet) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisMarketSignalsParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Search order. Default Latest.
@@ -4919,7 +4919,7 @@ func (u XAnalysisMarketSignalsParamsSinceTimeUnion) MarshalJSON() ([]byte, error
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisMarketSignalsParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Only one field can be non-zero.
@@ -4935,7 +4935,7 @@ func (u XAnalysisMarketSignalsParamsUntilTimeUnion) MarshalJSON() ([]byte, error
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisMarketSignalsParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisNewsParams struct {
@@ -4986,7 +4986,7 @@ func (r XAnalysisNewsParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -5019,7 +5019,7 @@ func (r XAnalysisNewsParamsAnalysis) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5057,7 +5057,7 @@ func (r XAnalysisNewsParamsAnalysisQuestion) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5080,7 +5080,7 @@ func (r XAnalysisNewsParamsAnalysisQuestionCriteria) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Name is required.
@@ -5095,7 +5095,7 @@ func (r XAnalysisNewsParamsAnalysisTarget) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Answers is required.
@@ -5115,7 +5115,7 @@ func (r XAnalysisNewsParamsBaseline) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Only one field can be non-zero.
@@ -5131,7 +5131,7 @@ func (u XAnalysisNewsParamsBaselineAnswersUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisNewsParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The earlier row's monitor, with its fingerprint.
@@ -5145,7 +5145,7 @@ func (r XAnalysisNewsParamsBaselineMonitor) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property ID is required.
@@ -5159,7 +5159,7 @@ func (r XAnalysisNewsParamsBaselineTweet) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisNewsParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Search order. Default Latest.
@@ -5183,7 +5183,7 @@ func (u XAnalysisNewsParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisNewsParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Only one field can be non-zero.
@@ -5199,7 +5199,7 @@ func (u XAnalysisNewsParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisNewsParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisSentimentParams struct {
@@ -5250,7 +5250,7 @@ func (r XAnalysisSentimentParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -5283,7 +5283,7 @@ func (r XAnalysisSentimentParamsAnalysis) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5321,7 +5321,7 @@ func (r XAnalysisSentimentParamsAnalysisQuestion) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5344,7 +5344,7 @@ func (r XAnalysisSentimentParamsAnalysisQuestionCriteria) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Name is required.
@@ -5359,7 +5359,7 @@ func (r XAnalysisSentimentParamsAnalysisTarget) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Answers is required.
@@ -5379,7 +5379,7 @@ func (r XAnalysisSentimentParamsBaseline) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Only one field can be non-zero.
@@ -5395,7 +5395,7 @@ func (u XAnalysisSentimentParamsBaselineAnswersUnion) MarshalJSON() ([]byte, err
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisSentimentParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The earlier row's monitor, with its fingerprint.
@@ -5409,7 +5409,7 @@ func (r XAnalysisSentimentParamsBaselineMonitor) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property ID is required.
@@ -5423,7 +5423,7 @@ func (r XAnalysisSentimentParamsBaselineTweet) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisSentimentParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Search order. Default Latest.
@@ -5447,7 +5447,7 @@ func (u XAnalysisSentimentParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisSentimentParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Only one field can be non-zero.
@@ -5463,7 +5463,7 @@ func (u XAnalysisSentimentParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisSentimentParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 type XAnalysisViralScoreParams struct {
@@ -5514,7 +5514,7 @@ func (r XAnalysisViralScoreParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -5547,7 +5547,7 @@ func (r XAnalysisViralScoreParamsAnalysis) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysis) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5585,7 +5585,7 @@ func (r XAnalysisViralScoreParamsAnalysisQuestion) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysisQuestion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 func init() {
@@ -5608,7 +5608,7 @@ func (r XAnalysisViralScoreParamsAnalysisQuestionCriteria) MarshalJSON() (data [
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysisQuestionCriteria) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Name is required.
@@ -5623,7 +5623,7 @@ func (r XAnalysisViralScoreParamsAnalysisTarget) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsAnalysisTarget) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property Answers is required.
@@ -5643,7 +5643,7 @@ func (r XAnalysisViralScoreParamsBaseline) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsBaseline) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Only one field can be non-zero.
@@ -5659,7 +5659,7 @@ func (u XAnalysisViralScoreParamsBaselineAnswersUnion) MarshalJSON() ([]byte, er
 	return param.MarshalUnion(u, u.OfString, u.OfFloat)
 }
 func (u *XAnalysisViralScoreParamsBaselineAnswersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // The earlier row's monitor, with its fingerprint.
@@ -5673,7 +5673,7 @@ func (r XAnalysisViralScoreParamsBaselineMonitor) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsBaselineMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // The property ID is required.
@@ -5687,7 +5687,7 @@ func (r XAnalysisViralScoreParamsBaselineTweet) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *XAnalysisViralScoreParamsBaselineTweet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return apijson.UnmarshalRoot(data, r, nil)
 }
 
 // Search order. Default Latest.
@@ -5711,7 +5711,7 @@ func (u XAnalysisViralScoreParamsSinceTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisViralScoreParamsSinceTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
 
 // Only one field can be non-zero.
@@ -5727,5 +5727,5 @@ func (u XAnalysisViralScoreParamsUntilTimeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfInt)
 }
 func (u *XAnalysisViralScoreParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
+	return apijson.UnmarshalRoot(data, u, nil)
 }
