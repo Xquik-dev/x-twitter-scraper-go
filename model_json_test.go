@@ -87,7 +87,10 @@ func TestGeneratedModelsPreserveRawJSON(t *testing.T) {
 		}
 		registered[modelType.Name()] = struct{}{}
 		t.Run(modelType.Name(), func(t *testing.T) {
-			model := reflect.New(modelType).Interface().(rawJSONModel)
+			model, ok := reflect.TypeAssert[rawJSONModel](reflect.New(modelType))
+			if !ok {
+				t.Fatalf("%s does not decode JSON", modelType)
+			}
 			if err := model.UnmarshalJSON(raw); err != nil {
 				t.Fatalf("UnmarshalJSON() error = %v", err)
 			}
@@ -109,11 +112,18 @@ func TestParamModelsDecodeTheirOwnJSON(t *testing.T) {
 			continue
 		}
 		t.Run(modelType.Name(), func(t *testing.T) {
-			encoded, err := reflect.New(modelType).Interface().(paramModel).MarshalJSON()
+			model, ok := reflect.TypeAssert[paramModel](reflect.New(modelType))
+			if !ok {
+				t.Fatalf("%s does not encode JSON", modelType)
+			}
+			encoded, err := model.MarshalJSON()
 			if err != nil {
 				t.Fatalf("MarshalJSON() error = %v", err)
 			}
-			decoded := reflect.New(modelType).Interface().(paramModel)
+			decoded, ok := reflect.TypeAssert[paramModel](reflect.New(modelType))
+			if !ok {
+				t.Fatalf("%s does not decode JSON", modelType)
+			}
 			if err := decoded.UnmarshalJSON(encoded); err != nil {
 				t.Fatalf("UnmarshalJSON(%s) error = %v", encoded, err)
 			}
@@ -150,16 +160,25 @@ func TestRepostTimestampStates(t *testing.T) {
 		for _, raw := range []string{`{}`, `{"retweetedAt":null}`, `{"retweetedAt":"2026-09-11T04:35:22Z"}`} {
 			t.Run(modelType.Name()+"/"+raw, func(t *testing.T) {
 				value := reflect.New(modelType)
-				model := value.Interface().(rawJSONModel)
+				model, ok := reflect.TypeAssert[rawJSONModel](value)
+				if !ok {
+					t.Fatalf("%s does not decode JSON", modelType)
+				}
 				if err := model.UnmarshalJSON([]byte(raw)); err != nil {
 					t.Fatal(err)
 				}
-				got := value.Elem().FieldByName("RetweetedAt").Interface().(time.Time)
+				got, ok := reflect.TypeAssert[time.Time](value.Elem().FieldByName("RetweetedAt"))
+				if !ok {
+					t.Fatalf("%s.RetweetedAt is not a time", modelType)
+				}
 				owner := value.Elem()
 				for _, index := range timestampField.Index[:len(timestampField.Index)-1] {
 					owner = owner.Field(index)
 				}
-				field := owner.FieldByName("JSON").FieldByName("RetweetedAt").Interface().(respjson.Field)
+				field, ok := reflect.TypeAssert[respjson.Field](owner.FieldByName("JSON").FieldByName("RetweetedAt"))
+				if !ok {
+					t.Fatalf("%s.JSON.RetweetedAt is not field metadata", modelType)
+				}
 				want := strings.TrimSuffix(strings.TrimPrefix(raw, `{"retweetedAt":`), "}")
 				if raw == `{}` {
 					want = ""
@@ -219,11 +238,11 @@ func TestNumericOrStringResponseValues(t *testing.T) {
 }
 
 func TestConnectionAttemptResponseVariants(t *testing.T) {
-	for status, want := range map[string]any{
-		"pending":             XAccountConnectionAttemptGetResponsePending{},
-		"success":             XAccountConnectionAttemptGetResponseSuccess{},
-		"failed":              XAccountConnectionAttemptGetResponseFailed{},
-		"requires_email_code": XAccountConnectionAttemptGetResponseRequiresEmailCode{},
+	for status, want := range map[string]reflect.Type{
+		"pending":             reflect.TypeFor[XAccountConnectionAttemptGetResponsePending](),
+		"success":             reflect.TypeFor[XAccountConnectionAttemptGetResponseSuccess](),
+		"failed":              reflect.TypeFor[XAccountConnectionAttemptGetResponseFailed](),
+		"requires_email_code": reflect.TypeFor[XAccountConnectionAttemptGetResponseRequiresEmailCode](),
 		"unknown":             nil,
 	} {
 		t.Run(status, func(t *testing.T) {
@@ -233,10 +252,13 @@ func TestConnectionAttemptResponseVariants(t *testing.T) {
 				t.Fatal(err)
 			}
 			variant := model.AsAny()
-			if reflect.TypeOf(variant) != reflect.TypeOf(want) {
-				t.Fatalf("response variant = %T, want %T", variant, want)
+			if reflect.TypeOf(variant) != want {
+				t.Fatalf("response variant = %T, want %v", variant, want)
 			}
-			if variant != nil && variant.(interface{ RawJSON() string }).RawJSON() != raw {
+			if variant == nil {
+				return
+			}
+			if decoded, ok := variant.(interface{ RawJSON() string }); !ok || decoded.RawJSON() != raw {
 				t.Fatal("response variant lost its original payload")
 			}
 		})

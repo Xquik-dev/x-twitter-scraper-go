@@ -5,14 +5,19 @@
 package xtwitterscraper_test
 
 import (
+	"bytes"
 	"embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"reflect"
+	"slices"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -68,19 +73,86 @@ func (r *capturedRequest) expect(t *testing.T, method, path, query string) {
 
 func (r *capturedRequest) expectBody(t *testing.T, want string) {
 	t.Helper()
-	var got, expected any
-	if err := json.Unmarshal(r.body, &got); err != nil {
+	got, err := canonicalJSON(r.body)
+	if err != nil {
 		t.Fatalf("request body %q is not JSON: %v", r.body, err)
 	}
-	if err := json.Unmarshal([]byte(want), &expected); err != nil {
+	expected, err := canonicalJSON([]byte(want))
+	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(got, expected) {
+	if got != expected {
 		t.Fatalf("request body = %s, want %s", r.body, want)
 	}
 }
 
-func expectDecoded(t *testing.T, response any) {
+// canonicalJSON writes a JSON value with sorted object keys, no spaces and
+// each number and string in one form, so 2 values that decode to the same data
+// give the same text.
+func canonicalJSON(raw []byte) (string, error) {
+	raw = bytes.TrimSpace(raw)
+	if len(raw) == 0 {
+		return "", errors.New("empty JSON value")
+	}
+	switch first := raw[0]; {
+	case first == '{':
+		var object map[string]json.RawMessage
+		if err := json.Unmarshal(raw, &object); err != nil {
+			return "", err
+		}
+		parts := make([]string, 0, len(object))
+		for _, key := range slices.Sorted(maps.Keys(object)) {
+			name, err := json.Marshal(key)
+			if err != nil {
+				return "", err
+			}
+			value, err := canonicalJSON(object[key])
+			if err != nil {
+				return "", err
+			}
+			parts = append(parts, string(name)+":"+value)
+		}
+		return "{" + strings.Join(parts, ",") + "}", nil
+	case first == '[':
+		var items []json.RawMessage
+		if err := json.Unmarshal(raw, &items); err != nil {
+			return "", err
+		}
+		parts := make([]string, 0, len(items))
+		for _, item := range items {
+			value, err := canonicalJSON(item)
+			if err != nil {
+				return "", err
+			}
+			parts = append(parts, value)
+		}
+		return "[" + strings.Join(parts, ",") + "]", nil
+	case first == '"':
+		var text string
+		if err := json.Unmarshal(raw, &text); err != nil {
+			return "", err
+		}
+		encoded, err := json.Marshal(text)
+		return string(encoded), err
+	case first == '-' || first >= '0' && first <= '9':
+		var number float64
+		if err := json.Unmarshal(raw, &number); err != nil {
+			return "", err
+		}
+		return strconv.FormatFloat(number, 'g', -1, 64), nil
+	default:
+		var literal bool
+		if string(raw) == "null" {
+			return "null", nil
+		}
+		if err := json.Unmarshal(raw, &literal); err != nil {
+			return "", err
+		}
+		return strconv.FormatBool(literal), nil
+	}
+}
+
+func expectDecoded[T any](t *testing.T, response T) {
 	t.Helper()
 	var problems []string
 	walkDecoded(reflect.ValueOf(response), "res", nil, &problems)
@@ -153,7 +225,11 @@ func checkMetadata(metadata reflect.Value, path string, keys map[string]bool, pr
 				}
 			}
 		default:
-			status := metadata.Field(index).Interface().(respjson.Field)
+			status, ok := reflect.TypeAssert[respjson.Field](metadata.Field(index))
+			if !ok {
+				*problems = append(*problems, fmt.Sprintf("%s.JSON.%s is a %s", path, field.Name, field.Type))
+				continue
+			}
 			if raw := status.Raw(); raw != "" && raw != respjson.Null && !status.Valid() {
 				*problems = append(*problems, fmt.Sprintf("%s.%s cannot hold %s", path, field.Name, raw))
 			}

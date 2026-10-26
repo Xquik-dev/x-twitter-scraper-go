@@ -13,25 +13,25 @@ import (
 func TestResponsesDecodeTheNewFields(t *testing.T) {
 	cases := []struct {
 		fixture string
-		decode  func([]byte) (any, error)
+		decode  func([]byte) (interface{ RawJSON() string }, error)
 		values  []fieldValue
 	}{
 		{
 			"getAccount.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.AccountGetResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"Subscription.Status", "active"},
-				{"Subscription.Tier", "pro"},
-				{"CreditInfo.AutoTopupStopped", false},
+				field("Subscription.Status", "active"),
+				field("Subscription.Tier", "pro"),
+				field("CreditInfo.AutoTopupStopped", false),
 			},
 		},
 		{
 			"updateAccount.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.AccountUpdateLocaleResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -40,18 +40,18 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getCredits.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.CreditGetBalanceResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"AutoTopupStopped", false},
+				field("AutoTopupStopped", false),
 			},
 		},
 		{
 			"createDraft.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.DraftDetail
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -60,7 +60,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getEvent.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.EventDetail
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -69,7 +69,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getExtraction.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.ExtractionGetResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -78,7 +78,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getMonitor.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.Monitor
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -87,18 +87,18 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"listMonitors.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.MonitorListResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"HasMore", false},
+				field("HasMore", false),
 			},
 		},
 		{
 			"createKeywordMonitor.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.MonitorKeywordNewResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -107,7 +107,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getKeywordMonitor.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.MonitorKeywordGetResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -116,7 +116,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"updateKeywordMonitor.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.MonitorKeywordUpdateResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -125,40 +125,40 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"listKeywordMonitors.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.MonitorKeywordListResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"HasMore", false},
+				field("HasMore", false),
 			},
 		},
 		{
 			"listStyles.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.StyleListResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"HasMore", false},
+				field("HasMore", false),
 			},
 		},
 		{
 			"listTickets.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.SupportTicketListResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"HasMore", false},
+				field("HasMore", false),
 			},
 		},
 		{
 			"createWebhook.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.WebhookNewResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -167,7 +167,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"updateWebhook.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.Webhook
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -176,45 +176,45 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"listWebhooks.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.WebhookListResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"HasMore", false},
+				field("HasMore", false),
 			},
 		},
 		{
 			"listWebhookDeliveries.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.WebhookListDeliveriesResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"HasMore", false},
+				field("HasMore", false),
 			},
 		},
 		{
 			"getArticle.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XGetArticleResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"Article.ArticleID", "2100651802404544512"},
-				{"Article.Contents[0].Links[0].Offset", int64(18)},
-				{"Article.Contents[0].Links[0].Length", int64(9)},
-				{"Article.Contents[0].Links[0].URL", "https://example.com/paragraph"},
-				{"Article.RetweetCount", int64(40)},
-				{"Article.BookmarkCount", int64(61)},
+				field("Article.ArticleID", "2100651802404544512"),
+				field("Article.Contents[0].Links[0].Offset", int64(18)),
+				field("Article.Contents[0].Links[0].Length", int64(9)),
+				field("Article.Contents[0].Links[0].URL", "https://example.com/paragraph"),
+				field("Article.RetweetCount", int64(40)),
+				field("Article.BookmarkCount", int64(61)),
 			},
 		},
 		{
 			"getCommunityInfo.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XCommunityGetInfoResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -223,19 +223,19 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"checkFollow.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XFollowerCheckResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
 			[]fieldValue{
-				{"SourceID", "11348282"},
-				{"TargetID", "34743251"},
+				field("SourceID", "11348282"),
+				field("TargetID", "34743251"),
 			},
 		},
 		{
 			"getListFollowers.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XListGetFollowersResponseUnion
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -244,7 +244,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getListMembers.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XListGetMembersResponseUnion
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -253,7 +253,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getTweetReplies.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XTweetGetRepliesResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -262,7 +262,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getBatchUsers.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XUserGetBatchResponse
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -271,7 +271,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getUserFollowers.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XUserGetFollowersResponseUnion
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -280,7 +280,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getUserFollowing.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XUserGetFollowingResponseUnion
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -289,7 +289,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 		},
 		{
 			"getUserVerifiedFollowers.json",
-			func(data []byte) (any, error) {
+			func(data []byte) (interface{ RawJSON() string }, error) {
 				var v xtwitterscraper.XUserGetVerifiedFollowersResponseUnion
 				err := v.UnmarshalJSON(data)
 				return v, err
@@ -321,12 +321,12 @@ func TestExtractionRunDecodesTheStartedJob(t *testing.T) {
 	}
 	expectDecoded(t, res)
 	expectValues(t, res, []fieldValue{
-		{"ID", "ext_123"},
-		{"PollAfterMs", int64(1000)},
-		{"Status", "running"},
-		{"StatusURL", "/api/v1/extractions/a1b2c3d4"},
-		{"ToolType", "follower_explorer"},
-		{"WaitURL", "/api/v1/extractions/id?wait=10&limit=1&outputMode=compact"},
+		field("ID", "ext_123"),
+		field("PollAfterMs", int64(1000)),
+		field("Status", "running"),
+		field("StatusURL", "/api/v1/extractions/a1b2c3d4"),
+		field("ToolType", "follower_explorer"),
+		field("WaitURL", "/api/v1/extractions/id?wait=10&limit=1&outputMode=compact"),
 	})
 }
 
@@ -338,11 +338,11 @@ func TestConnectionChallengeSubmitDecodesTheEmailCodeChallenge(t *testing.T) {
 	}
 	expectDecoded(t, res)
 	expectValues(t, res, []fieldValue{
-		{"ID", "xch_8vGd8Y9JvH6dV0xA"},
-		{"Object", "x_account_connection_challenge"},
-		{"ExpiresAt", "2026-05-08T12:10:00Z"},
-		{"Message", "Enter the email verification code to continue."},
-		{"Username", "example_user"},
+		field("ID", "xch_8vGd8Y9JvH6dV0xA"),
+		field("Object", "x_account_connection_challenge"),
+		field("ExpiresAt", "2026-05-08T12:10:00Z"),
+		field("Message", "Enter the email verification code to continue."),
+		field("Username", "example_user"),
 	})
 }
 
@@ -358,6 +358,6 @@ func TestCommunityInfoDecodesTheMembersFacepile(t *testing.T) {
 	}
 	profile := facepile[0].AsUserProfile()
 	preview := facepile[1].AsCommunityMembersFacepileCommunityMemberPreview()
-	expectValues(t, profile, []fieldValue{{"ID", "44196397"}, {"Username", "elonmusk"}, {"Followers", int64(150000000)}})
-	expectValues(t, preview, []fieldValue{{"ID", "11348282"}, {"ProfilePictureOriginal", "https://pbs.twimg.com/b.jpg"}})
+	expectValues(t, profile, []fieldValue{field("ID", "44196397"), field("Username", "elonmusk"), field("Followers", int64(150000000))})
+	expectValues(t, preview, []fieldValue{field("ID", "11348282"), field("ProfilePictureOriginal", "https://pbs.twimg.com/b.jpg")})
 }

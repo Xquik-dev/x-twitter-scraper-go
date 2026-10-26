@@ -148,16 +148,20 @@ func TestSupportTicketRequestBodies(t *testing.T) {
 								if mediaType != "application/json" {
 									t.Fatalf("Content-Type = %q", mediaType)
 								}
-								var got map[string]any
+								var got map[string]json.RawMessage
 								if err := json.NewDecoder(req.Body).Decode(&got); err != nil {
 									t.Fatal(err)
 								}
-								want := map[string]any{"body": "Please help."}
+								want := map[string]json.RawMessage{"body": json.RawMessage(`"Please help."`)}
 								if test.attachments != nil {
-									want["attachments"] = []any{}
+									want["attachments"] = json.RawMessage(`[]`)
 								}
 								if service.subject != "" {
-									want["subject"] = service.subject
+									subject, err := json.Marshal(service.subject)
+									if err != nil {
+										t.Fatal(err)
+									}
+									want["subject"] = subject
 								}
 								if !reflect.DeepEqual(got, want) {
 									t.Fatalf("JSON body = %v, want %v", got, want)

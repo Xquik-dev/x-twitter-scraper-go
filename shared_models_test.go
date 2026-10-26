@@ -23,40 +23,42 @@ import (
 
 type fieldValue struct {
 	path string
-	want any
+	want reflect.Value
 }
 
-func valueAt(root any, path string) (any, bool) {
-	value := reflect.ValueOf(root)
+func field[T any](path string, want T) fieldValue {
+	return fieldValue{path, reflect.ValueOf(want)}
+}
+
+func valueAt(value reflect.Value, path string) (reflect.Value, bool) {
 	for _, part := range strings.Split(path, ".") {
 		name, rest, indexed := strings.Cut(part, "[")
 		value = reflect.Indirect(value).FieldByName(name)
 		if !value.IsValid() {
-			return nil, false
+			return reflect.Value{}, false
 		}
 		if indexed {
 			index, err := strconv.Atoi(strings.TrimSuffix(rest, "]"))
 			if err != nil || index >= value.Len() {
-				return nil, false
+				return reflect.Value{}, false
 			}
 			value = value.Index(index)
 		}
 	}
-	switch typed := value.Interface().(type) {
-	case time.Time:
-		return typed.UTC().Format(time.RFC3339Nano), true
+	if timestamp, ok := reflect.TypeAssert[time.Time](value); ok {
+		return reflect.ValueOf(timestamp.UTC().Format(time.RFC3339Nano)), true
 	}
 	if value.Kind() == reflect.String {
-		return value.String(), true
+		return reflect.ValueOf(value.String()), true
 	}
-	return value.Interface(), true
+	return value, true
 }
 
-func expectValues(t *testing.T, root any, values []fieldValue) {
+func expectValues[T any](t *testing.T, root T, values []fieldValue) {
 	t.Helper()
 	for _, value := range values {
-		got, ok := valueAt(root, value.path)
-		if !ok || !reflect.DeepEqual(got, value.want) {
+		got, ok := valueAt(reflect.ValueOf(root), value.path)
+		if !ok || !reflect.DeepEqual(got.Interface(), value.want.Interface()) {
 			t.Errorf("%s = %#v, want %#v", value.path, got, value.want)
 		}
 	}
@@ -73,124 +75,124 @@ func TestUserProfileDecodesEveryField(t *testing.T) {
 	}
 	expectDecoded(t, profile)
 	expectValues(t, profile, []fieldValue{
-		{"AccountBasedInAccurate", true},
-		{"AccountBasedInUnavailable", true},
-		{"AdvertiserAccountServiceLevels", []string{"smb", "media_studio"}},
-		{"AdvertiserAccountType", "none"},
-		{"AffiliateUsername", "BBCNews"},
-		{"Birthdate.Day", int64(1)},
-		{"Birthdate.Month", int64(10)},
-		{"Birthdate.Year", int64(1958)},
-		{"BusinessProfileState", "none"},
-		{"ConnectedVia", "United States App Store"},
-		{"ConnectedViaAccurate", true},
-		{"ContactInfo.Emails[0].Domain", "example.com"},
-		{"ContactInfo.Emails[0].Source", "bio"},
-		{"ContactInfo.Emails[0].Value", "press@example.com"},
-		{"ContactInfo.Emails[0].WrittenAs", "press at example dot com"},
-		{"ContactInfo.Links[0].Network", "website"},
-		{"ContactInfo.Links[0].Source", "url"},
-		{"ContactInfo.Links[0].URL", "http://www.nasa.gov/"},
-		{"ContactInfo.Phones[0].Source", "location"},
-		{"ContactInfo.Phones[0].Value", "+12025550123"},
-		{"ContactInfo.Phones[0].WrittenAs", "202 555 0123"},
-		{"DefaultProfile", true},
-		{"DefaultProfileImage", true},
-		{"Email", "press@example.com"},
-		{"FastFollowersCount", int64(12)},
-		{"GeoEnabled", true},
-		{"HasExtendedProfile", true},
-		{"IdentityVerification.OverrideVerifiedYear", int64(2009)},
-		{"IsTranslationEnabled", true},
-		{"ListedCount", int64(3051)},
-		{"NormalFollowersCount", int64(92376175)},
-		{"ProfilePictureOriginal", "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB.jpg"},
-		{"RedirectsToUsername", "spacexsi"},
-		{"SubscribersCount", int64(7)},
-		{"UsernameChanges.Count", int64(2)},
-		{"UsernameChanges.LastChangedAt", "2016-05-14T00:22:47.057Z"},
-		{"VerificationReason.Entities[0].FromIndex", int64(91)},
-		{"VerificationReason.Entities[0].ToIndex", int64(101)},
-		{"VerificationReason.Entities[0].URL", "https://help.twitter.com/en/rules-and-policies/profile-labels"},
-		{"VerificationReason.Entities[0].URLType", "ExternalUrl"},
-		{"VerificationReason.Text", "This account is verified because it is a government or multilateral organization account.  Learn more"},
+		field("AccountBasedInAccurate", true),
+		field("AccountBasedInUnavailable", true),
+		field("AdvertiserAccountServiceLevels", []string{"smb", "media_studio"}),
+		field("AdvertiserAccountType", "none"),
+		field("AffiliateUsername", "BBCNews"),
+		field("Birthdate.Day", int64(1)),
+		field("Birthdate.Month", int64(10)),
+		field("Birthdate.Year", int64(1958)),
+		field("BusinessProfileState", "none"),
+		field("ConnectedVia", "United States App Store"),
+		field("ConnectedViaAccurate", true),
+		field("ContactInfo.Emails[0].Domain", "example.com"),
+		field("ContactInfo.Emails[0].Source", "bio"),
+		field("ContactInfo.Emails[0].Value", "press@example.com"),
+		field("ContactInfo.Emails[0].WrittenAs", "press at example dot com"),
+		field("ContactInfo.Links[0].Network", "website"),
+		field("ContactInfo.Links[0].Source", "url"),
+		field("ContactInfo.Links[0].URL", "http://www.nasa.gov/"),
+		field("ContactInfo.Phones[0].Source", "location"),
+		field("ContactInfo.Phones[0].Value", "+12025550123"),
+		field("ContactInfo.Phones[0].WrittenAs", "202 555 0123"),
+		field("DefaultProfile", true),
+		field("DefaultProfileImage", true),
+		field("Email", "press@example.com"),
+		field("FastFollowersCount", int64(12)),
+		field("GeoEnabled", true),
+		field("HasExtendedProfile", true),
+		field("IdentityVerification.OverrideVerifiedYear", int64(2009)),
+		field("IsTranslationEnabled", true),
+		field("ListedCount", int64(3051)),
+		field("NormalFollowersCount", int64(92376175)),
+		field("ProfilePictureOriginal", "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB.jpg"),
+		field("RedirectsToUsername", "spacexsi"),
+		field("SubscribersCount", int64(7)),
+		field("UsernameChanges.Count", int64(2)),
+		field("UsernameChanges.LastChangedAt", "2016-05-14T00:22:47.057Z"),
+		field("VerificationReason.Entities[0].FromIndex", int64(91)),
+		field("VerificationReason.Entities[0].ToIndex", int64(101)),
+		field("VerificationReason.Entities[0].URL", "https://help.twitter.com/en/rules-and-policies/profile-labels"),
+		field("VerificationReason.Entities[0].URLType", "ExternalUrl"),
+		field("VerificationReason.Text", "This account is verified because it is a government or multilateral organization account.  Learn more"),
 	})
 }
 
 var tweetFields = []fieldValue{
-	{"AuthorUnavailable.Message", "This account is suspended."},
-	{"AuthorUnavailable.Reason", "Suspended"},
-	{"CashtagAttachments[0].CandleSize", "5m"},
-	{"CashtagAttachments[0].Cashtag", "$TSLA"},
-	{"CashtagAttachments[0].EndTime", "2026-10-09T13:42:08.796Z"},
-	{"CashtagAttachments[0].SizeVariant", int64(1)},
-	{"CashtagAttachments[0].StartTime", "2026-10-09T13:30:00Z"},
-	{"CashtagAttachments[0].Timeframe", "1D"},
-	{"CommunityName", "Build in Public"},
-	{"ConversationControl.AllowedCountryCodes", []string{"US", "CA"}},
-	{"ConversationControl.Mode", "Community"},
-	{"ConversationControl.OwnerID", "11348282"},
-	{"Coordinates.Coordinates", []float64{-122.4194, 37.7749}},
-	{"Coordinates.Type", "Point"},
-	{"Entities.Hashtags[0].Tag.ID", "hashtag-nasa"},
-	{"Entities.Hashtags[0].Tag.Info.Info.Active", true},
-	{"Entities.Hashtags[0].Tag.Info.Info.Name", "NASA"},
-	{"Entities.Hashtags[0].Tag.Info.Info.Ticker", "NASA"},
-	{"Entities.Smarttags[0].Tag.ID", "smarttag-1"},
-	{"Entities.Smarttags[0].Tag.Info.Info.Active", true},
-	{"Entities.Symbols[0].Tag.ID", "symbol-tsla"},
-	{"Entities.Symbols[0].Tag.Info.Info.Active", true},
-	{"Entities.Timestamps[0].Tag.ID", "timestamp-75"},
-	{"Entities.Timestamps[0].Tag.Info.Info.Active", true},
-	{"ExclusiveContent.CreatorUserName", "NASA"},
-	{"ExclusiveContent.SubscribeURL", "https://x.com/NASA/creator-subscriptions/subscribe"},
-	{"Geo.Coordinates", []float64{37.7749, -122.4194}},
-	{"Geo.Type", "Point"},
-	{"GrokTranslatedPost", xtwitterscraper.PublicMetadata{"language": json.RawMessage(`"es"`), "text": json.RawMessage(`"La galaxia espiral."`)}},
-	{"HasCommunityNotes", true},
-	{"Interstitial.DisplayType", "NonCompliant"},
-	{"Interstitial.Text.Entities[0].FromIndex", int64(164)},
-	{"Interstitial.Text.Entities[0].Ref.ScreenName", "XSafety"},
-	{"Interstitial.Text.Entities[0].Ref.Text", "Learn more"},
-	{"Interstitial.Text.Entities[0].Ref.Type", "TimelineUrl"},
-	{"Interstitial.Text.Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"},
-	{"Interstitial.Text.Entities[0].Ref.URLType", "ExternalUrl"},
-	{"Interstitial.Text.Entities[0].ToIndex", int64(174)},
-	{"Interstitial.Text.Rtl", true},
-	{"Interstitial.Text.Text", "This Post violated the X Rules about glorifying violence. However, X has determined that it may be in the public's interest for the Post to remain accessible. Learn more"},
-	{"IsPinned", true},
-	{"IsRetweet", true},
-	{"Media[0].GrokImageAnnotation.Prompt", "A spiral galaxy"},
-	{"Media[0].GrokImageAnnotation.UpsampledPrompt", "A detailed spiral galaxy with blue and red arms"},
-	{"Media[0].SourceUser.Username", "NASAJPL"},
-	{"NoteTweet.NoteID", "note-77"},
-	{"ParentTweet.ID", "2102761519985332440"},
-	{"ParentTweet.Text", "The post this one replies to."},
-	{"QuotedTweetPermalink.DisplayURL", "x.com/NASA/status/2102…"},
-	{"QuotedTweetPermalink.ExpandedURL", "https://x.com/NASA/status/2102761519985332000"},
-	{"QuotedTweetPermalink.URL", "https://t.co/quoted123"},
-	{"QuotedTweetUnavailable.Reason", "Protected"},
-	{"SoftIntervention.DisplayType", "Fosnr"},
-	{"SoftIntervention.EngagementNudge", true},
-	{"SoftIntervention.Text.Entities[0].FromIndex", int64(0)},
-	{"SoftIntervention.Text.Entities[0].Ref.Type", "TimelineUrl"},
-	{"SoftIntervention.Text.Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"},
-	{"SoftIntervention.Text.Entities[0].Ref.URLType", "ExternalUrl"},
-	{"SoftIntervention.Text.Entities[0].ToIndex", int64(4)},
-	{"SoftIntervention.Text.Rtl", true},
-	{"SoftIntervention.Text.Text", "This Post may violate X's rules against Abuse."},
-	{"SoftIntervention.URL.URL", "https://help.x.com/rules-and-policies/enforcement-options"},
-	{"SoftIntervention.URL.URLType", "ExternalUrl"},
-	{"SportsContext.Competitors[0].Color", "007A33"},
-	{"SportsContext.Competitors[0].IsActive", true},
-	{"SportsContext.Competitors[0].IsWinner", true},
-	{"SportsContext.League", "NBA"},
-	{"SubscriberBadge.CreatorID", "44196397"},
-	{"TextHighlights[0].EndIndex", int64(13)},
-	{"TextHighlights[0].StartIndex", int64(5)},
-	{"Tombstone.Text.Entities[0].Ref.ScreenName", "XSupport"},
-	{"Tombstone.Text.Entities[0].Ref.Text", "Learn more"},
-	{"UnavailableAuthorID", "783214"},
+	field("AuthorUnavailable.Message", "This account is suspended."),
+	field("AuthorUnavailable.Reason", "Suspended"),
+	field("CashtagAttachments[0].CandleSize", "5m"),
+	field("CashtagAttachments[0].Cashtag", "$TSLA"),
+	field("CashtagAttachments[0].EndTime", "2026-10-09T13:42:08.796Z"),
+	field("CashtagAttachments[0].SizeVariant", int64(1)),
+	field("CashtagAttachments[0].StartTime", "2026-10-09T13:30:00Z"),
+	field("CashtagAttachments[0].Timeframe", "1D"),
+	field("CommunityName", "Build in Public"),
+	field("ConversationControl.AllowedCountryCodes", []string{"US", "CA"}),
+	field("ConversationControl.Mode", "Community"),
+	field("ConversationControl.OwnerID", "11348282"),
+	field("Coordinates.Coordinates", []float64{-122.4194, 37.7749}),
+	field("Coordinates.Type", "Point"),
+	field("Entities.Hashtags[0].Tag.ID", "hashtag-nasa"),
+	field("Entities.Hashtags[0].Tag.Info.Info.Active", true),
+	field("Entities.Hashtags[0].Tag.Info.Info.Name", "NASA"),
+	field("Entities.Hashtags[0].Tag.Info.Info.Ticker", "NASA"),
+	field("Entities.Smarttags[0].Tag.ID", "smarttag-1"),
+	field("Entities.Smarttags[0].Tag.Info.Info.Active", true),
+	field("Entities.Symbols[0].Tag.ID", "symbol-tsla"),
+	field("Entities.Symbols[0].Tag.Info.Info.Active", true),
+	field("Entities.Timestamps[0].Tag.ID", "timestamp-75"),
+	field("Entities.Timestamps[0].Tag.Info.Info.Active", true),
+	field("ExclusiveContent.CreatorUserName", "NASA"),
+	field("ExclusiveContent.SubscribeURL", "https://x.com/NASA/creator-subscriptions/subscribe"),
+	field("Geo.Coordinates", []float64{37.7749, -122.4194}),
+	field("Geo.Type", "Point"),
+	field("GrokTranslatedPost", xtwitterscraper.PublicMetadata{"language": json.RawMessage(`"es"`), "text": json.RawMessage(`"La galaxia espiral."`)}),
+	field("HasCommunityNotes", true),
+	field("Interstitial.DisplayType", "NonCompliant"),
+	field("Interstitial.Text.Entities[0].FromIndex", int64(164)),
+	field("Interstitial.Text.Entities[0].Ref.ScreenName", "XSafety"),
+	field("Interstitial.Text.Entities[0].Ref.Text", "Learn more"),
+	field("Interstitial.Text.Entities[0].Ref.Type", "TimelineUrl"),
+	field("Interstitial.Text.Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"),
+	field("Interstitial.Text.Entities[0].Ref.URLType", "ExternalUrl"),
+	field("Interstitial.Text.Entities[0].ToIndex", int64(174)),
+	field("Interstitial.Text.Rtl", true),
+	field("Interstitial.Text.Text", "This Post violated the X Rules about glorifying violence. However, X has determined that it may be in the public's interest for the Post to remain accessible. Learn more"),
+	field("IsPinned", true),
+	field("IsRetweet", true),
+	field("Media[0].GrokImageAnnotation.Prompt", "A spiral galaxy"),
+	field("Media[0].GrokImageAnnotation.UpsampledPrompt", "A detailed spiral galaxy with blue and red arms"),
+	field("Media[0].SourceUser.Username", "NASAJPL"),
+	field("NoteTweet.NoteID", "note-77"),
+	field("ParentTweet.ID", "2102761519985332440"),
+	field("ParentTweet.Text", "The post this one replies to."),
+	field("QuotedTweetPermalink.DisplayURL", "x.com/NASA/status/2102…"),
+	field("QuotedTweetPermalink.ExpandedURL", "https://x.com/NASA/status/2102761519985332000"),
+	field("QuotedTweetPermalink.URL", "https://t.co/quoted123"),
+	field("QuotedTweetUnavailable.Reason", "Protected"),
+	field("SoftIntervention.DisplayType", "Fosnr"),
+	field("SoftIntervention.EngagementNudge", true),
+	field("SoftIntervention.Text.Entities[0].FromIndex", int64(0)),
+	field("SoftIntervention.Text.Entities[0].Ref.Type", "TimelineUrl"),
+	field("SoftIntervention.Text.Entities[0].Ref.URL", "https://help.x.com/rules-and-policies/public-interest"),
+	field("SoftIntervention.Text.Entities[0].Ref.URLType", "ExternalUrl"),
+	field("SoftIntervention.Text.Entities[0].ToIndex", int64(4)),
+	field("SoftIntervention.Text.Rtl", true),
+	field("SoftIntervention.Text.Text", "This Post may violate X's rules against Abuse."),
+	field("SoftIntervention.URL.URL", "https://help.x.com/rules-and-policies/enforcement-options"),
+	field("SoftIntervention.URL.URLType", "ExternalUrl"),
+	field("SportsContext.Competitors[0].Color", "007A33"),
+	field("SportsContext.Competitors[0].IsActive", true),
+	field("SportsContext.Competitors[0].IsWinner", true),
+	field("SportsContext.League", "NBA"),
+	field("SubscriberBadge.CreatorID", "44196397"),
+	field("TextHighlights[0].EndIndex", int64(13)),
+	field("TextHighlights[0].StartIndex", int64(5)),
+	field("Tombstone.Text.Entities[0].Ref.ScreenName", "XSupport"),
+	field("Tombstone.Text.Entities[0].Ref.Text", "Learn more"),
+	field("UnavailableAuthorID", "783214"),
 }
 
 var _ = []shared.SoftIntervention{
@@ -237,29 +239,29 @@ func TestResponsesDecodeEmbeddedTweetFields(t *testing.T) {
 	}
 	tweetJSON := fmt.Sprintf(`{"id":"1234567891","text":"Repost","bookmarkCount":0,"likeCount":0,"quoteCount":0,"replyCount":0,"retweetCount":0,"viewCount":0,"parentTweet":%s,"quoted_tweet":%s,"retweeted_tweet":%s}`, payload, payload, payload)
 	values := []fieldValue{
-		{"ID", "2102761519985332442"},
-		{"BookmarkCount", int64(599)},
-		{"LikeCount", int64(9775)},
-		{"QuoteCount", int64(85)},
-		{"ReplyCount", int64(271)},
-		{"RetweetCount", int64(1364)},
-		{"ViewCount", int64(962488)},
-		{"Article.Title", "Release notes"},
-		{"Author.ID", "11348282"},
-		{"Author.Username", "NASA"},
-		{"Card.Name", "summary"},
-		{"CommunityID", "community-1"},
-		{"GrokShareAttachment", xtwitterscraper.PublicMetadata{"id": json.RawMessage(`"grok-1"`)}},
-		{"JetfuelAttachment", xtwitterscraper.PublicMetadata{"id": json.RawMessage(`"jetfuel-1"`)}},
-		{"LimitedActions[0].Action", "Reply"},
-		{"Place.ID", "example"},
-		{"PostCta", xtwitterscraper.PublicMetadata{"action": json.RawMessage(`"open"`)}},
-		{"PreviousCounts.LikeCount", int64(1)},
-		{"ReactionContext.ReactedToPostID", "1234567890"},
-		{"ReactionContext.ReactedToUser.Username", "NASA"},
-		{"RetweetedAt", "2026-09-11T20:24:45Z"},
-		{"Scopes", xtwitterscraper.PublicMetadata{"followers": json.RawMessage("true")}},
-		{"Type", "tweet"},
+		field("ID", "2102761519985332442"),
+		field("BookmarkCount", int64(599)),
+		field("LikeCount", int64(9775)),
+		field("QuoteCount", int64(85)),
+		field("ReplyCount", int64(271)),
+		field("RetweetCount", int64(1364)),
+		field("ViewCount", int64(962488)),
+		field("Article.Title", "Release notes"),
+		field("Author.ID", "11348282"),
+		field("Author.Username", "NASA"),
+		field("Card.Name", "summary"),
+		field("CommunityID", "community-1"),
+		field("GrokShareAttachment", xtwitterscraper.PublicMetadata{"id": json.RawMessage(`"grok-1"`)}),
+		field("JetfuelAttachment", xtwitterscraper.PublicMetadata{"id": json.RawMessage(`"jetfuel-1"`)}),
+		field("LimitedActions[0].Action", "Reply"),
+		field("Place.ID", "example"),
+		field("PostCta", xtwitterscraper.PublicMetadata{"action": json.RawMessage(`"open"`)}),
+		field("PreviousCounts.LikeCount", int64(1)),
+		field("ReactionContext.ReactedToPostID", "1234567890"),
+		field("ReactionContext.ReactedToUser.Username", "NASA"),
+		field("RetweetedAt", "2026-09-11T20:24:45Z"),
+		field("Scopes", xtwitterscraper.PublicMetadata{"followers": json.RawMessage("true")}),
+		field("Type", "tweet"),
 	}
 	for _, field := range tweetFields {
 		if !strings.HasPrefix(field.path, "ParentTweet.") {
@@ -294,12 +296,15 @@ func TestResponsesDecodeEmbeddedTweetFields(t *testing.T) {
 			}
 			expectDecoded(t, test.response)
 			for _, field := range []string{"ParentTweet", "QuotedTweet", "RetweetedTweet"} {
-				embedded, ok := valueAt(test.response, test.path+"."+field)
+				embedded, ok := valueAt(reflect.ValueOf(test.response), test.path+"."+field)
 				if !ok {
 					t.Fatalf("missing %s.%s", test.path, field)
 				}
-				expectValues(t, embedded, values)
-				tweet := embedded.(shared.EmbeddedTweet)
+				tweet, ok := reflect.TypeAssert[shared.EmbeddedTweet](embedded)
+				if !ok {
+					t.Fatalf("%s.%s is a %s", test.path, field, embedded.Type())
+				}
+				expectValues(t, tweet, values)
 				if !tweet.JSON.IsPinned.Valid() || !tweet.JSON.Author.Valid() || !tweet.JSON.ParentTweet.Valid() || !tweet.JSON.QuotedTweet.Valid() || !tweet.JSON.RetweetedTweet.Valid() {
 					t.Fatalf("missing field metadata in %s", tweet.RawJSON())
 				}
@@ -341,9 +346,9 @@ func TestNestedEmbeddedTweetModelsDecodeEveryField(t *testing.T) {
 		t.Fatal(err)
 	}
 	values := []fieldValue{
-		{"Author.Username", "NASA"},
-		{"ParentTweet.Text", "Just launched!"},
-		{"ParentTweet.RetweetedTweet.ID", "nested-1"},
+		field("Author.Username", "NASA"),
+		field("ParentTweet.Text", "Just launched!"),
+		field("ParentTweet.RetweetedTweet.ID", "nested-1"),
 	}
 	for _, field := range tweetFields {
 		if !strings.HasPrefix(field.path, "ParentTweet.") {
@@ -435,12 +440,15 @@ func TestTweetModelsUnknownCounts(t *testing.T) {
 						t.Fatal(err)
 					}
 					expectDecoded(t, model)
-					expectValues(t, model, []fieldValue{{"UnknownCounts", test.want}})
-					metadata, ok := valueAt(model, "JSON.UnknownCounts")
+					expectValues(t, model, []fieldValue{field("UnknownCounts", test.want)})
+					metadata, ok := valueAt(reflect.ValueOf(model), "JSON.UnknownCounts")
 					if !ok {
 						t.Fatal("missing unknown counts metadata")
 					}
-					field := metadata.(respjson.Field)
+					field, ok := reflect.TypeAssert[respjson.Field](metadata)
+					if !ok {
+						t.Fatalf("unknown counts metadata is a %s", metadata.Type())
+					}
 					if field.Valid() != test.present || field.Raw() != test.raw {
 						t.Fatalf("unknown counts metadata = %#v, want present %v and raw %q", field, test.present, test.raw)
 					}
@@ -459,8 +467,8 @@ func TestTweetResponseUnknownCounts(t *testing.T) {
 	expectDecoded(t, response)
 	want := []shared.TweetUnknownCount{shared.TweetUnknownCountBookmarkCount, shared.TweetUnknownCountViewCount}
 	expectValues(t, response, []fieldValue{
-		{"Tweet.UnknownCounts", want},
-		{"Tweet.RetweetedTweet.UnknownCounts", want},
+		field("Tweet.UnknownCounts", want),
+		field("Tweet.RetweetedTweet.UnknownCounts", want),
 	})
 	if !response.Tweet.JSON.UnknownCounts.Valid() || !response.Tweet.RetweetedTweet.JSON.UnknownCounts.Valid() {
 		t.Fatalf("missing unknown counts metadata in %s", response.RawJSON())
@@ -476,7 +484,7 @@ func TestXTweetGetFixture(t *testing.T) {
 	request.expect(t, http.MethodGet, "/api/v1/x/tweets/2102761519985332442", "")
 	expectDecoded(t, res)
 	expectValues(t, res.Tweet, tweetFields)
-	expectValues(t, res, []fieldValue{{"Author.Followers", int64(92376233)}, {"Author.Verified", true}})
+	expectValues(t, res, []fieldValue{field("Author.Followers", int64(92376233)), field("Author.Verified", true)})
 }
 
 func TestReadsSendFieldsAndOmit(t *testing.T) {

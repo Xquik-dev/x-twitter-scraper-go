@@ -54,14 +54,14 @@ func TestNewQueryParamsReachTheQuery(t *testing.T) {
 func TestNewBodyParamsReachTheBody(t *testing.T) {
 	cases := map[string]struct {
 		params interface{ MarshalJSON() ([]byte, error) }
-		want   map[string]any
+		want   map[string]string
 	}{
-		"ExtractionEstimateCostParams": {xtwitterscraper.ExtractionEstimateCostParams{BusinessEmailOnly: xtwitterscraper.Bool(true), EmailDomains: xtwitterscraper.String("emailDomains"), EnrichProfiles: xtwitterscraper.Bool(true), HasEmail: xtwitterscraper.Bool(true)}, map[string]any{"businessEmailOnly": true, "emailDomains": "emailDomains", "enrichProfiles": true, "hasEmail": true}},
-		"ExtractionRunParams":          {xtwitterscraper.ExtractionRunParams{BusinessEmailOnly: xtwitterscraper.Bool(true), EmailDomains: xtwitterscraper.String("emailDomains"), EnrichProfiles: xtwitterscraper.Bool(true), HasEmail: xtwitterscraper.Bool(true)}, map[string]any{"businessEmailOnly": true, "emailDomains": "emailDomains", "enrichProfiles": true, "hasEmail": true}},
-		"MonitorNewParams":             {xtwitterscraper.MonitorNewParams{Name: xtwitterscraper.String("name")}, map[string]any{"name": "name"}},
-		"MonitorUpdateParams":          {xtwitterscraper.MonitorUpdateParams{Name: xtwitterscraper.String("name")}, map[string]any{"name": "name"}},
-		"MonitorKeywordNewParams":      {xtwitterscraper.MonitorKeywordNewParams{Name: xtwitterscraper.String("name")}, map[string]any{"name": "name"}},
-		"MonitorKeywordUpdateParams":   {xtwitterscraper.MonitorKeywordUpdateParams{Name: xtwitterscraper.String("name")}, map[string]any{"name": "name"}},
+		"ExtractionEstimateCostParams": {xtwitterscraper.ExtractionEstimateCostParams{BusinessEmailOnly: xtwitterscraper.Bool(true), EmailDomains: xtwitterscraper.String("emailDomains"), EnrichProfiles: xtwitterscraper.Bool(true), HasEmail: xtwitterscraper.Bool(true)}, map[string]string{"businessEmailOnly": "true", "emailDomains": `"emailDomains"`, "enrichProfiles": "true", "hasEmail": "true"}},
+		"ExtractionRunParams":          {xtwitterscraper.ExtractionRunParams{BusinessEmailOnly: xtwitterscraper.Bool(true), EmailDomains: xtwitterscraper.String("emailDomains"), EnrichProfiles: xtwitterscraper.Bool(true), HasEmail: xtwitterscraper.Bool(true)}, map[string]string{"businessEmailOnly": "true", "emailDomains": `"emailDomains"`, "enrichProfiles": "true", "hasEmail": "true"}},
+		"MonitorNewParams":             {xtwitterscraper.MonitorNewParams{Name: xtwitterscraper.String("name")}, map[string]string{"name": `"name"`}},
+		"MonitorUpdateParams":          {xtwitterscraper.MonitorUpdateParams{Name: xtwitterscraper.String("name")}, map[string]string{"name": `"name"`}},
+		"MonitorKeywordNewParams":      {xtwitterscraper.MonitorKeywordNewParams{Name: xtwitterscraper.String("name")}, map[string]string{"name": `"name"`}},
+		"MonitorKeywordUpdateParams":   {xtwitterscraper.MonitorKeywordUpdateParams{Name: xtwitterscraper.String("name")}, map[string]string{"name": `"name"`}},
 	}
 	for name, test := range cases {
 		t.Run(name, func(t *testing.T) {
@@ -69,13 +69,13 @@ func TestNewBodyParamsReachTheBody(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			var body map[string]any
+			var body map[string]json.RawMessage
 			if err := json.Unmarshal(data, &body); err != nil {
 				t.Fatal(err)
 			}
 			for key, want := range test.want {
-				if body[key] != want {
-					t.Errorf("%s = %#v, want %#v in %s", key, body[key], want, data)
+				if string(body[key]) != want {
+					t.Errorf("%s = %s, want %s in %s", key, body[key], want, data)
 				}
 			}
 		})
