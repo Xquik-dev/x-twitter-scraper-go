@@ -23,8 +23,6 @@ type EncodedAsDate Opt[time.Time]
 // special characters that sjson interprets as a path.
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
-type forceOmit int
-
 func (m EncodedAsDate) MarshalJSON() ([]byte, error) {
 	underlying := Opt[time.Time](m)
 	bytes := underlying.MarshalJSONWithTimeLayout("2006-01-02")
@@ -35,14 +33,14 @@ func (m EncodedAsDate) MarshalJSON() ([]byte, error) {
 }
 
 // Stability for the API of MarshalObject is not guaranteed.
-func MarshalObject[T ParamStruct](f T, underlying any) ([]byte, error) {
+func MarshalObject[T ParamStruct, U any](f T, underlying U) ([]byte, error) {
 	return MarshalWithExtras(f, underlying, f.extraFields())
 }
 
 // MarshalWithExtras is used to marshal a struct with additional properties.
 //
 // Stability for the API of MarshalWithExtras is not guaranteed.
-func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[string]R) ([]byte, error) {
+func MarshalWithExtras[T ParamStruct, R any, U any](f T, underlying U, extras map[string]R) ([]byte, error) {
 	if f.null() {
 		return []byte("null"), nil
 	} else if len(extras) > 0 {
@@ -51,8 +49,7 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 			return nil, err
 		}
 		for k, v := range extras {
-			var a any = v
-			if a == Omit {
+			if omitted, ok := reflect.TypeAssert[json.RawMessage](reflect.ValueOf(&v).Elem()); ok && omitted == nil {
 				if b, e := sjson.DeleteBytes(bytes, k); e == nil {
 					bytes = b
 				}
@@ -72,7 +69,7 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 }
 
 // Stability for the API of MarshalUnion is not guaranteed.
-func MarshalUnion[T ParamStruct](metadata T, variants ...any) ([]byte, error) {
+func MarshalUnion[T ParamStruct](metadata T, variants ...json.Marshaler) ([]byte, error) {
 	nPresent := 0
 	presentIdx := -1
 	for i, variant := range variants {

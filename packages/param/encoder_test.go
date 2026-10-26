@@ -44,9 +44,9 @@ func (r FieldStruct) MarshalJSON() (data []byte, err error) {
 }
 
 type StructWithAdditionalProperties struct {
-	First       string         `json:"first"`
-	Second      int            `json:"second"`
-	ExtraFields map[string]any `json:"-"`
+	First       string                     `json:"first"`
+	Second      int                        `json:"second"`
+	ExtraFields map[string]json.RawMessage `json:"-"`
 	param.APIObject
 }
 
@@ -55,7 +55,7 @@ func (s StructWithAdditionalProperties) MarshalJSON() ([]byte, error) {
 	return param.MarshalWithExtras(s, (*shadow)(&s), s.ExtraFields)
 }
 
-func assertJSON(t *testing.T, value any, expected string) {
+func assertJSON[T any](t *testing.T, value T, expected string) {
 	t.Helper()
 	data, err := json.Marshal(value)
 	if err != nil {
@@ -93,7 +93,7 @@ func TestIsNullish(t *testing.T) {
 
 func TestFieldMarshal(t *testing.T) {
 	tests := map[string]struct {
-		value    any
+		value    json.Marshaler
 		expected string
 	}{
 		"null_string": {param.Null[string](), "null"},
@@ -156,8 +156,8 @@ func TestAdditionalProperties(t *testing.T) {
 	s := StructWithAdditionalProperties{
 		First:  "hello",
 		Second: 14,
-		ExtraFields: map[string]any{
-			"hi": "there",
+		ExtraFields: map[string]json.RawMessage{
+			"hi": json.RawMessage(`"there"`),
 		},
 	}
 	exp := `{"first":"hello","second":14,"hi":"there"}`
@@ -170,9 +170,9 @@ func TestExtraFields(t *testing.T) {
 		A: "hello",
 		B: 123,
 	}
-	v.SetExtraFields(map[string]any{
-		"extra": Struct{A: "recursive"},
-		"b":     nil,
+	v.SetExtraFields(map[string]json.RawMessage{
+		"extra": json.RawMessage(`{"a":"recursive","b":0}`),
+		"b":     json.RawMessage("null"),
 	})
 	assertJSON(t, v, `{"a":"hello","b":null,"extra":{"a":"recursive","b":0}}`)
 	if v.B != 123 {
@@ -182,7 +182,7 @@ func TestExtraFields(t *testing.T) {
 
 func TestExtraFieldsForceOmitted(t *testing.T) {
 	v := Struct{}
-	v.SetExtraFields(map[string]any{
+	v.SetExtraFields(map[string]json.RawMessage{
 		"b": param.Omit,
 	})
 	assertJSON(t, v, `{"a":""}`)
@@ -230,15 +230,11 @@ func TestOverride(t *testing.T) {
 		expected string
 	}{
 		"param_struct": {
-			param.Override[FieldStruct](map[string]any{
-				"a": "hello",
-				"b": 12,
-				"c": nil,
-			}),
+			param.Override[FieldStruct](json.RawMessage(`{"a":"hello","b":12,"c":null}`)),
 			`{"a":"hello","b":12,"c":null}`,
 		},
 		"param_struct_primitive": {
-			param.Override[FieldStruct](12),
+			param.Override[FieldStruct](json.RawMessage("12")),
 			`12`,
 		},
 		"param_struct_null": {
@@ -249,8 +245,8 @@ func TestOverride(t *testing.T) {
 
 	f := FieldStruct{}
 
-	f.SetExtraFields(map[string]any{
-		"z": "ok",
+	f.SetExtraFields(map[string]json.RawMessage{
+		"z": json.RawMessage(`"ok"`),
 	})
 
 	for name, test := range tests {
@@ -272,17 +268,20 @@ func (almostOpt) isZero() bool { return false }
 func (almostOpt) implOpt() {}
 
 func TestOptionalInterfaceAssignability(t *testing.T) {
-	optInt := param.Opt[int]{}
-	if _, ok := any(optInt).(param.Optional); !ok {
+	optional := reflect.TypeFor[param.Optional]()
+	if !reflect.TypeFor[param.Opt[int]]().Implements(optional) {
 		t.Fatalf("failed to assign")
 	}
 
 	notOpt := almostOpt{}
-	if _, ok := any(notOpt).(param.Optional); ok {
+	if reflect.TypeFor[almostOpt]().Implements(optional) {
 		t.Fatalf("unexpected successful assignment")
 	}
 
 	notOpt.implOpt()
+	if notOpt.isZero() {
+		t.Fatal("almostOpt reports zero")
+	}
 }
 
 type PrimitiveUnion struct {
@@ -361,6 +360,14 @@ func (a NonCompacted) MarshalJSON() ([]byte, error) {
 
 var nonCompactedRaw string = ` { "foo": "bar" } `
 
+func marshaled(value json.Marshaler) json.RawMessage {
+	data, err := json.Marshal(value)
+	if err != nil {
+		panic(err)
+	}
+	return data
+}
+
 func TestAppendCompactBroken(t *testing.T) {
 	tests := map[string]struct {
 		value json.Marshaler
@@ -426,11 +433,11 @@ func TestAppendCompact(t *testing.T) {
 			`{"com":"pact"}`,
 		},
 		"override/override-with-nested": {
-			param.Override[NonCompactedDoubleParent](NonCompactedParent{}),
+			param.Override[NonCompactedDoubleParent](marshaled(NonCompactedParent{})),
 			`{"bad_child":{"foo":"bar"}}`,
 		},
 		"override/override-with-non-compacted": {
-			param.Override[NonCompactedDoubleParent](NonCompacted{}),
+			param.Override[NonCompactedDoubleParent](marshaled(NonCompacted{})),
 			`{"foo":"bar"}`,
 		},
 	}

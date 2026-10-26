@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
+	"reflect"
 	"time"
 )
 
@@ -55,7 +56,7 @@ func (o Opt[T]) String() string {
 	if o.null() {
 		return "null"
 	}
-	if s, ok := any(o.Value).(fmt.Stringer); ok {
+	if s, ok := reflect.TypeAssert[fmt.Stringer](reflect.ValueOf(&o.Value).Elem()); ok {
 		return s.String()
 	}
 	return fmt.Sprintf("%v", o.Value)
@@ -86,7 +87,7 @@ func (o *Opt[T]) UnmarshalJSON(data []byte) error {
 
 // Prefer to use [Opt.MarshalJSON] instead.
 func (o Opt[T]) MarshalJSONWithTimeLayout(format string) []byte {
-	t, ok := any(o.Value).(time.Time)
+	t, ok := reflect.TypeAssert[time.Time](reflect.ValueOf(&o.Value).Elem())
 	if !ok || o.null() {
 		return nil
 	}
