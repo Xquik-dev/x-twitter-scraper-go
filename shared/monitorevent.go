@@ -115,7 +115,7 @@ func (u MonitorEventDataUnion) AsMonitorLegacyPost() (v MonitorLegacyPost, err e
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfBool OfInt OfStringArray]
+// will be valid: OfString, OfBool, OfInt or OfStringArray.
 type MonitorProfileValueUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
