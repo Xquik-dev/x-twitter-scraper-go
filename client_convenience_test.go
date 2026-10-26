@@ -21,7 +21,9 @@ func TestClientConvenienceMethods(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		methods = append(methods, req.Method)
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = io.WriteString(w, "{}")
+		if _, err := io.WriteString(w, "{}"); err != nil {
+			t.Error(err)
+		}
 	}))
 	defer server.Close()
 

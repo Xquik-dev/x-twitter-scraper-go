@@ -133,7 +133,11 @@ func TestRequestOptions(t *testing.T) {
 
 	t.Run("response destinations and request bodies", func(t *testing.T) {
 		received := newOptionTestConfig(t)
-		received.BaseURL, _ = url.Parse("https://example.com/")
+		baseURL, err := url.Parse("https://example.com/")
+		if err != nil {
+			t.Fatal(err)
+		}
+		received.BaseURL = baseURL
 		received.CustomHTTPDoer = testHTTPDoer(func(*http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: http.StatusOK,
@@ -176,7 +180,10 @@ func TestRequestOptions(t *testing.T) {
 		if cfg.RequestTimeout != 3*time.Second {
 			t.Fatalf("RequestTimeout = %s", cfg.RequestTimeout)
 		}
-		wantURL, _ := url.Parse("https://xquik.com/api/v1/")
+		wantURL, err := url.Parse("https://xquik.com/api/v1/")
+		if err != nil {
+			t.Fatal(err)
+		}
 		if cfg.DefaultBaseURL.String() != wantURL.String() {
 			t.Fatalf("DefaultBaseURL = %s", cfg.DefaultBaseURL)
 		}

@@ -16,7 +16,9 @@ import (
 func TestSupportAttachmentDownloadWithOptionalParams(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte("abc"))
+		if _, err := w.Write([]byte("abc")); err != nil {
+			t.Error(err)
+		}
 	}))
 	defer server.Close()
 	baseURL := server.URL

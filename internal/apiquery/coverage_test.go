@@ -105,10 +105,12 @@ func TestMarshalAdditionalKindsAndInvalidSettings(t *testing.T) {
 					t.Fatal("invalid array format did not panic")
 				}
 			}()
-			_, _ = MarshalWithSettings(
+			if _, err := MarshalWithSettings(
 				[]string{"tweet"},
 				QuerySettings{ArrayFormat: format},
-			)
+			); err != nil {
+				t.Fatal(err)
+			}
 		})
 	}
 }

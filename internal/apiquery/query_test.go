@@ -321,7 +321,10 @@ func TestEncode(t *testing.T) {
 			if err != nil {
 				t.Fatalf("failed to marshal url %s", err)
 			}
-			str, _ := url.QueryUnescape(values.Encode())
+			str, err := url.QueryUnescape(values.Encode())
+			if err != nil {
+				t.Fatal(err)
+			}
 			if str != test.enc {
 				t.Fatalf("expected %s to serialize to %s but got %s", test.val, test.enc, str)
 			}

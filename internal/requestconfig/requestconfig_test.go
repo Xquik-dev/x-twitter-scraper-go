@@ -114,7 +114,11 @@ func executeWithServer[D any](
 	server := httptest.NewServer(handler)
 	t.Cleanup(server.Close)
 	cfg := testConfig(t, method, "/resource", body, dst)
-	cfg.BaseURL, _ = url.Parse(server.URL + "/")
+	baseURL, err := url.Parse(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfg.BaseURL = baseURL
 	cfg.MaxRetries = 0
 	return cfg, cfg.Execute()
 }
@@ -312,7 +316,9 @@ func expectDecoded[D any](t *testing.T, contentType string, body string, want D,
 	dst := new(D)
 	_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", contentType)
-		_, _ = io.WriteString(w, body)
+		if _, err := io.WriteString(w, body); err != nil {
+			t.Error(err)
+		}
 	}, http.MethodGet, nil, dst)
 	if (err != nil) != wantErr {
 		t.Fatalf("error = %v, want error = %t", err, wantErr)
@@ -371,10 +377,14 @@ func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
 		var response *http.Response
 		var responseBody *http.Response
 		cfg := testConfig(t, http.MethodGet, "/resource", nil, &responseBody)
-		cfg.BaseURL, _ = url.Parse(server.URL + "/")
+		baseURL, err := url.Parse(server.URL + "/")
+		if err != nil {
+			t.Fatal(err)
+		}
+		cfg.BaseURL = baseURL
 		cfg.MaxRetries = 0
 		cfg.ResponseInto = &response
-		err := cfg.Execute()
+		err = cfg.Execute()
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -387,7 +397,9 @@ func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
 		cfg, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
-			_, _ = io.WriteString(w, `{"message":"bad request"}`)
+			if _, err := io.WriteString(w, `{"message":"bad request"}`); err != nil {
+				t.Error(err)
+			}
 		}, http.MethodGet, nil, ResponseBody{})
 		if err == nil || !strings.Contains(err.Error(), "400 Bad Request") {
 			t.Fatalf("error = %v", err)
@@ -401,7 +413,9 @@ func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
 		_, err := executeWithServer(t, func(w http.ResponseWriter, _ *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
-			_, _ = io.WriteString(w, "{")
+			if _, err := io.WriteString(w, "{"); err != nil {
+				t.Error(err)
+			}
 		}, http.MethodGet, nil, ResponseBody{})
 		if err == nil {
 			t.Fatal("invalid API error JSON was accepted")
@@ -411,7 +425,11 @@ func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
 	t.Run("read error", func(t *testing.T) {
 		var dst json.RawMessage
 		cfg := testConfig(t, http.MethodGet, "/resource", nil, &dst)
-		cfg.BaseURL, _ = url.Parse("https://example.com/")
+		baseURL, err := url.Parse("https://example.com/")
+		if err != nil {
+			t.Fatal(err)
+		}
+		cfg.BaseURL = baseURL
 		cfg.MaxRetries = 0
 		cfg.CustomHTTPDoer = testHTTPDoer(func(*http.Request) (*http.Response, error) {
 			return &http.Response{
@@ -420,7 +438,7 @@ func TestExecuteReturnsResponsesAndAPIErrors(t *testing.T) {
 				Body:       errorReadCloser{err: errors.New("read failed")},
 			}, nil
 		})
-		err := cfg.Execute()
+		err = cfg.Execute()
 		if err == nil || !strings.Contains(err.Error(), "error reading response body") {
 			t.Fatalf("error = %v", err)
 		}
@@ -445,7 +463,9 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = io.WriteString(w, "{}")
+		if _, err := io.WriteString(w, "{}"); err != nil {
+			t.Error(err)
+		}
 	}))
 	defer server.Close()
 
@@ -456,7 +476,11 @@ func TestExecuteRetriesAndUsesRequestBodies(t *testing.T) {
 	}
 	cfg := testConfig(t, http.MethodPost, "/resource", nil, &dst)
 	cfg.Body = reader
-	cfg.BaseURL, _ = url.Parse(server.URL + "/")
+	baseURL, err := url.Parse(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfg.BaseURL = baseURL
 	cfg.MaxRetries = 1
 	if err := cfg.Execute(); err != nil {
 		t.Fatal(err)
@@ -489,7 +513,11 @@ func TestExecuteErrorsWithoutBaseURLOrAfterTransportFailure(t *testing.T) {
 		t.Fatalf("error = %v", err)
 	}
 
-	cfg.DefaultBaseURL, _ = url.Parse("https://example.com/")
+	baseURL, err := url.Parse("https://example.com/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfg.DefaultBaseURL = baseURL
 	wantErr := errors.New("transport failed")
 	cfg.CustomHTTPDoer = testHTTPDoer(func(*http.Request) (*http.Response, error) {
 		return nil, wantErr

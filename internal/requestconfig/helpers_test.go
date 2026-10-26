@@ -19,7 +19,10 @@ import (
 )
 
 func TestRetryHelpers(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodPost, "https://example.com", strings.NewReader("body"))
+	req, err := http.NewRequest(http.MethodPost, "https://example.com", strings.NewReader("body"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	req.GetBody = nil
 	if shouldRetry(req, nil) {
 		t.Fatal("request with an unrecoverable body was retried")
@@ -137,7 +140,11 @@ func TestRequestConfigUtilities(t *testing.T) {
 	defer server.Close()
 	cfg := testConfig(t, http.MethodPost, "/resource", nil, ResponseBody{})
 	cfg.Body = bytes.NewBufferString("body")
-	cfg.BaseURL, _ = url.Parse(server.URL + "/")
+	baseURL, err := url.Parse(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfg.BaseURL = baseURL
 	if err := cfg.Execute(); err != nil {
 		t.Fatal(err)
 	}
@@ -175,7 +182,10 @@ func TestRequestConfigUtilities(t *testing.T) {
 }
 
 func TestSecurityOptions(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	cfg := &RequestConfig{Request: req, APIKey: "key", BearerToken: "token"}
 
 	options := []RequestOption{
@@ -236,7 +246,10 @@ func TestPlatformNormalization(t *testing.T) {
 }
 
 func TestMiddlewareAndExecuteNewRequest(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://example.com", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	called := false
 	handler := applyMiddleware(
 		func(req *http.Request, next middlewareNext) (*http.Response, error) {
