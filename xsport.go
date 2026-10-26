@@ -410,6 +410,10 @@ type SportsTeam struct {
 	// The team's wins, losses & ties this season. X sends it only in college
 	// football games.
 	Record SportsTeamRecord `json:"record" api:"required"`
+	// The team's recent games, newest first. Games without a kickoff time come
+	// last. X sends them only with the teams of a college football game. The list
+	// is empty elsewhere.
+	RecentGames []SportsTeamGame `json:"recentGames" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -422,6 +426,7 @@ type SportsTeam struct {
 		Logos        respjson.Field
 		XUserID      respjson.Field
 		Record       respjson.Field
+		RecentGames  respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -430,6 +435,45 @@ type SportsTeam struct {
 // Returns the unmodified JSON received from the API
 func (r SportsTeam) RawJSON() string { return r.JSON.raw }
 func (r *SportsTeam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// SportsTeamGame holds a recent game of a team, as X lists it with the team.
+type SportsTeamGame struct {
+	// The game ID, which the game routes take.
+	ID string `json:"id" api:"required"`
+	// When this game kicked off, in UTC. Null when Xquik can't read X's time.
+	StartsAt time.Time `json:"startsAt" api:"required" format:"date-time"`
+	// The stadium. X has sent none in recent games so far.
+	Venue string `json:"venue" api:"required"`
+	// This game's status as X names it, such as Closed.
+	Status string `json:"status" api:"required"`
+	// The game clock, as X writes it. X has sent none so far.
+	Clock string `json:"clock" api:"required"`
+	// The current or last quarter. X has sent none so far.
+	Quarter int64 `json:"quarter" api:"required"`
+	// A team's side of a game and its points.
+	Home FootballTeamScore `json:"home" api:"required"`
+	// A team's side of a game and its points.
+	Away FootballTeamScore `json:"away" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		StartsAt    respjson.Field
+		Venue       respjson.Field
+		Status      respjson.Field
+		Clock       respjson.Field
+		Quarter     respjson.Field
+		Home        respjson.Field
+		Away        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r SportsTeamGame) RawJSON() string { return r.JSON.raw }
+func (r *SportsTeamGame) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

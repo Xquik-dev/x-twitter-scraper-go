@@ -78,13 +78,19 @@ func TestXSportGetBoxScoreFixture(t *testing.T) {
 	request.expect(t, http.MethodGet, "/api/v1/x/sports/ncaafb/games/2055084502741811200/box-score", "")
 	expectDecoded(t, res)
 	player := res.Home.Players[0]
+	recent := res.Teams["689566294702555136"].RecentGames[0]
 	if res.ID != "2055084502741811200" ||
 		res.Home.Totals.ThirdDowns.Attempts != 14 ||
 		res.Home.Totals.Passing.Rating != 111.85345 ||
 		player.PlayerID != "1520565710329499648" ||
 		player.Passing.Yards != 264 ||
 		player.Defense.Sacks != 0.5 ||
-		!res.Players["1520565710329499648"].XUser.BlueVerified {
+		!res.Players["1520565710329499648"].XUser.BlueVerified ||
+		recent.ID != "2083346094763671552" ||
+		!recent.StartsAt.Equal(time.Date(2026, time.October, 17, 23, 30, 0, 0, time.UTC)) ||
+		recent.Status != "Closed" ||
+		recent.Away.TeamID != "898300623782727680" ||
+		recent.Away.Points != 34 {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 }
