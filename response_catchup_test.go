@@ -24,9 +24,9 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("Subscription.Status", "active"),
-				field("Subscription.Tier", "pro"),
-				field("CreditInfo.AutoTopupStopped", false),
+				fieldIs("Subscription.Status", "active"),
+				fieldIs("Subscription.Tier", "pro"),
+				fieldIs("CreditInfo.AutoTopupStopped", false),
 			},
 		},
 		{
@@ -46,7 +46,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("AutoTopupStopped", false),
+				fieldIs("AutoTopupStopped", false),
 			},
 		},
 		{
@@ -93,7 +93,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("HasMore", false),
+				fieldIs("HasMore", false),
 			},
 		},
 		{
@@ -131,7 +131,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("HasMore", false),
+				fieldIs("HasMore", false),
 			},
 		},
 		{
@@ -142,7 +142,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("HasMore", false),
+				fieldIs("HasMore", false),
 			},
 		},
 		{
@@ -153,7 +153,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("HasMore", false),
+				fieldIs("HasMore", false),
 			},
 		},
 		{
@@ -182,7 +182,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("HasMore", false),
+				fieldIs("HasMore", false),
 			},
 		},
 		{
@@ -193,7 +193,7 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("HasMore", false),
+				fieldIs("HasMore", false),
 			},
 		},
 		{
@@ -204,12 +204,12 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("Article.ArticleID", "2100651802404544512"),
-				field("Article.Contents[0].Links[0].Offset", int64(18)),
-				field("Article.Contents[0].Links[0].Length", int64(9)),
-				field("Article.Contents[0].Links[0].URL", "https://example.com/paragraph"),
-				field("Article.RetweetCount", int64(40)),
-				field("Article.BookmarkCount", int64(61)),
+				fieldIs("Article.ArticleID", "2100651802404544512"),
+				fieldIs("Article.Contents[0].Links[0].Offset", int64(18)),
+				fieldIs("Article.Contents[0].Links[0].Length", int64(9)),
+				fieldIs("Article.Contents[0].Links[0].URL", "https://example.com/paragraph"),
+				fieldIs("Article.RetweetCount", int64(40)),
+				fieldIs("Article.BookmarkCount", int64(61)),
 			},
 		},
 		{
@@ -229,8 +229,8 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				return v, err
 			},
 			[]fieldValue{
-				field("SourceID", "11348282"),
-				field("TargetID", "34743251"),
+				fieldIs("SourceID", "11348282"),
+				fieldIs("TargetID", "34743251"),
 			},
 		},
 		{
@@ -321,12 +321,12 @@ func TestExtractionRunDecodesTheStartedJob(t *testing.T) {
 	}
 	expectDecoded(t, res)
 	expectValues(t, res, []fieldValue{
-		field("ID", "ext_123"),
-		field("PollAfterMs", int64(1000)),
-		field("Status", "running"),
-		field("StatusURL", "/api/v1/extractions/a1b2c3d4"),
-		field("ToolType", "follower_explorer"),
-		field("WaitURL", "/api/v1/extractions/id?wait=10&limit=1&outputMode=compact"),
+		fieldIs("ID", "ext_123"),
+		fieldIs("PollAfterMs", int64(1000)),
+		fieldIs("Status", "running"),
+		fieldIs("StatusURL", "/api/v1/extractions/a1b2c3d4"),
+		fieldIs("ToolType", "follower_explorer"),
+		fieldIs("WaitURL", "/api/v1/extractions/id?wait=10&limit=1&outputMode=compact"),
 	})
 }
 
@@ -338,11 +338,11 @@ func TestConnectionChallengeSubmitDecodesTheEmailCodeChallenge(t *testing.T) {
 	}
 	expectDecoded(t, res)
 	expectValues(t, res, []fieldValue{
-		field("ID", "xch_8vGd8Y9JvH6dV0xA"),
-		field("Object", "x_account_connection_challenge"),
-		field("ExpiresAt", "2026-05-08T12:10:00Z"),
-		field("Message", "Enter the email verification code to continue."),
-		field("Username", "example_user"),
+		fieldIs("ID", "xch_8vGd8Y9JvH6dV0xA"),
+		fieldIs("Object", "x_account_connection_challenge"),
+		fieldIs("ExpiresAt", "2026-05-08T12:10:00Z"),
+		fieldIs("Message", "Enter the email verification code to continue."),
+		fieldIs("Username", "example_user"),
 	})
 }
 
@@ -358,6 +358,6 @@ func TestCommunityInfoDecodesTheMembersFacepile(t *testing.T) {
 	}
 	profile := facepile[0].AsUserProfile()
 	preview := facepile[1].AsCommunityMembersFacepileCommunityMemberPreview()
-	expectValues(t, profile, []fieldValue{field("ID", "44196397"), field("Username", "elonmusk"), field("Followers", int64(150000000))})
-	expectValues(t, preview, []fieldValue{field("ID", "11348282"), field("ProfilePictureOriginal", "https://pbs.twimg.com/b.jpg")})
+	expectValues(t, profile, []fieldValue{fieldIs("ID", "44196397"), fieldIs("Username", "elonmusk"), fieldIs("Followers", int64(150000000))})
+	expectValues(t, preview, []fieldValue{fieldIs("ID", "11348282"), fieldIs("ProfilePictureOriginal", "https://pbs.twimg.com/b.jpg")})
 }
