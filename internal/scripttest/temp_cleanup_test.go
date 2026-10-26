@@ -231,7 +231,7 @@ func TestInterruptStopsBashParent(t *testing.T) {
 	}
 }
 
-func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args ...string) (*exec.Cmd, string) {
+func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string) (*exec.Cmd, string) {
 	t.Helper()
 	checkLocal = "#!/bin/sh\nmktemp \"${GOTMPDIR:-$TMPDIR}/go-build.XXXXXX\" >/dev/null || exit 1\n" + checkLocal
 	if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o600); err != nil {
@@ -244,8 +244,8 @@ func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args
 	if err := os.MkdirAll(private, 0o750); err != nil {
 		t.Fatal(err)
 	}
-	cmd := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
-	cmd.Dir = t.TempDir()
+	cmd := exec.Command(releaseLocal, "--dry-run")
+	cmd.Dir = fixture.outside
 	cmd.Env = append(append([]string(nil), fixture.env...), "TMPDIR="+private, "GOTMPDIR=", "GOMODCACHE="+filepath.Join(root, "modules"))
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	var stdout, stderr bytes.Buffer
@@ -258,14 +258,14 @@ func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args
 
 func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 	t.Run("after a dry run", func(t *testing.T) {
-		cmd, private := startRelease(t, newReleaseFixture(t), "", "--dry-run")
+		cmd, private := startRelease(t, newReleaseFixture(t), "")
 		if code := exitCode(t, cmd, cmd.Wait()); code != 0 {
 			t.Fatalf("dry run exit %d\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
 		expectEmpty(t, cmd, private)
 	})
 	t.Run("when a step fails", func(t *testing.T) {
-		cmd, private := startRelease(t, newReleaseFixture(t), "exit 3\n", "--dry-run")
+		cmd, private := startRelease(t, newReleaseFixture(t), "exit 3\n")
 		if code := exitCode(t, cmd, cmd.Wait()); code != 3 {
 			t.Fatalf("exit %d, want 3\n%s\n%s", code, cmd.Stdout, cmd.Stderr)
 		}
@@ -274,7 +274,7 @@ func TestReleaseLocalRemovesItsTempDir(t *testing.T) {
 	for _, signal := range []syscall.Signal{syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM} {
 		t.Run("when terminated by "+signal.String(), func(t *testing.T) {
 			started := filepath.Join(t.TempDir(), "started")
-			cmd, private := startRelease(t, newReleaseFixture(t), ": >\""+started+"\"\nexec sleep 30\n", "--dry-run")
+			cmd, private := startRelease(t, newReleaseFixture(t), ": >\""+started+"\"\nexec sleep 30\n")
 			terminateRun(t, cmd, started, signal)
 			expectEmpty(t, cmd, private)
 		})

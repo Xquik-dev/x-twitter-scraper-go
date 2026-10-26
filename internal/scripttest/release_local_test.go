@@ -53,7 +53,7 @@ const fixtureChangelog = `# Changelog
 type releaseFixture struct {
 	t                   *testing.T
 	repo, origin, calls string
-	notes               string
+	notes, outside      string
 	env                 []string
 }
 
@@ -69,11 +69,12 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 	}
 	root := t.TempDir()
 	fixture := &releaseFixture{
-		t:      t,
-		repo:   filepath.Join(root, "repo"),
-		origin: filepath.Join(root, "origin.git"),
-		calls:  filepath.Join(root, "calls.log"),
-		notes:  filepath.Join(root, "notes.md"),
+		t:       t,
+		repo:    filepath.Join(root, "repo"),
+		origin:  filepath.Join(root, "origin.git"),
+		calls:   filepath.Join(root, "calls.log"),
+		notes:   filepath.Join(root, "notes.md"),
+		outside: filepath.Join(root, "outside"),
 	}
 	tools := filepath.Join(root, "tools")
 	settings := filepath.Join(root, "gh-settings")
@@ -96,6 +97,7 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 		"tools/gh":                           {fakeGH, 0o755},
 		"tools/curl":                         {fakeCurl, 0o755},
 		"gh-settings/.keep":                  {"", 0o644},
+		"outside/.keep":                      {"", 0o644},
 	} {
 		path := filepath.Join(root, name)
 		if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
@@ -145,10 +147,12 @@ func (fixture *releaseFixture) git(directory string, args ...string) string {
 	return strings.TrimSpace(string(output))
 }
 
-func (fixture *releaseFixture) release(args ...string) (code int, stdout, stderr string) {
+// releaseLocal is the fixture's release script, relative to fixture.outside.
+const releaseLocal = "../repo/bin/release-local"
+
+func (fixture *releaseFixture) release(command *exec.Cmd) (code int, stdout, stderr string) {
 	fixture.t.Helper()
-	command := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
-	command.Dir, command.Env = fixture.t.TempDir(), fixture.env
+	command.Dir, command.Env = fixture.outside, fixture.env
 	var out, failure bytes.Buffer
 	command.Stdout, command.Stderr = &out, &failure
 	if err := command.Run(); err != nil {
@@ -174,7 +178,7 @@ func TestReleaseLocalDryRunPublishesNothing(t *testing.T) {
 	fixture := newReleaseFixture(t)
 	revision := fixture.git(fixture.repo, "rev-parse", "HEAD")
 
-	code, stdout, stderr := fixture.release("--dry-run")
+	code, stdout, stderr := fixture.release(exec.Command(releaseLocal, "--dry-run"))
 	if code != 0 {
 		t.Fatalf("dry run exit %d\n%s\n%s", code, stdout, stderr)
 	}
@@ -218,7 +222,7 @@ func TestReleaseLocalTagsAndReleases(t *testing.T) {
 	fixture := newReleaseFixture(t)
 	revision := fixture.git(fixture.repo, "rev-parse", "HEAD")
 
-	code, stdout, stderr := fixture.release()
+	code, stdout, stderr := fixture.release(exec.Command(releaseLocal))
 	if code != 0 || !strings.HasSuffix(stdout, "Released v1.2.3.\n") {
 		t.Fatalf("release exit %d\n%s\n%s", code, stdout, stderr)
 	}
@@ -244,7 +248,7 @@ func TestReleaseLocalTagsAndReleases(t *testing.T) {
 func TestReleaseLocalRejectsUnknownOption(t *testing.T) {
 	fixture := newReleaseFixture(t)
 
-	code, stdout, stderr := fixture.release("--dryrun")
+	code, stdout, stderr := fixture.release(exec.Command(releaseLocal, "--dryrun"))
 	want := "Unknown option --dryrun. Run bin/release-local or bin/release-local --dry-run.\n"
 	if code != 2 || stdout != "" || stderr != want {
 		t.Fatalf("exit %d, stdout %q, stderr %q", code, stdout, stderr)
