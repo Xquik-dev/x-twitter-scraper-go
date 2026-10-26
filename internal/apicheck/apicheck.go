@@ -54,8 +54,23 @@ type SpecOperation struct {
 	Method      string
 	Path        string
 	OperationID string
-	Item        map[string]any
-	Operation   map[string]any
+	Item        PathItem
+	Operation   Operation
+}
+
+// PathItem is the part of an OpenAPI path item that the checks read.
+type PathItem struct {
+	Servers    json.RawMessage   `json:"servers"`
+	Parameters []json.RawMessage `json:"parameters"`
+}
+
+// Operation is the part of an OpenAPI operation that the checks read.
+type Operation struct {
+	OperationID string            `json:"operationId"`
+	Servers     json.RawMessage   `json:"servers"`
+	Parameters  []json.RawMessage `json:"parameters"`
+	RequestBody json.RawMessage   `json:"requestBody"`
+	Responses   json.RawMessage   `json:"responses"`
 }
 
 func (o SpecOperation) Label() string {
@@ -67,8 +82,24 @@ func (o SpecOperation) Label() string {
 }
 
 type Spec struct {
-	Document   map[string]any
+	Document   json.RawMessage
 	Operations map[string]SpecOperation
+}
+
+type failure string
+
+func (f failure) Error() string { return string(f) }
+
+// Decode reads raw as T and reports whether raw held a T. As with a type
+// assertion on an untyped document, a field of another JSON type stays zero.
+func Decode[T any](raw json.RawMessage) (T, bool) {
+	var value T
+	err := json.Unmarshal(raw, &value)
+	return value, err == nil
+}
+
+func isObject(raw json.RawMessage) bool {
+	return len(raw) > 0 && raw[0] == '{'
 }
 
 type SDKOperation struct {
@@ -110,7 +141,7 @@ func KnownMethod(method string) bool {
 }
 
 func UnreadableSpec(source string) error {
-	return fmt.Errorf("Could not read the API spec from %s. Check network access, or set %s to a local copy of %s.", source, SpecVariable, DefaultSpecSource)
+	return failure(fmt.Sprintf("Could not read the API spec from %s. Check network access, or set %s to a local copy of %s.", source, SpecVariable, DefaultSpecSource))
 }
 
 func fetchSpec(source string, client *http.Client) ([]byte, error) {
@@ -134,21 +165,22 @@ func fetchSpec(source string, client *http.Client) ([]byte, error) {
 	return io.ReadAll(response.Body)
 }
 
-func serverPath(candidates ...any) (string, error) {
+func serverPath(candidates ...json.RawMessage) (string, error) {
 	for _, value := range candidates {
-		if value == nil {
+		if len(value) == 0 || string(value) == "null" {
 			continue
 		}
-		servers, ok := value.([]any)
+		servers, ok := Decode[[]json.RawMessage](value)
 		if !ok {
 			return "", errors.New("servers is not a list")
 		}
 		if len(servers) == 0 {
 			continue
 		}
-		first, _ := servers[0].(map[string]any)
-		address, _ := first["url"].(string)
-		parsed, err := url.Parse(address)
+		first, _ := Decode[struct {
+			URL string `json:"url"`
+		}](servers[0])
+		parsed, err := url.Parse(first.URL)
 		if err != nil {
 			return "", err
 		}
@@ -162,46 +194,45 @@ func LoadSpec(source string, client *http.Client) (*Spec, error) {
 	if err != nil {
 		return nil, UnreadableSpec(source)
 	}
-	var document map[string]any
-	if err := json.Unmarshal(data, &document); err != nil {
-		return nil, UnreadableSpec(source)
+	var document struct {
+		Servers json.RawMessage            `json:"servers"`
+		Paths   map[string]json.RawMessage `json:"paths"`
 	}
-	paths, _ := document["paths"].(map[string]any)
-	if len(paths) == 0 {
+	if err := json.Unmarshal(data, &document); err != nil || len(document.Paths) == 0 {
 		return nil, UnreadableSpec(source)
 	}
 	operations := map[string]SpecOperation{}
-	for key, value := range paths {
-		item, ok := value.(map[string]any)
-		if !ok {
+	for key, value := range document.Paths {
+		if !isObject(value) {
 			return nil, UnreadableSpec(source)
 		}
+		methods, _ := Decode[map[string]json.RawMessage](value)
+		item, _ := Decode[PathItem](value)
 		for _, method := range httpMethods {
-			raw, present := item[method]
+			raw, present := methods[method]
 			if !present {
 				continue
 			}
-			operation, ok := raw.(map[string]any)
-			if !ok {
+			if !isObject(raw) {
 				return nil, UnreadableSpec(source)
 			}
-			base, err := serverPath(operation["servers"], item["servers"], document["servers"])
+			operation, _ := Decode[Operation](raw)
+			base, err := serverPath(operation.Servers, item.Servers, document.Servers)
 			if err != nil {
 				return nil, UnreadableSpec(source)
 			}
 			full := JoinPath(base, key)
-			name, _ := operation["operationId"].(string)
 			upper := strings.ToUpper(method)
-			operations[OperationKey(upper, full)] = SpecOperation{Method: upper, Path: full, OperationID: name, Item: item, Operation: operation}
+			operations[OperationKey(upper, full)] = SpecOperation{Method: upper, Path: full, OperationID: operation.OperationID, Item: item, Operation: operation}
 		}
 	}
-	return &Spec{Document: document, Operations: operations}, nil
+	return &Spec{Document: data, Operations: operations}, nil
 }
 
 func (c Check) BasePath(baseURL option.RequestOption) (string, error) {
 	var config requestconfig.RequestConfig
 	if err := baseURL.Apply(&config); err != nil || config.DefaultBaseURL == nil {
-		return "", fmt.Errorf("The %s could not read the default base URL from option.WithEnvironmentProduction. Fix that option.", c)
+		return "", failure(fmt.Sprintf("The %s could not read the default base URL from option.WithEnvironmentProduction. Fix that option.", c))
 	}
 	return strings.TrimSuffix(config.DefaultBaseURL.Path, "/"), nil
 }
@@ -320,7 +351,7 @@ func (c Check) serviceOperations(files *token.FileSet, function *ast.FuncDecl, b
 func (c Check) ParseGoFiles(root fs.FS, dir string, files *token.FileSet) ([]*ast.File, error) {
 	entries, err := fs.ReadDir(root, dir)
 	if err != nil {
-		return nil, fmt.Errorf("The %s could not list the SDK files. Run it from the repository root.", c)
+		return nil, failure(fmt.Sprintf("The %s could not list the SDK files. Run it from the repository root.", c))
 	}
 	var parsed []*ast.File
 	for _, entry := range entries {
@@ -333,11 +364,11 @@ func (c Check) ParseGoFiles(root fs.FS, dir string, files *token.FileSet) ([]*as
 		}
 		source, err := fs.ReadFile(root, name)
 		if err != nil {
-			return nil, fmt.Errorf("The %s could not read %s. Run it from the repository root.", c, name)
+			return nil, failure(fmt.Sprintf("The %s could not read %s. Run it from the repository root.", c, name))
 		}
 		file, err := parser.ParseFile(files, name, source, parser.SkipObjectResolution)
 		if err != nil {
-			return nil, fmt.Errorf("The %s could not parse %s. Run go vet ./... and fix the syntax error.", c, name)
+			return nil, failure(fmt.Sprintf("The %s could not parse %s. Run go vet ./... and fix the syntax error.", c, name))
 		}
 		parsed = append(parsed, file)
 	}
@@ -363,8 +394,8 @@ func (c Check) SDKOperations(root fs.FS, base string) (map[string]SDKOperation, 
 	return found, unreadable, nil
 }
 
-func (g GroupFile) invalid(format string, args ...any) error {
-	return fmt.Errorf("%s is not valid. %s.", g.Name, fmt.Sprintf(format, args...))
+func (g GroupFile) invalid(problem string) error {
+	return failure(fmt.Sprintf("%s is not valid. %s.", g.Name, problem))
 }
 
 func (g GroupFile) Read(root fs.FS) (map[string]string, error) {
@@ -379,11 +410,12 @@ func (g GroupFile) Read(root fs.FS) (map[string]string, error) {
 	if err := decoder.Decode(&groups); err != nil {
 		var syntax *json.SyntaxError
 		if errors.As(err, &syntax) {
-			return nil, g.invalid("It is not valid JSON near byte %d", syntax.Offset)
+			return nil, g.invalid(fmt.Sprintf("It is not valid JSON near byte %d", syntax.Offset))
 		}
-		return nil, g.invalid("%s", shape)
+		return nil, g.invalid(shape)
 	}
-	if _, err := decoder.Token(); err != io.EOF {
+	var extra json.RawMessage
+	if err := decoder.Decode(&extra); err != io.EOF {
 		return nil, g.invalid("It holds more than 1 JSON value")
 	}
 	found := map[string]string{}
@@ -392,29 +424,32 @@ func (g GroupFile) Read(root fs.FS) (map[string]string, error) {
 		var reason string
 		var items []string
 		for name, value := range group {
-			var target any = &reason
-			if name == g.ItemsKey {
-				target = &items
-			} else if name != "reason" {
-				return nil, g.invalid("%s", shape)
+			var err error
+			switch name {
+			case g.ItemsKey:
+				err = json.Unmarshal(value, &items)
+			case "reason":
+				err = json.Unmarshal(value, &reason)
+			default:
+				return nil, g.invalid(shape)
 			}
-			if err := json.Unmarshal(value, target); err != nil {
-				return nil, g.invalid("%s", shape)
+			if err != nil {
+				return nil, g.invalid(shape)
 			}
 		}
 		if strings.TrimSpace(reason) == "" {
-			return nil, g.invalid("Group %d needs a non-empty reason", number)
+			return nil, g.invalid(fmt.Sprintf("Group %d needs a non-empty reason", number))
 		}
 		if len(items) == 0 {
-			return nil, g.invalid("Group %d needs at least 1 %s", number, item)
+			return nil, g.invalid(fmt.Sprintf("Group %d needs at least 1 %s", number, item))
 		}
 		for _, text := range items {
 			key, ok := g.Parse(text)
 			if !ok {
-				return nil, g.invalid("Group %d lists %q, which is not %s", number, text, g.ItemShape)
+				return nil, g.invalid(fmt.Sprintf("Group %d lists %q, which is not %s", number, text, g.ItemShape))
 			}
 			if earlier, duplicate := found[key]; duplicate {
-				return nil, g.invalid("It lists %s and %s, which name the same %s. List it once", earlier, text, item)
+				return nil, g.invalid(fmt.Sprintf("It lists %s and %s, which name the same %s. List it once", earlier, text, item))
 			}
 			found[key] = text
 		}

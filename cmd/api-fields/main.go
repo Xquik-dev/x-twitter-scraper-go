@@ -151,7 +151,7 @@ func check(root fs.FS, baseURL option.RequestOption, source string, client *http
 	if err != nil {
 		return nil, "", err
 	}
-	reader := specReader{document: spec.Document, problems: map[string]bool{}}
+	reader := newSpecReader(spec.Document)
 	found := map[string]string{}
 	compared := 0
 	var problems []string
