@@ -185,6 +185,14 @@ type PostMonitor struct {
 	AuthorID       string `json:"authorId" api:"required"`
 	AuthorUsername string `json:"authorUsername" api:"required"`
 	AuthorName     string `json:"authorName" api:"required"`
+	// The author's profile picture. Omitted when X shows none.
+	AuthorAvatarURL string `json:"authorAvatarUrl" format:"uri"`
+	// The author's verified badge on X. Omitted when the author has none.
+	//
+	// Any of "blue", "business", "government".
+	AuthorVerified PostMonitorAuthorVerified `json:"authorVerified"`
+	// Photos, videos and GIFs on the post, in X's order.
+	Media []PostMonitorMedia `json:"media" api:"required"`
 	// Text of the newest version Xquik read.
 	Text     string    `json:"text" api:"required"`
 	PostedAt time.Time `json:"postedAt" api:"required" format:"date-time"`
@@ -195,6 +203,9 @@ type PostMonitor struct {
 	CreatedAt  time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Next hourly credit charge time for this post monitor.
 	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
+	// Counts Xquik read when tracking began. Each metric's gain counts from here.
+	// Views is null when X showed no view count.
+	Baseline PostMonitorBaseline `json:"baseline" api:"required"`
 	// Why Xquik paused this post monitor. insufficient_credits means the balance
 	// could not pay an hour, so add credits & resume. The other 3 mean X stopped
 	// showing the post. Absent when the monitor is active or you paused it
@@ -206,30 +217,104 @@ type PostMonitor struct {
 	Metrics PostMetrics `json:"metrics" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		Name           respjson.Field
-		PostID         respjson.Field
-		PostURL        respjson.Field
-		AuthorID       respjson.Field
-		AuthorUsername respjson.Field
-		AuthorName     respjson.Field
-		Text           respjson.Field
-		PostedAt       respjson.Field
-		EventTypes     respjson.Field
-		IsActive       respjson.Field
-		CreatedAt      respjson.Field
-		NextBillingAt  respjson.Field
-		PausedReason   respjson.Field
-		PausedAt       respjson.Field
-		Metrics        respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID              respjson.Field
+		Name            respjson.Field
+		PostID          respjson.Field
+		PostURL         respjson.Field
+		AuthorID        respjson.Field
+		AuthorUsername  respjson.Field
+		AuthorName      respjson.Field
+		AuthorAvatarURL respjson.Field
+		AuthorVerified  respjson.Field
+		Media           respjson.Field
+		Text            respjson.Field
+		PostedAt        respjson.Field
+		EventTypes      respjson.Field
+		IsActive        respjson.Field
+		CreatedAt       respjson.Field
+		NextBillingAt   respjson.Field
+		Baseline        respjson.Field
+		PausedReason    respjson.Field
+		PausedAt        respjson.Field
+		Metrics         respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
 // RawJSON returns the unmodified JSON received from the API.
 func (r PostMonitor) RawJSON() string { return r.JSON.raw }
 func (r *PostMonitor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+}
+
+// PostMonitorAuthorVerified is the author's verified badge on X.
+type PostMonitorAuthorVerified string
+
+const (
+	PostMonitorAuthorVerifiedBlue       PostMonitorAuthorVerified = "blue"
+	PostMonitorAuthorVerifiedBusiness   PostMonitorAuthorVerified = "business"
+	PostMonitorAuthorVerifiedGovernment PostMonitorAuthorVerified = "government"
+)
+
+// PostMonitorMedia holds 1 photo, video or GIF on the post.
+type PostMonitorMedia struct {
+	// Any of "gif", "photo", "video".
+	Kind PostMonitorMediaKind `json:"kind" api:"required"`
+	// The image URL. For a video or GIF, its preview image.
+	URL string `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r PostMonitorMedia) RawJSON() string { return r.JSON.raw }
+func (r *PostMonitorMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
+}
+
+// PostMonitorMediaKind is the kind of media.
+type PostMonitorMediaKind string
+
+const (
+	PostMonitorMediaKindGif   PostMonitorMediaKind = "gif"
+	PostMonitorMediaKindPhoto PostMonitorMediaKind = "photo"
+	PostMonitorMediaKindVideo PostMonitorMediaKind = "video"
+)
+
+// PostMonitorBaseline holds counts Xquik read when tracking began. Each
+// metric's gain counts from here. Views is null when X showed no view count.
+type PostMonitorBaseline struct {
+	// When Xquik read these counts from X.
+	At        time.Time `json:"at" api:"required" format:"date-time"`
+	Views     int64     `json:"views" api:"required"`
+	Likes     int64     `json:"likes" api:"required"`
+	Retweets  int64     `json:"retweets" api:"required"`
+	Replies   int64     `json:"replies" api:"required"`
+	Quotes    int64     `json:"quotes" api:"required"`
+	Bookmarks int64     `json:"bookmarks" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		At          respjson.Field
+		Views       respjson.Field
+		Likes       respjson.Field
+		Retweets    respjson.Field
+		Replies     respjson.Field
+		Quotes      respjson.Field
+		Bookmarks   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r PostMonitorBaseline) RawJSON() string { return r.JSON.raw }
+func (r *PostMonitorBaseline) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 

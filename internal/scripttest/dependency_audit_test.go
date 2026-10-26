@@ -82,8 +82,6 @@ func encode[T any](value T) []byte {
 	return data
 }
 
-// linkAuditScript links the dependency audit script and the helper it sources
-// into directory/scripts, so a test runs it by a literal relative path.
 func linkAuditScript(t *testing.T, directory string) {
 	t.Helper()
 	if err := os.Mkdir(filepath.Join(directory, "scripts"), 0o750); err != nil {

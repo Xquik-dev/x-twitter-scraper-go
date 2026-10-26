@@ -40,8 +40,6 @@ func buildArchive() ([]byte, int, error) {
 			return nil, 0, err
 		}
 	}
-	// The temporary directory becomes a private Git directory whose HEAD is the
-	// snapshot tree, so the tree id reaches Git through a file, not an argument.
 	if err := os.WriteFile(filepath.Join(directory, "HEAD"), outputs[2], 0o600); err != nil {
 		return nil, 0, err
 	}

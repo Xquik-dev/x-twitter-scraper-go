@@ -288,7 +288,25 @@
         "wins": 7,
         "losses": 1,
         "ties": 0
-      }
+      },
+      "recentGames": [
+        {
+          "id": "2083346094763671552",
+          "startsAt": "2026-10-17T23:30:00.000Z",
+          "venue": null,
+          "status": "Closed",
+          "clock": null,
+          "quarter": null,
+          "home": {
+            "teamId": "895666234712244224",
+            "points": 26
+          },
+          "away": {
+            "teamId": "898300623782727680",
+            "points": 34
+          }
+        }
+      ]
     }
   },
   "players": {

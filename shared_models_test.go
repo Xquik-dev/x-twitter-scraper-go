@@ -5,6 +5,7 @@
 package xtwitterscraper_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -44,6 +45,17 @@ func valueAt(value reflect.Value, path string) (reflect.Value, bool) {
 			}
 			value = value.Index(index)
 		}
+	}
+	if metadata, ok := reflect.TypeAssert[xtwitterscraper.PublicMetadata](value); ok {
+		compact := xtwitterscraper.PublicMetadata{}
+		for key, raw := range metadata {
+			var buffer bytes.Buffer
+			if err := json.Compact(&buffer, raw); err != nil {
+				return reflect.Value{}, false
+			}
+			compact[key] = buffer.Bytes()
+		}
+		return reflect.ValueOf(compact), true
 	}
 	if timestamp, ok := reflect.TypeAssert[time.Time](value); ok {
 		return reflect.ValueOf(timestamp.UTC().Format(time.RFC3339Nano)), true
@@ -162,6 +174,7 @@ var tweetFields = []fieldValue{
 	fieldIs("Interstitial.Text.Text", "This Post violated the X Rules about glorifying violence. However, X has determined that it may be in the public's interest for the Post to remain accessible. Learn more"),
 	fieldIs("IsPinned", true),
 	fieldIs("IsRetweet", true),
+	fieldIs("Media[0].EditedWithNativeEditor", true),
 	fieldIs("Media[0].GrokImageAnnotation.Prompt", "A spiral galaxy"),
 	fieldIs("Media[0].GrokImageAnnotation.UpsampledPrompt", "A detailed spiral galaxy with blue and red arms"),
 	fieldIs("Media[0].SourceUser.Username", "NASAJPL"),
@@ -172,6 +185,7 @@ var tweetFields = []fieldValue{
 	fieldIs("QuotedTweetPermalink.ExpandedURL", "https://x.com/NASA/status/2102761519985332000"),
 	fieldIs("QuotedTweetPermalink.URL", "https://t.co/quoted123"),
 	fieldIs("QuotedTweetUnavailable.Reason", "Protected"),
+	fieldIs("ReactionContext.ReactedToPost", xtwitterscraper.PublicMetadata{"author": json.RawMessage(`{"username":"NASA"}`), "id": json.RawMessage(`"1234567890"`), "unknownFields": json.RawMessage(`["text"]`)}),
 	fieldIs("SoftIntervention.DisplayType", "Fosnr"),
 	fieldIs("SoftIntervention.EngagementNudge", true),
 	fieldIs("SoftIntervention.Text.Entities[0].FromIndex", int64(0)),
@@ -193,6 +207,7 @@ var tweetFields = []fieldValue{
 	fieldIs("Tombstone.Text.Entities[0].Ref.ScreenName", "XSupport"),
 	fieldIs("Tombstone.Text.Entities[0].Ref.Text", "Learn more"),
 	fieldIs("UnavailableAuthorID", "783214"),
+	fieldIs("UnknownFields", []string{"text"}),
 }
 
 var _ = []shared.SoftIntervention{

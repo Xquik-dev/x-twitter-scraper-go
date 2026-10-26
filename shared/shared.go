@@ -2254,6 +2254,11 @@ type EmbeddedTweetQuotedTweet struct {
 	UnavailableAuthorID string                            `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -2327,6 +2332,7 @@ type EmbeddedTweetQuotedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -3430,6 +3436,11 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	UnavailableAuthorID string                                       `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -3503,6 +3514,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -4634,6 +4646,11 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	UnavailableAuthorID string                                                  `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -4705,6 +4722,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -5782,12 +5800,17 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts) Unmarshal
 
 // EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -6014,12 +6037,17 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef) U
 
 // EmbeddedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -6127,6 +6155,11 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -6198,6 +6231,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -7279,12 +7313,17 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts) Unmars
 
 // EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -7717,12 +7756,17 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef) UnmarshalJSO
 
 // EmbeddedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -7834,6 +7878,11 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -7907,6 +7956,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -9056,6 +9106,11 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -9127,6 +9182,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -10208,12 +10264,17 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts) Unmars
 
 // EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -10442,12 +10503,17 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef
 
 // EmbeddedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -10555,6 +10621,11 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -10626,6 +10697,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -11711,12 +11783,17 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts) Unm
 
 // EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -12471,6 +12548,11 @@ type EmbeddedTweetRetweetedTweet struct {
 	UnavailableAuthorID string                               `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -12544,6 +12626,7 @@ type EmbeddedTweetRetweetedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -13651,6 +13734,11 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	UnavailableAuthorID string                                          `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -13724,6 +13812,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -14873,6 +14962,11 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	UnavailableAuthorID string                                                     `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -14944,6 +15038,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -16025,12 +16120,17 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts) Unmars
 
 // EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -16259,12 +16359,17 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetTombstoneTextEntityRef
 
 // EmbeddedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -16372,6 +16477,11 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -16443,6 +16553,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -17528,12 +17639,17 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts) Unm
 
 // EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -17968,12 +18084,17 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetTombstoneTextEntityRef) Unmarshal
 
 // EmbeddedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -18085,6 +18206,11 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	UnavailableAuthorID string                                             `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -18158,6 +18284,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -19315,6 +19442,11 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	UnavailableAuthorID string                                                        `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -19386,6 +19518,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -20471,12 +20604,17 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts) Unm
 
 // EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -20705,12 +20843,17 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetTombstoneTextEntity
 
 // EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -20818,6 +20961,11 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	UnavailableAuthorID string                                                           `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -20889,6 +21037,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -21978,12 +22127,17 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts) 
 
 // EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -23084,6 +23238,11 @@ type SearchTweet struct {
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -23157,6 +23316,7 @@ type SearchTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -24580,12 +24740,17 @@ func (r *SearchTweetPreviousCounts) UnmarshalJSON(data []byte) error {
 
 // SearchTweetReactionContext holds public post and user referenced by this reaction.
 type SearchTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field

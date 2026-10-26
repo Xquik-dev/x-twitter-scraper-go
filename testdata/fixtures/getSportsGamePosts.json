@@ -1,0 +1,183 @@
+{
+  "tweets": [
+    {
+      "id": "2102761519985332442",
+      "text": "This galaxy is a little extra.\n\nMeet Messier 106, a spiral galaxy with an extra set of arms. These two additional arms are made of gas heated up by jets from the galaxy’s central black hole. The jets’ superheated shockwaves are depicted in royal blue by @chandraxray. https://t.co/421Lzs0r0c",
+      "retweetCount": 1364,
+      "replyCount": 271,
+      "likeCount": 9775,
+      "quoteCount": 85,
+      "viewCount": 962488,
+      "bookmarkCount": 599,
+      "conversationId": "2102761519985332442",
+      "contentDisclosure": {
+        "aiGenerated": {
+          "hasAiGeneratedMedia": false
+        }
+      },
+      "displayTextRange": [
+        0,
+        267
+      ],
+      "edit": {
+        "editableUntilMsecs": "1790175988000",
+        "editTweetIds": [
+          "2102761519985332442"
+        ]
+      },
+      "entities": {
+        "hashtags": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "12415722",
+            "indices": [
+              254,
+              266
+            ],
+            "name": "Chandra Observatory",
+            "screen_name": "chandraxray"
+          }
+        ]
+      },
+      "isNoteTweet": false,
+      "isPinned": false,
+      "isQuoteStatus": false,
+      "isReply": false,
+      "isRetweet": false,
+      "isTranslatable": false,
+      "lang": "en",
+      "possiblySensitive": false,
+      "source": "<a href=\"https://www.sprinklr.com\" rel=\"nofollow\">Sprinklr</a>",
+      "type": "tweet",
+      "url": "https://x.com/NASA/status/2102761519985332442",
+      "viewState": "EnabledWithCount",
+      "createdAt": "Wed Sep 23 14:06:28 +0000 2026",
+      "media": [
+        {
+          "altText": "A spiral galaxy, laying diagonally at a three-quarters profile view. Its center is a luminous yellow that stretches out into a pinwheel of wispy blue and red arms. The disc itself is decorated with a smattering of stars and dark dust.",
+          "availabilityStatus": "Available",
+          "displayUrl": "pic.x.com/421Lzs0r0c",
+          "expandedUrl": "https://x.com/NASA/status/2102761519985332442/photo/1",
+          "focusRects": [
+            {
+              "h": 1146,
+              "w": 2047,
+              "x": 0,
+              "y": 419
+            },
+            {
+              "h": 1565,
+              "w": 1565,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "h": 1565,
+              "w": 1373,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "h": 1565,
+              "w": 783,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "h": 1565,
+              "w": 2047,
+              "x": 0,
+              "y": 0
+            }
+          ],
+          "height": 1565,
+          "id": "2102761515958833152",
+          "indices": [
+            268,
+            291
+          ],
+          "mediaKey": "3_2102761515958833152",
+          "mediaUrl": "https://pbs.twimg.com/media/HS6CdTYWkAAp0e1.jpg",
+          "sizes": {
+            "large": {
+              "h": 1565,
+              "resize": "fit",
+              "w": 2047
+            },
+            "medium": {
+              "h": 917,
+              "resize": "fit",
+              "w": 1200
+            },
+            "small": {
+              "h": 520,
+              "resize": "fit",
+              "w": 680
+            },
+            "thumb": {
+              "h": 150,
+              "resize": "crop",
+              "w": 150
+            }
+          },
+          "type": "photo",
+          "url": "https://t.co/421Lzs0r0c",
+          "width": 2047
+        }
+      ],
+      "author": {
+        "id": "11348282",
+        "username": "NASA",
+        "name": "NASA",
+        "followers": 92376233,
+        "following": 115,
+        "verified": true,
+        "isBlueVerified": true,
+        "isVerified": true,
+        "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+        "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+        "profileBannerUrl": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+        "description": "Making the seemingly impossible, possible. ✨",
+        "location": "Pale Blue Dot",
+        "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+        "statusesCount": 74336,
+        "mediaCount": 28160,
+        "protected": false,
+        "url": "http://www.nasa.gov/",
+        "favouritesCount": 17003,
+        "isTranslator": false,
+        "possiblySensitive": false,
+        "verifiedType": "Government",
+        "profile_bio": {
+          "description": "Making the seemingly impossible, possible. ✨",
+          "entities": {
+            "description": {},
+            "url": {
+              "urls": [
+                {
+                  "display_url": "nasa.gov",
+                  "expanded_url": "http://www.nasa.gov/",
+                  "indices": [
+                    0,
+                    23
+                  ],
+                  "url": "https://t.co/9NkQJKAnuU"
+                }
+              ]
+            }
+          }
+        },
+        "hasGraduatedAccess": true,
+        "parodyCommentaryFanLabel": "None",
+        "profileDescriptionLanguage": "en",
+        "profileImageShape": "Square",
+        "profileTranslatorType": "regular",
+        "superFollowEligible": false
+      }
+    }
+  ],
+  "has_next_page": true,
+  "next_cursor": "DAACCgACHVOxUHMAJxAKAAMdU7FQcv_Y8AgABAAAAAILAAUAAADwRW1QQzZ3QUFBZlEvZ0dKTjB2R3AvQUFBQUJRZFVMTzZONXZBcWgxUTBKTlBXeERDSFZDN3g5QVd3SThkVVhQNHN0ZXdKaDFRcGJ5Zm1uQnpIVkNuT040YnNIVWRVTUcxMUZaaGVSMVJTek56VnVBbEhWQzR5NEFhNGVZZFVMTDVZOXNCckIxUXJmN0NtMUZCSFZDeCt2ZWFNTEFkVUtSRkF4b2dsaDFRbVJETUY3QmNIVkNJNGpjV0lLa2RVVW15QTFkUlh4MVJHclhDVjJIdEhWQ3lGeWthUU1FZFVMSmlFOW9BVEIxUmxiS1gxdEZCCAAGAAAAAAgABwAAAAAMAAgKAAEdUIjiNxYgqQAAAA",
+  "query": "(#WASvsSF OR #WASatSF OR \"San Francisco 49ers\" OR \"Washington Commanders\" OR @49ers OR @Commanders) since_time:1792455300 until_time:1792541700 -filter:nativeretweets"
+}

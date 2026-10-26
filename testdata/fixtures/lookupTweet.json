@@ -208,7 +208,8 @@
           "id": "19802879",
           "username": "NASAJPL",
           "name": "NASA JPL"
-        }
+        },
+        "editedWithNativeEditor": true
       }
     ],
     "author": {
@@ -368,6 +369,20 @@
       "url": {
         "url": "https://help.x.com/rules-and-policies/enforcement-options",
         "urlType": "ExternalUrl"
+      }
+    },
+    "unknownFields": [
+      "text"
+    ],
+    "reactionContext": {
+      "reactedToPost": {
+        "id": "1234567890",
+        "author": {
+          "username": "NASA"
+        },
+        "unknownFields": [
+          "text"
+        ]
       }
     }
   },

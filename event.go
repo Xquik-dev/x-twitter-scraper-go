@@ -80,7 +80,7 @@ func (r *EventService) StreamStreaming(ctx context.Context, params EventStreamPa
 	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/event-stream")}, opts...)
 	path := "events/stream"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &raw, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &raw, opts...)
 	return ssestream.NewStream[Event](ssestream.NewDecoder(raw), err)
 }
 
@@ -296,5 +296,29 @@ func (r EventListParams) URLQuery() (v url.Values, err error) {
 type EventStreamParams struct {
 	// The last event ID the client got. The stream first sends every event after it.
 	LastEventID param.Opt[string] `header:"Last-Event-ID,omitzero" json:"-"`
+	// Set to post_metrics to also get each post monitor's saved numbers. Any
+	// other value is refused.
+	//
+	// Any of "post_metrics".
+	Include EventStreamParamsInclude `query:"include,omitzero" json:"-"`
+	// Set to true to resume 30 seconds before Last-Event-ID. Events saved late
+	// then still arrive. Events you have can arrive again, so skip IDs you've
+	// seen. An ID the stream can't find starts 5 minutes back, not 30 days.
+	LookBack param.Opt[bool] `query:"lookBack,omitzero" json:"-"`
 	paramObj
 }
+
+// URLQuery serializes [EventStreamParams]'s query parameters as `url.Values`.
+func (r EventStreamParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// EventStreamParamsInclude is the extra frame kind the stream sends.
+type EventStreamParamsInclude string
+
+const (
+	EventStreamParamsIncludePostMetrics EventStreamParamsInclude = "post_metrics"
+)

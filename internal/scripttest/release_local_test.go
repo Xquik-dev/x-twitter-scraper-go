@@ -146,7 +146,6 @@ func (fixture *releaseFixture) git(directory string, command *exec.Cmd) string {
 	return strings.TrimSpace(string(output))
 }
 
-// releaseLocal is the fixture's release script, relative to fixture.outside.
 const releaseLocal = "../repo/bin/release-local"
 
 func (fixture *releaseFixture) release(command *exec.Cmd) (code int, stdout, stderr string) {

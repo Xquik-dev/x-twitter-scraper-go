@@ -21,6 +21,12 @@ func expectPostMonitor(t *testing.T, res *xtwitterscraper.PostMonitor) {
 		res.PostID != "2104984505677430978" ||
 		res.PostURL != "https://x.com/xquik/status/2104984505677430978" ||
 		res.AuthorUsername != "xquik" ||
+		res.AuthorAvatarURL != "https://pbs.twimg.com/profile_images/1/xquik_normal.jpg" ||
+		res.AuthorVerified != "blue" ||
+		len(res.Media) != 1 || res.Media[0].Kind != "photo" || res.Media[0].URL != "https://pbs.twimg.com/media/GxPhoto.jpg" ||
+		!res.Baseline.At.Equal(time.Date(2026, time.October, 22, 11, 0, 0, 0, time.UTC)) ||
+		res.Baseline.Views != 541100 || res.Baseline.Likes != 1885 || res.Baseline.Retweets != 112 ||
+		res.Baseline.Replies != 85 || res.Baseline.Quotes != 87 || res.Baseline.Bookmarks != 470 ||
 		!res.PostedAt.Equal(time.Date(2026, time.September, 29, 17, 19, 49, 0, time.UTC)) ||
 		len(res.EventTypes) != 3 || res.EventTypes[2] != "post.likes.changed" ||
 		!res.IsActive ||
