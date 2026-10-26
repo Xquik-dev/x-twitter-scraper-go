@@ -27,8 +27,8 @@ func TimeLayout(fmt string) string {
 var timeType = reflect.TypeFor[time.Time]()
 
 func timeEncoder(e *encodeState, v reflect.Value, opts encOpts) {
-	formatted := v.Interface().(time.Time).Format(TimeLayout(opts.timefmt))
-	stringEncoder(e, reflect.ValueOf(formatted), opts)
+	t, _ := reflect.TypeAssert[time.Time](v)
+	stringEncoder(e, reflect.ValueOf(t.Format(TimeLayout(opts.timefmt))), opts)
 }
 
 func continueWithTimeFmt(timefmt string, k encoderFunc) encoderFunc {

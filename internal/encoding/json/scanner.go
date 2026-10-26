@@ -9,46 +9,13 @@ package json
 // JSON value parser state machine.
 // Just about at the limit of what is reasonable to write by hand.
 // Some parts are a bit tedious, but overall it nicely factors out the
-// otherwise common code from the multiple scanning functions
-// in this package (Compact, Indent, checkValid, etc).
-//
-// This file starts with two simple examples using the scanner
-// before diving into the scanner itself.
+// validation that appendCompact needs.
 
-import (
-	"strconv"
-	"sync"
-)
+import "strconv"
 
-// Valid reports whether data is a valid JSON encoding.
-func Valid(data []byte) bool {
-	scan := newScanner()
-	defer freeScanner(scan)
-	return checkValid(data, scan) == nil
-}
-
-// checkValid verifies that data is valid JSON-encoded data.
-// scan is passed in for use by checkValid to avoid an allocation.
-// checkValid returns nil or a SyntaxError.
-func checkValid(data []byte, scan *scanner) error {
-	scan.reset()
-	for _, c := range data {
-		scan.bytes++
-		if scan.step(scan, c) == scanError {
-			return scan.err
-		}
-	}
-	if scan.eof() == scanError {
-		return scan.err
-	}
-	return nil
-}
-
-// A SyntaxError is a description of a JSON syntax error.
-// [Unmarshal] will return a SyntaxError if the JSON can't be parsed.
+// SyntaxError is a description of a JSON syntax error.
 type SyntaxError struct {
-	msg    string // description of error
-	Offset int64  // error occurred after reading Offset bytes
+	msg string // description of error
 }
 
 func (e *SyntaxError) Error() string { return e.msg }
@@ -80,32 +47,12 @@ type scanner struct {
 
 	// Error that happened, if any.
 	err error
-
-	// total bytes consumed, updated by decoder.Decode (and deliberately
-	// not set to zero by scan.reset)
-	bytes int64
-}
-
-var scannerPool = sync.Pool{
-	New: func() any {
-		return &scanner{}
-	},
 }
 
 func newScanner() *scanner {
-	scan := scannerPool.Get().(*scanner)
-	// scan.reset by design doesn't set bytes to zero
-	scan.bytes = 0
+	scan := &scanner{}
 	scan.reset()
 	return scan
-}
-
-func freeScanner(scan *scanner) {
-	// Avoid hanging on to too much memory in extreme cases.
-	if len(scan.parseState) > 1024 {
-		scan.parseState = nil
-	}
-	scannerPool.Put(scan)
 }
 
 // These values are returned by the state transition functions
@@ -170,7 +117,7 @@ func (s *scanner) eof() int {
 		return scanEnd
 	}
 	if s.err == nil {
-		s.err = &SyntaxError{"unexpected end of JSON input", s.bytes}
+		s.err = &SyntaxError{msg: "unexpected end of JSON input"}
 	}
 	return scanError
 }
@@ -592,7 +539,7 @@ func stateError(s *scanner, c byte) int {
 // error records an error and switches to the error state.
 func (s *scanner) error(c byte, context string) int {
 	s.step = stateError
-	s.err = &SyntaxError{"invalid character " + quoteChar(c) + " " + context, s.bytes}
+	s.err = &SyntaxError{msg: "invalid character " + quoteChar(c) + " " + context}
 	return scanError
 }
 

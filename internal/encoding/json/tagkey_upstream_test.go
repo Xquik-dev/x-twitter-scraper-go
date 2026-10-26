@@ -7,116 +7,53 @@
 package json
 
 import (
+	stdjson "encoding/json"
+	"reflect"
 	"testing"
 )
-
-type basicLatin2xTag struct {
-	V string `json:"$%-/"`
-}
-
-type basicLatin3xTag struct {
-	V string `json:"0123456789"`
-}
-
-type basicLatin4xTag struct {
-	V string `json:"ABCDEFGHIJKLMO"`
-}
-
-type basicLatin5xTag struct {
-	V string `json:"PQRSTUVWXYZ_"`
-}
-
-type basicLatin6xTag struct {
-	V string `json:"abcdefghijklmno"`
-}
-
-type basicLatin7xTag struct {
-	V string `json:"pqrstuvwxyz"`
-}
-
-type miscPlaneTag struct {
-	V string `json:"色は匂へど"`
-}
-
-type percentSlashTag struct {
-	V string `json:"text/html%"` // https://golang.org/issue/2718
-}
-
-type punctuationTag struct {
-	V string `json:"!#$%&()*+-./:;<=>?@[]^_{|}~ "` // https://golang.org/issue/3546
-}
-
-type dashTag struct {
-	V string `json:"-,"`
-}
-
-type emptyTag struct {
-	W string
-}
-
-type misnamedTag struct {
-	X string `jsom:"Misnamed"`
-}
-
-type badFormatTag struct {
-	Y string `:"BadFormat"`
-}
-
-type badCodeTag struct {
-	Z string `json:" !\"#&'()*+,."`
-}
-
-type spaceTag struct {
-	Q string `json:"With space"`
-}
-
-type unicodeTag struct {
-	W string `json:"Ελλάδα"`
-}
 
 func TestStructTagObjectKey(t *testing.T) {
 	tests := []struct {
 		CaseName
-		raw   any
+		tag   reflect.StructTag
 		value string
 		key   string
 	}{
-		{Name(""), basicLatin2xTag{"2x"}, "2x", "$%-/"},
-		{Name(""), basicLatin3xTag{"3x"}, "3x", "0123456789"},
-		{Name(""), basicLatin4xTag{"4x"}, "4x", "ABCDEFGHIJKLMO"},
-		{Name(""), basicLatin5xTag{"5x"}, "5x", "PQRSTUVWXYZ_"},
-		{Name(""), basicLatin6xTag{"6x"}, "6x", "abcdefghijklmno"},
-		{Name(""), basicLatin7xTag{"7x"}, "7x", "pqrstuvwxyz"},
-		{Name(""), miscPlaneTag{"いろはにほへと"}, "いろはにほへと", "色は匂へど"},
-		{Name(""), dashTag{"foo"}, "foo", "-"},
-		{Name(""), emptyTag{"Pour Moi"}, "Pour Moi", "W"},
-		{Name(""), misnamedTag{"Animal Kingdom"}, "Animal Kingdom", "X"},
-		{Name(""), badFormatTag{"Orfevre"}, "Orfevre", "Y"},
-		{Name(""), badCodeTag{"Reliable Man"}, "Reliable Man", "Z"},
-		{Name(""), percentSlashTag{"brut"}, "brut", "text/html%"},
-		{Name(""), punctuationTag{"Union Rags"}, "Union Rags", "!#$%&()*+-./:;<=>?@[]^_{|}~ "},
-		{Name(""), spaceTag{"Perreddu"}, "Perreddu", "With space"},
-		{Name(""), unicodeTag{"Loukanikos"}, "Loukanikos", "Ελλάδα"},
+		{Name(""), `json:"$%-/"`, "2x", "$%-/"},
+		{Name(""), `json:"0123456789"`, "3x", "0123456789"},
+		{Name(""), `json:"ABCDEFGHIJKLMO"`, "4x", "ABCDEFGHIJKLMO"},
+		{Name(""), `json:"PQRSTUVWXYZ_"`, "5x", "PQRSTUVWXYZ_"},
+		{Name(""), `json:"abcdefghijklmno"`, "6x", "abcdefghijklmno"},
+		{Name(""), `json:"pqrstuvwxyz"`, "7x", "pqrstuvwxyz"},
+		{Name(""), `json:"色は匂へど"`, "いろはにほへと", "色は匂へど"},
+		{Name(""), `json:"-,"`, "foo", "-"},
+		{Name(""), ``, "Pour Moi", "V"},
+		{Name(""), `jsom:"Misnamed"`, "Animal Kingdom", "V"},
+		{Name(""), `:"BadFormat"`, "Orfevre", "V"},
+		{Name(""), `json:" !\"#&'()*+,."`, "Reliable Man", "V"},
+		{Name(""), `json:"text/html%"`, "brut", "text/html%"},                                           // https://golang.org/issue/2718
+		{Name(""), `json:"!#$%&()*+-./:;<=>?@[]^_{|}~ "`, "Union Rags", "!#$%&()*+-./:;<=>?@[]^_{|}~ "}, // https://golang.org/issue/3546
+		{Name(""), `json:"With space"`, "Perreddu", "With space"},
+		{Name(""), `json:"Ελλάδα"`, "Loukanikos", "Ελλάδα"},
+		{Name(""), `json:"random,random"`, "Unknown Option", "random"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
-			b, err := Marshal(tt.raw)
+			// The struct type is built at run time because the linters
+			// reject the malformed tags these cases feed the encoder.
+			field := reflect.StructField{Name: "V", Type: reflect.TypeFor[string](), Tag: tt.tag}
+			v := reflect.New(reflect.StructOf([]reflect.StructField{field})).Elem()
+			v.Field(0).SetString(tt.value)
+			b, err := Marshal(v.Interface())
 			if err != nil {
 				t.Fatalf("%s: Marshal error: %v", tt.Where, err)
 			}
-			var f any
-			err = Unmarshal(b, &f)
-			if err != nil {
+			var got map[string]string
+			if err := stdjson.Unmarshal(b, &got); err != nil {
 				t.Fatalf("%s: Unmarshal error: %v", tt.Where, err)
 			}
-			for k, v := range f.(map[string]any) {
-				if k == tt.key {
-					if s, ok := v.(string); !ok || s != tt.value {
-						t.Fatalf("%s: Unmarshal(%#q) value:\n\tgot:  %q\n\twant: %q", tt.Where, b, s, tt.value)
-					}
-				} else {
-					t.Fatalf("%s: Unmarshal(%#q): unexpected key: %q", tt.Where, b, k)
-				}
+			if len(got) != 1 || got[tt.key] != tt.value {
+				t.Fatalf("%s: Marshal = %#q, want key %q with value %q", tt.Where, b, tt.key, tt.value)
 			}
 		})
 	}
