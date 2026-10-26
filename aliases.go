@@ -2545,3 +2545,92 @@ type UserProfileIdentityVerification = shared.UserProfileIdentityVerification
 
 // UserProfileTipJar holds public payment and creator-support handles shown on X.
 type UserProfileTipJar = shared.UserProfileTipJar
+
+// MonitorProfileValueUnion contains all possible properties and values from
+// [string], [bool], [int64], [[]string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfBool OfInt OfStringArray]
+type MonitorProfileValueUnion = shared.MonitorProfileValueUnion
+
+// MonitorFollowReason is why the account left the list, on following.removed and
+// follower.removed.
+type MonitorFollowReason = shared.MonitorFollowReason
+
+// MonitorFollowReasonUnavailable equals "unavailable".
+const MonitorFollowReasonUnavailable = shared.MonitorFollowReasonUnavailable
+
+// MonitorFollowReasonUnfollowed equals "unfollowed".
+const MonitorFollowReasonUnfollowed = shared.MonitorFollowReasonUnfollowed
+
+// MonitorPostMetricChangeMetric is the post metric that changed.
+type MonitorPostMetricChangeMetric = shared.MonitorPostMetricChangeMetric
+
+// MonitorPostMetricChangeMetricBookmarks equals "bookmarks".
+const MonitorPostMetricChangeMetricBookmarks = shared.MonitorPostMetricChangeMetricBookmarks
+
+// MonitorPostMetricChangeMetricLikes equals "likes".
+const MonitorPostMetricChangeMetricLikes = shared.MonitorPostMetricChangeMetricLikes
+
+// MonitorPostMetricChangeMetricQuotes equals "quotes".
+const MonitorPostMetricChangeMetricQuotes = shared.MonitorPostMetricChangeMetricQuotes
+
+// MonitorPostMetricChangeMetricReplies equals "replies".
+const MonitorPostMetricChangeMetricReplies = shared.MonitorPostMetricChangeMetricReplies
+
+// MonitorPostMetricChangeMetricRetweets equals "retweets".
+const MonitorPostMetricChangeMetricRetweets = shared.MonitorPostMetricChangeMetricRetweets
+
+// MonitorPostMetricChangeMetricViews equals "views".
+const MonitorPostMetricChangeMetricViews = shared.MonitorPostMetricChangeMetricViews
+
+// MonitorEventDataUnion contains all possible properties and values from
+// [MonitorPost], [MonitorProfileChange], [MonitorFollow],
+// [MonitorPostMetricChange], [MonitorPostEdit], [MonitorPostDeleted],
+// [MonitorLegacyPost]. Use [MonitorEventDataUnion.AsAny] with the event's type
+// to switch on the variant, or the methods beginning with 'As' to cast it to
+// one variant.
+type MonitorEventDataUnion = shared.MonitorEventDataUnion
+
+// MonitorPost is a monitored post with public fields and retained legacy
+// fields.
+type MonitorPost = shared.MonitorPost
+
+// MonitorProfileChange is a changed profile field with its previous and current
+// values. The field of a count event is followers or following, with both
+// counts as integers.
+type MonitorProfileChange = shared.MonitorProfileChange
+
+// MonitorFollow is the other account of a following or follower event. It holds
+// the ID alone when X fails the profile lookup.
+type MonitorFollow = shared.MonitorFollow
+
+// MonitorPostMetricChange is a post metric's change since its last event, on
+// the 6 post metric changed events.
+type MonitorPostMetricChange = shared.MonitorPostMetricChange
+
+// MonitorPostEdit is the post's text before and after an edit, on post.edited.
+type MonitorPostEdit = shared.MonitorPostEdit
+
+// MonitorPostDeleted is the last text the monitor saw, on post.deleted.
+type MonitorPostDeleted = shared.MonitorPostDeleted
+
+// MonitorLegacyPost is an older stored post. Fields can be missing or null.
+type MonitorLegacyPost = shared.MonitorLegacyPost
+
+// MonitorProfile is a public profile with retained legacy monitor fields.
+type MonitorProfile = shared.MonitorProfile
+
+// MonitorEmbeddedPost is an embedded post with public fields and legacy profile
+// aliases.
+type MonitorEmbeddedPost = shared.MonitorEmbeddedPost
+
+// MonitorPostCard describes a public card and the monitor profiles it
+// references.
+type MonitorPostCard = shared.MonitorPostCard
+
+// MonitorPostReactionContext holds the public post and user referenced by this
+// reaction.
+type MonitorPostReactionContext = shared.MonitorPostReactionContext
