@@ -61,13 +61,11 @@ type SpecOperation struct {
 	Operation   Operation
 }
 
-// PathItem is the part of an OpenAPI path item that the checks read.
 type PathItem struct {
 	Servers    json.RawMessage   `json:"servers"`
 	Parameters []json.RawMessage `json:"parameters"`
 }
 
-// Operation is the part of an OpenAPI operation that the checks read.
 type Operation struct {
 	OperationID string            `json:"operationId"`
 	Servers     json.RawMessage   `json:"servers"`
@@ -93,8 +91,6 @@ type failure string
 
 func (f failure) Error() string { return string(f) }
 
-// Decode reads raw as T and reports whether raw held a T. As with a type
-// assertion on an untyped document, a field of another JSON type stays zero.
 func Decode[T any](raw json.RawMessage) (T, bool) {
 	var value T
 	err := json.Unmarshal(raw, &value)
@@ -266,8 +262,10 @@ func receiverName(function *ast.FuncDecl) string {
 	if star, ok := expression.(*ast.StarExpr); ok {
 		expression = star.X
 	}
-	ident, _ := expression.(*ast.Ident)
-	return ident.String()
+	if ident, ok := expression.(*ast.Ident); ok {
+		return ident.Name
+	}
+	return ""
 }
 
 func assignments(body *ast.BlockStmt, name string) []ast.Expr {

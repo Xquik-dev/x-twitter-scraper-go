@@ -2,16 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-// Command type-coverage fails when a tracked Go file escapes static typing.
-//
-// It loads every package and test of the module in the current directory once
-// per platform it is given. It counts each declaration whose type holds an
-// empty interface as untyped, and it reports as escape hatches each written
-// any or interface{} outside a type parameter constraint, each type assertion
-// without the comma-ok form, each use of package unsafe or of the reflect
-// functions that bypass it, each linter suppression or linkname directive,
-// each generated-code header and each tracked file that no platform compiles.
-// It prints the share of typed declarations and exits 1 on any finding.
 package main
 
 import (
@@ -74,7 +64,7 @@ func run(output io.Writer, directory string, platforms []string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	tracked, err := trackedGoFiles(root)
+	tracked, configs, err := trackedFiles(root)
 	if err != nil {
 		return false, err
 	}
@@ -94,6 +84,9 @@ func run(output io.Writer, directory string, platforms []string) (bool, error) {
 		if !result.compiled[file] {
 			result.hatches[token.Position{Filename: file}] = hatch{"skipped file", "no checked platform compiles this tracked file"}
 		}
+	}
+	for _, config := range configs {
+		result.hatches[token.Position{Filename: config}] = hatch{"staticcheck config", "staticcheck.conf can exempt code from the checks that -checks all enables"}
 	}
 	lines := map[token.Position]string{}
 	maps.Copy(lines, result.untyped)
@@ -130,22 +123,26 @@ func comparePositions(a, b token.Position) int {
 	return cmp.Or(strings.Compare(a.Filename, b.Filename), cmp.Compare(a.Offset, b.Offset))
 }
 
-func trackedGoFiles(root string) (map[string]bool, error) {
-	command := exec.Command("git", "ls-files", "-z", "--", "*.go")
+func trackedFiles(root string) (map[string]bool, []string, error) {
+	command := exec.Command("git", "ls-files", "-z", "--", "*.go", ":(icase)*staticcheck.conf")
 	command.Dir = root
 	var stderr bytes.Buffer
 	command.Stderr = &stderr
 	listing, err := command.Output()
 	if err != nil {
-		return nil, fmt.Errorf("git ls-files failed in %s: %w %s", root, err, stderr.String())
+		return nil, nil, fmt.Errorf("git ls-files failed in %s: %w %s", root, err, stderr.String())
 	}
 	files := map[string]bool{}
+	var configs []string
 	for name := range strings.SplitSeq(string(listing), "\x00") {
-		if name != "" {
+		switch {
+		case strings.EqualFold(filepath.Base(name), "staticcheck.conf"):
+			configs = append(configs, filepath.Join(root, name))
+		case strings.HasSuffix(name, ".go"):
 			files[filepath.Join(root, name)] = true
 		}
 	}
-	return files, nil
+	return files, configs, nil
 }
 
 func (a *audit) load(root, platform string) error {
@@ -243,6 +240,14 @@ func (a *audit) inspectFile(file *ast.File, info *types.Info, at func(token.Pos)
 			if _, checked := info.Types[node].Type.(*types.Tuple); node.Type != nil && !checked {
 				a.hatches[at(node.Lparen)] = hatch{"unchecked assertion", "type assertion without the comma-ok form"}
 			}
+		case *ast.AssignStmt:
+			a.discardedAssertion(node.Lhs, node.Rhs, at)
+		case *ast.ValueSpec:
+			names := make([]ast.Expr, len(node.Names))
+			for i, name := range node.Names {
+				names[i] = name
+			}
+			a.discardedAssertion(names, node.Values, at)
 		case *ast.SelectorExpr:
 			if function, ok := info.Uses[node.Sel].(*types.Func); ok && function.Pkg() != nil &&
 				function.Pkg().Path() == "reflect" && unsafeReflect[function.Name()] {
@@ -259,6 +264,16 @@ func (a *audit) inspectFile(file *ast.File, info *types.Info, at func(token.Pos)
 		}
 		return true
 	})
+}
+
+func (a *audit) discardedAssertion(targets, values []ast.Expr, at func(token.Pos) token.Position) {
+	if len(targets) != 2 || len(values) != 1 {
+		return
+	}
+	assertion, isAssertion := ast.Unparen(values[0]).(*ast.TypeAssertExpr)
+	if blank, isIdent := targets[1].(*ast.Ident); isAssertion && isIdent && blank.Name == "_" {
+		a.hatches[at(assertion.Lparen)] = hatch{"unchecked assertion", "type assertion discards its ok result"}
+	}
 }
 
 func markConstraints(parameters *ast.FieldList, constraints map[ast.Expr]bool) {

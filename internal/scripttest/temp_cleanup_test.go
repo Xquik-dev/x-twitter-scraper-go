@@ -330,7 +330,7 @@ func TestCoverageReportsOnlyRetainedProfiles(t *testing.T) {
 					}
 				}
 			}
-			if stdout, _ := cmd.Stdout.(*bytes.Buffer); stdout.String() != want {
+			if stdout, ok := cmd.Stdout.(*bytes.Buffer); !ok || stdout.String() != want {
 				t.Fatalf("stdout %q, want %q", stdout.String(), want)
 			}
 			expectEmpty(t, cmd, private)
