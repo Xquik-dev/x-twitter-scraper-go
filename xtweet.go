@@ -4916,7 +4916,7 @@ type XTweetSearchParams struct {
 	//
 	// Any of "standard", "coverage".
 	Mode XTweetSearchParamsMode `query:"mode,omitzero" json:"-"`
-	// Latest is chronological; Top ranks engagement. Aliases: result_type, sort_order.
+	// Latest sorts by time and Top by engagement. Aliases: result_type, sort_order.
 	//
 	// Any of "Latest", "Top".
 	QueryType XTweetSearchParamsQueryType `query:"queryType,omitzero" json:"-"`
@@ -4964,7 +4964,7 @@ const (
 	XTweetSearchParamsModeCoverage XTweetSearchParamsMode = "coverage"
 )
 
-// XTweetSearchParamsQueryType is the type of [XTweetSearchParams.QueryType]. Latest is chronological; Top ranks engagement. Aliases: result_type, sort_order.
+// XTweetSearchParamsQueryType is the type of [XTweetSearchParams.QueryType]. Latest sorts by time and Top by engagement. Aliases: result_type, sort_order.
 type XTweetSearchParamsQueryType string
 
 const (

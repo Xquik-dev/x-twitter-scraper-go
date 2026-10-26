@@ -669,7 +669,7 @@ type XAnalysisBrandResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -714,7 +714,7 @@ func (r *XAnalysisBrandResponseResultMonitorChange) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// XAnalysisBrandResponseResultMonitorStatus is the type of [XAnalysisBrandResponseResultMonitor.Status]. first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisBrandResponseResultMonitorStatus is the type of [XAnalysisBrandResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisBrandResponseResultMonitorStatus string
@@ -1343,7 +1343,7 @@ type XAnalysisClassifyResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -1388,7 +1388,7 @@ func (r *XAnalysisClassifyResponseResultMonitorChange) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// XAnalysisClassifyResponseResultMonitorStatus is the type of [XAnalysisClassifyResponseResultMonitor.Status]. first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisClassifyResponseResultMonitorStatus is the type of [XAnalysisClassifyResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisClassifyResponseResultMonitorStatus string
@@ -2023,7 +2023,7 @@ type XAnalysisMarketSignalsResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -2068,7 +2068,7 @@ func (r *XAnalysisMarketSignalsResponseResultMonitorChange) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// XAnalysisMarketSignalsResponseResultMonitorStatus is the type of [XAnalysisMarketSignalsResponseResultMonitor.Status]. first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisMarketSignalsResponseResultMonitorStatus is the type of [XAnalysisMarketSignalsResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisMarketSignalsResponseResultMonitorStatus string
@@ -2693,7 +2693,7 @@ type XAnalysisNewsResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -2738,7 +2738,7 @@ func (r *XAnalysisNewsResponseResultMonitorChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// XAnalysisNewsResponseResultMonitorStatus is the type of [XAnalysisNewsResponseResultMonitor.Status]. first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisNewsResponseResultMonitorStatus is the type of [XAnalysisNewsResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisNewsResponseResultMonitorStatus string
@@ -3367,7 +3367,7 @@ type XAnalysisSentimentResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -3412,7 +3412,7 @@ func (r *XAnalysisSentimentResponseResultMonitorChange) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// XAnalysisSentimentResponseResultMonitorStatus is the type of [XAnalysisSentimentResponseResultMonitor.Status]. first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisSentimentResponseResultMonitorStatus is the type of [XAnalysisSentimentResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisSentimentResponseResultMonitorStatus string
@@ -4043,7 +4043,7 @@ type XAnalysisViralScoreResponseResultMonitor struct {
 	// Hash of the questions, targets & context. Rows with another hash are
 	// not_comparable.
 	ConfigurationFingerprint string `json:"configurationFingerprint" api:"required"`
-	// first_run without baseline. new_to_baseline for a post baseline lacks. changed
+	// It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 	// when an answer clearly left its earlier decision. not_comparable when other
 	// settings made the earlier row or it answers none of these questions.
 	//
@@ -4088,7 +4088,7 @@ func (r *XAnalysisViralScoreResponseResultMonitorChange) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
-// XAnalysisViralScoreResponseResultMonitorStatus is the type of [XAnalysisViralScoreResponseResultMonitor.Status]. first_run without baseline. new_to_baseline for a post baseline lacks. changed
+// XAnalysisViralScoreResponseResultMonitorStatus is the type of [XAnalysisViralScoreResponseResultMonitor.Status]. It is first_run when no baseline exists. new_to_baseline for a post baseline lacks. changed
 // when an answer clearly left its earlier decision. not_comparable when other
 // settings made the earlier row or it answers none of these questions.
 type XAnalysisViralScoreResponseResultMonitorStatus string
