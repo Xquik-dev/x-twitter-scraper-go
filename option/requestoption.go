@@ -13,7 +13,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"reflect"
 	"strings"
 	"time"
 
@@ -219,7 +218,7 @@ func WithJSONDel(key string) RequestOption {
 
 // WithResponseBodyInto returns a RequestOption that overwrites the deserialization target with
 // the given destination. If provided, we don't deserialize into the default struct.
-func WithResponseBodyInto[D any](dst D) RequestOption {
+func WithResponseBodyInto[D any](dst *D) RequestOption {
 	into := requestconfig.Into(dst)
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.ResponseBodyInto = into
@@ -235,24 +234,12 @@ func WithResponseInto(dst **http.Response) RequestOption {
 	})
 }
 
-// WithRequestBody returns a RequestOption that provides a custom serialized body with the given
+// WithRequestBody returns a RequestOption that sends body as is with the given
 // content type.
-//
-// body accepts an io.Reader or raw []bytes.
-func WithRequestBody[B any](contentType string, body B) RequestOption {
-	value := reflect.ValueOf(&body).Elem()
+func WithRequestBody(contentType string, body io.Reader) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		if reader, ok := reflect.TypeAssert[io.Reader](value); ok {
-			r.Body = reader
-			return r.Apply(WithHeader("Content-Type", contentType))
-		}
-
-		if b, ok := reflect.TypeAssert[[]byte](value); ok {
-			r.Body = bytes.NewBuffer(b)
-			return r.Apply(WithHeader("Content-Type", contentType))
-		}
-
-		return fmt.Errorf("body must be a byte slice or implement io.Reader")
+		r.Body = body
+		return r.Apply(WithHeader("Content-Type", contentType))
 	})
 }
 

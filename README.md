@@ -519,7 +519,7 @@ fmt.Printf("Headers: %+#v\n", response.Header)
 Use `client.Get`, `client.Post`, or another verb for undocumented endpoints.
 These methods retain client options such as retries.
 They take SDK params or nil, and decode the response into any `json.Unmarshaler`, such as an SDK model or a `json.RawMessage`.
-`option.WithRequestBody` sends a reader or bytes as the body instead.
+`option.WithRequestBody` sends an `io.Reader`, such as `bytes.NewReader(data)`, as the body instead.
 
 ```go
 var result json.RawMessage

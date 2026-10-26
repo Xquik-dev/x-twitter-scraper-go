@@ -4,6 +4,7 @@
 package xtwitterscraper_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -39,7 +40,7 @@ func TestClientConvenienceMethods(t *testing.T) {
 			return client.Post(ctx, "/post", nil, &dst, option.WithRequestBody("application/json", strings.NewReader("{}")))
 		},
 		func() error {
-			return client.Put(ctx, "/put", nil, &dst, option.WithRequestBody("application/json", []byte("{}")))
+			return client.Put(ctx, "/put", nil, &dst, option.WithRequestBody("application/json", bytes.NewBufferString("{}")))
 		},
 		func() error { return client.Patch(ctx, "/patch", xtwitterscraper.DraftNewParams{Text: "ok"}, &dst) },
 		func() error { return client.Delete(ctx, "/delete", nil, &dst) },

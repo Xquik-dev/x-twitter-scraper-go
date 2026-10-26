@@ -162,12 +162,10 @@ func TestRequestOptions(t *testing.T) {
 		if cfg.Request.Header.Get("Content-Type") != "text/plain" {
 			t.Fatal("reader content type was not set")
 		}
-		applyOption(t, cfg, WithRequestBody("application/octet-stream", []byte("bytes")))
-		if _, ok := cfg.Body.(*bytes.Buffer); !ok {
-			t.Fatalf("Body type = %T", cfg.Body)
-		}
-		if err := WithRequestBody("text/plain", 42).Apply(cfg); err == nil {
-			t.Fatal("WithRequestBody() accepted an unsupported body")
+		body := bytes.NewReader([]byte("bytes"))
+		applyOption(t, cfg, WithRequestBody("application/octet-stream", body))
+		if cfg.Body != body || cfg.Request.Header.Get("Content-Type") != "application/octet-stream" {
+			t.Fatalf("Body = %T with content type %q", cfg.Body, cfg.Request.Header.Get("Content-Type"))
 		}
 	})
 

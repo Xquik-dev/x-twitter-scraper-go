@@ -118,8 +118,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 // params struct of your own embeds [param.APIObject]. It is serialized into the
 // body using [encoding/json], or with its MarshalJSON method when it has one. A
 // URLQuery method adds the returned [url.Values] to the query string, and a
-// MarshalMultipart method sends a multipart form. To send a byte slice or an
-// [io.Reader] as is, pass nil params and [option.WithRequestBody].
+// MarshalMultipart method sends a multipart form. To send an [io.Reader] as is,
+// such as a [bytes.Reader] over a byte slice, pass nil params and
+// [option.WithRequestBody].
 //
 // Any model defined in this library can be used as the response argument, and
 // the response body is deserialized into it with its UnmarshalJSON method. A
