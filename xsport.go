@@ -19,9 +19,11 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 )
 
-// NFL & college football games, scoreboards, plays, box scores & audiences
+// XSportService covers NFL & college football games, scoreboards, plays, box
+// scores, audiences, rosters, player props & posts.
 //
 // XSportService contains methods and other services that help with interacting
 // with the x-twitter-scraper API.
@@ -120,6 +122,59 @@ func (r *XSportService) GetAudience(ctx context.Context, id string, params XSpor
 		return nil, err
 	}
 	path := fmt.Sprintf("x/sports/%s/games/%s/audience", url.PathEscape(params.League), url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
+	return res, err
+}
+
+// GetRoster returns both teams' players for 1 NFL game. Each player has a jersey,
+// position, headshot & X account. Each request costs 1 credit.
+func (r *XSportService) GetRoster(ctx context.Context, id string, params XSportGetRosterParams, opts ...option.RequestOption) (res *FootballRoster, err error) {
+	opts = slices.Concat(r.options, opts)
+	if params.League == "" {
+		err = errors.New("missing required league parameter")
+		return nil, err
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/sports/%s/games/%s/roster", url.PathEscape(params.League), url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
+	return res, err
+}
+
+// GetPlayerProps returns the player prop lines & American odds X shows for 1 NFL
+// game. X lists props before & during a game. Other games return no categories.
+// Each request costs 1 credit.
+func (r *XSportService) GetPlayerProps(ctx context.Context, id string, params XSportGetPlayerPropsParams, opts ...option.RequestOption) (res *FootballProps, err error) {
+	opts = slices.Concat(r.options, opts)
+	if params.League == "" {
+		err = errors.New("missing required league parameter")
+		return nil, err
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/sports/%s/games/%s/player-props", url.PathEscape(params.League), url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
+	return res, err
+}
+
+// GetPosts returns the posts X shows on a game's page, with the X search that
+// finds them. Works before, during & after the game. Pages hold up to 20 posts, &
+// each post costs 1 credit.
+func (r *XSportService) GetPosts(ctx context.Context, id string, params XSportGetPostsParams, opts ...option.RequestOption) (res *SportsGamePosts, err error) {
+	opts = slices.Concat(r.options, opts)
+	if params.League == "" {
+		err = errors.New("missing required league parameter")
+		return nil, err
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/sports/%s/games/%s/posts", url.PathEscape(params.League), url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
@@ -774,13 +829,23 @@ type FootballPlayerXUser struct {
 	Username string `json:"username" api:"required"`
 	// Whether the account has a blue check.
 	BlueVerified bool `json:"blueVerified" api:"required"`
+	// Whether the account protects its posts. Only rosters carry it.
+	Protected bool `json:"protected" api:"required"`
+	// Whether the account can offer subscriptions. Only rosters carry it.
+	SuperFollowEligible bool `json:"superFollowEligible" api:"required"`
+	// The label X highlights on the account, such as BusinessLabel. Only rosters
+	// carry it.
+	LabelType string `json:"labelType" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Username     respjson.Field
-		BlueVerified respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID                  respjson.Field
+		Username            respjson.Field
+		BlueVerified        respjson.Field
+		Protected           respjson.Field
+		SuperFollowEligible respjson.Field
+		LabelType           respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -1668,6 +1733,174 @@ func (r *SportsGameAudience) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// FootballRosterTeam is 1 team's roster.
+type FootballRosterTeam struct {
+	// The team this roster belongs to, a key of teams.
+	TeamID string `json:"teamId" api:"required"`
+	// The team's players in X's order, keys of players.
+	PlayerIDs []string `json:"playerIds" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TeamID      respjson.Field
+		PlayerIDs   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r FootballRosterTeam) RawJSON() string { return r.JSON.raw }
+func (r *FootballRosterTeam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FootballRoster holds both teams' rosters for 1 NFL game.
+type FootballRoster struct {
+	// The ID of the game these rosters cover.
+	ID string `json:"id" api:"required"`
+	// The league of the game these rosters cover.
+	League string `json:"league" api:"required"`
+	// Each team's roster, in X's order.
+	Rosters []FootballRosterTeam `json:"rosters" api:"required"`
+	// The 2 teams, by team ID.
+	Teams map[string]SportsTeam `json:"teams" api:"required"`
+	// Every rostered player, by player ID. Rosters carry no college or birth details
+	// & only a medium headshot, so the rest are null.
+	Players map[string]FootballPlayer `json:"players" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		League      respjson.Field
+		Rosters     respjson.Field
+		Teams       respjson.Field
+		Players     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r FootballRoster) RawJSON() string { return r.JSON.raw }
+func (r *FootballRoster) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FootballPlayerProp is 1 player's line & odds in a prop category.
+type FootballPlayerProp struct {
+	// The player the line is for, a key of players.
+	PlayerID string `json:"playerId" api:"required"`
+	// The line's place in its category, from 1.
+	Rank float64 `json:"rank" api:"required"`
+	// The line the odds price, such as 248.5 yards. Null when the prop has no line,
+	// such as the first touchdown scorer.
+	Line float64 `json:"line" api:"required"`
+	// The American odds X shows first, such as -115 or 240.
+	Odds float64 `json:"odds" api:"required"`
+	// The American odds X shows second. Null for a prop with 1 price.
+	AlternateOdds float64 `json:"alternateOdds" api:"required"`
+	// Whether the sportsbook takes bets on the line.
+	OpenForBetting bool `json:"openForBetting" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PlayerID       respjson.Field
+		Rank           respjson.Field
+		Line           respjson.Field
+		Odds           respjson.Field
+		AlternateOdds  respjson.Field
+		OpenForBetting respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r FootballPlayerProp) RawJSON() string { return r.JSON.raw }
+func (r *FootballPlayerProp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FootballPropCategory is 1 kind of player prop & its lines.
+type FootballPropCategory struct {
+	// X's key for the prop, such as passing_yards.
+	Key string `json:"key" api:"required"`
+	// The name X shows for the prop.
+	Name string `json:"name" api:"required"`
+	// The category's place in X's order, from 1.
+	Rank float64 `json:"rank" api:"required"`
+	// Each player's line, in X's order.
+	Props []FootballPlayerProp `json:"props" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Name        respjson.Field
+		Rank        respjson.Field
+		Props       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r FootballPropCategory) RawJSON() string { return r.JSON.raw }
+func (r *FootballPropCategory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FootballProps holds the player props X shows for 1 NFL game.
+type FootballProps struct {
+	// The ID of the game these props cover.
+	ID string `json:"id" api:"required"`
+	// The league of the game these props cover.
+	League string `json:"league" api:"required"`
+	// The sportsbook page X links for these props.
+	SportsbookURL string `json:"sportsbookUrl" api:"required" format:"uri"`
+	// Each kind of prop, such as passing yards, in X's order. A game without props
+	// has none.
+	Categories []FootballPropCategory `json:"categories" api:"required"`
+	// The players these props name, by player ID. X sends only each player's name,
+	// jersey & team, so other fields are null.
+	Players map[string]FootballPlayer `json:"players" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		League        respjson.Field
+		SportsbookURL respjson.Field
+		Categories    respjson.Field
+		Players       respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r FootballProps) RawJSON() string { return r.JSON.raw }
+func (r *FootballProps) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// SportsGamePosts is a page of 1 game's posts, in Xquik's post shape. Pass
+// next_cursor as cursor for the next page.
+type SportsGamePosts struct {
+	// The X search that finds this game's posts for the order asked. X builds it from
+	// the teams, hashtags, accounts & star players, with the game's time window. Send
+	// it to GET /x/tweets/search for more filters. Null when X sends a timeline ID
+	// Xquik cannot read.
+	Query string `json:"query" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Query       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	shared.PaginatedTweets
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r SportsGamePosts) RawJSON() string { return r.JSON.raw }
+func (r *SportsGamePosts) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type XSportListGamesParams struct {
 	// Start of the window. Takes an ISO 8601 date or time, such as 2026-10-01, or Unix
 	// seconds. A time without a zone reads as UTC. Defaults to 7 days before to. Alias
@@ -1799,3 +2032,103 @@ func (r XSportGetAudienceParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+type XSportGetRosterParams struct {
+	// nfl, in any case. X has no college rosters or props, so ncaafb gets a free 400
+	// `unsupported_league`. Another value gets a free 400 `invalid_league`. Both come
+	// before X is read.
+	League string `path:"league" api:"required" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XSportGetRosterParams]'s query parameters as `url.Values`.
+func (r XSportGetRosterParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XSportGetPlayerPropsParams struct {
+	// nfl, in any case. X has no college rosters or props, so ncaafb gets a free 400
+	// `unsupported_league`. Another value gets a free 400 `invalid_league`. Both come
+	// before X is read.
+	League string `path:"league" api:"required" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XSportGetPlayerPropsParams]'s query parameters as
+// `url.Values`.
+func (r XSportGetPlayerPropsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XSportGetPostsParams struct {
+	// nfl for the NFL or ncaafb for college football, in any case. Another value gets
+	// a free 400 `invalid_league` before X is read.
+	League string `path:"league" api:"required" json:"-"`
+	// Pagination cursor for collection results. Also read as next_cursor, next_token,
+	// pagination_token or continuation_token.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	// Items per page (1-100, default 20). Source, filters or credits can return fewer.
+	// Follow next_cursor for more pages. Its aliases are limit, count, max_results,
+	// maxItems, max_items & per_page.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
+	// Top for the posts X ranks highest, or Latest for the newest. Any case works, &
+	// so do Relevance & Recency. Alias order or sort. Send the same value with each
+	// cursor.
+	//
+	// Any of "Top", "Latest".
+	QueryType XSportGetPostsParamsQueryType `query:"queryType,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XSportGetPostsParams]'s query parameters as `url.Values`.
+func (r XSportGetPostsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// XSportGetPostsParamsQueryType picks the order of a game's posts. Top is for the
+// posts X ranks highest, and Latest is for the newest.
+type XSportGetPostsParamsQueryType string
+
+const (
+	XSportGetPostsParamsQueryTypeTop    XSportGetPostsParamsQueryType = "Top"
+	XSportGetPostsParamsQueryTypeLatest XSportGetPostsParamsQueryType = "Latest"
+)
