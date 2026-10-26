@@ -18,18 +18,17 @@ func module(t *testing.T, files map[string]string) string {
 	files["go.mod"] = "module example.com/probe\n\ngo 1.27\n"
 	for name, content := range files {
 		path := filepath.Join(directory, name)
-		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 			t.Fatal(err)
 		}
 		if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
 			t.Fatal(err)
 		}
 	}
-	for _, arguments := range [][]string{{"init", "-q"}, {"add", "."}} {
-		command := exec.Command("git", arguments...)
+	for _, command := range []*exec.Cmd{exec.Command("git", "init", "-q"), exec.Command("git", "add", ".")} {
 		command.Dir = directory
 		if output, err := command.CombinedOutput(); err != nil {
-			t.Fatalf("git %v: %v %s", arguments, err, output)
+			t.Fatalf("%v: %v %s", command.Args, err, output)
 		}
 	}
 	return directory

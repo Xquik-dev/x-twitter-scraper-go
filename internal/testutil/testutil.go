@@ -14,7 +14,11 @@ import (
 )
 
 func CheckTestServer(t *testing.T, url string) bool {
-	if response, err := http.Get(url); err != nil {
+	request, err := http.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if response, err := http.DefaultClient.Do(request); err != nil {
 		const skipMockTests = "SKIP_MOCK_TESTS"
 		if str, ok := os.LookupEnv(skipMockTests); ok {
 			skip, err := strconv.ParseBool(str)
