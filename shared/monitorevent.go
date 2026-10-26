@@ -12,7 +12,9 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-type anyMonitorEventData interface {
+// MonitorEventDataVariant is a variant of [MonitorEventDataUnion]. Only the
+// variant types in this package implement it.
+type MonitorEventDataVariant interface {
 	implMonitorEventDataUnion()
 }
 
@@ -40,7 +42,7 @@ func (MonitorLegacyPost) implMonitorEventDataUnion()       {}
 //	case shared.MonitorLegacyPost:
 //	default:
 //	}
-func (u MonitorEventDataUnion) AsAny(eventType EventType) (anyMonitorEventData, error) {
+func (u MonitorEventDataUnion) AsAny(eventType EventType) (MonitorEventDataVariant, error) {
 	switch eventType {
 	case "tweet.new", "tweet.reply", "tweet.retweet", "tweet.quote", "tweet.media",
 		"tweet.link", "tweet.poll", "tweet.mention", "tweet.hashtag", "tweet.longform",

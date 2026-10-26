@@ -2594,6 +2594,10 @@ const MonitorPostMetricChangeMetricViews = shared.MonitorPostMetricChangeMetricV
 // one variant.
 type MonitorEventDataUnion = shared.MonitorEventDataUnion
 
+// MonitorEventDataVariant is a variant of [MonitorEventDataUnion]. Only the
+// variant types in package shared implement it.
+type MonitorEventDataVariant = shared.MonitorEventDataVariant
+
 // MonitorPost is a monitored post with public fields and retained legacy
 // fields.
 type MonitorPost = shared.MonitorPost

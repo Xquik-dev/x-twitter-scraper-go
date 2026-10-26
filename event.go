@@ -87,8 +87,7 @@ func (r *EventService) StreamStreaming(ctx context.Context, params EventStreamPa
 // Event is a monitor event summary with source metadata and occurrence time.
 type Event struct {
 	ID string `json:"id" api:"required"`
-	// Post or profile-change payload. Read its variant with
-	// [MonitorEventDataUnion.AsAny], passing the event's Type.
+	// Payload of the event type. Read its variant with [Event.DataAsAny].
 	Data MonitorEventDataUnion `json:"data" api:"required"`
 	// Account monitor ID for account events, or keyword monitor ID for keyword events.
 	MonitorID string `json:"monitorId" api:"required"`
@@ -153,6 +152,10 @@ type Event struct {
 
 // RawJSON returns the unmodified JSON received from the API.
 func (r Event) RawJSON() string { return r.JSON.raw }
+
+// DataAsAny returns the variant of Data that the event's Type picks, as
+// [MonitorEventDataUnion.AsAny] does.
+func (r Event) DataAsAny() (MonitorEventDataVariant, error) { return r.Data.AsAny(r.Type) }
 func (r *Event) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
@@ -169,8 +172,7 @@ const (
 // EventDetail is a full monitor event including payload data and optional X event ID.
 type EventDetail struct {
 	ID string `json:"id" api:"required"`
-	// Post or profile-change payload for the event type. Read its variant with
-	// [MonitorEventDataUnion.AsAny], passing the event's Type.
+	// Payload of the event type. Read its variant with [EventDetail.DataAsAny].
 	Data MonitorEventDataUnion `json:"data" api:"required"`
 	// Monitor ID associated with this detailed event payload.
 	MonitorID string `json:"monitorId" api:"required"`
@@ -225,6 +227,10 @@ type EventDetail struct {
 
 // RawJSON returns the unmodified JSON received from the API.
 func (r EventDetail) RawJSON() string { return r.JSON.raw }
+
+// DataAsAny returns the variant of Data that the event's Type picks, as
+// [MonitorEventDataUnion.AsAny] does.
+func (r EventDetail) DataAsAny() (MonitorEventDataVariant, error) { return r.Data.AsAny(r.Type) }
 func (r *EventDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r, &r.JSON.raw)
 }
