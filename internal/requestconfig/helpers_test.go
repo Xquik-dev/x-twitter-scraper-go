@@ -6,6 +6,7 @@ package requestconfig
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"errors"
 	"io"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"testing/iotest"
 	"time"
 )
 
@@ -87,6 +89,13 @@ func TestRetryHelpers(t *testing.T) {
 		if got := retryDelay(nil, retryCount); got < 6*time.Second || got > 8*time.Second {
 			t.Fatalf("capped retryDelay(%d) = %s", retryCount, got)
 		}
+	}
+	reader := rand.Reader
+	rand.Reader = iotest.ErrReader(errors.New("no entropy"))
+	got := retryDelay(nil, 0)
+	rand.Reader = reader
+	if got != 500*time.Millisecond {
+		t.Fatalf("retryDelay without entropy = %s", got)
 	}
 }
 

@@ -9,11 +9,12 @@ package requestconfig
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"math/rand"
+	"math/big"
 	"mime"
 	"net/http"
 	"net/url"
@@ -312,7 +313,11 @@ func retryDelay(res *http.Response, retryCount int) time.Duration {
 	}
 
 	delay := 500 * time.Millisecond << min(max(retryCount, 0), 4)
-	return delay - time.Duration(rand.Int63n(int64(delay/4)))
+	jitter, err := rand.Int(rand.Reader, big.NewInt(int64(delay/4)))
+	if err != nil {
+		return delay
+	}
+	return delay - time.Duration(jitter.Int64())
 }
 
 func (cfg *RequestConfig) Execute() (err error) {
