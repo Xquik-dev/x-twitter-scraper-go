@@ -41,6 +41,20 @@ func TestMonitorEventDataMarshalsTheDecodedPayload(t *testing.T) {
 	}
 }
 
+func TestEventWithoutDataMarshalsDataAsNull(t *testing.T) {
+	got, err := json.Marshal(xtwitterscraper.Event{ID: "1"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var event struct {
+		ID   string          `json:"id"`
+		Data json.RawMessage `json:"data"`
+	}
+	if err := json.Unmarshal(got, &event); err != nil || event.ID != "1" || string(event.Data) != "null" {
+		t.Fatalf("event marshals to %s, err = %v", got, err)
+	}
+}
+
 func decodeEventData(t *testing.T, eventType, data string) (xtwitterscraper.Event, xtwitterscraper.EventDetail) {
 	t.Helper()
 	body := []byte(`{"id":"1","type":"` + eventType + `","monitorId":"10","monitorType":"account","occurredAt":"2025-01-15T12:00:00Z","data":` + data + `}`)
