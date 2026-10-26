@@ -10,8 +10,6 @@ import (
 	"reflect"
 )
 
-// As returns the value v holds, converted to T, or an error when v cannot
-// become a T.
 func As[T any](v reflect.Value) (T, error) {
 	if target := reflect.TypeFor[T](); v.CanConvert(target) {
 		v = v.Convert(target)
