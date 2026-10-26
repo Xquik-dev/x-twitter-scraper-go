@@ -356,7 +356,9 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 
 	return func(node gjson.Result, value reflect.Value, state *decoderState) (err error) {
 		for _, decoder := range anonymousDecoders {
-			_ = decoder.fn(node, value.FieldByIndex(decoder.idx), state)
+			if err := decoder.fn(node, value.FieldByIndex(decoder.idx), state); err != nil {
+				return err
+			}
 		}
 
 		for _, inlineDecoder := range inlineDecoders {
@@ -423,7 +425,9 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 			}
 
 			if itemNode.Type == gjson.Null && dest.IsValid() && dest.Type().Implements(reflect.TypeOf((*param.Optional)(nil)).Elem()) {
-				_ = unmarshalRaw(dest.Addr(), itemNode.Raw)
+				if err := unmarshalRaw(dest.Addr(), itemNode.Raw); err != nil {
+					return err
+				}
 				continue
 			}
 

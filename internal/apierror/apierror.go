@@ -49,7 +49,10 @@ func (r *Error) DumpRequest(body bool) []byte {
 	} else if body {
 		body = false
 	}
-	out, _ := httputil.DumpRequestOut(&requestCopy, body)
+	out, err := httputil.DumpRequestOut(&requestCopy, body)
+	if err != nil {
+		return nil
+	}
 	return out
 }
 
@@ -62,6 +65,9 @@ func (r *Error) DumpResponse(body bool) []byte {
 	} else if body {
 		body = false
 	}
-	out, _ := httputil.DumpResponse(&responseCopy, body)
+	out, err := httputil.DumpResponse(&responseCopy, body)
+	if err != nil {
+		return nil
+	}
 	return out
 }

@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"math/rand"
@@ -388,7 +389,9 @@ func (cfg *RequestConfig) Execute() (err error) {
 		}
 
 		if res != nil && res.Body != nil {
-			_ = res.Body.Close()
+			if err := res.Body.Close(); err != nil {
+				return err
+			}
 		}
 
 		select {
@@ -411,7 +414,7 @@ func (cfg *RequestConfig) Execute() (err error) {
 
 	if res.StatusCode >= 400 {
 		contents, err := io.ReadAll(res.Body)
-		_ = res.Body.Close()
+		err = errors.Join(err, res.Body.Close())
 		if err != nil {
 			return err
 		}
@@ -435,7 +438,7 @@ func (cfg *RequestConfig) Execute() (err error) {
 	}
 
 	contents, err := io.ReadAll(res.Body)
-	_ = res.Body.Close()
+	err = errors.Join(err, res.Body.Close())
 	if err != nil {
 		return fmt.Errorf("error reading response body: %w", err)
 	}
@@ -470,8 +473,8 @@ func decodeBody[D any](dst D, contentType string, contents []byte) error {
 		*bytes = contents
 		return nil
 	}
-	mediaType, _, _ := mime.ParseMediaType(contentType)
-	if !strings.Contains(mediaType, "application/json") && !strings.HasSuffix(mediaType, "+json") {
+	mediaType, _, err := mime.ParseMediaType(contentType)
+	if (err != nil && !errors.Is(err, mime.ErrInvalidMediaParameter)) || !strings.Contains(mediaType, "application/json") && !strings.HasSuffix(mediaType, "+json") {
 		if text, ok := reflect.TypeAssert[*string](value); ok {
 			*text = string(contents)
 			return nil
