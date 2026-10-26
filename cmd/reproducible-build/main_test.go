@@ -31,16 +31,15 @@ func TestArchiveWorkingTree(t *testing.T) {
 		}
 	}
 	git("init", "-q")
+	git("config", "core.fileMode", "false")
 	for name, value := range map[string]string{".gitignore": "ignored.dat\n", "plain": "initial", "executable": "executable", "obsolete": "remove"} {
 		write(name, value)
-	}
-	if err := os.Chmod("executable", 0o755); err != nil {
-		t.Fatal(err)
 	}
 	if err := os.Symlink("plain", "link"); err != nil {
 		t.Fatal(err)
 	}
 	git("add", ".")
+	git("update-index", "--chmod=+x", "executable")
 	git("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "-c", "commit.gpgsign=false", "commit", "-qm", "fixture")
 	write("plain", "staged")
 	git("add", "plain")
