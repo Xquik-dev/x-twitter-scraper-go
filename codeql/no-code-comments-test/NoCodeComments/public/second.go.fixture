@@ -1,0 +1,2 @@
+// Package public is a second package doc comment, which the query flags.
+package public

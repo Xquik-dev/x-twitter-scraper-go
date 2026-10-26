@@ -3,7 +3,7 @@
 
 /**
  * @name Code comment
- * @description Code has no comments. A comment needs a legal marker, a functional directive, an https link that proves it, or it documents the public API, or it is the 1 doc comment of a library package that staticcheck ST1000 requires.
+ * @description Code has no comments. A comment needs a legal marker, a functional directive, an https link that proves it, the Go Authors license header of a forked file, a doc comment of the public API, or the 1 doc comment of a library package that staticcheck ST1000 requires.
  * @kind problem
  * @problem.severity error
  * @id go/no-code-comments
@@ -42,8 +42,6 @@ predicate exported(Documentable element) {
   exportedName(element.(MethodSpec).getNameExpr().(Ident).getName())
   or
   element instanceof EmbeddingSpec
-  or
-  element instanceof File
 }
 
 predicate documentsPublicApi(Comment comment) {
@@ -70,17 +68,17 @@ predicate packageDoc(Comment comment) {
   )
 }
 
-predicate vendored(File file) {
-  exists(Comment notice |
-    notice.getFile() = file and
-    notice.getText().regexpMatch("\\s*Copyright \\d{4} The Go Authors\\. All rights reserved\\.\\s*")
+predicate goAuthorsLicense(Comment comment) {
+  exists(CommentGroup header |
+    comment = header.getAComment() and
+    header.getAComment().getText().regexpMatch("\\s*Copyright \\d{4} The Go Authors\\. All rights reserved\\.\\s*")
   )
 }
 
 from Comment comment
 where
   exists(comment.getFile().getRelativePath()) and
-  not vendored(comment.getFile()) and
+  not goAuthorsLicense(comment) and
   not proven(comment) and
   not directive(comment) and
   not documentsPublicApi(comment) and

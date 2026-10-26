@@ -8,5 +8,4 @@ package json
 
 import stdjson "encoding/json"
 
-// RawMessage lets the upstream tests use Go's original implementation.
 type RawMessage = stdjson.RawMessage

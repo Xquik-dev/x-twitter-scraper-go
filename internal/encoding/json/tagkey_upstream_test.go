@@ -39,8 +39,6 @@ func TestStructTagObjectKey(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
-			// The struct type is built at run time because the linters
-			// reject the malformed tags these cases feed the encoder.
 			field := reflect.StructField{Name: "V", Type: reflect.TypeFor[string](), Tag: tt.tag}
 			v := reflect.New(reflect.StructOf([]reflect.StructField{field})).Elem()
 			v.Field(0).SetString(tt.value)

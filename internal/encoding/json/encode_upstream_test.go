@@ -32,7 +32,7 @@ type OptionalsEmpty struct {
 	So string `json:"so,omitempty"`
 	Sw string `json:"-"`
 
-	Ir int `json:"omitempty"` // actually named omitempty, not an option
+	Ir int `json:"omitempty"`
 	Io int `json:"io,omitempty"`
 
 	Slr []string `json:"slr"`
@@ -99,7 +99,7 @@ type OptionalsZero struct {
 	So string `json:"so,omitzero"`
 	Sw string `json:"-"`
 
-	Ir int `json:"omitzero"` // actually named omitzero, not an option
+	Ir int `json:"omitzero"`
 	Io int `json:"io,omitzero"`
 
 	Slr       []string `json:"slr"`
@@ -128,13 +128,13 @@ type OptionalsZero struct {
 	TimeLocal time.Time     `json:"timelocal,omitzero"`
 	Nzs       NonZeroStruct `json:"nzs,omitzero"`
 
-	NilIsZeroer    isZeroer       `json:"niliszeroer,omitzero"`    // nil interface
-	NonNilIsZeroer isZeroer       `json:"nonniliszeroer,omitzero"` // non-nil interface
-	NoPanicStruct0 isZeroer       `json:"nps0,omitzero"`           // non-nil interface with nil pointer
-	NoPanicStruct1 isZeroer       `json:"nps1,omitzero"`           // non-nil interface with non-nil pointer
-	NoPanicStruct2 *NoPanicStruct `json:"nps2,omitzero"`           // nil pointer
-	NoPanicStruct3 *NoPanicStruct `json:"nps3,omitzero"`           // non-nil pointer
-	NoPanicStruct4 NoPanicStruct  `json:"nps4,omitzero"`           // concrete type
+	NilIsZeroer    isZeroer       `json:"niliszeroer,omitzero"`
+	NonNilIsZeroer isZeroer       `json:"nonniliszeroer,omitzero"`
+	NoPanicStruct0 isZeroer       `json:"nps0,omitzero"`
+	NoPanicStruct1 isZeroer       `json:"nps1,omitzero"`
+	NoPanicStruct2 *NoPanicStruct `json:"nps2,omitzero"`
+	NoPanicStruct3 *NoPanicStruct `json:"nps3,omitzero"`
+	NoPanicStruct4 NoPanicStruct  `json:"nps4,omitzero"`
 }
 
 func TestOmitZero(t *testing.T) {
@@ -272,7 +272,7 @@ func TestRoundtripStringTag(t *testing.T) {
 	tests := []struct {
 		CaseName
 		in   StringTag
-		want string // empty to just test that we roundtrip
+		want string
 	}{{
 		CaseName: Name("AllTypes"),
 		in: StringTag{
@@ -288,7 +288,6 @@ func TestRoundtripStringTag(t *testing.T) {
 	"StrStr": "\"xzbit\""
 }`,
 	}, {
-		// See golang.org/issues/38173.
 		CaseName: Name("StringDoubleEscapes"),
 		in: StringTag{
 			StrStr: "\b\f\n\r\t\"\\",
@@ -310,7 +309,6 @@ func TestRoundtripStringTag(t *testing.T) {
 				t.Fatalf("%s: MarshalIndent:\n\tgot:  %s\n\twant: %s", tt.Where, stripWhitespace(got), stripWhitespace(tt.want))
 			}
 
-			// Verify that it round-trips.
 			var s2 StringTag
 			if err := stdjson.Unmarshal(got, &s2); err != nil {
 				t.Fatalf("%s: Decode error: %v", tt.Where, err)
@@ -322,7 +320,6 @@ func TestRoundtripStringTag(t *testing.T) {
 	}
 }
 
-// byte slices are special even if they're renamed types.
 type renamedByte byte
 type renamedByteSlice []byte
 type renamedRenamedByteSlice []renamedByte
@@ -433,7 +430,6 @@ func TestUnsupportedValues(t *testing.T) {
 	}
 }
 
-// Issue 43207
 func TestMarshalTextFloatMap(t *testing.T) {
 	m := map[textfloat]string{
 		textfloat(math.NaN()): "1",
@@ -449,7 +445,6 @@ func TestMarshalTextFloatMap(t *testing.T) {
 	}
 }
 
-// Ref has Marshaler and Unmarshaler methods with pointer receiver.
 type Ref int
 
 func (*Ref) MarshalJSON() ([]byte, error) {
@@ -461,14 +456,12 @@ func (r *Ref) UnmarshalJSON([]byte) error {
 	return nil
 }
 
-// Val has Marshaler methods with value receiver.
 type Val int
 
 func (Val) MarshalJSON() ([]byte, error) {
 	return []byte(`"val"`), nil
 }
 
-// RefText has Marshaler and Unmarshaler methods with pointer receiver.
 type RefText int
 
 func (*RefText) MarshalText() ([]byte, error) {
@@ -480,7 +473,6 @@ func (r *RefText) UnmarshalText([]byte) error {
 	return nil
 }
 
-// ValText has Marshaler methods with value receiver.
 type ValText int
 
 func (ValText) MarshalText() ([]byte, error) {
@@ -517,14 +509,12 @@ func TestRefValMarshal(t *testing.T) {
 	}
 }
 
-// C implements Marshaler and returns unescaped JSON.
 type C int
 
 func (C) MarshalJSON() ([]byte, error) {
 	return []byte(`"<&>"`), nil
 }
 
-// CText implements Marshaler and returns unescaped text.
 type CText int
 
 func (CText) MarshalText() ([]byte, error) {
@@ -556,12 +546,9 @@ func TestMarshalerEscaping(t *testing.T) {
 func TestAnonymousFields(t *testing.T) {
 	tests := []struct {
 		CaseName
-		makeInput func() ([]byte, error) // Function to marshal the input value
-		want      string                 // Expected JSON output
+		makeInput func() ([]byte, error)
+		want      string
 	}{{
-		// Both S1 and S2 have a field named X. From the perspective of S,
-		// it is ambiguous which one X refers to.
-		// This should not serialize either field.
 		CaseName: Name("AmbiguousField"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -577,8 +564,6 @@ func TestAnonymousFields(t *testing.T) {
 		want: `{}`,
 	}, {
 		CaseName: Name("DominantField"),
-		// Both S1 and S2 have a field named X, but since S has an X field as
-		// well, it takes precedence over S1.X and S2.X.
 		makeInput: func() ([]byte, error) {
 			type (
 				S1 struct{ x, X int }
@@ -593,7 +578,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{"X":6}`,
 	}, {
-		// Unexported embedded field of non-struct type should not be serialized.
 		CaseName: Name("UnexportedEmbeddedInt"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -604,7 +588,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{}`,
 	}, {
-		// Exported embedded field of non-struct type should be serialized.
 		CaseName: Name("ExportedEmbeddedInt"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -615,8 +598,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{"MyInt":5}`,
 	}, {
-		// Unexported embedded field of pointer to non-struct type
-		// should not be serialized.
 		CaseName: Name("UnexportedEmbeddedIntPointer"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -629,8 +610,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{}`,
 	}, {
-		// Exported embedded field of pointer to non-struct type
-		// should be serialized.
 		CaseName: Name("ExportedEmbeddedIntPointer"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -643,9 +622,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{"MyInt":5}`,
 	}, {
-		// Exported fields of embedded structs should have their
-		// exported fields be serialized regardless of whether the struct types
-		// themselves are exported.
 		CaseName: Name("EmbeddedStruct"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -660,9 +636,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{"X":2,"Y":4}`,
 	}, {
-		// Exported fields of pointers to embedded structs should have their
-		// exported fields be serialized regardless of whether the struct types
-		// themselves are exported.
 		CaseName: Name("EmbeddedStructPointer"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -677,8 +650,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{"X":2,"Y":4}`,
 	}, {
-		// Exported fields on embedded unexported structs at multiple levels
-		// of nesting should still be serialized.
 		CaseName: Name("NestedStructAndInts"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -703,9 +674,6 @@ func TestAnonymousFields(t *testing.T) {
 		},
 		want: `{"MyInt1":1,"MyInt2":3}`,
 	}, {
-		// If an anonymous struct pointer field is nil, we should ignore
-		// the embedded fields behind it. Not properly doing so may
-		// result in the wrong output or reflect panics.
 		CaseName: Name("EmbeddedFieldBehindNilPointer"),
 		makeInput: func() ([]byte, error) {
 			type (
@@ -743,16 +711,12 @@ type BugC struct {
 	S string
 }
 
-// Legal Go: We never use the repeated embedded field (S).
 type BugX struct {
 	A int
 	BugA
 	BugB
 }
 
-// golang.org/issue/16042.
-// Even if a nil interface value is passed in, as long as
-// it implements Marshaler, it should be marshaled.
 type nilJSONMarshaler string
 
 func (*nilJSONMarshaler) element() {}
@@ -764,9 +728,6 @@ func (nm *nilJSONMarshaler) MarshalJSON() ([]byte, error) {
 	return Marshal("zenil:" + string(*nm))
 }
 
-// golang.org/issue/34235.
-// Even if a nil interface value is passed in, as long as
-// it implements encoding.TextMarshaler, it should be marshaled.
 type nilTextMarshaler string
 
 func (*nilTextMarshaler) element() {}
@@ -778,7 +739,6 @@ func (nm *nilTextMarshaler) MarshalText() ([]byte, error) {
 	return []byte("zenil:" + string(*nm)), nil
 }
 
-// See golang.org/issue/16042 and golang.org/issue/34235.
 func TestNilMarshal(t *testing.T) {
 	tests := []struct {
 		CaseName
@@ -811,7 +771,6 @@ func TestNilMarshal(t *testing.T) {
 	}
 }
 
-// Issue 5245.
 func TestEmbeddedBug(t *testing.T) {
 	v := BugB{
 		BugA{"A"},
@@ -826,7 +785,6 @@ func TestEmbeddedBug(t *testing.T) {
 	if got != want {
 		t.Fatalf("Marshal:\n\tgot:  %s\n\twant: %s", got, want)
 	}
-	// Now check that the duplicate field, S, does not appear.
 	x := BugX{
 		A: 23,
 	}
@@ -841,17 +799,15 @@ func TestEmbeddedBug(t *testing.T) {
 	}
 }
 
-type BugD struct { // Same as BugA after tagging.
+type BugD struct {
 	XXX string `json:"S"`
 }
 
-// BugD's tagged S field should dominate BugA's.
 type BugY struct {
 	BugA
 	BugD
 }
 
-// Test that a field with a tag dominates untagged fields.
 func TestTaggedFieldDominates(t *testing.T) {
 	v := BugY{
 		BugA{"BugA"},
@@ -868,11 +824,10 @@ func TestTaggedFieldDominates(t *testing.T) {
 	}
 }
 
-// There are no tags here, so S should not appear.
 type BugZ struct {
 	BugA
 	BugC
-	BugY // Contains a tagged S field through BugD; should not dominate.
+	BugY
 }
 
 func TestDuplicatedFieldDisappears(t *testing.T) {
@@ -896,7 +851,6 @@ func TestDuplicatedFieldDisappears(t *testing.T) {
 }
 
 func TestMarshalErrorAndReuseEncodeState(t *testing.T) {
-	// Trigger an error in Marshal with cyclic data.
 	type Dummy struct {
 		Name string
 		Next *Dummy
@@ -926,7 +880,6 @@ func TestMarshalErrorAndReuseEncodeState(t *testing.T) {
 	}
 }
 
-// golang.org/issue/8582
 func TestEncodePointerString(t *testing.T) {
 	type stringPointer struct {
 		N *int64 `json:"n,string"`
@@ -1022,7 +975,6 @@ type textfloat float64
 
 func (f textfloat) MarshalText() ([]byte, error) { return fmt.Appendf(nil, `TF:%0.2f`, f), nil }
 
-// Issue 13783
 func TestEncodeBytekind(t *testing.T) {
 	tests := []struct {
 		CaseName
@@ -1090,26 +1042,24 @@ func TestNilMarshalerTextMapKey(t *testing.T) {
 
 var re = regexp.MustCompile
 
-// syntactic checks on form of marshaled floating point numbers.
 var badFloatREs = []*regexp.Regexp{
-	re(`p`),                     // no binary exponential notation
-	re(`^\+`),                   // no leading + sign
-	re(`^-?0[^.]`),              // no unnecessary leading zeros
-	re(`^-?\.`),                 // leading zero required before decimal point
-	re(`\.(e|$)`),               // no trailing decimal
-	re(`\.[0-9]+0(e|$)`),        // no trailing zero in fraction
-	re(`^-?(0|[0-9]{2,})\..*e`), // exponential notation must have normalized mantissa
-	re(`e[0-9]`),                // positive exponent must be signed
-	re(`e[+-]0`),                // exponent must not have leading zeros
-	re(`e-[1-6]$`),              // not tiny enough for exponential notation
-	re(`e+(.|1.|20)$`),          // not big enough for exponential notation
-	re(`^-?0\.0000000`),         // too tiny, should use exponential notation
-	re(`^-?[0-9]{22}`),          // too big, should use exponential notation
-	re(`[1-9][0-9]{16}[1-9]`),   // too many significant digits in integer
-	re(`[1-9][0-9.]{17}[1-9]`),  // too many significant digits in decimal
-	// below here for float32 only
-	re(`[1-9][0-9]{8}[1-9]`),  // too many significant digits in integer
-	re(`[1-9][0-9.]{9}[1-9]`), // too many significant digits in decimal
+	re(`p`),
+	re(`^\+`),
+	re(`^-?0[^.]`),
+	re(`^-?\.`),
+	re(`\.(e|$)`),
+	re(`\.[0-9]+0(e|$)`),
+	re(`^-?(0|[0-9]{2,})\..*e`),
+	re(`e[0-9]`),
+	re(`e[+-]0`),
+	re(`e-[1-6]$`),
+	re(`e+(.|1.|20)$`),
+	re(`^-?0\.0000000`),
+	re(`^-?[0-9]{22}`),
+	re(`[1-9][0-9]{16}[1-9]`),
+	re(`[1-9][0-9.]{17}[1-9]`),
+	re(`[1-9][0-9]{8}[1-9]`),
+	re(`[1-9][0-9.]{9}[1-9]`),
 }
 
 func TestMarshalFloat(t *testing.T) {
@@ -1119,7 +1069,7 @@ func TestMarshalFloat(t *testing.T) {
 		var bout []byte
 		var err error
 		if bits == 32 {
-			f = float64(float32(f)) // round
+			f = float64(float32(f))
 			bout, err = Marshal(float32(f))
 		} else {
 			bout, err = Marshal(f)
@@ -1131,14 +1081,13 @@ func TestMarshalFloat(t *testing.T) {
 		}
 		out := string(bout)
 
-		// result must convert back to the same float
 		g, err := strconv.ParseFloat(out, bits)
 		if err != nil {
 			t.Errorf("ParseFloat(%q) error: %v", out, err)
 			nfail++
 			return
 		}
-		if f != g || fmt.Sprint(f) != fmt.Sprint(g) { // fmt.Sprint handles ±0
+		if f != g || fmt.Sprint(f) != fmt.Sprint(g) {
 			t.Errorf("ParseFloat(%q):\n\tgot:  %g\n\twant: %g", out, float32(g), f)
 			nfail++
 			return
@@ -1219,7 +1168,6 @@ func TestMarshalRawMessageValue(t *testing.T) {
 		want string
 		ok   bool
 	}{
-		// Test with nil RawMessage.
 		{Name(""), marshalOf(rawNil), "null", true},
 		{Name(""), marshalOf(&rawNil), "null", true},
 		{Name(""), marshalOf([]Marshaler{rawNil}), "[null]", true},
@@ -1239,7 +1187,6 @@ func TestMarshalRawMessageValue(t *testing.T) {
 		{Name(""), marshalOf(&T1{rawNil}), "{}", true},
 		{Name(""), marshalOf(&T2{&rawNil}), `{"M":null}`, true},
 
-		// Test with empty, but non-nil, RawMessage.
 		{Name(""), marshalOf(rawEmpty), "", false},
 		{Name(""), marshalOf(&rawEmpty), "", false},
 		{Name(""), marshalOf([]Marshaler{rawEmpty}), "", false},
@@ -1264,21 +1211,21 @@ func TestMarshalRawMessageValue(t *testing.T) {
 		// The tests below marked with Issue6458 used to generate "ImZvbyI=" instead "foo".
 		// This behavior was intentionally changed in Go 1.8.
 		// See https://golang.org/issues/14493#issuecomment-255857318
-		{Name(""), marshalOf(rawText), `"foo"`, true}, // Issue6458
+		{Name(""), marshalOf(rawText), `"foo"`, true},
 		{Name(""), marshalOf(&rawText), `"foo"`, true},
-		{Name(""), marshalOf([]Marshaler{rawText}), `["foo"]`, true},  // Issue6458
-		{Name(""), marshalOf(&[]Marshaler{rawText}), `["foo"]`, true}, // Issue6458
+		{Name(""), marshalOf([]Marshaler{rawText}), `["foo"]`, true},
+		{Name(""), marshalOf(&[]Marshaler{rawText}), `["foo"]`, true},
 		{Name(""), marshalOf([]Marshaler{&rawText}), `["foo"]`, true},
 		{Name(""), marshalOf(&[]Marshaler{&rawText}), `["foo"]`, true},
-		{Name(""), marshalOf(struct{ M RawMessage }{rawText}), `{"M":"foo"}`, true}, // Issue6458
+		{Name(""), marshalOf(struct{ M RawMessage }{rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(&struct{ M RawMessage }{rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(struct{ M *RawMessage }{&rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(&struct{ M *RawMessage }{&rawText}), `{"M":"foo"}`, true},
-		{Name(""), marshalOf(map[string]Marshaler{"M": rawText}), `{"M":"foo"}`, true},  // Issue6458
-		{Name(""), marshalOf(&map[string]Marshaler{"M": rawText}), `{"M":"foo"}`, true}, // Issue6458
+		{Name(""), marshalOf(map[string]Marshaler{"M": rawText}), `{"M":"foo"}`, true},
+		{Name(""), marshalOf(&map[string]Marshaler{"M": rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(map[string]Marshaler{"M": &rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(&map[string]Marshaler{"M": &rawText}), `{"M":"foo"}`, true},
-		{Name(""), marshalOf(T1{rawText}), `{"M":"foo"}`, true}, // Issue6458
+		{Name(""), marshalOf(T1{rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(T2{&rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(&T1{rawText}), `{"M":"foo"}`, true},
 		{Name(""), marshalOf(&T2{&rawText}), `{"M":"foo"}`, true},
@@ -1385,21 +1332,16 @@ func TestIssue63379(t *testing.T) {
 	}
 }
 
-// element lets a table or a field hold values of different types
-// through an interface that is not empty.
 type element interface{ element() }
 
 type elementFloat float64
 
 func (elementFloat) element() {}
 
-// marshalOf returns a function that marshals v, so that a table can
-// hold inputs of different types.
 func marshalOf[T any](v T) func() ([]byte, error) {
 	return func() ([]byte, error) { return Marshal(v) }
 }
 
-// marshalIndent marshals v and indents the result with the standard library.
 func marshalIndent[T any](v T, prefix, indent string) ([]byte, error) {
 	b, err := Marshal(v)
 	if err != nil {
@@ -1412,20 +1354,17 @@ func marshalIndent[T any](v T, prefix, indent string) ([]byte, error) {
 
 // TODO(https://go.dev/issue/52751): Replace with native testing support.
 
-// CaseName is a case name annotated with a file and line.
 type CaseName struct {
 	Name  string
 	Where CasePos
 }
 
-// Name annotates a case name with the file and line of the caller.
 func Name(s string) (c CaseName) {
 	c.Name = s
 	runtime.Callers(2, c.Where.pc[:])
 	return c
 }
 
-// CasePos represents a file and line number.
 type CasePos struct{ pc [1]uintptr }
 
 func (pos CasePos) String() string {
@@ -1469,12 +1408,9 @@ type unmarshalerText struct {
 	A, B string
 }
 
-// needed for re-marshaling tests
 func (u unmarshalerText) MarshalText() ([]byte, error) {
 	return []byte(u.A + ":" + u.B), nil
 }
-
-// Test data structures for anonymous fields.
 
 type Point struct {
 	Z int
@@ -1484,28 +1420,28 @@ type Top struct {
 	Level0 int
 	Embed0
 	*Embed0a
-	*Embed0b `json:"e,omitempty"` // treated as named
-	Embed0c  `json:"-"`           // ignored
+	*Embed0b `json:"e,omitempty"`
+	Embed0c  `json:"-"`
 	Loop
-	Embed0p // has Point with X, Y, used
-	Embed0q // has Point with Z, used
-	embed   // contains exported field
+	Embed0p
+	Embed0q
+	embed
 }
 
 type Embed0 struct {
-	Level1a int // overridden by Embed0a's Level1a with json tag
-	Level1b int // used because Embed0a's Level1b is renamed
-	Level1c int // used because Embed0a's Level1c is ignored
-	Level1d int // annihilated by Embed0a's Level1d
-	Level1e int `json:"x"` // annihilated by Embed0a.Level1e
+	Level1a int
+	Level1b int
+	Level1c int
+	Level1d int
+	Level1e int `json:"x"`
 }
 
 type Embed0a struct {
 	Level1a int `json:"Level1a,omitempty"`
 	Level1b int `json:"LEVEL1B,omitempty"`
 	Level1c int `json:"-"`
-	Level1d int // annihilated by Embed0's Level1d
-	Level1f int `json:"x"` // annihilated by Embed0's Level1e
+	Level1d int
+	Level1f int `json:"x"`
 }
 
 type Embed0b Embed0
@@ -1984,9 +1920,6 @@ func TestStringKind(t *testing.T) {
 	}
 }
 
-// Custom types with []byte as underlying type could not be marshaled
-// and then unmarshaled.
-// Issue 8962.
 func TestByteKind(t *testing.T) {
 	type byteKind []byte
 	want := byteKind("hello")
@@ -2004,8 +1937,6 @@ func TestByteKind(t *testing.T) {
 	}
 }
 
-// The fix for issue 8962 introduced a regression.
-// Issue 12921.
 func TestSliceOfCustomByte(t *testing.T) {
 	type Uint8 uint8
 	want := []Uint8("hello")

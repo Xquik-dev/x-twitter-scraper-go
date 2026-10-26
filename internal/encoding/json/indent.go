@@ -18,12 +18,10 @@ func appendHTMLEscape(dst, src []byte) []byte {
 }
 
 func appendCompact(dst, src []byte, opts encOpts) ([]byte, error) {
-	// EDIT(begin): optimize for skipCompaction
 	if opts.skipCompaction {
 		dst = append(dst, src...)
 		return dst, nil
 	}
-	// EDIT(end)
 
 	origLen := len(dst)
 	scan := newScanner()
@@ -36,7 +34,6 @@ func appendCompact(dst, src []byte, opts encOpts) ([]byte, error) {
 			dst = append(dst, '\\', 'u', '0', '0', hex[c>>4], hex[c&0xF])
 			start = i + 1
 		}
-		// Convert U+2028 and U+2029 (E2 80 A8 and E2 80 A9).
 		if c == 0xE2 && i+2 < len(src) && src[i+1] == 0x80 && src[i+2]&^1 == 0xA8 {
 			if start < i {
 				dst = append(dst, src[start:i]...)
