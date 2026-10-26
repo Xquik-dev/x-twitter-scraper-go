@@ -47,3 +47,20 @@ func TestFieldUtilities(t *testing.T) {
 		t.Fatal("overridden object was invalid")
 	}
 }
+
+func TestSyncMap(t *testing.T) {
+	var values SyncMap[string, int]
+	if _, ok := values.Load("tweet"); ok {
+		t.Fatal("empty map loaded a value")
+	}
+	if value, loaded := values.LoadOrStore("tweet", 1); loaded || value != 1 {
+		t.Fatalf("LoadOrStore() = %d, %t", value, loaded)
+	}
+	if value, loaded := values.LoadOrStore("tweet", 2); !loaded || value != 1 {
+		t.Fatalf("LoadOrStore() = %d, %t", value, loaded)
+	}
+	values.Store("tweet", 3)
+	if value, ok := values.Load("tweet"); !ok || value != 3 {
+		t.Fatalf("Load() = %d, %t", value, ok)
+	}
+}

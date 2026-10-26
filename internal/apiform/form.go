@@ -13,7 +13,7 @@ type Marshaler interface {
 	MarshalMultipart() ([]byte, string, error)
 }
 
-func MarshalMultipart(value any) ([]byte, string, error) {
+func MarshalMultipart[T any](value T) ([]byte, string, error) {
 	buffer := new(bytes.Buffer)
 	writer := multipart.NewWriter(buffer)
 	if err := MarshalWithSettings(value, writer, "repeat"); err != nil {

@@ -6,6 +6,7 @@ package apiform
 
 import (
 	"fmt"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/paramutil"
 	"io"
 	"mime/multipart"
 	"net/textproto"
@@ -20,31 +21,31 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
-var encoders sync.Map
+var encoders paramutil.SyncMap[encoderEntry, encoderFunc]
 
-func Marshal(value any, writer *multipart.Writer) error {
+func Marshal[T any](value T, writer *multipart.Writer) error {
 	e := &encoder{
 		dateFormat: time.RFC3339,
 		arrayFmt:   "comma",
 	}
-	return e.marshal(value, writer)
+	return e.marshal(reflect.ValueOf(value), writer)
 }
 
-func MarshalRoot(value any, writer *multipart.Writer) error {
+func MarshalRoot[T any](value T, writer *multipart.Writer) error {
 	e := &encoder{
 		root:       true,
 		dateFormat: time.RFC3339,
 		arrayFmt:   "comma",
 	}
-	return e.marshal(value, writer)
+	return e.marshal(reflect.ValueOf(value), writer)
 }
 
-func MarshalWithSettings(value any, writer *multipart.Writer, arrayFormat string) error {
+func MarshalWithSettings[T any](value T, writer *multipart.Writer, arrayFormat string) error {
 	e := &encoder{
 		arrayFmt:   arrayFormat,
 		dateFormat: time.RFC3339,
 	}
-	return e.marshal(value, writer)
+	return e.marshal(reflect.ValueOf(value), writer)
 }
 
 type encoder struct {
@@ -68,8 +69,7 @@ type encoderEntry struct {
 	root       bool
 }
 
-func (e *encoder) marshal(value any, writer *multipart.Writer) error {
-	val := reflect.ValueOf(value)
+func (e *encoder) marshal(val reflect.Value, writer *multipart.Writer) error {
 	if !val.IsValid() {
 		return nil
 	}
@@ -87,7 +87,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 	}
 
 	if fi, ok := encoders.Load(entry); ok {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	var (
@@ -100,7 +100,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return f(key, v, writer)
 	}))
 	if loaded {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	f = e.newTypeEncoder(t)
@@ -262,7 +262,7 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 				typeEncoderFn := e.typeEncoder(field.Type)
 				encoderFn = func(key string, value reflect.Value, writer *multipart.Writer) error {
 					if value.IsZero() {
-						return typeEncoderFn(key, reflect.ValueOf(ptag.defaultValue), writer)
+						return typeEncoderFn(key, reflect.ValueOf(*ptag.defaultValue), writer)
 					}
 					return typeEncoderFn(key, value, writer)
 				}
@@ -329,7 +329,9 @@ func (e *encoder) newStructUnionTypeEncoder(t reflect.Type) encoderFunc {
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
 	return func(key string, value reflect.Value, writer *multipart.Writer) error {
-		return writer.WriteField(key, value.Convert(reflect.TypeOf(time.Time{})).Interface().(time.Time).Format(format))
+		// The conversion to time.Time makes the assertion hold.
+		t, _ := reflect.TypeAssert[time.Time](value.Convert(reflect.TypeFor[time.Time]()))
+		return writer.WriteField(key, t.Format(format))
 	}
 }
 
@@ -452,18 +454,4 @@ func (e *encoder) newMapEncoder(_ reflect.Type) encoderFunc {
 	return func(key string, value reflect.Value, writer *multipart.Writer) error {
 		return e.encodeMapEntries(key, value, writer)
 	}
-}
-
-func WriteExtras(writer *multipart.Writer, extras map[string]any) (err error) {
-	for k, v := range extras {
-		str, ok := v.(string)
-		if !ok {
-			break
-		}
-		err = writer.WriteField(k, str)
-		if err != nil {
-			break
-		}
-	}
-	return err
 }

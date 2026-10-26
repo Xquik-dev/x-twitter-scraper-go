@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/paramutil"
 	"reflect"
 	"sort"
 	"strconv"
@@ -20,7 +21,7 @@ import (
 	shimjson "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json"
 )
 
-var encoders sync.Map
+var encoders paramutil.SyncMap[encoderEntry, encoderFunc]
 
 var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
@@ -71,7 +72,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 	}
 
 	if fi, ok := encoders.Load(entry); ok {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	var (
@@ -84,7 +85,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return f(v)
 	}))
 	if loaded {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	f = e.newTypeEncoder(t)
@@ -256,7 +257,7 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 				return nil, err
 			}
 			if ef.tag.defaultValue != nil && (!field.IsValid() || field.IsZero()) {
-				encoded, err = shimjson.Marshal(ef.tag.defaultValue)
+				encoded, err = shimjson.Marshal(*ef.tag.defaultValue)
 				if err != nil {
 					return nil, err
 				}

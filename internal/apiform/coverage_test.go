@@ -5,9 +5,11 @@ package apiform
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
@@ -69,31 +71,38 @@ func newCoverageWriter(t *testing.T) (*bytes.Buffer, *multipart.Writer) {
 	return &buffer, writer
 }
 
+func each[T any](marshal func(T, *multipart.Writer) error, values ...T) []func(*multipart.Writer) error {
+	calls := make([]func(*multipart.Writer) error, len(values))
+	for i, value := range values {
+		calls[i] = func(writer *multipart.Writer) error { return marshal(value, writer) }
+	}
+	return calls
+}
+
 func TestMarshalEntryPointsAndEdgeCases(t *testing.T) {
 	for _, test := range []struct {
 		name    string
-		marshal func(any, *multipart.Writer) error
-		values  []any
+		calls   []func(*multipart.Writer) error
 		wantErr bool
 	}{
-		{"Marshal", Marshal, []any{map[string]string{"query": "tweet search"}}, false},
-		{"MarshalRoot", MarshalRoot, []any{map[string]string{"query": "timeline"}}, false},
-		{"nil", Marshal, []any{nil, (*Primitives)(nil)}, false},
-		{"comma arrays", func(value any, writer *multipart.Writer) error {
+		{"Marshal", each(Marshal, map[string]string{"query": "tweet search"}), false},
+		{"MarshalRoot", each(MarshalRoot, map[string]string{"query": "timeline"}), false},
+		{"nil", slices.Concat(each(Marshal, fmt.Stringer(nil)), each(Marshal, (*Primitives)(nil))), false},
+		{"comma arrays", each(func(value []int, writer *multipart.Writer) error {
 			return MarshalWithSettings(value, writer, "comma")
-		}, []any{[]int{}, []int{1, 2}}, false},
-		{"unsupported array format", func(value any, writer *multipart.Writer) error {
+		}, []int{}, []int{1, 2}), false},
+		{"unsupported array format", each(func(value []int, writer *multipart.Writer) error {
 			return MarshalWithSettings(value, writer, "invalid")
-		}, []any{[]int{1}}, true},
-		{"unsupported primitive", Marshal, []any{complex(1, 2)}, true},
-		{"non-string map key", Marshal, []any{map[int]string{1: "tweet"}}, true},
-		{"empty union", Marshal, []any{StructUnionWrapper{}}, true},
+		}, []int{1}), true},
+		{"unsupported primitive", each(Marshal, complex(1, 2)), true},
+		{"non-string map key", each(Marshal, map[int]string{1: "tweet"}), true},
+		{"empty union", each(Marshal, StructUnionWrapper{}), true},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			_, writer := newCoverageWriter(t)
-			for _, value := range test.values {
-				if err := test.marshal(value, writer); (err != nil) != test.wantErr {
-					t.Fatalf("Marshal(%#v) error = %v, want error = %t", value, err, test.wantErr)
+			for i, call := range test.calls {
+				if err := call(writer); (err != nil) != test.wantErr {
+					t.Fatalf("value %d error = %v, want error = %t", i, err, test.wantErr)
 				}
 			}
 			if err := writer.Close(); err != nil {
@@ -120,37 +129,12 @@ func TestMarshalEntryPointsAndEdgeCases(t *testing.T) {
 	})
 }
 
-func TestWriteExtras(t *testing.T) {
-	buffer, writer := newCoverageWriter(t)
-	if err := WriteExtras(writer, map[string]any{"query": "tweet"}); err != nil {
-		t.Fatal(err)
-	}
-	if err := writer.Close(); err != nil {
-		t.Fatal(err)
-	}
-	if !strings.Contains(buffer.String(), "tweet") {
-		t.Fatalf("multipart extras = %s", buffer.String())
-	}
-
-	_, writer = newCoverageWriter(t)
-	if err := WriteExtras(writer, map[string]any{"page": 2}); err != nil {
-		t.Fatal(err)
-	}
-	if err := writer.Close(); err != nil {
-		t.Fatal(err)
-	}
-
-	writer = multipart.NewWriter(failingWriter{})
-	if err := WriteExtras(writer, map[string]any{"query": "tweet"}); err == nil {
-		t.Fatal("failing multipart writer accepted an extra field")
-	}
-}
-
 func TestEncoderBranchContracts(t *testing.T) {
 	t.Run("field selection and null option", func(t *testing.T) {
-		_, writer := newCoverageWriter(t)
+		buffer, writer := newCoverageWriter(t)
 		value := coverageForm{
 			CoverageEmbedded: CoverageEmbedded{Embedded: "tweet"},
+			hidden:           "secret",
 			Rich:             param.Null[string](),
 			JSONFallback:     "timeline",
 		}
@@ -159,6 +143,9 @@ func TestEncoderBranchContracts(t *testing.T) {
 		}
 		if err := writer.Close(); err != nil {
 			t.Fatal(err)
+		}
+		if strings.Contains(buffer.String(), "secret") {
+			t.Fatalf("multipart form has an unexported field = %s", buffer.String())
 		}
 	})
 
@@ -179,7 +166,7 @@ func TestEncoderBranchContracts(t *testing.T) {
 	})
 
 	t.Run("nil interface", func(t *testing.T) {
-		var value any
+		var value fmt.Stringer
 		_, writer := newCoverageWriter(t)
 		encode := (encoder{arrayFmt: "repeat"}).newInterfaceEncoder()
 		if err := encode("value", reflect.ValueOf(&value).Elem(), writer); err != nil {

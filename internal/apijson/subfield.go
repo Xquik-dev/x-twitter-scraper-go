@@ -58,14 +58,14 @@ func setMetadataExtraFields(root reflect.Value, index []int, name string, metaEx
 	}
 }
 
-func (f Field) toRespField() respjson.Field {
-	if f.IsMissing() {
+func (j Field) toRespField() respjson.Field {
+	if j.IsMissing() {
 		return respjson.Field{}
-	} else if f.IsNull() {
+	} else if j.IsNull() {
 		return respjson.NewField("null")
-	} else if f.IsInvalid() {
-		return respjson.NewInvalidField(f.raw)
+	} else if j.IsInvalid() {
+		return respjson.NewInvalidField(j.raw)
 	} else {
-		return respjson.NewField(f.raw)
+		return respjson.NewField(j.raw)
 	}
 }

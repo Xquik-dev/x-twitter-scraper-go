@@ -21,7 +21,7 @@ type parsedStructTag struct {
 	extras       bool
 	metadata     bool
 	omitzero     bool
-	defaultValue any
+	defaultValue *string
 }
 
 func parseFormStructTag(field reflect.StructField) (tag parsedStructTag, ok bool) {
@@ -47,7 +47,7 @@ func parseFormStructTag(field reflect.StructField) (tag parsedStructTag, ok bool
 		}
 	}
 
-	parseApiStructTag(field, &tag)
+	parseAPIStructTag(field, &tag)
 	parseDefaultStructTag(field, &tag)
 	return tag, ok
 }
@@ -61,10 +61,10 @@ func parseDefaultStructTag(field reflect.StructField, tag *parsedStructTag) {
 	if !ok {
 		return
 	}
-	tag.defaultValue = raw
+	tag.defaultValue = &raw
 }
 
-func parseApiStructTag(field reflect.StructField, tag *parsedStructTag) {
+func parseAPIStructTag(field reflect.StructField, tag *parsedStructTag) {
 	raw, ok := field.Tag.Lookup(apiStructTag)
 	if !ok {
 		return

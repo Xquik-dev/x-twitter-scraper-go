@@ -27,7 +27,7 @@ type UnionOfStringIntOrObject struct {
 	} `json:"-"`
 }
 
-func (u UnionOfStringIntOrObject) RawJSON() string { return u.JSON.raw }
+func (r UnionOfStringIntOrObject) RawJSON() string { return r.JSON.raw }
 func (r *UnionOfStringIntOrObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

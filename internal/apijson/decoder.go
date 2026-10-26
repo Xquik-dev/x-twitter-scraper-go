@@ -7,6 +7,7 @@ package apijson
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/paramutil"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"reflect"
 	"strconv"
@@ -17,7 +18,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-var decoders sync.Map
+var decoders paramutil.SyncMap[decoderEntry, decoderFunc]
 
 func Unmarshal(raw []byte, to any) error {
 	d := &decoderBuilder{dateFormat: time.RFC3339}
@@ -91,7 +92,7 @@ func (d *decoderBuilder) typeDecoder(t reflect.Type) decoderFunc {
 	}
 
 	if fi, ok := decoders.Load(entry); ok {
-		return fi.(decoderFunc)
+		return fi
 	}
 
 	var (
@@ -104,7 +105,7 @@ func (d *decoderBuilder) typeDecoder(t reflect.Type) decoderFunc {
 		return f(node, v, state)
 	}))
 	if loaded {
-		return fi.(decoderFunc)
+		return fi
 	}
 
 	f = d.newTypeDecoder(t)

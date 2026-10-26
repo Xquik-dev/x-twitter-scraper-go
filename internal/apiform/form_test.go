@@ -6,6 +6,7 @@ package apiform
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"io"
 	"mime/multipart"
@@ -49,8 +50,8 @@ type DateTime struct {
 }
 
 type AdditionalProperties struct {
-	A      bool           `form:"a"`
-	Extras map[string]any `form:"-" api:"extrafields"`
+	A      bool                 `form:"a"`
+	Extras map[string]formValue `form:"-" api:"extrafields"`
 }
 
 type TypedAdditionalProperties struct {
@@ -60,8 +61,8 @@ type TypedAdditionalProperties struct {
 
 type EmbeddedStructs struct {
 	AdditionalProperties
-	A      *int           `form:"number2"`
-	Extras map[string]any `form:"-" api:"extrafields"`
+	A      *int                 `form:"number2"`
+	Extras map[string]formValue `form:"-" api:"extrafields"`
 }
 
 type Recursive struct {
@@ -70,7 +71,7 @@ type Recursive struct {
 }
 
 type UnknownStruct struct {
-	Unknown any `form:"unknown"`
+	Unknown formValue `form:"unknown"`
 }
 
 type UnionStruct struct {
@@ -151,283 +152,240 @@ func expectedForm(fields ...[2]string) string {
 	return body.String()
 }
 
-var tests = map[string]struct {
-	buf string
-	val any
-}{
-	"file": {
-		buf: `--xxx
+// formValue is a value of a field whose type is an interface.
+type formValue interface{ formValue() }
+
+type (
+	formBool   bool
+	formInt    int
+	formInt8   int8
+	formUint8  uint8
+	formFloat  float64
+	formString string
+	formMap    map[string]formValue
+)
+
+func (formBool) formValue()   {}
+func (formInt) formValue()    {}
+func (formInt8) formValue()   {}
+func (formUint8) formValue()  {}
+func (formFloat) formValue()  {}
+func (formString) formValue() {}
+func (formMap) formValue()    {}
+
+type formTest struct {
+	buf     string
+	val     string
+	marshal func(writer *multipart.Writer, arrayFmt string) error
+}
+
+func formCase[T any](buf string, val T) formTest {
+	return formTest{buf, fmt.Sprintf("%+#v", val), func(writer *multipart.Writer, arrayFmt string) error {
+		return MarshalWithSettings(val, writer, arrayFmt)
+	}}
+}
+
+var tests = map[string]formTest{
+	"file": formCase(`--xxx
 Content-Disposition: form-data; name="file"; filename="anonymous_file"
 Content-Type: application/octet-stream
 
 some file contents...
 --xxx--
-`,
-		val: ReaderStruct{
-			File: io.Reader(bytes.NewBuffer([]byte("some file contents..."))),
+`, ReaderStruct{
+		File: io.Reader(bytes.NewBuffer([]byte("some file contents..."))),
+	}),
+	"eight_bit_integers": formCase(expectedForm([2]string{"max", "255"}, [2]string{"min", "-128"}, [2]string{"zero", "0"}), formMap{"max": formUint8(255), "min": formInt8(-128), "zero": formInt8(0)}),
+	"map_string": formCase(expectedForm(
+		[2]string{"foo", "bar"},
+	), map[string]string{"foo": "bar"}),
+
+	"map_interface": formCase(expectedForm(
+		[2]string{"a", "1"},
+		[2]string{"b", "str"},
+		[2]string{"c", "false"},
+	), formMap{"a": formFloat(1), "b": formString("str"), "c": formBool(false)}),
+
+	"primitive_struct": formCase(expectedForm(
+		[2]string{"a", "false"},
+		[2]string{"b", "237628372683"},
+		[2]string{"c", "654"},
+		[2]string{"d", "9999.43"},
+		[2]string{"e", "43.76"},
+		[2]string{"f.0", "1"},
+		[2]string{"f.1", "2"},
+		[2]string{"f.2", "3"},
+		[2]string{"f.3", "4"},
+	), Primitives{A: false, B: 237628372683, C: uint(654), D: 9999.43, E: 43.76, F: []int{1, 2, 3, 4}}),
+	"primitive_struct,brackets": formCase(expectedForm(
+		[2]string{"f[]", "1"},
+		[2]string{"f[]", "2"},
+		[2]string{"f[]", "3"},
+		[2]string{"f[]", "4"},
+	), PrimitivesBrackets{F: []int_{1, 2, 3, 4}}),
+
+	"slices": formCase(expectedForm(
+		[2]string{"slices.0.a", "false"},
+		[2]string{"slices.0.b", "237628372683"},
+		[2]string{"slices.0.c", "654"},
+		[2]string{"slices.0.d", "9999.43"},
+		[2]string{"slices.0.e", "43.76"},
+		[2]string{"slices.0.f.0", "1"},
+		[2]string{"slices.0.f.1", "2"},
+		[2]string{"slices.0.f.2", "3"},
+		[2]string{"slices.0.f.3", "4"},
+	), Slices{
+		Slice: []Primitives{{A: false, B: 237628372683, C: uint(654), D: 9999.43, E: 43.76, F: []int{1, 2, 3, 4}}},
+	}),
+	"primitive_pointer_struct": formCase(expectedForm(
+		[2]string{"a", "false"},
+		[2]string{"b", "237628372683"},
+		[2]string{"c", "654"},
+		[2]string{"d", "9999.43"},
+		[2]string{"e", "43.76"},
+		[2]string{"f.0", "1"},
+		[2]string{"f.1", "2"},
+		[2]string{"f.2", "3"},
+		[2]string{"f.3", "4"},
+		[2]string{"f.4", "5"},
+	), PrimitivePointers{
+		A: P(false),
+		B: P(237628372683),
+		C: P(uint(654)),
+		D: P(9999.43),
+		E: P(float32(43.76)),
+		F: &[]int{1, 2, 3, 4, 5},
+	}),
+
+	"datetime_struct": formCase(expectedForm(
+		[2]string{"date", "2006-01-02"},
+		[2]string{"date-time", "2006-01-02T15:04:05Z"},
+	), DateTime{
+		Date:     time.Date(2006, time.January, 2, 0, 0, 0, 0, time.UTC),
+		DateTime: time.Date(2006, time.January, 2, 15, 4, 5, 0, time.UTC),
+	}),
+
+	"additional_properties": formCase(expectedForm(
+		[2]string{"a", "true"},
+		[2]string{"bar", "value"},
+		[2]string{"foo", "true"},
+	), AdditionalProperties{
+		A: true,
+		Extras: map[string]formValue{
+			"bar": formString("value"),
+			"foo": formBool(true),
 		},
-	},
-	"eight_bit_integers": {expectedForm([2]string{"max", "255"}, [2]string{"min", "-128"}, [2]string{"zero", "0"}), map[string]any{"max": uint8(255), "min": int8(-128), "zero": int8(0)}},
-	"map_string": {
-		expectedForm(
-			[2]string{"foo", "bar"},
-		),
-		map[string]string{"foo": "bar"},
-	},
+	}),
+	"recursive_struct,brackets": formCase(expectedForm(
+		[2]string{"child[name]", "Alex"},
+		[2]string{"name", "Robert"},
+	), Recursive{Name: "Robert", Child: &Recursive{Name: "Alex"}}),
 
-	"map_interface": {
-		expectedForm(
-			[2]string{"a", "1"},
-			[2]string{"b", "str"},
-			[2]string{"c", "false"},
-		),
-		map[string]any{"a": float64(1), "b": "str", "c": false},
-	},
+	"recursive_struct": formCase(expectedForm(
+		[2]string{"child.name", "Alex"},
+		[2]string{"name", "Robert"},
+	), Recursive{Name: "Robert", Child: &Recursive{Name: "Alex"}}),
 
-	"primitive_struct": {
-		expectedForm(
-			[2]string{"a", "false"},
-			[2]string{"b", "237628372683"},
-			[2]string{"c", "654"},
-			[2]string{"d", "9999.43"},
-			[2]string{"e", "43.76"},
-			[2]string{"f.0", "1"},
-			[2]string{"f.1", "2"},
-			[2]string{"f.2", "3"},
-			[2]string{"f.3", "4"},
-		),
-		Primitives{A: false, B: 237628372683, C: uint(654), D: 9999.43, E: 43.76, F: []int{1, 2, 3, 4}},
-	},
-	"primitive_struct,brackets": {
-		expectedForm(
-			[2]string{"f[]", "1"},
-			[2]string{"f[]", "2"},
-			[2]string{"f[]", "3"},
-			[2]string{"f[]", "4"},
-		),
-		PrimitivesBrackets{F: []int_{1, 2, 3, 4}},
-	},
+	"unknown_struct_number": formCase(expectedForm(
+		[2]string{"unknown", "12"},
+	), UnknownStruct{
+		Unknown: formFloat(12.),
+	}),
 
-	"slices": {
-		expectedForm(
-			[2]string{"slices.0.a", "false"},
-			[2]string{"slices.0.b", "237628372683"},
-			[2]string{"slices.0.c", "654"},
-			[2]string{"slices.0.d", "9999.43"},
-			[2]string{"slices.0.e", "43.76"},
-			[2]string{"slices.0.f.0", "1"},
-			[2]string{"slices.0.f.1", "2"},
-			[2]string{"slices.0.f.2", "3"},
-			[2]string{"slices.0.f.3", "4"},
-		),
-		Slices{
-			Slice: []Primitives{{A: false, B: 237628372683, C: uint(654), D: 9999.43, E: 43.76, F: []int{1, 2, 3, 4}}},
+	"unknown_struct_map": formCase(expectedForm(
+		[2]string{"unknown.foo", "bar"},
+	), UnknownStruct{
+		Unknown: formMap{
+			"foo": formString("bar"),
 		},
-	},
-	"primitive_pointer_struct": {
-		expectedForm(
-			[2]string{"a", "false"},
-			[2]string{"b", "237628372683"},
-			[2]string{"c", "654"},
-			[2]string{"d", "9999.43"},
-			[2]string{"e", "43.76"},
-			[2]string{"f.0", "1"},
-			[2]string{"f.1", "2"},
-			[2]string{"f.2", "3"},
-			[2]string{"f.3", "4"},
-			[2]string{"f.4", "5"},
-		),
-		PrimitivePointers{
-			A: P(false),
-			B: P(237628372683),
-			C: P(uint(654)),
-			D: P(9999.43),
-			E: P(float32(43.76)),
-			F: &[]int{1, 2, 3, 4, 5},
-		},
-	},
+	}),
 
-	"datetime_struct": {
-		expectedForm(
-			[2]string{"date", "2006-01-02"},
-			[2]string{"date-time", "2006-01-02T15:04:05Z"},
-		),
-		DateTime{
-			Date:     time.Date(2006, time.January, 2, 0, 0, 0, 0, time.UTC),
-			DateTime: time.Date(2006, time.January, 2, 15, 4, 5, 0, time.UTC),
-		},
-	},
+	"struct_union_integer": formCase(expectedForm(
+		[2]string{"union", "12"},
+	), StructUnionWrapper{
+		Union: StructUnion{OfInt: param.NewOpt[int64](12)},
+	}),
 
-	"additional_properties": {
-		expectedForm(
-			[2]string{"a", "true"},
-			[2]string{"bar", "value"},
-			[2]string{"foo", "true"},
-		),
-		AdditionalProperties{
-			A: true,
-			Extras: map[string]any{
-				"bar": "value",
-				"foo": true,
+	"union_integer": formCase(expectedForm(
+		[2]string{"union", "12"},
+	), UnionStruct{
+		Union: UnionInteger(12),
+	}),
+
+	"struct_union_struct_discriminated_a": formCase(expectedForm(
+		[2]string{"union.a", "foo"},
+		[2]string{"union.b", "bar"},
+		[2]string{"union.type", "typeA"},
+	), StructUnionWrapper{
+		Union: StructUnion{OfA: UnionStructA{
+			Type: "typeA",
+			A:    "foo",
+			B:    "bar",
+		}},
+	}),
+
+	"union_struct_discriminated_a": formCase(expectedForm(
+		[2]string{"union.a", "foo"},
+		[2]string{"union.b", "bar"},
+		[2]string{"union.type", "typeA"},
+	), UnionStruct{
+		Union: UnionStructA{
+			Type: "typeA",
+			A:    "foo",
+			B:    "bar",
+		},
+	}),
+
+	"struct_union_struct_discriminated_b": formCase(expectedForm(
+		[2]string{"union.a", "foo"},
+		[2]string{"union.type", "typeB"},
+	), StructUnionWrapper{
+		Union: StructUnion{OfB: UnionStructB{
+			Type: "typeB",
+			A:    "foo",
+		}},
+	}),
+
+	"union_struct_discriminated_b": formCase(expectedForm(
+		[2]string{"union.a", "foo"},
+		[2]string{"union.type", "typeB"},
+	), UnionStruct{
+		Union: UnionStructB{
+			Type: "typeB",
+			A:    "foo",
+		},
+	}),
+
+	"union_struct_time": formCase(expectedForm(
+		[2]string{"union", "2010-05-23"},
+	), UnionStruct{
+		Union: UnionTime(time.Date(2010, 05, 23, 0, 0, 0, 0, time.UTC)),
+	}),
+	"constant_zero_value": formCase(expectedForm(
+		[2]string{"anchor", "created_at"},
+		[2]string{"seconds", "3600"},
+	), ConstantStruct{
+		Seconds: 3600,
+	}),
+	"constant_explicit_value": formCase(expectedForm(
+		[2]string{"anchor", "created_at_override"},
+		[2]string{"seconds", "3600"},
+	), ConstantStruct{
+		Anchor:  "created_at_override",
+		Seconds: 3600,
+	}),
+	"deeply-nested-struct,brackets": formCase(expectedForm(
+		[2]string{"middle[middleNext][child]", "10"},
+	), MultipartMarshalerParent{
+		Middle: MultipartMarshalerMiddleNext{
+			MiddleNext: MultipartMarshalerMiddle{
+				Child: 10,
 			},
 		},
-	},
-	"recursive_struct,brackets": {
-		expectedForm(
-			[2]string{"child[name]", "Alex"},
-			[2]string{"name", "Robert"},
-		),
-		Recursive{Name: "Robert", Child: &Recursive{Name: "Alex"}},
-	},
-
-	"recursive_struct": {
-		expectedForm(
-			[2]string{"child.name", "Alex"},
-			[2]string{"name", "Robert"},
-		),
-		Recursive{Name: "Robert", Child: &Recursive{Name: "Alex"}},
-	},
-
-	"unknown_struct_number": {
-		expectedForm(
-			[2]string{"unknown", "12"},
-		),
-		UnknownStruct{
-			Unknown: 12.,
-		},
-	},
-
-	"unknown_struct_map": {
-		expectedForm(
-			[2]string{"unknown.foo", "bar"},
-		),
-		UnknownStruct{
-			Unknown: map[string]any{
-				"foo": "bar",
-			},
-		},
-	},
-
-	"struct_union_integer": {
-		expectedForm(
-			[2]string{"union", "12"},
-		),
-		StructUnionWrapper{
-			Union: StructUnion{OfInt: param.NewOpt[int64](12)},
-		},
-	},
-
-	"union_integer": {
-		expectedForm(
-			[2]string{"union", "12"},
-		),
-		UnionStruct{
-			Union: UnionInteger(12),
-		},
-	},
-
-	"struct_union_struct_discriminated_a": {
-		expectedForm(
-			[2]string{"union.a", "foo"},
-			[2]string{"union.b", "bar"},
-			[2]string{"union.type", "typeA"},
-		),
-		StructUnionWrapper{
-			Union: StructUnion{OfA: UnionStructA{
-				Type: "typeA",
-				A:    "foo",
-				B:    "bar",
-			}},
-		},
-	},
-
-	"union_struct_discriminated_a": {
-		expectedForm(
-			[2]string{"union.a", "foo"},
-			[2]string{"union.b", "bar"},
-			[2]string{"union.type", "typeA"},
-		),
-
-		UnionStruct{
-			Union: UnionStructA{
-				Type: "typeA",
-				A:    "foo",
-				B:    "bar",
-			},
-		},
-	},
-
-	"struct_union_struct_discriminated_b": {
-		expectedForm(
-			[2]string{"union.a", "foo"},
-			[2]string{"union.type", "typeB"},
-		),
-		StructUnionWrapper{
-			Union: StructUnion{OfB: UnionStructB{
-				Type: "typeB",
-				A:    "foo",
-			}},
-		},
-	},
-
-	"union_struct_discriminated_b": {
-		expectedForm(
-			[2]string{"union.a", "foo"},
-			[2]string{"union.type", "typeB"},
-		),
-		UnionStruct{
-			Union: UnionStructB{
-				Type: "typeB",
-				A:    "foo",
-			},
-		},
-	},
-
-	"union_struct_time": {
-		expectedForm(
-			[2]string{"union", "2010-05-23"},
-		),
-		UnionStruct{
-			Union: UnionTime(time.Date(2010, 05, 23, 0, 0, 0, 0, time.UTC)),
-		},
-	},
-	"constant_zero_value": {
-		expectedForm(
-			[2]string{"anchor", "created_at"},
-			[2]string{"seconds", "3600"},
-		),
-		ConstantStruct{
-			Seconds: 3600,
-		},
-	},
-	"constant_explicit_value": {
-		expectedForm(
-			[2]string{"anchor", "created_at_override"},
-			[2]string{"seconds", "3600"},
-		),
-		ConstantStruct{
-			Anchor:  "created_at_override",
-			Seconds: 3600,
-		},
-	},
-	"deeply-nested-struct,brackets": {
-		expectedForm(
-			[2]string{"middle[middleNext][child]", "10"},
-		),
-		MultipartMarshalerParent{
-			Middle: MultipartMarshalerMiddleNext{
-				MiddleNext: MultipartMarshalerMiddle{
-					Child: 10,
-				},
-			},
-		},
-	},
-	"deeply-nested-map,brackets": {
-		expectedForm(
-			[2]string{"middle[middleNext][child]", "10"},
-		),
-		map[string]any{"middle": map[string]any{"middleNext": map[string]any{"child": 10}}},
-	},
+	}),
+	"deeply-nested-map,brackets": formCase(expectedForm(
+		[2]string{"middle[middleNext][child]", "10"},
+	), formMap{"middle": formMap{"middleNext": formMap{"child": formInt(10)}}}),
 }
 
 func TestEncode(t *testing.T) {
@@ -445,7 +403,7 @@ func TestEncode(t *testing.T) {
 				arrayFmt = tags[1]
 			}
 
-			err = MarshalWithSettings(test.val, writer, arrayFmt)
+			err = test.marshal(writer, arrayFmt)
 			if err != nil {
 				t.Errorf("serialization of %v failed with error %v", test.val, err)
 			}
@@ -455,7 +413,7 @@ func TestEncode(t *testing.T) {
 			}
 			raw := buf.Bytes()
 			if string(raw) != strings.ReplaceAll(test.buf, "\n", "\r\n") {
-				t.Errorf("expected %+#v to serialize to '%s' but got '%s' (with format %s)", test.val, test.buf, string(raw), arrayFmt)
+				t.Errorf("expected %s to serialize to '%s' but got '%s' (with format %s)", test.val, test.buf, string(raw), arrayFmt)
 			}
 		})
 	}

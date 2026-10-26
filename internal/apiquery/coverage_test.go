@@ -5,6 +5,7 @@ package apiquery
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -69,7 +70,7 @@ func TestMarshalEntryPointAndJSONFallback(t *testing.T) {
 		t.Fatalf("marshal error = %v", err)
 	}
 
-	values, err = Marshal(nil)
+	values, err = Marshal(Queryer(nil))
 	if err != nil || values != nil {
 		t.Fatalf("Marshal(nil) = %v, %v", values, err)
 	}
@@ -115,13 +116,14 @@ func TestMarshalAdditionalKindsAndInvalidSettings(t *testing.T) {
 func TestEncoderBranchContracts(t *testing.T) {
 	values, err := MarshalWithSettings(queryCoverage{
 		QueryCoverageEmbedded: QueryCoverageEmbedded{Embedded: "tweet"},
+		hidden:                "secret",
 		Rich:                  param.Null[string](),
 		Array:                 [2]string{"search", "timeline"},
 	}, QuerySettings{ArrayFormat: ArrayQueryFormatRepeat})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if values.Get("rich") != "null" || len(values["array"]) != 2 {
+	if values.Get("rich") != "null" || len(values["array"]) != 2 || values.Has("hidden") {
 		t.Fatalf("values = %v", values)
 	}
 
@@ -151,7 +153,7 @@ func TestEncoderBranchContracts(t *testing.T) {
 		t.Fatalf("unsupported primitive = %v, %v", pairs, err)
 	}
 
-	var value any
+	var value fmt.Stringer
 	encodeInterface := (encoder{}).newInterfaceEncoder()
 	if pairs, err := encodeInterface("value", reflect.ValueOf(&value).Elem()); err != nil || pairs != nil {
 		t.Fatalf("nil interface = %v, %v", pairs, err)

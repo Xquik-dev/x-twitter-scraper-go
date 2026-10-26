@@ -7,6 +7,7 @@ package apiquery
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/paramutil"
 	"reflect"
 	"strconv"
 	"strings"
@@ -16,7 +17,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 )
 
-var encoders sync.Map
+var encoders paramutil.SyncMap[encoderEntry, encoderFunc]
 
 type encoder struct {
 	dateFormat string
@@ -53,7 +54,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 	}
 
 	if fi, ok := encoders.Load(entry); ok {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	var (
@@ -66,7 +67,7 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 		return f(key, v)
 	}))
 	if loaded {
-		return fi.(encoderFunc)
+		return fi
 	}
 
 	f = e.newTypeEncoder(t)
@@ -76,7 +77,11 @@ func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 }
 
 func marshalerEncoder(key string, value reflect.Value) ([]Pair, error) {
-	s, err := value.Interface().(json.Marshaler).MarshalJSON()
+	marshaler, ok := reflect.TypeAssert[json.Marshaler](value)
+	if !ok {
+		return nil, fmt.Errorf("apiquery: %s does not implement json.Marshaler", value.Type())
+	}
+	s, err := marshaler.MarshalJSON()
 	if err != nil {
 		return nil, fmt.Errorf("apiquery: json fallback marshal error %s", err)
 	}
@@ -363,9 +368,15 @@ func (e *encoder) newTimeTypeEncoder(_ reflect.Type) encoderFunc {
 	return func(key string, value reflect.Value) ([]Pair, error) {
 		return []Pair{{
 			key,
-			value.Convert(reflect.TypeOf(time.Time{})).Interface().(time.Time).Format(format),
+			formatTime(value, format),
 		}}, nil
 	}
+}
+
+func formatTime(value reflect.Value, format string) string {
+	// The conversion to time.Time makes the assertion hold.
+	t, _ := reflect.TypeAssert[time.Time](value.Convert(reflect.TypeFor[time.Time]()))
+	return t.Format(format)
 }
 
 func (e encoder) newInterfaceEncoder() encoderFunc {
