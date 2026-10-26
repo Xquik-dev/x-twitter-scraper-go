@@ -59,8 +59,11 @@ func join(parent, name string) string {
 }
 
 func (d differences) compare(spec, sdk *shape, wirePath, side string) {
-	if spec.opaque() || sdk.opaque() {
+	if spec.unread() || sdk.unread() {
 		return
+	}
+	if spec.kind == free && sdk.kind == object {
+		spec = &shape{kind: object, open: true}
 	}
 	switch {
 	case spec.kind != sdk.kind:

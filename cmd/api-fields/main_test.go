@@ -508,6 +508,12 @@ func TestDifferencesFail(t *testing.T) {
 			schema := objectSchema([]string{"id"}, obj{"id": str(), "name": str(), "bio": str()})
 			responses["content"] = obj{"application/vnd.xquik+json; charset=utf-8": obj{"schema": schema}}
 		}, []string{"POST /api/v1/x/media response missing bio"}},
+		{"typed object against a free-form SDK field", func(spec obj) {
+			lookupResponse(spec)["extra"] = objectSchema(nil, obj{"value": str()})
+		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing extra"}},
+		{"free-form object against an SDK array", func(spec obj) {
+			lookupResponse(spec)["media"] = obj{"type": text("object"), "additionalProperties": boolean(true)}
+		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing media"}},
 		{"union field required only when every variant requires it", func(spec obj) {
 			path(lookupResponse(spec), "result")["oneOf"] = arr{objectSchema([]string{"kind"}, obj{"kind": str(), "label": str()})}
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response extra result.score", "GET /api/v1/x/tweets/{tweetId} response missing result.label"}},
@@ -612,6 +618,9 @@ func TestSchemaRulesKeepMatchingFieldsQuiet(t *testing.T) {
 		}},
 		{"numeric and boolean enums", func(spec obj) {
 			lookupResponse(spec)["answer"] = obj{"oneOf": arr{obj{"enum": arr{num(1.5), boolean(true)}}, obj{"enum": arr{obj{}}}, obj{"const": null{}}}}
+		}},
+		{"free-form object accepts a typed SDK struct", func(spec obj) {
+			lookupResponse(spec)["author"] = obj{"type": text("object"), "additionalProperties": boolean(true)}
 		}},
 		{"a keyword of another JSON type reads as absent", func(spec obj) {
 			path(tweetSchema(spec), "properties")["text"] = obj{"type": text("string"), "required": text("text")}
@@ -720,18 +729,21 @@ func TestUnreadableInputsFail(t *testing.T) {
 
 func TestFreeFormFields(t *testing.T) {
 	const reject = "The field check rejects the Go type %s. Use shared.PublicMetadata for a free-form object and json.RawMessage for a free-form value."
-	for _, test := range []struct{ goType, rejected string }{
-		{"shared.PublicMetadata", ""},
-		{"PublicMetadata", ""},
-		{"map[string]json.RawMessage", ""},
-		{"json.RawMessage", ""},
-		{"[]json.RawMessage", ""},
-		{"map[string]string", ""},
-		{"map[string]any", "map[string]any"},
-		{"map[string]interface{}", "map[string]interface{}"},
-		{"any", "any"},
-		{"interface{}", "interface{}"},
-		{"[]any", "any"},
+	for _, test := range []struct {
+		goType   string
+		failures []string
+	}{
+		{"shared.PublicMetadata", nil},
+		{"PublicMetadata", nil},
+		{"map[string]json.RawMessage", nil},
+		{"json.RawMessage", nil},
+		{"map[string]string", nil},
+		{"[]json.RawMessage", []string{"GET /api/v1/x/tweets/{tweetId} response missing extra", nextStep}},
+		{"map[string]any", []string{fmt.Sprintf(reject, "map[string]any")}},
+		{"map[string]interface{}", []string{fmt.Sprintf(reject, "map[string]interface{}")}},
+		{"any", []string{fmt.Sprintf(reject, "any")}},
+		{"interface{}", []string{fmt.Sprintf(reject, "interface{}")}},
+		{"[]any", []string{fmt.Sprintf(reject, "any")}},
 	} {
 		t.Run(test.goType, func(t *testing.T) {
 			model := strings.Replace(modelSource, "Extra  shared.PublicMetadata ", "Extra  "+test.goType+" ", 1)
@@ -739,11 +751,11 @@ func TestFreeFormFields(t *testing.T) {
 				t.Fatal("the model has no Extra field to retype")
 			}
 			root := sdkTree("[]", map[string]string{"model.go": model})
-			if test.rejected == "" {
+			if test.failures == nil {
 				expectPass(t, root, baseSpec(), "The SDK's fields match the API for 5 operations, and accepted-field-differences.json lists 0 accepted differences.")
 				return
 			}
-			expectFailures(t, root, baseSpec(), fmt.Sprintf(reject, test.rejected))
+			expectFailures(t, root, baseSpec(), test.failures...)
 		})
 	}
 }
