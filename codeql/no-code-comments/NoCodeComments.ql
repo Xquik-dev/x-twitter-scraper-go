@@ -15,13 +15,11 @@ predicate proven(Comment comment) {
   exists(CommentGroup group, int index, int later |
     comment = group.getComment(index) and
     later >= index and
-    (
-      group.getComment(later).getText().regexpMatch("(?s).*https://.*")
-      or
-      group = comment.getFile().getCommentGroup(0) and
-      group.getComment(later).getText().regexpMatch("(?s).*(SPDX-|REUSE-Ignore).*")
-    )
+    group.getComment(later).getText().regexpMatch("(?s).*https://.*")
   )
+  or
+  comment = comment.getFile().getCommentGroup(0).getAComment() and
+  comment.getText().regexpMatch("(?s)\\s*(.*(SPDX-|REUSE-Ignore).*)?")
 }
 
 predicate directive(Comment comment) {
