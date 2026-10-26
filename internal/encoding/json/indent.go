@@ -23,15 +23,13 @@ func appendCompact(dst, src []byte, opts encOpts) ([]byte, error) {
 		dst = append(dst, src...)
 		return dst, nil
 	}
-
-	escape := opts.escapeHTML
 	// EDIT(end)
 
 	origLen := len(dst)
 	scan := newScanner()
 	start := 0
 	for i, c := range src {
-		if escape && (c == '<' || c == '>' || c == '&') {
+		if c == '<' || c == '>' || c == '&' {
 			if start < i {
 				dst = append(dst, src[start:i]...)
 			}
@@ -39,7 +37,7 @@ func appendCompact(dst, src []byte, opts encOpts) ([]byte, error) {
 			start = i + 1
 		}
 		// Convert U+2028 and U+2029 (E2 80 A8 and E2 80 A9).
-		if escape && c == 0xE2 && i+2 < len(src) && src[i+1] == 0x80 && src[i+2]&^1 == 0xA8 {
+		if c == 0xE2 && i+2 < len(src) && src[i+1] == 0x80 && src[i+2]&^1 == 0xA8 {
 			if start < i {
 				dst = append(dst, src[start:i]...)
 			}

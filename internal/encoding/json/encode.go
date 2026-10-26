@@ -167,8 +167,8 @@ import (
 func Marshal[T any](v T, opts ...Option) ([]byte, error) {
 	// EDIT(end): add optimization options
 	e := &encodeState{ptrSeen: map[cycleKey]struct{}{}}
-	// EDIT(begin): don't escape HTML by default, and apply options
-	if err := e.marshal(reflect.ValueOf(v), encOpts{escapeHTML: true}.apply(opts...)); err != nil {
+	// EDIT(begin): apply options
+	if err := e.marshal(reflect.ValueOf(v), encOpts{}.apply(opts...)); err != nil {
 		return nil, err
 	}
 	// EDIT(end)
@@ -293,8 +293,6 @@ func (e *encodeState) reflectValue(v reflect.Value, opts encOpts) {
 type encOpts struct {
 	// quoted causes primitive fields to be encoded inside JSON strings.
 	quoted bool
-	// escapeHTML causes '<', '>', and '&' to be escaped in JSON strings.
-	escapeHTML bool
 	// EDIT(begin): save the timefmt
 	timefmt string
 	// EDIT(end)
@@ -466,7 +464,7 @@ func encodeTextMarshaler(e *encodeState, v, m reflect.Value, opts encOpts) {
 	if err != nil {
 		e.error(&MarshalerError{v.Type(), err, "MarshalText"})
 	}
-	e.Buffer.Write(appendString(e.AvailableBuffer(), b, opts.escapeHTML))
+	e.Buffer.Write(appendString(e.AvailableBuffer(), b, true))
 }
 
 func boolEncoder(e *encodeState, v reflect.Value, opts encOpts) {
@@ -536,10 +534,10 @@ var (
 
 func stringEncoder(e *encodeState, v reflect.Value, opts encOpts) {
 	if opts.quoted {
-		b := appendString(nil, v.String(), opts.escapeHTML)
+		b := appendString(nil, v.String(), true)
 		e.Buffer.Write(appendString(e.AvailableBuffer(), b, false)) // no need to escape again since it is already escaped
 	} else {
-		e.Buffer.Write(appendString(e.AvailableBuffer(), v.String(), opts.escapeHTML))
+		e.Buffer.Write(appendString(e.AvailableBuffer(), v.String(), true))
 	}
 }
 
@@ -587,11 +585,7 @@ FieldLoop:
 		}
 		e.Buffer.WriteByte(next)
 		next = ','
-		if opts.escapeHTML {
-			e.Buffer.WriteString(f.nameEscHTML)
-		} else {
-			e.Buffer.WriteString(f.nameNonEsc)
-		}
+		e.Buffer.WriteString(f.nameEscHTML)
 		opts.quoted = f.quoted
 		f.encoder(e, fv, opts)
 	}
@@ -648,7 +642,7 @@ func (me mapEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 		if i > 0 {
 			e.Buffer.WriteByte(',')
 		}
-		e.Buffer.Write(appendString(e.AvailableBuffer(), kv.ks, opts.escapeHTML))
+		e.Buffer.Write(appendString(e.AvailableBuffer(), kv.ks, true))
 		e.Buffer.WriteByte(':')
 		me.elemEnc(e, kv.v, opts)
 	}
@@ -918,7 +912,6 @@ func appendString[Bytes []byte | string](dst []byte, src Bytes, escapeHTML bool)
 type field struct {
 	name string
 
-	nameNonEsc  string // `"` + name + `":`
 	nameEscHTML string // `"` + HTMLEscape(name) + `":`
 
 	tag       bool
@@ -1046,10 +1039,9 @@ func typeFields(t reflect.Type) structFields {
 						timefmt: sf.Tag.Get("format"),
 						// EDIT(end)
 					}
-					// Build nameEscHTML and nameNonEsc ahead of time.
+					// Build nameEscHTML ahead of time.
 					nameEscBuf = appendHTMLEscape(nameEscBuf[:0], []byte(field.name))
 					field.nameEscHTML = `"` + string(nameEscBuf) + `":`
-					field.nameNonEsc = `"` + field.name + `":`
 
 					if field.omitZero {
 						t := sf.Type
