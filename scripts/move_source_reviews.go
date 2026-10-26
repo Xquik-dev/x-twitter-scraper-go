@@ -1,5 +1,3 @@
-//go:build sourcereviews
-
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -11,8 +9,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
-	"os/exec"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strconv"
@@ -83,18 +82,25 @@ func parseRecords(markdown string) (string, []record, error) {
 
 type hunk struct{ oldStart, oldCount, newCount int }
 
+func number(digits string) int {
+	value, err := strconv.Atoi(digits)
+	if err != nil {
+		return 0
+	}
+	return value
+}
+
+func lineCount(digits string) int {
+	if digits == "" {
+		return 1
+	}
+	return number(digits)
+}
+
 func parseHunks(diff string) []hunk {
 	var hunks []hunk
 	for _, match := range hunkPattern.FindAllStringSubmatch(diff, -1) {
-		count := func(text string) int {
-			if text == "" {
-				return 1
-			}
-			value, _ := strconv.Atoi(text)
-			return value
-		}
-		start, _ := strconv.Atoi(match[1])
-		hunks = append(hunks, hunk{oldStart: start, oldCount: count(match[2]), newCount: count(match[4])})
+		hunks = append(hunks, hunk{oldStart: number(match[1]), oldCount: lineCount(match[2]), newCount: lineCount(match[4])})
 	}
 	return hunks
 }
@@ -118,7 +124,7 @@ func mapLine(hunks []hunk, line int) (int, bool) {
 func mapLineField(hunks []hunk, field string) string {
 	parts := strings.Split(field, "-")
 	for i, part := range parts {
-		line, _ := strconv.Atoi(part)
+		line := number(part)
 		updated, _ := mapLine(hunks, line)
 		parts[i] = strconv.Itoa(updated)
 	}
@@ -149,7 +155,7 @@ func move(r record, base, current []byte, diff string) (record, outcome) {
 		if parts == nil {
 			return r, outcome{record: r, reason: fmt.Sprintf("its excerpt line %q has no line number", excerpt)}
 		}
-		old, _ := strconv.Atoi(parts[1])
+		old := number(parts[1])
 		updated, unchanged := mapLine(hunks, old)
 		switch {
 		case !unchanged:
@@ -273,27 +279,108 @@ func run(repo repository, out io.Writer) error {
 	return nil
 }
 
-type gitRepository struct{ base string }
-
-func (g gitRepository) baseFile(path string) ([]byte, error) {
-	return exec.Command("git", "show", g.base+":"+path).Output()
+type change struct {
+	hunks string
+	added bool
 }
 
-func (g gitRepository) currentFile(path string) ([]byte, error) { return os.ReadFile(path) }
-
-func (g gitRepository) diff(path string) (string, error) {
-	data, err := exec.Command("git", "diff", "--no-color", "--no-ext-diff", "-U0", g.base, "--", path).Output()
-	return string(data), err
+func parseChanges(diff string) map[string]change {
+	changes := map[string]change{}
+	var path string
+	var current change
+	inHunks := false
+	flush := func() {
+		if path != "" {
+			changes[path] = current
+		}
+		path, current, inHunks = "", change{}, false
+	}
+	for _, line := range strings.SplitAfter(diff, "\n") {
+		switch {
+		case strings.HasPrefix(line, "diff --git "):
+			flush()
+		case inHunks || strings.HasPrefix(line, "@@ "):
+			inHunks = true
+			current.hunks += line
+		case line == "--- /dev/null\n":
+			current.added = true
+		case strings.HasPrefix(line, "--- a/") && path == "":
+			path = strings.TrimSuffix(strings.TrimPrefix(line, "--- a/"), "\n")
+		case strings.HasPrefix(line, "+++ b/") && path == "":
+			path = strings.TrimSuffix(strings.TrimPrefix(line, "+++ b/"), "\n")
+		}
+	}
+	flush()
+	return changes
 }
 
-func (g gitRepository) write(path string, data []byte) error { return os.WriteFile(path, data, 0o644) }
+func reverse(current []byte, hunks string) []byte {
+	lines := strings.SplitAfter(string(current), "\n")
+	var base strings.Builder
+	next := 0
+	for _, line := range strings.SplitAfter(hunks, "\n") {
+		if header := hunkPattern.FindStringSubmatch(line); header != nil {
+			start, count := number(header[3]), lineCount(header[4])
+			if count > 0 {
+				start--
+			}
+			start = min(max(start, next), len(lines))
+			base.WriteString(strings.Join(lines[next:start], ""))
+			next = min(start+count, len(lines))
+		} else if strings.HasPrefix(line, "-") {
+			base.WriteString(line[1:])
+		}
+	}
+	base.WriteString(strings.Join(lines[next:], ""))
+	return []byte(base.String())
+}
+
+type workingTree struct {
+	root    string
+	changes map[string]change
+}
+
+func (w workingTree) currentFile(path string) ([]byte, error) {
+	return fs.ReadFile(os.DirFS(w.root), path)
+}
+
+func (w workingTree) baseFile(path string) ([]byte, error) {
+	changed, ok := w.changes[path]
+	if changed.added {
+		return nil, fs.ErrNotExist
+	}
+	current, err := w.currentFile(path)
+	if !ok {
+		return current, err
+	}
+	return reverse(current, changed.hunks), nil
+}
+
+func (w workingTree) diff(path string) (string, error) { return w.changes[path].hunks, nil }
+
+func (w workingTree) write(path string, data []byte) error {
+	return os.WriteFile(filepath.Join(w.root, path), data, 0o600)
+}
+
+const usage = "Run git diff --no-color --no-ext-diff --no-renames -U0 <base commit> | go run ./scripts from the repository root."
+
+type failure string
+
+func (f failure) Error() string { return string(f) }
+
+func command(args []string, stdin io.Reader, out io.Writer, root string) error {
+	if len(args) != 1 {
+		return failure(usage)
+	}
+	diff, err := io.ReadAll(stdin)
+	if err != nil {
+		return err
+	}
+	return run(workingTree{root: root, changes: parseChanges(string(diff))}, out)
+}
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Fprintln(os.Stderr, "Run go run -tags sourcereviews ./scripts/move_source_reviews.go <base commit> from the repository root.")
-		os.Exit(2)
-	}
-	if err := run(gitRepository{base: os.Args[1]}, os.Stdout); err != nil {
+	if err := command(os.Args, os.Stdin, os.Stdout, "."); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

@@ -1,5 +1,3 @@
-//go:build sourcereviews
-
 // Copyright the Xquik contributors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -8,11 +6,15 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+	"testing/iotest"
 )
 
 func sum(data string) string { return fmt.Sprintf("%x", sha256.Sum256([]byte(data))) }
@@ -36,6 +38,12 @@ func TestMapLine(t *testing.T) {
 		if got != c.new || ok != c.ok {
 			t.Errorf("mapLine(%d) = %d, %v, want %d, %v", c.old, got, ok, c.new, c.ok)
 		}
+	}
+}
+
+func TestAnOutOfRangeHunkNumberReadsAsZero(t *testing.T) {
+	if hunks := parseHunks("@@ -99999999999999999999 +1 @@\n"); len(hunks) != 1 || hunks[0] != (hunk{oldStart: 0, oldCount: 1, newCount: 1}) {
+		t.Fatalf("hunks %+v", hunks)
 	}
 }
 
@@ -155,7 +163,8 @@ func (f *fakeRepository) write(path string, data []byte) error {
 	return nil
 }
 
-func repositoryWith(records ...record) *fakeRepository {
+func repositoryWith(t *testing.T, records ...record) *fakeRepository {
+	t.Helper()
 	var markdown strings.Builder
 	markdown.WriteString("# Approved source findings\n\n")
 	var index []string
@@ -163,7 +172,10 @@ func repositoryWith(records ...record) *fakeRepository {
 		markdown.WriteString(r.text)
 		index = append(index, r.fingerprint())
 	}
-	data, _ := json.MarshalIndent(index, "", "  ")
+	data, err := json.MarshalIndent(index, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
 	current := strings.Replace(baseFile, "// header\n\n", "", 1)
 	return &fakeRepository{
 		base:    map[string]string{"x.go": baseFile},
@@ -179,7 +191,7 @@ func TestRunMovesEveryRecordAndRewritesBothFiles(t *testing.T) {
 	gone := recordFor("3", "2: \n3: package x\n4: \n")
 	gone.File = "gone.go"
 	gone.text = strings.Replace(gone.text, "x.go:3", "gone.go:3", 1)
-	repo := repositoryWith(first, second, gone)
+	repo := repositoryWith(t, first, second, gone)
 	var out strings.Builder
 
 	err := run(repo, &out)
@@ -207,7 +219,7 @@ func TestRunMovesEveryRecordAndRewritesBothFiles(t *testing.T) {
 
 func TestRunFailsWhenAFindingCannotMove(t *testing.T) {
 	r := recordFor("11", "10: func b() {\n11: \tdo()\n12: \treturn\n")
-	repo := repositoryWith(r)
+	repo := repositoryWith(t, r)
 	repo.current["x.go"] = strings.Replace(repo.current["x.go"], "\treturn\n}\n\nfunc b", "\treturn\n}\n\nfunc bb", 1)
 	repo.diffs["x.go"] = "@@ -1,2 +0,0 @@\n@@ -10 +8 @@\n"
 	var out strings.Builder
@@ -221,7 +233,9 @@ func TestRunFailsWhenAFindingCannotMove(t *testing.T) {
 		t.Fatalf("output %q", out.String())
 	}
 	var index []string
-	_ = json.Unmarshal([]byte(repo.written[indexPath]), &index)
+	if err := json.Unmarshal([]byte(repo.written[indexPath]), &index); err != nil {
+		t.Fatal(err)
+	}
 	if len(index) != 1 || index[0] != r.fingerprint() {
 		t.Fatalf("index %v", index)
 	}
@@ -229,7 +243,7 @@ func TestRunFailsWhenAFindingCannotMove(t *testing.T) {
 
 func TestRunRefusesARecordThatTheIndexLacks(t *testing.T) {
 	r := recordFor("11", "10: func b() {\n11: \tdo()\n12: \treturn\n")
-	repo := repositoryWith(r)
+	repo := repositoryWith(t, r)
 	repo.current[indexPath] = "[\"0000\"]\n"
 
 	err := run(repo, io.Discard)
@@ -247,7 +261,10 @@ func TestTheRealRecordsMatchTheRealIndex(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, _ := os.ReadFile("../" + indexPath)
+	data, err := os.ReadFile("../" + indexPath)
+	if err != nil {
+		t.Fatal(err)
+	}
 	var index []string
 	if err := json.Unmarshal(data, &index); err != nil {
 		t.Fatal(err)
@@ -267,5 +284,109 @@ func TestTheRealRecordsMatchTheRealIndex(t *testing.T) {
 	}
 	if len(records) != len(index) {
 		t.Errorf("%d records, %d fingerprints", len(records), len(index))
+	}
+}
+
+func treeWith(t *testing.T, files map[string]string, records ...record) string {
+	t.Helper()
+	var markdown strings.Builder
+	markdown.WriteString("# Approved source findings\n\n")
+	var index []string
+	for _, r := range records {
+		markdown.WriteString(r.text)
+		index = append(index, r.fingerprint())
+	}
+	data, err := json.MarshalIndent(index, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	files[recordsPath] = markdown.String()
+	files[indexPath] = string(data) + "\n"
+	root := t.TempDir()
+	for name, content := range files {
+		target := filepath.Join(root, name)
+		if err := os.MkdirAll(filepath.Dir(target), 0o700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(target, []byte(content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return root
+}
+
+func renamed(r record, file string) record {
+	r.text = strings.Replace(r.text, "x.go:"+r.Line, file+":"+r.Line, 1)
+	r.File = file
+	return r
+}
+
+func TestCommandMovesPinsFromAPipedDiff(t *testing.T) {
+	current := strings.Replace(strings.Replace(baseFile, "// header\n\n", "", 1), "\tdo()", "\tdo2()", 1)
+	moving := recordFor("11", "10: func b() {\n11: \tdo()\n12: \treturn\n")
+	kept := renamed(recordFor("6", "5: func a() {\n6: \tdo()\n7: \treturn\n"), "y.go")
+	added := renamed(recordFor("3", "2: \n3: package x\n4: \n"), "new.go")
+	root := treeWith(t, map[string]string{"x.go": current, "y.go": baseFile, "new.go": baseFile}, moving, kept, added)
+	diff := "diff --git a/x.go b/x.go\nindex 1111111..2222222 100644\n--- a/x.go\n+++ b/x.go\n" +
+		"@@ -1,2 +0,0 @@\n-// header\n-\n@@ -6 +4 @@\n-\tdo()\n+\tdo2()\n" +
+		"diff --git a/new.go b/new.go\nnew file mode 100644\nindex 0000000..3333333\n--- /dev/null\n+++ b/new.go\n@@ -0,0 +1,2 @@\n+// header\n+\n"
+	var out strings.Builder
+
+	err := command([]string{"move"}, strings.NewReader(diff), &out, root)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "moved G104 x.go:11 to line 9\nfile x.go " + sum(baseFile) + " -> " + sum(current) + "\norphaned G104 new.go:3 because its file is not in the base commit\n1 findings moved in 1 files. 1 findings kept their pins. 1 records are orphaned. 0 findings could not move.\n"
+	if out.String() != want {
+		t.Fatalf("output %q", out.String())
+	}
+	markdown, err := fs.ReadFile(os.DirFS(root), recordsPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, records, err := parseRecords(string(markdown))
+	if err != nil || len(records) != 3 || records[0].Line != "9" || records[0].Hash != sum(current) || records[1] != kept || records[2] != added {
+		t.Fatalf("records %v %+v", err, records)
+	}
+}
+
+func TestCommandRejectsArgumentsAndUnreadableInput(t *testing.T) {
+	if err := command([]string{"move", "main"}, strings.NewReader(""), io.Discard, t.TempDir()); err == nil || err.Error() != usage {
+		t.Fatalf("err %v", err)
+	}
+	if err := command([]string{"move"}, iotest.ErrReader(errors.New("closed")), io.Discard, t.TempDir()); err == nil || err.Error() != "closed" {
+		t.Fatalf("err %v", err)
+	}
+}
+
+func TestMainKeepsUnchangedPins(t *testing.T) {
+	root := treeWith(t, map[string]string{"y.go": baseFile}, renamed(recordFor("6", "5: func a() {\n6: \tdo()\n7: \treturn\n"), "y.go"))
+	stdin, err := os.CreateTemp(t.TempDir(), "diff")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer stdin.Close()
+	stdout, err := os.CreateTemp(t.TempDir(), "stdout")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer stdout.Close()
+	args, input, output := os.Args, os.Stdin, os.Stdout
+	defer func() { os.Args, os.Stdin, os.Stdout = args, input, output }()
+	os.Args, os.Stdin, os.Stdout = []string{"move"}, stdin, stdout
+	t.Chdir(root)
+
+	main()
+
+	if _, err := stdout.Seek(0, io.SeekStart); err != nil {
+		t.Fatal(err)
+	}
+	got, err := io.ReadAll(stdout)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := "0 findings moved in 0 files. 1 findings kept their pins. 0 records are orphaned. 0 findings could not move.\n"; string(got) != want {
+		t.Fatalf("main printed %q, want %q", got, want)
 	}
 }
