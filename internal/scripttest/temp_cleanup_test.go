@@ -100,8 +100,17 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout, cmd.Stderr = &stdout, &stderr
 	t.Cleanup(func() {
-		for _, directory := range []string{moduleCache, filepath.Join(moduleCache, "cache"), filepath.Join(moduleCache, "cache", "download")} {
-			if err := os.Chmod(directory, 0o700); err != nil && !errors.Is(err, os.ErrNotExist) {
+		cache, err := os.OpenRoot(moduleCache)
+		if errors.Is(err, os.ErrNotExist) {
+			return
+		}
+		if err != nil {
+			t.Errorf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
+			return
+		}
+		defer cache.Close()
+		for _, directory := range []string{".", "cache", filepath.Join("cache", "download")} {
+			if err := cache.Chmod(directory, 0o750); err != nil && !errors.Is(err, os.ErrNotExist) {
 				t.Errorf("%v\n%s\n%s", err, cmd.Stdout, cmd.Stderr)
 			}
 		}
