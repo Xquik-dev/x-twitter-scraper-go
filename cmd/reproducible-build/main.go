@@ -19,32 +19,38 @@ func buildArchive() ([]byte, int, error) {
 		return nil, 0, err
 	}
 	defer os.RemoveAll(directory)
-	git := func(args ...string) ([]byte, error) {
-		command := exec.Command("git", args...)
-		command.Env = append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(directory, "index"), "TZ=UTC")
+	git := func(command *exec.Cmd, env ...string) ([]byte, error) {
+		command.Env = append(append(os.Environ(), "GIT_INDEX_FILE="+filepath.Join(directory, "index"), "TZ=UTC"), env...)
 		var diagnostic bytes.Buffer
 		command.Stderr = &diagnostic
 		output, err := command.Output()
 		if err != nil {
-			return nil, fmt.Errorf("git %s: %w: %s", args[0], err, diagnostic.String())
+			return nil, fmt.Errorf("git %s: %w: %s", command.Args[1], err, diagnostic.String())
 		}
 		return output, nil
 	}
-	for _, args := range [][]string{{"read-tree", "HEAD"}, {"add", "--all", "--", "."}} {
-		if _, err := git(args...); err != nil {
+	var outputs [4][]byte
+	for i, command := range []*exec.Cmd{
+		exec.Command("git", "read-tree", "HEAD"),
+		exec.Command("git", "add", "--all", "--", "."),
+		exec.Command("git", "write-tree"),
+		exec.Command("git", "rev-parse", "--path-format=absolute", "--git-common-dir"),
+	} {
+		if outputs[i], err = git(command); err != nil {
 			return nil, 0, err
 		}
 	}
-	tree, err := git("write-tree")
+	// The temporary directory becomes a private Git directory whose HEAD is the
+	// snapshot tree, so the tree id reaches Git through a file, not an argument.
+	if err := os.WriteFile(filepath.Join(directory, "HEAD"), outputs[2], 0o600); err != nil {
+		return nil, 0, err
+	}
+	snapshot := []string{"GIT_DIR=" + directory, "GIT_COMMON_DIR=" + strings.TrimSpace(string(outputs[3]))}
+	paths, err := git(exec.Command("git", "ls-tree", "-rz", "--name-only", "HEAD"), snapshot...)
 	if err != nil {
 		return nil, 0, err
 	}
-	revision := strings.TrimSpace(string(tree))
-	paths, err := git("ls-tree", "-rz", "--name-only", revision)
-	if err != nil {
-		return nil, 0, err
-	}
-	archive, err := git("archive", "--format=zip", "--prefix=x-twitter-scraper-go/", "--mtime=1980-01-01T00:00:00Z", "-0", revision)
+	archive, err := git(exec.Command("git", "archive", "--format=zip", "--prefix=x-twitter-scraper-go/", "--mtime=1980-01-01T00:00:00Z", "-0", "HEAD"), snapshot...)
 	return archive, bytes.Count(paths, []byte{0}), err
 }
 
