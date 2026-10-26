@@ -134,13 +134,13 @@ type XListGetFollowersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XListGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u XListGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCoverageResponse() (v XListGetFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCoverageResponse() (v XListGetFollowersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -313,13 +313,13 @@ type XListGetMembersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XListGetMembersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u XListGetMembersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageResponse() (v XListGetMembersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageResponse() (v XListGetMembersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 

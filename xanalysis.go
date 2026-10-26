@@ -505,14 +505,12 @@ type XAnalysisBrandResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisBrandResponseResultAnalysisAnswerValueUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -640,14 +638,12 @@ type XAnalysisBrandResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisBrandResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisBrandResponseResultAnswersUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisBrandResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisBrandResponseResultAnswersUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -1177,14 +1173,12 @@ type XAnalysisClassifyResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisClassifyResponseResultAnalysisAnswerValueUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -1314,14 +1308,12 @@ type XAnalysisClassifyResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisClassifyResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisClassifyResponseResultAnswersUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisClassifyResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisClassifyResponseResultAnswersUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -1855,14 +1847,12 @@ type XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisMarketSignalsResponseResultAnalysisAnswerValueUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -1994,14 +1984,12 @@ type XAnalysisMarketSignalsResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisMarketSignalsResponseResultAnswersUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -2529,14 +2517,12 @@ type XAnalysisNewsResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisNewsResponseResultAnalysisAnswerValueUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -2664,14 +2650,12 @@ type XAnalysisNewsResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisNewsResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisNewsResponseResultAnswersUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisNewsResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisNewsResponseResultAnswersUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -3201,14 +3185,12 @@ type XAnalysisSentimentResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisSentimentResponseResultAnalysisAnswerValueUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -3338,14 +3320,12 @@ type XAnalysisSentimentResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisSentimentResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisSentimentResponseResultAnswersUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisSentimentResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisSentimentResponseResultAnswersUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -3875,14 +3855,12 @@ type XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisViralScoreResponseResultAnalysisAnswerValueUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -4014,14 +3992,12 @@ type XAnalysisViralScoreResponseResultAnswersUnion struct {
 	} `json:"-"`
 }
 
-func (u XAnalysisViralScoreResponseResultAnswersUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisViralScoreResponseResultAnswersUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u XAnalysisViralScoreResponseResultAnswersUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u XAnalysisViralScoreResponseResultAnswersUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.

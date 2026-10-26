@@ -108,7 +108,8 @@ func (XAccountConnectionAttemptGetResponseRequiresEmailCode) implXAccountConnect
 
 // AsAny returns the variant the union holds. Use the following switch statement to find the correct variant.
 //
-//	switch variant := XAccountConnectionAttemptGetResponseUnion.AsAny().(type) {
+//	variant, err := XAccountConnectionAttemptGetResponseUnion.AsAny()
+//	switch variant := variant.(type) {
 //	case xtwitterscraper.XAccountConnectionAttemptGetResponsePending:
 //	case xtwitterscraper.XAccountConnectionAttemptGetResponseSuccess:
 //	case xtwitterscraper.XAccountConnectionAttemptGetResponseFailed:
@@ -116,7 +117,7 @@ func (XAccountConnectionAttemptGetResponseRequiresEmailCode) implXAccountConnect
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
-func (u XAccountConnectionAttemptGetResponseUnion) AsAny() anyXAccountConnectionAttemptGetResponse {
+func (u XAccountConnectionAttemptGetResponseUnion) AsAny() (anyXAccountConnectionAttemptGetResponse, error) {
 	switch u.Status {
 	case "pending":
 		return u.AsPending()
@@ -127,26 +128,26 @@ func (u XAccountConnectionAttemptGetResponseUnion) AsAny() anyXAccountConnection
 	case "requires_email_code":
 		return u.AsRequiresEmailCode()
 	}
-	return nil
+	return nil, nil
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsPending() (v XAccountConnectionAttemptGetResponsePending) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XAccountConnectionAttemptGetResponseUnion) AsPending() (v XAccountConnectionAttemptGetResponsePending, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsSuccess() (v XAccountConnectionAttemptGetResponseSuccess) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XAccountConnectionAttemptGetResponseUnion) AsSuccess() (v XAccountConnectionAttemptGetResponseSuccess, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsFailed() (v XAccountConnectionAttemptGetResponseFailed) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XAccountConnectionAttemptGetResponseUnion) AsFailed() (v XAccountConnectionAttemptGetResponseFailed, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
-func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAccountConnectionAttemptGetResponseRequiresEmailCode) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAccountConnectionAttemptGetResponseRequiresEmailCode, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 

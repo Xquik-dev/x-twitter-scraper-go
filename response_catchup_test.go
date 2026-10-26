@@ -356,8 +356,14 @@ func TestCommunityInfoDecodesTheMembersFacepile(t *testing.T) {
 	if len(facepile) != 2 {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
-	profile := facepile[0].AsUserProfile()
-	preview := facepile[1].AsCommunityMembersFacepileCommunityMemberPreview()
+	profile, err := facepile[0].AsUserProfile()
+	if err != nil {
+		t.Fatal(err)
+	}
+	preview, err := facepile[1].AsCommunityMembersFacepileCommunityMemberPreview()
+	if err != nil {
+		t.Fatal(err)
+	}
 	expectValues(t, profile, []fieldValue{fieldIs("ID", "44196397"), fieldIs("Username", "elonmusk"), fieldIs("Followers", int64(150000000))})
 	expectValues(t, preview, []fieldValue{fieldIs("ID", "11348282"), fieldIs("ProfilePictureOriginal", "https://pbs.twimg.com/b.jpg")})
 }

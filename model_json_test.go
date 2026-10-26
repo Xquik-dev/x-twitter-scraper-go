@@ -251,7 +251,10 @@ func TestConnectionAttemptResponseVariants(t *testing.T) {
 			if err := model.UnmarshalJSON([]byte(raw)); err != nil {
 				t.Fatal(err)
 			}
-			variant := model.AsAny()
+			variant, err := model.AsAny()
+			if err != nil {
+				t.Fatal(err)
+			}
 			if reflect.TypeOf(variant) != want {
 				t.Fatalf("response variant = %T, want %v", variant, want)
 			}

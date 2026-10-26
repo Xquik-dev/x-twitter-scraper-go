@@ -747,13 +747,13 @@ type XUserGetFollowersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -926,13 +926,13 @@ type XUserGetFollowingResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 
@@ -1107,13 +1107,13 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 

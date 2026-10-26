@@ -2046,14 +2046,12 @@ type TweetDetailSportsContextScheduledAtMsUnion struct {
 	} `json:"-"`
 }
 
-func (u TweetDetailSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u TweetDetailSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u TweetDetailSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u TweetDetailSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -3020,13 +3018,13 @@ type XTweetSearchResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u XTweetSearchResponseUnion) AsPaginatedTweets() (v shared.PaginatedTweets) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u XTweetSearchResponseUnion) AsPaginatedTweets() (v shared.PaginatedTweets, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u XTweetSearchResponseUnion) AsXTweetSearchResponseTweetSearchCoverageResponse() (v XTweetSearchResponseTweetSearchCoverageResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
+func (u XTweetSearchResponseUnion) AsXTweetSearchResponseTweetSearchCoverageResponse() (v XTweetSearchResponseTweetSearchCoverageResponse, err error) {
+	err = apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, &v.JSON.raw)
 	return
 }
 

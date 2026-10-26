@@ -493,13 +493,13 @@ type CommunityCreatorUnion struct {
 	} `json:"-"`
 }
 
-func (u CommunityCreatorUnion) AsUserProfile() (v UserProfile) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u CommunityCreatorUnion) AsUserProfile() (v UserProfile, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u CommunityCreatorUnion) AsCommunityCreatorObject() (v CommunityCreatorObject) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u CommunityCreatorUnion) AsCommunityCreatorObject() (v CommunityCreatorObject, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
@@ -771,13 +771,13 @@ type CommunityMembersFacepileUnion struct {
 	} `json:"-"`
 }
 
-func (u CommunityMembersFacepileUnion) AsUserProfile() (v UserProfile) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u CommunityMembersFacepileUnion) AsUserProfile() (v UserProfile, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
-func (u CommunityMembersFacepileUnion) AsCommunityMembersFacepileCommunityMemberPreview() (v CommunityMembersFacepileCommunityMemberPreview) {
-	_ = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
+func (u CommunityMembersFacepileUnion) AsCommunityMembersFacepileCommunityMemberPreview() (v CommunityMembersFacepileCommunityMemberPreview, err error) {
+	err = v.UnmarshalJSON(json.RawMessage(u.JSON.raw))
 	return
 }
 
@@ -5895,14 +5895,12 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUni
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -7392,14 +7390,12 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMs
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -7602,14 +7598,12 @@ type EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion struct {
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -10321,14 +10315,12 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMs
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -11824,14 +11816,12 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledA
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -12034,14 +12024,12 @@ type EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion struc
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -12238,14 +12226,12 @@ type EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion struct {
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -16133,14 +16119,12 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMs
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -17636,14 +17620,12 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledA
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -17846,14 +17828,12 @@ type EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion struc
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -20579,14 +20559,12 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledA
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -22086,14 +22064,12 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextSchedul
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -22295,14 +22271,12 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion st
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -22499,14 +22473,12 @@ type EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion struct {
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetRetweetedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -22699,14 +22671,12 @@ type EmbeddedTweetSportsContextScheduledAtMsUnion struct {
 	} `json:"-"`
 }
 
-func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u EmbeddedTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.
@@ -24687,14 +24657,12 @@ type SearchTweetSportsContextScheduledAtMsUnion struct {
 	} `json:"-"`
 }
 
-func (u SearchTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u SearchTweetSportsContextScheduledAtMsUnion) AsFloat() float64 {
+	return u.OfFloat
 }
 
-func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v, nil)
-	return
+func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() string {
+	return u.OfString
 }
 
 // RawJSON returns the unmodified JSON received from the API.

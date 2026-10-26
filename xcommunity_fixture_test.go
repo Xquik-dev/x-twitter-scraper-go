@@ -272,20 +272,27 @@ func TestCommunityUnionVariants(t *testing.T) {
 		t.Fatal(err)
 	}
 	expectDecoded(t, community)
-	creator := community.Creator.AsUserProfile()
+	creator, err := community.Creator.AsUserProfile()
+	if err != nil {
+		t.Fatal(err)
+	}
+	member, err := community.MembersFacepile[0].AsUserProfile()
+	if err != nil {
+		t.Fatal(err)
+	}
 	if community.ID != "1493446837214187523" ||
 		community.Creator.Username != "marckohlbrugge" ||
 		creator.ID != "641633" ||
 		creator.Name != "Marc Köhlbrugge" ||
 		creator.Followers != 89054 ||
-		community.MembersFacepile[0].AsUserProfile().Username != "marckohlbrugge" {
+		member.Username != "marckohlbrugge" {
 		t.Fatalf("decoded %s", community.RawJSON())
 	}
 	var summary shared.CommunityCreatorUnion
 	if err := summary.UnmarshalJSON([]byte(`{"id":"641633","username":"marckohlbrugge","verified":true}`)); err != nil {
 		t.Fatal(err)
 	}
-	if object := summary.AsCommunityCreatorObject(); object.ID != "641633" || object.Username != "marckohlbrugge" || !object.Verified {
+	if object, err := summary.AsCommunityCreatorObject(); err != nil || object.ID != "641633" || object.Username != "marckohlbrugge" || !object.Verified {
 		t.Fatalf("decoded %s", summary.RawJSON())
 	}
 	payload, err = fixtures.ReadFile("testdata/fixtures/findCommunities.json")
@@ -297,8 +304,8 @@ func TestCommunityUnionVariants(t *testing.T) {
 		t.Fatal(err)
 	}
 	expectDecoded(t, page)
-	preview := page.Communities[0].MembersFacepile[0].AsCommunityMembersFacepileCommunityMemberPreview()
-	if preview.ID != "2864203879" || preview.ProfilePicture != "https://pbs.twimg.com/profile_images/example.jpg" {
+	preview, err := page.Communities[0].MembersFacepile[0].AsCommunityMembersFacepileCommunityMemberPreview()
+	if err != nil || preview.ID != "2864203879" || preview.ProfilePicture != "https://pbs.twimg.com/profile_images/example.jpg" {
 		t.Fatalf("decoded %s", page.RawJSON())
 	}
 }
