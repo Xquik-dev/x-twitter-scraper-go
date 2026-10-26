@@ -30,7 +30,15 @@ func valueAt(root any, path string) (any, bool) {
 	value := reflect.ValueOf(root)
 	for _, part := range strings.Split(path, ".") {
 		name, rest, indexed := strings.Cut(part, "[")
-		value = reflect.Indirect(value).FieldByName(name)
+		value = reflect.Indirect(value)
+		if value.Kind() == reflect.Interface {
+			value = value.Elem()
+		}
+		if value.Kind() == reflect.Map {
+			value = value.MapIndex(reflect.ValueOf(name))
+		} else {
+			value = value.FieldByName(name)
+		}
 		if !value.IsValid() {
 			return nil, false
 		}
@@ -160,6 +168,7 @@ var tweetFields = []fieldValue{
 	{"Interstitial.Text.Text", "This Post violated the X Rules about glorifying violence. However, X has determined that it may be in the public's interest for the Post to remain accessible. Learn more"},
 	{"IsPinned", true},
 	{"IsRetweet", true},
+	{"Media[0].EditedWithNativeEditor", true},
 	{"Media[0].GrokImageAnnotation.Prompt", "A spiral galaxy"},
 	{"Media[0].GrokImageAnnotation.UpsampledPrompt", "A detailed spiral galaxy with blue and red arms"},
 	{"Media[0].SourceUser.Username", "NASAJPL"},
@@ -183,6 +192,8 @@ var tweetFields = []fieldValue{
 	{"SoftIntervention.URL.URLType", "ExternalUrl"},
 	{"SportsContext.Competitors[0].Color", "007A33"},
 	{"SportsContext.Competitors[0].IsActive", true},
+	{"ReactionContext.ReactedToPost.author.username", "NASA"},
+	{"ReactionContext.ReactedToPost.id", "1234567890"},
 	{"SportsContext.Competitors[0].IsWinner", true},
 	{"SportsContext.League", "NBA"},
 	{"SubscriberBadge.CreatorID", "44196397"},
@@ -191,6 +202,7 @@ var tweetFields = []fieldValue{
 	{"Tombstone.Text.Entities[0].Ref.ScreenName", "XSupport"},
 	{"Tombstone.Text.Entities[0].Ref.Text", "Learn more"},
 	{"UnavailableAuthorID", "783214"},
+	{"UnknownFields", []string{"text"}},
 }
 
 var _ = []shared.SoftIntervention{
