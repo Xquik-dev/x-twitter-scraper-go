@@ -49,7 +49,7 @@ func buildArchive() ([]byte, int, error) {
 }
 
 func run(args []string) error {
-	if len(args) > 1 {
+	if len(args) > 1 || len(args) == 1 && args[0] != "--archive" {
 		return fmt.Errorf("usage: ./scripts/reproducible-build [output.zip]")
 	}
 	first, count, err := buildArchive()
@@ -65,14 +65,11 @@ func run(args []string) error {
 		return fmt.Errorf("module archives differ: %x != %x", firstHash, secondHash)
 	}
 	if len(args) == 1 {
-		if err := os.MkdirAll(filepath.Dir(args[0]), 0o750); err != nil {
-			return err
-		}
-		if err := os.WriteFile(args[0], first, 0o600); err != nil {
+		if _, err := os.Stdout.Write(first); err != nil {
 			return err
 		}
 	}
-	fmt.Printf("reproducible module archive: %d files, sha256:%x\n", count, firstHash)
+	fmt.Fprintf(os.Stderr, "reproducible module archive: %d files, sha256:%x\n", count, firstHash)
 	return nil
 }
 
