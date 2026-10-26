@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/paramutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/reflectvalue"
 	"reflect"
 	"sort"
 	"strconv"
@@ -286,9 +287,11 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
-	return func(value reflect.Value) (json []byte, err error) {
-		var t time.Time
-		reflect.ValueOf(&t).Elem().Set(value.Convert(reflect.TypeFor[time.Time]()))
+	return func(value reflect.Value) ([]byte, error) {
+		t, err := reflectvalue.As[time.Time](value)
+		if err != nil {
+			return nil, err
+		}
 		return []byte(`"` + t.Format(format) + `"`), nil
 	}
 }

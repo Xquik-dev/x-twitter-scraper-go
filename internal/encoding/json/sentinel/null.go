@@ -9,6 +9,8 @@ package sentinel
 import (
 	"reflect"
 	"sync"
+
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/reflectvalue"
 )
 
 var nullCache = struct {
@@ -20,13 +22,13 @@ func NewNullSentinel[T any](mk func() T) T {
 	t := reflect.TypeFor[T]()
 	nullCache.Lock()
 	defer nullCache.Unlock()
-	null, ok := nullCache.m[t]
-	if !ok {
-		null = reflect.ValueOf(mk())
-		nullCache.m[t] = null
+	if null, ok := nullCache.m[t]; ok {
+		if x, err := reflectvalue.As[T](null); err == nil {
+			return x
+		}
 	}
-	var x T
-	reflect.ValueOf(&x).Elem().Set(null)
+	x := mk()
+	nullCache.m[t] = reflect.ValueOf(x)
 	return x
 }
 

@@ -46,4 +46,7 @@ func TestMarshalerHelpersRejectOtherTypes(t *testing.T) {
 	if _, err := marshalerEncoder(reflect.ValueOf(1)); err == nil {
 		t.Fatal("marshalerEncoder() accepted a type without MarshalJSON")
 	}
+	if encoded, err := (&encoder{}).newTimeTypeEncoder()(reflect.ValueOf(1)); err == nil || encoded != nil {
+		t.Fatalf("time encoder of an int = %q, %v", encoded, err)
+	}
 }

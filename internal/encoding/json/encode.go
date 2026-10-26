@@ -15,6 +15,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json/sentinel"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/reflectvalue"
 	"math"
 	"reflect"
 	"slices"
@@ -717,9 +718,8 @@ type isZeroer interface {
 var isZeroerType = reflect.TypeFor[isZeroer]()
 
 func callIsZero(v reflect.Value) bool {
-	var z isZeroer
-	reflect.ValueOf(&z).Elem().Set(v)
-	return z.IsZero()
+	z, err := reflectvalue.As[isZeroer](v)
+	return err == nil && z.IsZero()
 }
 
 func typeFields(t reflect.Type) structFields {

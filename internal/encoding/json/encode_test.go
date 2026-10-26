@@ -6,6 +6,7 @@ package json
 
 import (
 	"errors"
+	"reflect"
 	"testing"
 )
 
@@ -47,5 +48,11 @@ func TestUnsupportedTypes(t *testing.T) {
 				t.Errorf("%s: Marshal = %s, %v, want error %q", tt.Where, got, err, tt.want)
 			}
 		})
+	}
+}
+
+func TestCallIsZeroReportsOtherTypesAsNonZero(t *testing.T) {
+	if callIsZero(reflect.ValueOf(1)) {
+		t.Fatal("an int without IsZero was reported as zero")
 	}
 }

@@ -7,6 +7,7 @@ package apiform
 import (
 	"fmt"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/paramutil"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/reflectvalue"
 	"io"
 	"mime/multipart"
 	"net/textproto"
@@ -329,8 +330,10 @@ func (e *encoder) newStructUnionTypeEncoder(t reflect.Type) encoderFunc {
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
 	return func(key string, value reflect.Value, writer *multipart.Writer) error {
-		var t time.Time
-		reflect.ValueOf(&t).Elem().Set(value.Convert(reflect.TypeFor[time.Time]()))
+		t, err := reflectvalue.As[time.Time](value)
+		if err != nil {
+			return err
+		}
 		return writer.WriteField(key, t.Format(format))
 	}
 }

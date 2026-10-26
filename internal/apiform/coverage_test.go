@@ -159,6 +159,13 @@ func TestEncoderBranchContracts(t *testing.T) {
 		}
 	})
 
+	t.Run("time from an int", func(t *testing.T) {
+		buffer, writer := newCoverageWriter(t)
+		if err := (&encoder{}).newTimeTypeEncoder()("value", reflect.ValueOf(1), writer); err == nil || buffer.Len() != 0 {
+			t.Fatalf("time encoder of an int wrote %q, err = %v", buffer.String(), err)
+		}
+	})
+
 	t.Run("nil interface", func(t *testing.T) {
 		var value fmt.Stringer
 		_, writer := newCoverageWriter(t)
