@@ -1080,6 +1080,11 @@ type EmbeddedTweet struct {
 	UnavailableAuthorID string                 `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
 	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	// The fields X did not send for this post. Text reads empty, so treat it as
+	// unknown rather than empty. Left out when X sent the text.
+	//
+	// Any of "text".
+	UnknownFields []string `json:"unknownFields"`
 	// User IDs that left this conversation.
 	UnmentionedUserIDs []string `json:"unmentionedUserIds"`
 	URL                string   `json:"url"`
@@ -1153,6 +1158,7 @@ type EmbeddedTweet struct {
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
+		UnknownFields          respjson.Field
 		UnmentionedUserIDs     respjson.Field
 		URL                    respjson.Field
 		ViewState              respjson.Field
@@ -12343,12 +12349,17 @@ func (r *EmbeddedTweetQuotedTweetTombstoneTextEntityRef) UnmarshalJSON(data []by
 
 // EmbeddedTweetReactionContext holds public post and user referenced by this reaction.
 type EmbeddedTweetReactionContext struct {
+	// The post this one reacts to, with the same fields. X often sends only its
+	// ID, author and edit history. Then UnknownFields lists text, and the flags X
+	// did not send are left out.
+	ReactedToPost PublicMetadata `json:"reactedToPost"`
 	// Referenced post ID.
 	ReactedToPostID string `json:"reactedToPostId"`
 	// Public X profile.
 	ReactedToUser UserProfile `json:"reactedToUser"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ReactedToPost   respjson.Field
 		ReactedToPostID respjson.Field
 		ReactedToUser   respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -24887,6 +24898,9 @@ type TweetMedia struct {
 	DisplayURL string `json:"displayUrl"`
 	// Video duration in milliseconds.
 	DurationMillis int64 `json:"durationMillis"`
+	// True when the author edited this media in X's own editor before posting.
+	// Absent when X sends no editor info.
+	EditedWithNativeEditor bool `json:"editedWithNativeEditor"`
 	// Embeddable status.
 	Embeddable bool `json:"embeddable"`
 	// Expanded media URL.
@@ -24933,43 +24947,44 @@ type TweetMedia struct {
 	Width int64 `json:"width"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		MediaURL              respjson.Field
-		Type                  respjson.Field
-		URL                   respjson.Field
-		ID                    respjson.Field
-		AdultContent          respjson.Field
-		AllowDownload         respjson.Field
-		AltText               respjson.Field
-		AspectRatio           respjson.Field
-		AvailabilityReason    respjson.Field
-		AvailabilityStatus    respjson.Field
-		Description           respjson.Field
-		DisplayURL            respjson.Field
-		DurationMillis        respjson.Field
-		Embeddable            respjson.Field
-		ExpandedURL           respjson.Field
-		FaceRects             respjson.Field
-		FocusRects            respjson.Field
-		GraphicViolence       respjson.Field
-		GrokImageAnnotation   respjson.Field
-		GrokPostID            respjson.Field
-		Height                respjson.Field
-		Indices               respjson.Field
-		MediaKey              respjson.Field
-		Monetizable           respjson.Field
-		OtherSensitiveContent respjson.Field
-		Sizes                 respjson.Field
-		SourceStatusID        respjson.Field
-		SourceUser            respjson.Field
-		SourceUserID          respjson.Field
-		Tags                  respjson.Field
-		Title                 respjson.Field
-		VideoVariants         respjson.Field
-		VisitSiteURL          respjson.Field
-		WatchNowURL           respjson.Field
-		Width                 respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		MediaURL               respjson.Field
+		Type                   respjson.Field
+		URL                    respjson.Field
+		ID                     respjson.Field
+		AdultContent           respjson.Field
+		AllowDownload          respjson.Field
+		AltText                respjson.Field
+		AspectRatio            respjson.Field
+		AvailabilityReason     respjson.Field
+		AvailabilityStatus     respjson.Field
+		Description            respjson.Field
+		DisplayURL             respjson.Field
+		DurationMillis         respjson.Field
+		EditedWithNativeEditor respjson.Field
+		Embeddable             respjson.Field
+		ExpandedURL            respjson.Field
+		FaceRects              respjson.Field
+		FocusRects             respjson.Field
+		GraphicViolence        respjson.Field
+		GrokImageAnnotation    respjson.Field
+		GrokPostID             respjson.Field
+		Height                 respjson.Field
+		Indices                respjson.Field
+		MediaKey               respjson.Field
+		Monetizable            respjson.Field
+		OtherSensitiveContent  respjson.Field
+		Sizes                  respjson.Field
+		SourceStatusID         respjson.Field
+		SourceUser             respjson.Field
+		SourceUserID           respjson.Field
+		Tags                   respjson.Field
+		Title                  respjson.Field
+		VideoVariants          respjson.Field
+		VisitSiteURL           respjson.Field
+		WatchNowURL            respjson.Field
+		Width                  respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
