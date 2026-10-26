@@ -20,12 +20,6 @@ type metadataReader struct {
 	io.Reader
 }
 
-type failingWriter struct{}
-
-func (failingWriter) Write([]byte) (int, error) {
-	return 0, io.ErrClosedPipe
-}
-
 type CoverageEmbedded struct {
 	Embedded string `form:"embedded"`
 }

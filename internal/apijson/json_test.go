@@ -65,7 +65,6 @@ type EmbeddedStructJSON struct {
 	A           Field
 	B           Field
 	ExtraFields map[string]Field
-	raw         string
 }
 
 type EmbeddedStructs struct {
@@ -79,7 +78,6 @@ type EmbeddedStructs struct {
 type EmbeddedStructsJSON struct {
 	A           Field
 	ExtraFields map[string]Field
-	raw         string
 }
 
 type Recursive struct {
