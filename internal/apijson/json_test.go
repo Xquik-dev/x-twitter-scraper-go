@@ -103,6 +103,10 @@ type JSONFieldStructJSON struct {
 	raw         string
 }
 
+func (r *JSONFieldStruct) UnmarshalJSON(data []byte) error {
+	return UnmarshalRoot(data, r, &r.JSON.raw)
+}
+
 type UnknownStruct struct {
 	Unknown json.RawMessage `json:"unknown"`
 }
@@ -128,6 +132,14 @@ type InlineArray struct {
 type InlineJSON struct {
 	InlineField Field
 	raw         string
+}
+
+func (r *Inline) UnmarshalJSON(data []byte) error {
+	return UnmarshalRoot(data, r, &r.JSON.raw)
+}
+
+func (r *InlineArray) UnmarshalJSON(data []byte) error {
+	return UnmarshalRoot(data, r, &r.JSON.raw)
 }
 
 type UnionInteger int64
