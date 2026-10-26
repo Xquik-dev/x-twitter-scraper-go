@@ -68,15 +68,18 @@ func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, o
 }
 
 type XMediaDownloadResponse struct {
-	CacheHit    bool   `json:"cacheHit"`
-	GalleryURL  string `json:"galleryUrl"`
-	TotalMedia  int64  `json:"totalMedia"`
-	TotalTweets int64  `json:"totalTweets"`
-	TweetID     string `json:"tweetId"`
+	CacheHit   bool   `json:"cacheHit"`
+	GalleryURL string `json:"galleryUrl"`
+	// The post's files saved to your gallery. Single downloads only.
+	Items       []XMediaDownloadResponseItem `json:"items"`
+	TotalMedia  int64                        `json:"totalMedia"`
+	TotalTweets int64                        `json:"totalTweets"`
+	TweetID     string                       `json:"tweetId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CacheHit    respjson.Field
 		GalleryURL  respjson.Field
+		Items       respjson.Field
 		TotalMedia  respjson.Field
 		TotalTweets respjson.Field
 		TweetID     respjson.Field
@@ -90,6 +93,61 @@ func (r XMediaDownloadResponse) RawJSON() string { return r.JSON.raw }
 func (r *XMediaDownloadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// XMediaDownloadResponseItem holds 1 file of the post saved to your gallery.
+type XMediaDownloadResponseItem struct {
+	// Gallery file ID
+	ID      string `json:"id" api:"required"`
+	TweetID string `json:"tweetId" api:"required"`
+	// Any of "photo", "video", "animated_gif".
+	MediaType XMediaDownloadResponseItemMediaType `json:"mediaType" api:"required"`
+	// Saved copy of the file
+	MediaURL string `json:"mediaUrl" api:"required"`
+	// File size in bytes, as a string
+	FileSize string `json:"fileSize" api:"required"`
+	// When the file joined your gallery
+	CreatedAt         time.Time `json:"createdAt" api:"required" format:"date-time"`
+	AuthorUsername    string    `json:"authorUsername" api:"required"`
+	AuthorDisplayName string    `json:"authorDisplayName" api:"required"`
+	AuthorAvatar      string    `json:"authorAvatar" api:"required"`
+	TweetText         string    `json:"tweetText" api:"required"`
+	Likes             int64     `json:"likes" api:"required"`
+	Retweets          int64     `json:"retweets" api:"required"`
+	Views             int64     `json:"views" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		TweetID           respjson.Field
+		MediaType         respjson.Field
+		MediaURL          respjson.Field
+		FileSize          respjson.Field
+		CreatedAt         respjson.Field
+		AuthorUsername    respjson.Field
+		AuthorDisplayName respjson.Field
+		AuthorAvatar      respjson.Field
+		TweetText         respjson.Field
+		Likes             respjson.Field
+		Retweets          respjson.Field
+		Views             respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r XMediaDownloadResponseItem) RawJSON() string { return r.JSON.raw }
+func (r *XMediaDownloadResponseItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// XMediaDownloadResponseItemMediaType is the kind of saved file.
+type XMediaDownloadResponseItemMediaType string
+
+const (
+	XMediaDownloadResponseItemMediaTypePhoto       XMediaDownloadResponseItemMediaType = "photo"
+	XMediaDownloadResponseItemMediaTypeVideo       XMediaDownloadResponseItemMediaType = "video"
+	XMediaDownloadResponseItemMediaTypeAnimatedGif XMediaDownloadResponseItemMediaType = "animated_gif"
+)
 
 // Durable write record. Poll statusUrl until terminal is true. Reusing its
 // Idempotency-Key returns this record. Create another action only when safeToRetry
