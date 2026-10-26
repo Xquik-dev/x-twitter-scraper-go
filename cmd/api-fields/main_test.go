@@ -514,6 +514,9 @@ func TestDifferencesFail(t *testing.T) {
 		{"free-form object against an SDK array", func(spec obj) {
 			lookupResponse(spec)["media"] = obj{"type": text("object"), "additionalProperties": boolean(true)}
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing media"}},
+		{"free-form union against an SDK scalar union", func(spec obj) {
+			lookupResponse(spec)["answer"] = obj{"anyOf": arr{obj{"type": text("object")}, str()}}
+		}, []string{"GET /api/v1/x/tweets/{tweetId} response missing answer"}},
 		{"union field required only when every variant requires it", func(spec obj) {
 			path(lookupResponse(spec), "result")["oneOf"] = arr{objectSchema([]string{"kind"}, obj{"kind": str(), "label": str()})}
 		}, []string{"GET /api/v1/x/tweets/{tweetId} response extra result.score", "GET /api/v1/x/tweets/{tweetId} response missing result.label"}},
@@ -580,10 +583,9 @@ func TestSchemaRulesKeepMatchingFieldsQuiet(t *testing.T) {
 		{"enum with null", func(spec obj) {
 			path(tweetSchema(spec), "properties")["note"] = obj{"type": text("string"), "enum": arr{text("a"), null{}}}
 		}},
-		{"free-form and tuple shapes stop the walk", func(spec obj) {
-			lookupResponse(spec)["media"] = obj{"type": text("object")}
+		{"free-form on both sides and tuple shapes stop the walk", func(spec obj) {
+			lookupResponse(spec)["extra"] = obj{"anyOf": arr{obj{"type": text("object")}, str()}}
 			path(tweetSchema(spec), "properties")["tags"] = obj{"type": text("array"), "prefixItems": arr{str()}}
-			lookupResponse(spec)["answer"] = obj{"anyOf": arr{obj{"type": text("object")}, str()}}
 		}},
 		{"non-object schemas stay unknown", func(spec obj) {
 			lookupResponse(spec)["raw"] = boolean(true)
