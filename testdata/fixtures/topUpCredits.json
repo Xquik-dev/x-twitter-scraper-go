@@ -1,0 +1,6 @@
+{
+  "chargedCurrency": "EUR",
+  "chargedMinorUnits": 892,
+  "redirect_url": "https://xquik.com/api/v1/credits/topup/redirect?session_id=checkout_example",
+  "url": "https://xquik.com/api/v1/credits/topup/redirect?session_id=checkout_example"
+}

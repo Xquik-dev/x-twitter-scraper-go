@@ -1,0 +1,101 @@
+{
+  "id": "2055084502741929984",
+  "league": "nfl",
+  "sportsbookUrl": "https://playmgmsports.onelink.me/TkMx",
+  "categories": [
+    {
+      "key": "passing_yards",
+      "name": "Passing Yards",
+      "rank": 1,
+      "props": [
+        {
+          "playerId": "1783744053755990016",
+          "rank": 1,
+          "line": 248.5,
+          "odds": -115,
+          "alternateOdds": -115,
+          "openForBetting": true
+        },
+        {
+          "playerId": "1783744076115783681",
+          "rank": 2,
+          "line": 245.5,
+          "odds": -115,
+          "alternateOdds": -115,
+          "openForBetting": true
+        }
+      ]
+    },
+    {
+      "key": "first_touchdown_scorer",
+      "name": "First Touchdown Scorer",
+      "rank": 10,
+      "props": [
+        {
+          "playerId": "1253866051458134016",
+          "rank": 1,
+          "line": null,
+          "odds": 390,
+          "alternateOdds": null,
+          "openForBetting": true
+        }
+      ]
+    }
+  ],
+  "players": {
+    "1783744053755990016": {
+      "id": "1783744053755990016",
+      "teamId": "689566319029555200",
+      "name": "Drake Maye",
+      "shortName": null,
+      "jersey": "10",
+      "position": null,
+      "college": null,
+      "birthPlace": null,
+      "birthDate": null,
+      "headshots": {
+        "original": null,
+        "large": null,
+        "medium": null,
+        "small": null
+      },
+      "xUser": null
+    },
+    "1783744076115783681": {
+      "id": "1783744076115783681",
+      "teamId": "689566302801768449",
+      "name": "Caleb Williams",
+      "shortName": null,
+      "jersey": "18",
+      "position": null,
+      "college": null,
+      "birthPlace": null,
+      "birthDate": null,
+      "headshots": {
+        "original": null,
+        "large": null,
+        "medium": null,
+        "small": null
+      },
+      "xUser": null
+    },
+    "1253866051458134016": {
+      "id": "1253866051458134016",
+      "teamId": "689566302801768449",
+      "name": "D'Andre Swift",
+      "shortName": null,
+      "jersey": "4",
+      "position": null,
+      "college": null,
+      "birthPlace": null,
+      "birthDate": null,
+      "headshots": {
+        "original": null,
+        "large": null,
+        "medium": null,
+        "small": null
+      },
+      "xUser": null
+    }
+  }
+}

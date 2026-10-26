@@ -34,6 +34,8 @@ func TestEventStreamStreamingFixture(t *testing.T) {
 	client := xtwitterscraper.NewClient(option.WithBaseURL(server.URL+"/api/v1/"), option.WithAPIKey("My API Key"), option.WithMaxRetries(0))
 	stream := client.Events.StreamStreaming(context.Background(), xtwitterscraper.EventStreamParams{
 		LastEventID: xtwitterscraper.String("41"),
+		Include:     xtwitterscraper.EventStreamParamsIncludePostMetrics,
+		LookBack:    xtwitterscraper.Bool(true),
 	})
 	defer stream.Close()
 	var events []xtwitterscraper.Event
@@ -43,7 +45,7 @@ func TestEventStreamStreamingFixture(t *testing.T) {
 	if err := stream.Err(); err != nil {
 		t.Fatal(err)
 	}
-	if request.Method != http.MethodGet || request.URL.Path != "/api/v1/events/stream" || request.URL.RawQuery != "" ||
+	if request.Method != http.MethodGet || request.URL.Path != "/api/v1/events/stream" || request.URL.Query().Encode() != "include=post_metrics&lookBack=true" ||
 		request.Header.Get("Last-Event-ID") != "41" || request.Header.Get("Accept") != "text/event-stream" {
 		t.Fatalf("request = %s %s, headers %v", request.Method, request.URL, request.Header)
 	}

@@ -160,6 +160,7 @@ var tweetFields = []fieldValue{
 	{"Interstitial.Text.Text", "This Post violated the X Rules about glorifying violence. However, X has determined that it may be in the public's interest for the Post to remain accessible. Learn more"},
 	{"IsPinned", true},
 	{"IsRetweet", true},
+	{"Media[0].EditedWithNativeEditor", true},
 	{"Media[0].GrokImageAnnotation.Prompt", "A spiral galaxy"},
 	{"Media[0].GrokImageAnnotation.UpsampledPrompt", "A detailed spiral galaxy with blue and red arms"},
 	{"Media[0].SourceUser.Username", "NASAJPL"},
@@ -170,6 +171,7 @@ var tweetFields = []fieldValue{
 	{"QuotedTweetPermalink.ExpandedURL", "https://x.com/NASA/status/2102761519985332000"},
 	{"QuotedTweetPermalink.URL", "https://t.co/quoted123"},
 	{"QuotedTweetUnavailable.Reason", "Protected"},
+	{"ReactionContext.ReactedToPost", map[string]any{"author": map[string]any{"username": "NASA"}, "id": "1234567890", "unknownFields": []any{"text"}}},
 	{"SoftIntervention.DisplayType", "Fosnr"},
 	{"SoftIntervention.EngagementNudge", true},
 	{"SoftIntervention.Text.Entities[0].FromIndex", int64(0)},
@@ -191,6 +193,7 @@ var tweetFields = []fieldValue{
 	{"Tombstone.Text.Entities[0].Ref.ScreenName", "XSupport"},
 	{"Tombstone.Text.Entities[0].Ref.Text", "Learn more"},
 	{"UnavailableAuthorID", "783214"},
+	{"UnknownFields", []string{"text"}},
 }
 
 var _ = []shared.SoftIntervention{

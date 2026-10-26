@@ -1,0 +1,6 @@
+{
+  "chargedCurrency": "EUR",
+  "url": "https://xquik.com/billing/session",
+  "status": "checkout_created",
+  "message": "Billing session created"
+}

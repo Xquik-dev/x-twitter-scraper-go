@@ -116,15 +116,25 @@ type CreditGetTopupStatusResponse struct {
 	Status CreditGetTopupStatusResponseStatus `json:"status" api:"required"`
 	// Dollar amount requested for the top-up.
 	AmountDollars int64 `json:"amount_dollars" api:"nullable"`
+	// Currency the checkout charged.
+	//
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
+	// "MXN".
+	ChargedCurrency Currency `json:"chargedCurrency"`
+	// Amount the checkout charged before tax, in the currency's smallest unit.
+	// JPY and KRW have no decimals, so 1580 JPY is ¥1,580.
+	ChargedMinorUnits int64 `json:"chargedMinorUnits"`
 	// Bigint string credit amount granted or pending.
 	Credits string `json:"credits"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Status        respjson.Field
-		AmountDollars respjson.Field
-		Credits       respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		Status            respjson.Field
+		AmountDollars     respjson.Field
+		ChargedCurrency   respjson.Field
+		ChargedMinorUnits respjson.Field
+		Credits           respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
@@ -144,6 +154,14 @@ const (
 )
 
 type CreditTopupBalanceResponse struct {
+	// Currency the checkout charges.
+	//
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
+	// "MXN".
+	ChargedCurrency Currency `json:"chargedCurrency" api:"required"`
+	// Amount the checkout charges before tax, in the currency's smallest unit.
+	// JPY and KRW have no decimals, so 1580 JPY is ¥1,580.
+	ChargedMinorUnits int64 `json:"chargedMinorUnits" api:"required"`
 	// Stable Xquik redirect URL for the active checkout.
 	RedirectURL string `json:"redirect_url" api:"required" format:"uri"`
 	// Same stable Xquik redirect URL as redirect_url. The response never exposes the
@@ -151,10 +169,12 @@ type CreditTopupBalanceResponse struct {
 	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RedirectURL respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ChargedCurrency   respjson.Field
+		ChargedMinorUnits respjson.Field
+		RedirectURL       respjson.Field
+		URL               respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
@@ -195,6 +215,15 @@ func (r CreditGetTopupStatusParams) URLQuery() (v url.Values, err error) {
 }
 
 type CreditTopupBalanceParams struct {
+	// Currency to pay in. Xquik converts the dollar amount at the latest daily
+	// ECB rate. If the newest rates are more than 3 ECB working days old, it
+	// charges USD instead, and Checkout shows that before payment.
+	// `chargedCurrency` shows the currency charged. Credits always match the
+	// dollar amount. Lowercase codes work too.
+	//
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
+	// "MXN".
+	Currency Currency `json:"currency,omitzero"`
 	// Amount to top up in US dollars. Minimum 10.
 	Dollars int64 `json:"dollars" api:"required"`
 	// Optional checkout locale. Defaults to en.
@@ -209,3 +238,19 @@ func (r CreditTopupBalanceParams) MarshalJSON() (data []byte, err error) {
 func (r *CreditTopupBalanceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Currency is an ISO 4217 code of 1 of the 10 currencies Xquik charges in.
+type Currency string
+
+const (
+	CurrencyUSD Currency = "USD"
+	CurrencyEUR Currency = "EUR"
+	CurrencyGBP Currency = "GBP"
+	CurrencyTRY Currency = "TRY"
+	CurrencyJPY Currency = "JPY"
+	CurrencyCNY Currency = "CNY"
+	CurrencyKRW Currency = "KRW"
+	CurrencyCAD Currency = "CAD"
+	CurrencyAUD Currency = "AUD"
+	CurrencyMXN Currency = "MXN"
+)

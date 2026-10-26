@@ -1,0 +1,22 @@
+{
+  "tweetId": "1234567890",
+  "galleryUrl": "https://xquik.com/gallery/abc123",
+  "cacheHit": false,
+  "items": [
+    {
+      "id": "42",
+      "tweetId": "1234567890",
+      "mediaType": "photo",
+      "mediaUrl": "https://media.xquik.com/tweet_1234567890/0.jpg",
+      "fileSize": "2097152",
+      "createdAt": "2026-10-16T11:00:00.000Z",
+      "authorUsername": "elonmusk",
+      "authorDisplayName": "Elon Musk",
+      "authorAvatar": null,
+      "tweetText": "Launch day.",
+      "likes": 1200,
+      "retweets": 340,
+      "views": 56000
+    }
+  ]
+}
