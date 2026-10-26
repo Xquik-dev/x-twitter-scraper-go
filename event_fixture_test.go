@@ -79,3 +79,27 @@ func TestEventStreamStreamingReportsAPIErrors(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestEventStreamStreamingSendsIncludeAndLookBack(t *testing.T) {
+	var request *http.Request
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		request = r.Clone(context.Background())
+		w.Header().Set("Content-Type", "text/event-stream")
+	}))
+	defer server.Close()
+	client := xtwitterscraper.NewClient(option.WithBaseURL(server.URL+"/api/v1/"), option.WithAPIKey("My API Key"), option.WithMaxRetries(0))
+	stream := client.Events.StreamStreaming(context.Background(), xtwitterscraper.EventStreamParams{
+		LastEventID: xtwitterscraper.String("41"),
+		Include:     "post_metrics",
+		LookBack:    xtwitterscraper.Bool(true),
+	})
+	defer stream.Close()
+	for stream.Next() {
+	}
+	if err := stream.Err(); err != nil {
+		t.Fatal(err)
+	}
+	if request.URL.Path != "/api/v1/events/stream" || request.URL.Query().Encode() != "include=post_metrics&lookBack=true" || request.Header.Get("Last-Event-ID") != "41" {
+		t.Fatalf("request = %s %s, headers %v", request.Method, request.URL, request.Header)
+	}
+}
