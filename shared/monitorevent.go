@@ -522,6 +522,9 @@ type MonitorEventDataUnion struct {
 
 // RawJSON returns the unmodified JSON received from the API.
 func (u MonitorEventDataUnion) RawJSON() string { return u.JSON.raw }
+
+// MarshalJSON returns the JSON the union was decoded from.
+func (u MonitorEventDataUnion) MarshalJSON() ([]byte, error) { return []byte(u.RawJSON()), nil }
 func (u *MonitorEventDataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u, &u.JSON.raw)
 }
