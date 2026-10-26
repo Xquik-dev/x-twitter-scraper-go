@@ -1,0 +1,11 @@
+#!/bin/sh
+case "$1 $2" in
+  "version --format=terse") echo 2.27.2 ;;
+  "pack install") ;;
+  "database create") ;;
+  "database analyze")
+    for argument; do
+      case "$argument" in --output=*) cp "$FAKE_REPORT" "${argument#--output=}" ;; esac
+    done ;;
+  *) echo "unexpected codeql call $*" >&2; exit 97 ;;
+esac

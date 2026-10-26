@@ -13,19 +13,6 @@ import (
 	"testing"
 )
 
-const fakeCodeQL = `#!/bin/sh
-case "$1 $2" in
-  "version --format=terse") echo 2.27.2 ;;
-  "pack install") ;;
-  "database create") ;;
-  "database analyze")
-    for argument; do
-      case "$argument" in --output=*) cp "$FAKE_REPORT" "${argument#--output=}" ;; esac
-    done ;;
-  *) echo "unexpected codeql call $*" >&2; exit 97 ;;
-esac
-`
-
 const (
 	extractionDiagnostic = `{"id":"go/diagnostics/extraction-errors"}`
 	extractedFile        = `{"locations":[{"physicalLocation":{"artifactLocation":{"uri":"client.go","uriBaseId":"%SRCROOT%"}}}],"message":{"text":""},"level":"none","descriptor":{"id":"go/diagnostics/successfully-extracted-files"}}`
@@ -41,11 +28,11 @@ func codeqlReport(diagnostics string, notifications ...string) string {
 func runCodeQLSecurity(t *testing.T, report string) auditResult {
 	t.Helper()
 	root := t.TempDir()
-	codeql := filepath.Join(root, "codeql")
-	reportPath := filepath.Join(root, "report.sarif")
-	if err := os.WriteFile(codeql, []byte(fakeCodeQL), 0o755); err != nil {
+	codeql, err := filepath.Abs("testdata/codeql")
+	if err != nil {
 		t.Fatal(err)
 	}
+	reportPath := filepath.Join(root, "report.sarif")
 	if err := os.WriteFile(reportPath, []byte(report), 0o600); err != nil {
 		t.Fatal(err)
 	}

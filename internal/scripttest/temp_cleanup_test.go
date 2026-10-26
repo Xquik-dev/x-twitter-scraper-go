@@ -16,37 +16,6 @@ import (
 	"time"
 )
 
-const fakeTool = `#!/bin/sh
-case "$*" in
-  "version --format=terse") echo 2.27.2; exit 0 ;;
-  "list -f "*|"list -deps "*|"list ./...") echo github.com/Xquik-dev/x-twitter-scraper-go; exit 0 ;;
-  "-l .") exit 0 ;;
-esac
-if [ "$(basename "$0")" = go ]; then
-  mktemp "${GOTMPDIR:-${TMPDIR:-/tmp}}/go-build.XXXXXX" >/dev/null || exit 1
-fi
-if [ "$FAKE_COVERAGE" = true ]; then
-  case "$1" in
-    test)
-      for argument; do
-        case "$argument" in -coverprofile=*) echo 'mode: set' >"${argument#-coverprofile=}" ;; esac
-      done ;;
-    run) cat ;;
-    *) exit 1 ;;
-  esac
-  exit 0
-fi
-if [ -n "$GOMODCACHE" ]; then
-  mkdir -p "$GOMODCACHE/cache/download" && : >"$GOMODCACHE/cache/download/list" && chmod -R a-w "$GOMODCACHE"
-fi
-if [ -n "$FAKE_STARTED" ]; then
-  : >"$FAKE_STARTED"
-  exec sleep 30
-fi
-echo "fake $(basename "$0") failed" >&2
-exit 3
-`
-
 type cleanupCase struct {
 	name    string
 	command []string
@@ -93,6 +62,10 @@ func cleanupCases(t *testing.T) []cleanupCase {
 
 func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd, string) {
 	t.Helper()
+	fakeTool, err := filepath.Abs("testdata/fake-tool")
+	if err != nil {
+		t.Fatal(err)
+	}
 	root := t.TempDir()
 	private := filepath.Join(root, "tmp")
 	bin := filepath.Join(root, "bin")
@@ -103,7 +76,7 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 		}
 	}
 	for _, tool := range test.tools {
-		if err := os.WriteFile(filepath.Join(bin, tool), []byte(fakeTool), 0o755); err != nil {
+		if err := os.Symlink(fakeTool, filepath.Join(bin, tool)); err != nil {
 			t.Fatal(err)
 		}
 	}
