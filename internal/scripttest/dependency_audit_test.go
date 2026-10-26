@@ -84,11 +84,19 @@ func encode[T any](value T) []byte {
 
 func runAudit[E any](t *testing.T, goCommand string, findings []finding, exceptions E) auditResult {
 	t.Helper()
-	script, err := filepath.Abs("../../scripts/dependency-audit")
-	if err != nil {
+	root := t.TempDir()
+	if err := os.Mkdir(filepath.Join(root, "scripts"), 0o750); err != nil {
 		t.Fatal(err)
 	}
-	root := t.TempDir()
+	for _, name := range []string{"dependency-audit", "temp-paths"} {
+		target, err := filepath.Abs(filepath.Join("../../scripts", name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Symlink(target, filepath.Join(root, "scripts", name)); err != nil {
+			t.Fatal(err)
+		}
+	}
 	write := func(name string, data []byte, mode os.FileMode) string {
 		t.Helper()
 		path := filepath.Join(root, name)
@@ -107,7 +115,8 @@ func runAudit[E any](t *testing.T, goCommand string, findings []finding, excepti
 	}
 	write("bin/go", []byte(goCommand), 0o755)
 	write("audit-exceptions.json", encode(exceptions), 0o644)
-	command := exec.Command(script, root)
+	command := exec.Command("scripts/dependency-audit", ".")
+	command.Dir = root
 	command.Env = append(os.Environ(),
 		"PATH="+filepath.Join(root, "bin")+string(os.PathListSeparator)+os.Getenv("PATH"),
 		"FAKE_REPORT="+write("report.json", report, 0o644),
