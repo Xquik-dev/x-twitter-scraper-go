@@ -11,6 +11,8 @@ cd "$(dirname "$0")/.."
 source scripts/temp-paths
 temp_path workspace lint
 
+platforms=(linux)
+
 echo "==> Checking gofmt"
 unformatted="$(gofmt -l .)"
 if [ -n "$unformatted" ]; then
@@ -18,19 +20,14 @@ if [ -n "$unformatted" ]; then
   exit 1
 fi
 
-echo "==> Running go vet"
-packages=()
-while IFS= read -r package; do
-  if [ "$package" != "github.com/Xquik-dev/x-twitter-scraper-go/internal/encoding/json" ]; then
-    packages+=("$package")
-  fi
-done < <(go list ./...)
-go vet "${packages[@]}"
+go build -modfile=tools/staticcheck/go.mod -o "$workspace/staticcheck" honnef.co/go/tools/cmd/staticcheck
+for platform in "${platforms[@]}"; do
+  echo "==> Running go vet for $platform"
+  GOOS="$platform" go vet ./...
+  echo "==> Running staticcheck for $platform"
+  GOOS="$platform" "$workspace/staticcheck" -checks all -show-ignored ./...
+done
 
-go vet -structtag=false ./internal/encoding/json
-
-json_sources=()
-while IFS= read -r source; do
-  json_sources+=("$source")
-done < <(find internal/encoding/json -maxdepth 1 -type f -name '*.go' ! -name '*_test.go' | sort)
-go vet "${json_sources[@]}"
+echo "==> Checking type coverage"
+platform_list="${platforms[*]}"
+go run ./cmd/type-coverage -goos "${platform_list// /,}"
