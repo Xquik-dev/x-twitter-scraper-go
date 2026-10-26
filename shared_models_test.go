@@ -30,15 +30,7 @@ func valueAt(root any, path string) (any, bool) {
 	value := reflect.ValueOf(root)
 	for _, part := range strings.Split(path, ".") {
 		name, rest, indexed := strings.Cut(part, "[")
-		value = reflect.Indirect(value)
-		if value.Kind() == reflect.Interface {
-			value = value.Elem()
-		}
-		if value.Kind() == reflect.Map {
-			value = value.MapIndex(reflect.ValueOf(name))
-		} else {
-			value = value.FieldByName(name)
-		}
+		value = reflect.Indirect(value).FieldByName(name)
 		if !value.IsValid() {
 			return nil, false
 		}
@@ -179,6 +171,7 @@ var tweetFields = []fieldValue{
 	{"QuotedTweetPermalink.ExpandedURL", "https://x.com/NASA/status/2102761519985332000"},
 	{"QuotedTweetPermalink.URL", "https://t.co/quoted123"},
 	{"QuotedTweetUnavailable.Reason", "Protected"},
+	{"ReactionContext.ReactedToPost", map[string]any{"author": map[string]any{"username": "NASA"}, "id": "1234567890", "unknownFields": []any{"text"}}},
 	{"SoftIntervention.DisplayType", "Fosnr"},
 	{"SoftIntervention.EngagementNudge", true},
 	{"SoftIntervention.Text.Entities[0].FromIndex", int64(0)},
@@ -192,8 +185,6 @@ var tweetFields = []fieldValue{
 	{"SoftIntervention.URL.URLType", "ExternalUrl"},
 	{"SportsContext.Competitors[0].Color", "007A33"},
 	{"SportsContext.Competitors[0].IsActive", true},
-	{"ReactionContext.ReactedToPost.author.username", "NASA"},
-	{"ReactionContext.ReactedToPost.id", "1234567890"},
 	{"SportsContext.Competitors[0].IsWinner", true},
 	{"SportsContext.League", "NBA"},
 	{"SubscriberBadge.CreatorID", "44196397"},
