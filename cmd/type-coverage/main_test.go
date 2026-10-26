@@ -49,10 +49,23 @@ func TestTypedModulePasses(t *testing.T) {
 	directory := module(t, map[string]string{"probe.go": `// Package probe is typed.
 package probe
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 // Identity returns its argument.
 func Identity[T any](value T) T { return value }
+
+// Copy sets value through targets that keep their static type.
+func Copy(value reflect.Value, pointer *int) {
+	target := reflect.ValueOf(pointer).Elem()
+	target.Set(value)
+	Identity(value).Set(value)
+	reflect.Indirect(value).Set(value)
+	reflect.New(value.Type()).Elem().Set(value)
+	reflect.ValueOf(pointer).Elem().Set(value)
+}
 
 // Describe names the error kind.
 func Describe(err error) string {
@@ -67,7 +80,7 @@ func Describe(err error) string {
 }
 `})
 	passed, output := check(t, directory, "linux")
-	if !passed || !strings.Contains(output, "Type coverage 100.00%, 6 of 6 declarations typed.\nEscape hatches 0.\n") {
+	if !passed || !strings.Contains(output, "Type coverage 100.00%, 9 of 9 declarations typed.\nEscape hatches 0.\n") {
 		t.Fatalf("passed %v with output\n%s", passed, output)
 	}
 }
@@ -117,6 +130,14 @@ func TestEscapeHatchesFail(t *testing.T) {
 		"discarded ok from reflect.TypeAssert in a declaration": {
 			map[string]string{"probe.go": "package probe\n\nimport \"reflect\"\n\nvar Text, _ = reflect.TypeAssert[string](reflect.ValueOf(\"\"))\n"},
 			"probe.go:5:41: reflect.TypeAssert discards its ok result",
+		},
+		"reflect.Value.Set across a dynamic type": {
+			map[string]string{"probe.go": "package probe\n\nimport \"reflect\"\n\nfunc Text(v reflect.Value) (s string) {\n\treflect.ValueOf(&s).Elem().Set(v)\n\treturn s\n}\n"},
+			"probe.go:6:32: reflect.Value.Set into reflect.ValueOf(&x).Elem() panics on a type mismatch",
+		},
+		"parenthesized reflect.Value.Set across a dynamic type": {
+			map[string]string{"probe.go": "package probe\n\nimport \"reflect\"\n\nfunc Text(v reflect.Value) (s string) {\n\t(reflect.ValueOf((&s)).Elem()).Set(v)\n\treturn s\n}\n"},
+			"probe.go:6:36: reflect.Value.Set into reflect.ValueOf(&x).Elem() panics on a type mismatch",
 		},
 		"unsafe import": {
 			map[string]string{"probe.go": "package probe\n\nimport \"unsafe\"\n\nvar Size = unsafe.Sizeof(0)\n"},

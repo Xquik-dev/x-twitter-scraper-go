@@ -241,6 +241,10 @@ func (a *audit) inspectFile(file *ast.File, info *types.Info, at func(token.Pos)
 			if _, checked := info.Types[node].Type.(*types.Tuple); node.Type != nil && !checked {
 				a.hatches[at(node.Lparen)] = hatch{"unchecked assertion", "type assertion without the comma-ok form"}
 			}
+		case *ast.CallExpr:
+			if setsThroughValueOf(info, node) {
+				a.hatches[at(node.Lparen)] = hatch{"unchecked assertion", "reflect.Value.Set into reflect.ValueOf(&x).Elem() panics on a type mismatch"}
+			}
 		case *ast.AssignStmt:
 			a.discardedAssertion(node.Lhs, node.Rhs, info, at)
 		case *ast.ValueSpec:
@@ -282,6 +286,33 @@ func (a *audit) discardedAssertion(targets, values []ast.Expr, info *types.Info,
 			a.hatches[at(value.Lparen)] = hatch{"unchecked assertion", "reflect.TypeAssert discards its ok result"}
 		}
 	}
+}
+
+func setsThroughValueOf(info *types.Info, set *ast.CallExpr) bool {
+	elem, ok := receiverCall(info, set, "(reflect.Value).Set")
+	if !ok {
+		return false
+	}
+	valueOf, ok := receiverCall(info, elem, "(reflect.Value).Elem")
+	if !ok || !calls(info, valueOf, "reflect.ValueOf") {
+		return false
+	}
+	address, ok := ast.Unparen(valueOf.Args[0]).(*ast.UnaryExpr)
+	return ok && address.Op == token.AND
+}
+
+func receiverCall(info *types.Info, call *ast.CallExpr, method string) (*ast.CallExpr, bool) {
+	selector, ok := ast.Unparen(call.Fun).(*ast.SelectorExpr)
+	if !ok || !calls(info, call, method) {
+		return nil, false
+	}
+	receiver, ok := ast.Unparen(selector.X).(*ast.CallExpr)
+	return receiver, ok
+}
+
+func calls(info *types.Info, call *ast.CallExpr, name string) bool {
+	callee := typeutil.StaticCallee(info, call)
+	return callee != nil && callee.FullName() == name
 }
 
 func markConstraints(parameters *ast.FieldList, constraints map[ast.Expr]bool) {
