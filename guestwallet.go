@@ -382,7 +382,7 @@ func (r *GuestWalletTopupResponseAuthorization) UnmarshalJSON(data []byte) error
 type GuestWalletTopupResponseCredentialNotice string
 
 const (
-	GuestWalletTopupResponseCredentialNoticeStoreAPIKeyAndTheIdempotencyKeySecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable GuestWalletTopupResponseCredentialNotice = "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
+	GuestWalletTopupResponseNoticeStoreKeysSecurelyBeforeSharingCheckoutURLNoEmailRecoveryIsAvailable GuestWalletTopupResponseCredentialNotice = "Store api_key and the Idempotency-Key securely before sharing checkout_url. No email recovery is available."
 )
 
 type GuestWalletNewParams struct {
