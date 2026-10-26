@@ -270,7 +270,7 @@ type ComposeNewResponseComposePrepareResultScorerWeight struct {
 	// Signal name from X's public ranking repository.
 	Signal string `json:"signal" api:"required"`
 	// Null prevents source defaults becoming production claims.
-	Weight any `json:"weight" api:"required"`
+	Weight json.RawMessage `json:"weight" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Context     respjson.Field
@@ -441,8 +441,8 @@ type ComposeNewParamsBodyComposePrepareRequest struct {
 	// Any of "engagement", "followers", "authority", "conversation".
 	Goal string `json:"goal,omitzero"`
 	// This field can be elided, and will marshal its zero value as "compose".
-	Step        constant.Compose `json:"step" default:"compose"`
-	ExtraFields map[string]any   `json:"-"`
+	Step        constant.Compose           `json:"step" default:"compose"`
+	ExtraFields map[string]json.RawMessage `json:"-"`
 	paramObj
 }
 
@@ -481,8 +481,8 @@ type ComposeNewParamsBodyComposeRefineRequest struct {
 	// Any of "photo", "video", "none".
 	MediaType string `json:"mediaType,omitzero"`
 	// This field can be elided, and will marshal its zero value as "refine".
-	Step        constant.Refine `json:"step" default:"refine"`
-	ExtraFields map[string]any  `json:"-"`
+	Step        constant.Refine            `json:"step" default:"refine"`
+	ExtraFields map[string]json.RawMessage `json:"-"`
 	paramObj
 }
 
@@ -518,8 +518,8 @@ type ComposeNewParamsBodyComposeScoreRequest struct {
 	// Deprecated: Ignored. Remove this field.
 	HasMedia param.Opt[bool] `json:"hasMedia,omitzero"`
 	// This field can be elided, and will marshal its zero value as "score".
-	Step        constant.Score `json:"step" default:"score"`
-	ExtraFields map[string]any `json:"-"`
+	Step        constant.Score             `json:"step" default:"score"`
+	ExtraFields map[string]json.RawMessage `json:"-"`
 	paramObj
 }
 

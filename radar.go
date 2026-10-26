@@ -6,6 +6,7 @@ package xtwitterscraper
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -165,10 +166,10 @@ type RadarItemMetadata struct {
 	// Current items use html. json and rss are retained for legacy rows.
 	//
 	// Any of "html", "json", "rss".
-	SourceFormat string         `json:"sourceFormat"`
-	Subreddit    string         `json:"subreddit"`
-	UpvoteRatio  float64        `json:"upvoteRatio"`
-	ExtraFields  map[string]any `json:"" api:"extrafields"`
+	SourceFormat string                     `json:"sourceFormat"`
+	Subreddit    string                     `json:"subreddit"`
+	UpvoteRatio  float64                    `json:"upvoteRatio"`
+	ExtraFields  map[string]json.RawMessage `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Author             respjson.Field

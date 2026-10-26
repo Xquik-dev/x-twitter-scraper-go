@@ -236,13 +236,13 @@ type XGetArticleResponseArticle struct {
 	Contents      []XGetArticleResponseArticleContent `json:"contents"`
 	CoverImageURL string                              `json:"coverImageUrl"`
 	// Public metadata whose fields X defines.
-	CoverMedia map[string]any `json:"coverMedia"`
+	CoverMedia PublicMetadata `json:"coverMedia"`
 	CreatedAt  string         `json:"createdAt"`
 	// Public metadata whose fields X defines.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	LikeCount      int64          `json:"likeCount"`
 	// Public metadata whose fields X defines.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	QuoteCount  int64          `json:"quoteCount"`
 	ReplyCount  int64          `json:"replyCount"`
@@ -1168,7 +1168,7 @@ type XSearchPlacesResponsePlace struct {
 	// Place ID. Pass it as place to /x/tweets/search.
 	ID string `json:"id" api:"required"`
 	// Extra details X attaches to some places. Often empty.
-	Attributes map[string]any `json:"attributes" api:"required"`
+	Attributes PublicMetadata `json:"attributes" api:"required"`
 	// Outline of the place as GeoJSON. Each point holds longitude, then latitude.
 	BoundingBox XSearchPlacesResponsePlaceBoundingBox `json:"boundingBox" api:"required"`
 	// Center of the place. Longitude, then latitude.
@@ -1237,7 +1237,7 @@ type XSearchPlacesResponsePlaceContainedWithin struct {
 	// Place ID. Pass it as place to /x/tweets/search.
 	ID string `json:"id" api:"required"`
 	// Extra details X attaches to some places. Often empty.
-	Attributes map[string]any `json:"attributes" api:"required"`
+	Attributes PublicMetadata `json:"attributes" api:"required"`
 	// Outline of the place as GeoJSON. Each point holds longitude, then latitude.
 	BoundingBox XSearchPlacesResponsePlaceContainedWithinBoundingBox `json:"boundingBox" api:"required"`
 	// Center of the place. Longitude, then latitude.

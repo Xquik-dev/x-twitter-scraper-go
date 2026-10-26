@@ -121,14 +121,14 @@ type XTweetLikeNewResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -298,7 +298,7 @@ type XTweetLikeNewResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -417,14 +417,14 @@ type XTweetLikeDeleteResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -594,7 +594,7 @@ type XTweetLikeDeleteResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field

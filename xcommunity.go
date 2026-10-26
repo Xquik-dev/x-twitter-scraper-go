@@ -239,14 +239,14 @@ type XCommunityNewResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -416,7 +416,7 @@ type XCommunityNewResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -535,14 +535,14 @@ type XCommunityDeleteResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -712,7 +712,7 @@ type XCommunityDeleteResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -926,7 +926,7 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 	// Whether the profile may add a location to posts.
 	GeoEnabled bool `json:"geoEnabled"`
 	// Public profile bio translation returned by X
-	GrokTranslatedBio  map[string]any `json:"grokTranslatedBio"`
+	GrokTranslatedBio  PublicMetadata `json:"grokTranslatedBio"`
 	HasCustomTimelines bool           `json:"hasCustomTimelines"`
 	// Whether the profile filled X's extended fields, such as a birth date. True or
 	// false.
@@ -957,9 +957,9 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 	PinnedTweetIDs           []string `json:"pinnedTweetIds"`
 	PossiblySensitive        bool     `json:"possiblySensitive"`
 	// Professional metadata with category display settings
-	Professional map[string]any `json:"professional"`
+	Professional PublicMetadata `json:"professional"`
 	// Structured profile bio with entity annotations
-	ProfileBio map[string]any `json:"profile_bio"`
+	ProfileBio PublicMetadata `json:"profile_bio"`
 	// Original X profile banner field when available
 	ProfileBannerURL           string `json:"profileBannerUrl"`
 	ProfileDescriptionLanguage string `json:"profileDescriptionLanguage"`

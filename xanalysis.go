@@ -146,7 +146,7 @@ type XAnalysisBrandResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisBrandResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                     `json:"schemaVersion" api:"required"`
@@ -157,7 +157,7 @@ type XAnalysisBrandResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -183,7 +183,7 @@ func (r *XAnalysisBrandResponseAnalysisSummary) UnmarshalJSON(data []byte) error
 type XAnalysisBrandResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                     `json:"choices" api:"required"`
+	Choices PublicMetadata                                     `json:"choices" api:"required"`
 	Rows    int64                                              `json:"rows" api:"required"`
 	Signal  XAnalysisBrandResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -326,13 +326,13 @@ func (r *XAnalysisBrandResponseAnalysisSummarySourceDomain) UnmarshalJSON(data [
 
 type XAnalysisBrandResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -372,7 +372,7 @@ type XAnalysisBrandResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -661,7 +661,7 @@ func (r *XAnalysisBrandResponseResultAnswersUnion) UnmarshalJSON(data []byte) er
 // compare a run with an earlier dataset.
 type XAnalysisBrandResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -816,7 +816,7 @@ type XAnalysisClassifyResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisClassifyResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                        `json:"schemaVersion" api:"required"`
@@ -827,7 +827,7 @@ type XAnalysisClassifyResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -853,7 +853,7 @@ func (r *XAnalysisClassifyResponseAnalysisSummary) UnmarshalJSON(data []byte) er
 type XAnalysisClassifyResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                        `json:"choices" api:"required"`
+	Choices PublicMetadata                                        `json:"choices" api:"required"`
 	Rows    int64                                                 `json:"rows" api:"required"`
 	Signal  XAnalysisClassifyResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -998,13 +998,13 @@ func (r *XAnalysisClassifyResponseAnalysisSummarySourceDomain) UnmarshalJSON(dat
 
 type XAnalysisClassifyResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -1044,7 +1044,7 @@ type XAnalysisClassifyResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -1335,7 +1335,7 @@ func (r *XAnalysisClassifyResponseResultAnswersUnion) UnmarshalJSON(data []byte)
 // compare a run with an earlier dataset.
 type XAnalysisClassifyResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -1490,7 +1490,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisMarketSignalsResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                             `json:"schemaVersion" api:"required"`
@@ -1501,7 +1501,7 @@ type XAnalysisMarketSignalsResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -1527,7 +1527,7 @@ func (r *XAnalysisMarketSignalsResponseAnalysisSummary) UnmarshalJSON(data []byt
 type XAnalysisMarketSignalsResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                             `json:"choices" api:"required"`
+	Choices PublicMetadata                                             `json:"choices" api:"required"`
 	Rows    int64                                                      `json:"rows" api:"required"`
 	Signal  XAnalysisMarketSignalsResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1676,13 +1676,13 @@ func (r *XAnalysisMarketSignalsResponseAnalysisSummarySourceDomain) UnmarshalJSO
 
 type XAnalysisMarketSignalsResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -1722,7 +1722,7 @@ type XAnalysisMarketSignalsResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -2015,7 +2015,7 @@ func (r *XAnalysisMarketSignalsResponseResultAnswersUnion) UnmarshalJSON(data []
 // compare a run with an earlier dataset.
 type XAnalysisMarketSignalsResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -2170,7 +2170,7 @@ type XAnalysisNewsResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisNewsResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                    `json:"schemaVersion" api:"required"`
@@ -2181,7 +2181,7 @@ type XAnalysisNewsResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -2207,7 +2207,7 @@ func (r *XAnalysisNewsResponseAnalysisSummary) UnmarshalJSON(data []byte) error 
 type XAnalysisNewsResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                    `json:"choices" api:"required"`
+	Choices PublicMetadata                                    `json:"choices" api:"required"`
 	Rows    int64                                             `json:"rows" api:"required"`
 	Signal  XAnalysisNewsResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2350,13 +2350,13 @@ func (r *XAnalysisNewsResponseAnalysisSummarySourceDomain) UnmarshalJSON(data []
 
 type XAnalysisNewsResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -2396,7 +2396,7 @@ type XAnalysisNewsResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -2685,7 +2685,7 @@ func (r *XAnalysisNewsResponseResultAnswersUnion) UnmarshalJSON(data []byte) err
 // compare a run with an earlier dataset.
 type XAnalysisNewsResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -2840,7 +2840,7 @@ type XAnalysisSentimentResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisSentimentResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                         `json:"schemaVersion" api:"required"`
@@ -2851,7 +2851,7 @@ type XAnalysisSentimentResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -2877,7 +2877,7 @@ func (r *XAnalysisSentimentResponseAnalysisSummary) UnmarshalJSON(data []byte) e
 type XAnalysisSentimentResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                         `json:"choices" api:"required"`
+	Choices PublicMetadata                                         `json:"choices" api:"required"`
 	Rows    int64                                                  `json:"rows" api:"required"`
 	Signal  XAnalysisSentimentResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3022,13 +3022,13 @@ func (r *XAnalysisSentimentResponseAnalysisSummarySourceDomain) UnmarshalJSON(da
 
 type XAnalysisSentimentResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -3068,7 +3068,7 @@ type XAnalysisSentimentResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -3359,7 +3359,7 @@ func (r *XAnalysisSentimentResponseResultAnswersUnion) UnmarshalJSON(data []byte
 // compare a run with an earlier dataset.
 type XAnalysisSentimentResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.
@@ -3514,7 +3514,7 @@ type XAnalysisViralScoreResponseAnalysisSummary struct {
 	// Totals by question ID. A choice has counts, shares, engagementShares & top posts
 	// per category. A score has mean, engagementWeightedMean & levels. A probability
 	// has mean, yes & no.
-	Questions map[string]map[string]any `json:"questions" api:"required"`
+	Questions map[string]PublicMetadata `json:"questions" api:"required"`
 	// Posts by analysis outcome.
 	Rows          XAnalysisViralScoreResponseAnalysisSummaryRows `json:"rows" api:"required"`
 	SchemaVersion int64                                          `json:"schemaVersion" api:"required"`
@@ -3525,7 +3525,7 @@ type XAnalysisViralScoreResponseAnalysisSummary struct {
 	// Only from /x/analysis/viral-score. Scored posts, the average score, verdict
 	// counts, the scores against actual engagement, a report per author & the
 	// leaderboards.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cashtags      respjson.Field
@@ -3551,7 +3551,7 @@ func (r *XAnalysisViralScoreResponseAnalysisSummary) UnmarshalJSON(data []byte) 
 type XAnalysisViralScoreResponseAnalysisSummaryCashtag struct {
 	Cashtag string `json:"cashtag" api:"required"`
 	// Category counts of the cashtag's posts by question ID.
-	Choices map[string]any                                          `json:"choices" api:"required"`
+	Choices PublicMetadata                                          `json:"choices" api:"required"`
 	Rows    int64                                                   `json:"rows" api:"required"`
 	Signal  XAnalysisViralScoreResponseAnalysisSummaryCashtagSignal `json:"signal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3696,13 +3696,13 @@ func (r *XAnalysisViralScoreResponseAnalysisSummarySourceDomain) UnmarshalJSON(d
 
 type XAnalysisViralScoreResponseAnalysisSummaryTarget struct {
 	// Category counts by question ID.
-	Choices    map[string]any `json:"choices" api:"required"`
+	Choices    PublicMetadata `json:"choices" api:"required"`
 	Engagement int64          `json:"engagement" api:"required"`
 	Mentions   int64          `json:"mentions" api:"required"`
 	Name       string         `json:"name" api:"required"`
 	Share      float64        `json:"share" api:"required"`
 	// The most engaged posts per question ID & category.
-	Top map[string]any `json:"top" api:"required"`
+	Top PublicMetadata `json:"top" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Choices     respjson.Field
@@ -3742,7 +3742,7 @@ type XAnalysisViralScoreResponseResult struct {
 	Tweet shared.SearchTweet `json:"tweet" api:"required"`
 	// Only from /x/analysis/viral-score. The score with its weights version, the caps
 	// that applied & the engagement comparison.
-	Viral map[string]any `json:"viral"`
+	Viral PublicMetadata `json:"viral"`
 	// Only from /x/analysis/viral-score. log10 of 1 plus the weighted engagement per
 	// 1,000 followers. Null without a follower count.
 	ViralActualEngagementRate float64 `json:"viralActualEngagementRate" api:"nullable"`
@@ -4035,7 +4035,7 @@ func (r *XAnalysisViralScoreResponseResultAnswersUnion) UnmarshalJSON(data []byt
 // compare a run with an earlier dataset.
 type XAnalysisViralScoreResponseResultMonitor struct {
 	// Always null. The baseline is the rows you sent.
-	BaselineDatasetID any `json:"baselineDatasetId" api:"required"`
+	BaselineDatasetID json.RawMessage `json:"baselineDatasetId" api:"required"`
 	// IDs of the questions whose decision changed.
 	ChangedQuestionIDs []string `json:"changedQuestionIds" api:"required"`
 	// Each changed decision, earlier & now.

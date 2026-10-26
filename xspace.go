@@ -260,7 +260,7 @@ type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -342,7 +342,7 @@ type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -424,7 +424,7 @@ type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -702,7 +702,7 @@ type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -784,7 +784,7 @@ type XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`
@@ -868,7 +868,7 @@ type XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`

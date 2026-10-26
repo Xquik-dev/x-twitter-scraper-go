@@ -94,11 +94,11 @@ func TestXAnalysisViralScoreFixture(t *testing.T) {
 		result.ViralVerdict != "send_it" ||
 		result.ViralAlgorithmScore != 18.4 ||
 		result.ViralActualEngagementRate != 1.2874 ||
-		result.Viral["score"] != float64(72) ||
-		result.Viral["weights"] != "viral_lite:1" ||
+		string(result.Viral["score"]) != "72" ||
+		string(result.Viral["weights"]) != `"viral_lite:1"` ||
 		summary.JSON.Monitor.Valid() ||
 		summary.JSON.Monitor.Raw() != "null" ||
-		summary.Viral["averageScore"] != float64(58) ||
+		string(summary.Viral["averageScore"]) != "58" ||
 		summary.Cashtags[0].Cashtag != "$NVDA" ||
 		summary.Cashtags[0].Rows != 3 ||
 		summary.Cashtags[0].Signal.Bullish != 2 ||

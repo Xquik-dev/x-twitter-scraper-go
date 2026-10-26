@@ -292,7 +292,7 @@ type CommunityCreatorUnion struct {
 	// This field is from variant [UserProfile].
 	Following int64 `json:"following"`
 	// This field is from variant [UserProfile].
-	GrokTranslatedBio map[string]any `json:"grokTranslatedBio"`
+	GrokTranslatedBio PublicMetadata `json:"grokTranslatedBio"`
 	// This field is from variant [UserProfile].
 	HasCustomTimelines bool `json:"hasCustomTimelines"`
 	// This field is from variant [UserProfile].
@@ -324,9 +324,9 @@ type CommunityCreatorUnion struct {
 	// This field is from variant [UserProfile].
 	PossiblySensitive bool `json:"possiblySensitive"`
 	// This field is from variant [UserProfile].
-	Professional map[string]any `json:"professional"`
+	Professional PublicMetadata `json:"professional"`
 	// This field is from variant [UserProfile].
-	ProfileBio map[string]any `json:"profile_bio"`
+	ProfileBio PublicMetadata `json:"profile_bio"`
 	// This field is from variant [UserProfile].
 	ProfileBannerURL string `json:"profileBannerUrl"`
 	// This field is from variant [UserProfile].
@@ -571,7 +571,7 @@ type CommunityMembersFacepileUnion struct {
 	// This field is from variant [UserProfile].
 	Following int64 `json:"following"`
 	// This field is from variant [UserProfile].
-	GrokTranslatedBio map[string]any `json:"grokTranslatedBio"`
+	GrokTranslatedBio PublicMetadata `json:"grokTranslatedBio"`
 	// This field is from variant [UserProfile].
 	HasCustomTimelines bool `json:"hasCustomTimelines"`
 	// This field is from variant [UserProfile].
@@ -603,9 +603,9 @@ type CommunityMembersFacepileUnion struct {
 	// This field is from variant [UserProfile].
 	PossiblySensitive bool `json:"possiblySensitive"`
 	// This field is from variant [UserProfile].
-	Professional map[string]any `json:"professional"`
+	Professional PublicMetadata `json:"professional"`
 	// This field is from variant [UserProfile].
-	ProfileBio map[string]any `json:"profile_bio"`
+	ProfileBio PublicMetadata `json:"profile_bio"`
 	// This field is from variant [UserProfile].
 	ProfileBannerURL string `json:"profileBannerUrl"`
 	// This field is from variant [UserProfile].
@@ -1024,8 +1024,8 @@ type EmbeddedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent `json:"exclusiveContent"`
 	Geo              SearchTweetGeo              `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -1039,7 +1039,7 @@ type EmbeddedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetLimitedAction `json:"limitedActions"`
@@ -1052,7 +1052,7 @@ type EmbeddedTweet struct {
 	Place             EmbeddedTweetPlace `json:"place"`
 	PossiblySensitive bool               `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetPreviousCounts `json:"previousCounts"`
 	// Nested tweet context at depth 2.
@@ -1068,7 +1068,7 @@ type EmbeddedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -1174,12 +1174,12 @@ func (r *EmbeddedTweet) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1206,10 +1206,10 @@ func (r *EmbeddedTweetArticle) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -1260,7 +1260,7 @@ type EmbeddedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -1683,7 +1683,7 @@ type EmbeddedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2100,7 +2100,7 @@ func (r *EmbeddedTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -2192,8 +2192,8 @@ type EmbeddedTweetQuotedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent      `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                   `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -2207,7 +2207,7 @@ type EmbeddedTweetQuotedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetLimitedAction `json:"limitedActions"`
@@ -2220,7 +2220,7 @@ type EmbeddedTweetQuotedTweet struct {
 	Place             EmbeddedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                          `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Nested tweet context at depth 3.
@@ -2236,7 +2236,7 @@ type EmbeddedTweetQuotedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -2342,12 +2342,12 @@ func (r *EmbeddedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2374,10 +2374,10 @@ func (r *EmbeddedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetQuotedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -2428,7 +2428,7 @@ type EmbeddedTweetQuotedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -2851,7 +2851,7 @@ type EmbeddedTweetQuotedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3276,7 +3276,7 @@ func (r *EmbeddedTweetQuotedTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte
 type EmbeddedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -3368,8 +3368,8 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                 `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                              `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -3383,7 +3383,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetQuotedTweetLimitedAction `json:"limitedActions"`
@@ -3396,7 +3396,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	Place             EmbeddedTweetQuotedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                     `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Final nested tweet context at depth 4.
@@ -3412,7 +3412,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -3518,12 +3518,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweet) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetQuotedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3550,10 +3550,10 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetArticle) UnmarshalJSON(data []byte) 
 type EmbeddedTweetQuotedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetQuotedTweetQuotedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -3606,7 +3606,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -4039,7 +4039,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4484,7 +4484,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) UnmarshalJSON(
 type EmbeddedTweetQuotedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -4576,8 +4576,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                            `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                         `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -4591,7 +4591,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedAction `json:"limitedActions"`
@@ -4604,7 +4604,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	Place             EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -4616,7 +4616,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -4720,12 +4720,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet) UnmarshalJSON(data []by
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4752,10 +4752,10 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetArticle) UnmarshalJSON(da
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -4808,7 +4808,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -5267,7 +5267,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5722,7 +5722,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) Unm
 type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -6070,8 +6070,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                               `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                            `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -6085,7 +6085,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
@@ -6098,7 +6098,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	Place             EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                   `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -6110,7 +6110,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -6214,12 +6214,12 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet) UnmarshalJSON(data [
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -6246,10 +6246,10 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetArticle) UnmarshalJSON
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -6302,7 +6302,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -6763,7 +6763,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedActionPrompt struct
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -7220,7 +7220,7 @@ func (r *EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag) 
 type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -7774,8 +7774,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                    `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                 `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -7789,7 +7789,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
@@ -7802,7 +7802,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	Place             EmbeddedTweetQuotedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                        `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Final nested tweet context at depth 4.
@@ -7818,7 +7818,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -7924,12 +7924,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweet) UnmarshalJSON(data []byte) erro
 type EmbeddedTweetQuotedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -7956,10 +7956,10 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetArticle) UnmarshalJSON(data []byt
 type EmbeddedTweetQuotedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetQuotedTweetRetweetedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -8012,7 +8012,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -8455,7 +8455,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -8908,7 +8908,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTag) UnmarshalJS
 type EmbeddedTweetQuotedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -9000,8 +9000,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                               `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                            `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -9015,7 +9015,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedAction `json:"limitedActions"`
@@ -9028,7 +9028,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	Place             EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                   `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -9040,7 +9040,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -9144,12 +9144,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet) UnmarshalJSON(data [
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -9176,10 +9176,10 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetArticle) UnmarshalJSON
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -9232,7 +9232,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -9693,7 +9693,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedActionPrompt struct
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -10150,7 +10150,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag) 
 type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -10500,8 +10500,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                                  `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                               `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -10515,7 +10515,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
@@ -10528,7 +10528,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	Place             EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                      `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -10540,7 +10540,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -10644,12 +10644,12 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet) UnmarshalJSON(dat
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -10678,10 +10678,10 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetArticle) UnmarshalJ
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -10734,7 +10734,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -11195,7 +11195,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt str
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -11652,7 +11652,7 @@ func (r *EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTa
 type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -12408,8 +12408,8 @@ type EmbeddedTweetRetweetedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent         `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                      `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -12423,7 +12423,7 @@ type EmbeddedTweetRetweetedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
@@ -12436,7 +12436,7 @@ type EmbeddedTweetRetweetedTweet struct {
 	Place             EmbeddedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                             `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Nested tweet context at depth 3.
@@ -12452,7 +12452,7 @@ type EmbeddedTweetRetweetedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -12558,12 +12558,12 @@ func (r *EmbeddedTweetRetweetedTweet) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -12590,10 +12590,10 @@ func (r *EmbeddedTweetRetweetedTweetArticle) UnmarshalJSON(data []byte) error {
 type EmbeddedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetRetweetedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -12644,7 +12644,7 @@ type EmbeddedTweetRetweetedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -13067,7 +13067,7 @@ type EmbeddedTweetRetweetedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -13496,7 +13496,7 @@ func (r *EmbeddedTweetRetweetedTweetNoteTweetRichtextTag) UnmarshalJSON(data []b
 type EmbeddedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -13588,8 +13588,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                    `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                 `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -13603,7 +13603,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetQuotedTweetLimitedAction `json:"limitedActions"`
@@ -13616,7 +13616,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	Place             EmbeddedTweetRetweetedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                        `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Final nested tweet context at depth 4.
@@ -13632,7 +13632,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -13738,12 +13738,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweet) UnmarshalJSON(data []byte) erro
 type EmbeddedTweetRetweetedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -13770,10 +13770,10 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetArticle) UnmarshalJSON(data []byt
 type EmbeddedTweetRetweetedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetRetweetedTweetQuotedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -13826,7 +13826,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -14269,7 +14269,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -14722,7 +14722,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTag) UnmarshalJS
 type EmbeddedTweetRetweetedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -14814,8 +14814,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                               `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                            `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -14829,7 +14829,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedAction `json:"limitedActions"`
@@ -14842,7 +14842,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	Place             EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                   `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -14854,7 +14854,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -14958,12 +14958,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet) UnmarshalJSON(data [
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -14990,10 +14990,10 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetArticle) UnmarshalJSON
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -15046,7 +15046,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -15507,7 +15507,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedActionPrompt struct
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -15964,7 +15964,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetNoteTweetRichtextTag) 
 type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -16314,8 +16314,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                                  `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                               `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -16329,7 +16329,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
@@ -16342,7 +16342,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	Place             EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                      `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -16354,7 +16354,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -16458,12 +16458,12 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet) UnmarshalJSON(dat
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -16492,10 +16492,10 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetArticle) UnmarshalJ
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -16548,7 +16548,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -17009,7 +17009,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedActionPrompt str
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -17466,7 +17466,7 @@ func (r *EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetNoteTweetRichtextTa
 type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -18024,8 +18024,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                       `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                    `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -18039,7 +18039,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
@@ -18052,7 +18052,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	Place             EmbeddedTweetRetweetedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                           `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Final nested tweet context at depth 4.
@@ -18068,7 +18068,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -18174,12 +18174,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweet) UnmarshalJSON(data []byte) e
 type EmbeddedTweetRetweetedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -18206,10 +18206,10 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetArticle) UnmarshalJSON(data []
 type EmbeddedTweetRetweetedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetRetweetedTweetRetweetedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -18262,7 +18262,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -18711,7 +18711,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -19166,7 +19166,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetNoteTweetRichtextTag) Unmarsha
 type EmbeddedTweetRetweetedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -19258,8 +19258,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                                  `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                               `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -19273,7 +19273,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedAction `json:"limitedActions"`
@@ -19286,7 +19286,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	Place             EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                      `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -19298,7 +19298,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -19402,12 +19402,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet) UnmarshalJSON(dat
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -19436,10 +19436,10 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetArticle) UnmarshalJ
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -19492,7 +19492,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -19953,7 +19953,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedActionPrompt str
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -20410,7 +20410,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetNoteTweetRichtextTa
 type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -20762,8 +20762,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	ExclusiveContent SearchTweetExclusiveContent                                     `json:"exclusiveContent"`
 	Geo              SearchTweetGeo                                                  `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any          `json:"grokShareAttachment"`
-	GrokTranslatedPost  map[string]any          `json:"grokTranslatedPost"`
+	GrokShareAttachment PublicMetadata          `json:"grokShareAttachment"`
+	GrokTranslatedPost  PublicMetadata          `json:"grokTranslatedPost"`
 	HasCommunityNotes   bool                    `json:"hasCommunityNotes"`
 	InReplyToID         string                  `json:"inReplyToId"`
 	InReplyToUserID     string                  `json:"inReplyToUserId"`
@@ -20777,7 +20777,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	IsRetweet           bool                    `json:"isRetweet"`
 	IsTranslatable      bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
@@ -20790,7 +20790,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	Place             EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace `json:"place"`
 	PossiblySensitive bool                                                         `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPreviousCounts `json:"previousCounts"`
 	// Quoted tweet ID.
@@ -20802,7 +20802,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -20906,12 +20906,12 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet) UnmarshalJSON(
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -20940,10 +20940,10 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetArticle) Unmarsh
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -20998,7 +20998,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote struct
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -21461,7 +21461,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedActionPrompt 
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -21918,7 +21918,7 @@ func (r *EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetNoteTweetRichtex
 type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -23011,9 +23011,9 @@ type SearchTweet struct {
 	// Author-published point, with latitude before longitude.
 	Geo SearchTweetGeo `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
+	GrokShareAttachment PublicMetadata `json:"grokShareAttachment"`
 	// Grok's translation of the post, as X shows it.
-	GrokTranslatedPost map[string]any `json:"grokTranslatedPost"`
+	GrokTranslatedPost PublicMetadata `json:"grokTranslatedPost"`
 	// Whether X holds Community Notes on the post, shown or not.
 	HasCommunityNotes bool   `json:"hasCommunityNotes"`
 	InReplyToID       string `json:"inReplyToId"`
@@ -23030,7 +23030,7 @@ type SearchTweet struct {
 	IsRetweet      bool                    `json:"isRetweet"`
 	IsTranslatable bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []SearchTweetLimitedAction `json:"limitedActions"`
@@ -23045,7 +23045,7 @@ type SearchTweet struct {
 	Place             SearchTweetPlace `json:"place"`
 	PossiblySensitive bool             `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts SearchTweetPreviousCounts `json:"previousCounts"`
 	// Quoted or retweeted tweet context.
@@ -23064,7 +23064,7 @@ type SearchTweet struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention SoftIntervention `json:"softIntervention"`
@@ -23462,12 +23462,12 @@ func (r *SearchTweetInterstitialTextEntityRef) UnmarshalJSON(data []byte) error 
 type SearchTweetArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -23494,10 +23494,10 @@ func (r *SearchTweetArticle) UnmarshalJSON(data []byte) error {
 type SearchTweetCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []SearchTweetCardUserReferenceError `json:"userReferenceErrors"`
@@ -23548,7 +23548,7 @@ type SearchTweetCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -24042,7 +24042,7 @@ type SearchTweetLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -24526,7 +24526,7 @@ func (r *SearchTweetNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 type SearchTweetPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -25196,7 +25196,7 @@ type UserProfile struct {
 	// Whether the profile may add a location to posts.
 	GeoEnabled bool `json:"geoEnabled"`
 	// Public profile bio translation returned by X
-	GrokTranslatedBio  map[string]any `json:"grokTranslatedBio"`
+	GrokTranslatedBio  PublicMetadata `json:"grokTranslatedBio"`
 	HasCustomTimelines bool           `json:"hasCustomTimelines"`
 	// Whether the profile filled X's extended fields, such as a birth date. True or
 	// false.
@@ -25227,9 +25227,9 @@ type UserProfile struct {
 	PinnedTweetIDs           []string `json:"pinnedTweetIds"`
 	PossiblySensitive        bool     `json:"possiblySensitive"`
 	// Professional metadata with category display settings
-	Professional map[string]any `json:"professional"`
+	Professional PublicMetadata `json:"professional"`
 	// Structured profile bio with entity annotations
-	ProfileBio map[string]any `json:"profile_bio"`
+	ProfileBio PublicMetadata `json:"profile_bio"`
 	// Original X profile banner field when available
 	ProfileBannerURL           string `json:"profileBannerUrl"`
 	ProfileDescriptionLanguage string `json:"profileDescriptionLanguage"`
@@ -25606,7 +25606,7 @@ type UserProfileAffiliatesHighlightedLabel struct {
 	BadgeURL    string `json:"badgeUrl"`
 	Description string `json:"description"`
 	// Public text, ranges, references, and mention data.
-	LongDescription      map[string]any `json:"longDescription"`
+	LongDescription      PublicMetadata `json:"longDescription"`
 	URL                  string         `json:"url"`
 	URLType              string         `json:"urlType"`
 	UserLabelDisplayType string         `json:"userLabelDisplayType"`

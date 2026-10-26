@@ -358,9 +358,9 @@ type TweetDetail struct {
 	// Author-published point, with latitude before longitude.
 	Geo TweetDetailGeo `json:"geo"`
 	// Public metadata whose fields are defined by X.
-	GrokShareAttachment map[string]any `json:"grokShareAttachment"`
+	GrokShareAttachment PublicMetadata `json:"grokShareAttachment"`
 	// Grok's translation of the post, as X shows it.
-	GrokTranslatedPost map[string]any `json:"grokTranslatedPost"`
+	GrokTranslatedPost PublicMetadata `json:"grokTranslatedPost"`
 	// Whether X holds Community Notes on the post, shown or not.
 	HasCommunityNotes bool   `json:"hasCommunityNotes"`
 	InReplyToID       string `json:"inReplyToId"`
@@ -377,7 +377,7 @@ type TweetDetail struct {
 	IsRetweet      bool                    `json:"isRetweet"`
 	IsTranslatable bool                    `json:"isTranslatable"`
 	// Public metadata whose fields are defined by X.
-	JetfuelAttachment map[string]any `json:"jetfuelAttachment"`
+	JetfuelAttachment PublicMetadata `json:"jetfuelAttachment"`
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []TweetDetailLimitedAction `json:"limitedActions"`
@@ -392,7 +392,7 @@ type TweetDetail struct {
 	Place             TweetDetailPlace `json:"place"`
 	PossiblySensitive bool             `json:"possiblySensitive"`
 	// Public metadata whose fields are defined by X.
-	PostCta map[string]any `json:"postCta"`
+	PostCta PublicMetadata `json:"postCta"`
 	// Engagement counts retained from a prior tweet edit.
 	PreviousCounts TweetDetailPreviousCounts `json:"previousCounts"`
 	// Quoted or retweeted tweet context.
@@ -411,7 +411,7 @@ type TweetDetail struct {
 	// Repost event time in UTC. Null when unavailable; omitted for other posts.
 	RetweetedAt time.Time `json:"retweetedAt" api:"nullable" format:"date-time"`
 	// Public metadata whose fields are defined by X.
-	Scopes map[string]any `json:"scopes"`
+	Scopes PublicMetadata `json:"scopes"`
 	// The label X shows under a post whose reach it limits. It links to the page
 	// that explains it.
 	SoftIntervention shared.SoftIntervention `json:"softIntervention"`
@@ -809,12 +809,12 @@ func (r *TweetDetailInterstitialTextEntityRef) UnmarshalJSON(data []byte) error 
 type TweetDetailArticle struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	CoverMedia    map[string]any `json:"coverMedia"`
+	CoverMedia    PublicMetadata `json:"coverMedia"`
 	CoverMediaURL string         `json:"coverMediaUrl"`
 	// Public metadata whose fields are defined by X.
-	LifecycleState map[string]any `json:"lifecycleState"`
+	LifecycleState PublicMetadata `json:"lifecycleState"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	PreviewText string         `json:"previewText"`
 	Title       string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -841,10 +841,10 @@ func (r *TweetDetailArticle) UnmarshalJSON(data []byte) error {
 type TweetDetailCard struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BindingValues map[string]any `json:"bindingValues"`
+	BindingValues PublicMetadata `json:"bindingValues"`
 	Name          string         `json:"name"`
 	// Public metadata whose fields are defined by X.
-	Platform map[string]any `json:"platform"`
+	Platform PublicMetadata `json:"platform"`
 	URL      string         `json:"url"`
 	// Unresolved card user references.
 	UserReferenceErrors []TweetDetailCardUserReferenceError `json:"userReferenceErrors"`
@@ -895,7 +895,7 @@ type TweetDetailCommunityNote struct {
 	FooterIconType string `json:"footerIconType"`
 	IconType       string `json:"iconType"`
 	// Public metadata whose fields are defined by X.
-	Metadata    map[string]any `json:"metadata"`
+	Metadata    PublicMetadata `json:"metadata"`
 	ShortTitle  string         `json:"shortTitle"`
 	Subtitle    string         `json:"subtitle"`
 	Title       string         `json:"title"`
@@ -1389,7 +1389,7 @@ type TweetDetailLimitedActionPrompt struct {
 	CtaType  string `json:"ctaType"`
 	Headline string `json:"headline"`
 	// Public metadata whose fields are defined by X.
-	Metadata map[string]any `json:"metadata"`
+	Metadata PublicMetadata `json:"metadata"`
 	Subtext  string         `json:"subtext"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1873,7 +1873,7 @@ func (r *TweetDetailNoteTweetRichtextTag) UnmarshalJSON(data []byte) error {
 type TweetDetailPlace struct {
 	ID string `json:"id"`
 	// Public metadata whose fields are defined by X.
-	BoundingBox map[string]any `json:"boundingBox"`
+	BoundingBox PublicMetadata `json:"boundingBox"`
 	Country     string         `json:"country"`
 	CountryCode string         `json:"countryCode"`
 	FullName    string         `json:"fullName"`
@@ -2199,14 +2199,14 @@ type XTweetNewResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -2376,7 +2376,7 @@ type XTweetNewResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field
@@ -2517,14 +2517,14 @@ type XTweetDeleteResponse struct {
 	ConfirmedAt           time.Time `json:"confirmedAt" format:"date-time"`
 	CreatedAt             time.Time `json:"createdAt" format:"date-time"`
 	// Structured recovery context for a failed write.
-	Details map[string]any `json:"details"`
+	Details PublicMetadata `json:"details"`
 	Error   string         `json:"error"`
 	// Deadline for resolving a non-terminal write. This is not the Idempotency-Key
 	// retention deadline.
 	ExpiresAt  time.Time `json:"expiresAt" format:"date-time"`
 	Idempotent bool      `json:"idempotent"`
 	// Media count, kind, size, and billing details when used.
-	Media map[string]any `json:"media"`
+	Media PublicMetadata `json:"media"`
 	// Compatibility field for a confirmed media upload ID.
 	MediaID string `json:"mediaId"`
 	// Public media URL when the upload creates one.
@@ -2694,7 +2694,7 @@ type XTweetDeleteResponseRequest struct {
 	// Stable hash of account, action, target, and payload.
 	Hash string `json:"hash" api:"required"`
 	// Exact sanitized payload dispatched for this action.
-	Payload map[string]any `json:"payload" api:"required"`
+	Payload PublicMetadata `json:"payload" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hash        respjson.Field

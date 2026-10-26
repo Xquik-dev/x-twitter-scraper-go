@@ -6,6 +6,7 @@ package xtwitterscraper
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -253,25 +254,25 @@ type ExtractionGetResponseResult struct {
 	// enrichmentData.user.contactInfo. Absent when the profile publishes none.
 	Email string `json:"email"`
 	// Public metadata whose fields are defined by X.
-	EnrichmentData map[string]any `json:"enrichmentData"`
+	EnrichmentData PublicMetadata `json:"enrichmentData"`
 	LikeCount      int64          `json:"likeCount"`
 	// Attached media with outputPreset=flat. Default nested output uses
 	// enrichmentData.tweet.media.
-	Media            []shared.TweetMedia `json:"media"`
-	QuoteCount       int64               `json:"quoteCount"`
-	ReplyCount       int64               `json:"replyCount"`
-	RetweetCount     int64               `json:"retweetCount"`
-	TweetCreatedAt   time.Time           `json:"tweetCreatedAt" format:"date-time"`
-	TweetID          string              `json:"tweetId"`
-	TweetText        string              `json:"tweetText"`
-	TweetURL         string              `json:"tweetUrl" format:"uri"`
-	ViewCount        int64               `json:"viewCount"`
-	XDisplayName     string              `json:"xDisplayName"`
-	XFollowersCount  int64               `json:"xFollowersCount"`
-	XProfileImageURL string              `json:"xProfileImageUrl" format:"uri"`
-	XUsername        string              `json:"xUsername"`
-	XVerified        bool                `json:"xVerified"`
-	ExtraFields      map[string]any      `json:"" api:"extrafields"`
+	Media            []shared.TweetMedia        `json:"media"`
+	QuoteCount       int64                      `json:"quoteCount"`
+	ReplyCount       int64                      `json:"replyCount"`
+	RetweetCount     int64                      `json:"retweetCount"`
+	TweetCreatedAt   time.Time                  `json:"tweetCreatedAt" format:"date-time"`
+	TweetID          string                     `json:"tweetId"`
+	TweetText        string                     `json:"tweetText"`
+	TweetURL         string                     `json:"tweetUrl" format:"uri"`
+	ViewCount        int64                      `json:"viewCount"`
+	XDisplayName     string                     `json:"xDisplayName"`
+	XFollowersCount  int64                      `json:"xFollowersCount"`
+	XProfileImageURL string                     `json:"xProfileImageUrl" format:"uri"`
+	XUsername        string                     `json:"xUsername"`
+	XVerified        bool                       `json:"xVerified"`
+	ExtraFields      map[string]json.RawMessage `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field

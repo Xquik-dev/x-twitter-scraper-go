@@ -87,7 +87,7 @@ func (r *EventService) StreamStreaming(ctx context.Context, params EventStreamPa
 // Monitor event summary with source metadata and occurrence time.
 type Event struct {
 	ID   string         `json:"id" api:"required"`
-	Data map[string]any `json:"data" api:"required"`
+	Data PublicMetadata `json:"data" api:"required"`
 	// Account monitor ID for account events, or keyword monitor ID for keyword events.
 	MonitorID string `json:"monitorId" api:"required"`
 	// Source monitor type.
@@ -168,7 +168,7 @@ const (
 type EventDetail struct {
 	ID string `json:"id" api:"required"`
 	// Event payload - shape varies by event type (JSON)
-	Data map[string]any `json:"data" api:"required"`
+	Data PublicMetadata `json:"data" api:"required"`
 	// Monitor ID associated with this detailed event payload.
 	MonitorID string `json:"monitorId" api:"required"`
 	// Source monitor type for this detailed event.
