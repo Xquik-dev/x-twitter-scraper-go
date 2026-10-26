@@ -18,6 +18,10 @@ type paramUnion = param.APIUnion
 
 type paramObj = param.APIObject
 
+// PublicMetadata holds a JSON object whose fields X defines. Each value keeps its
+// raw JSON, so decode a key with [json.Unmarshal] into the type you expect.
+type PublicMetadata map[string]json.RawMessage
+
 // Public X Community, as every Community read returns it.
 type Community struct {
 	// Unique community identifier

@@ -16,6 +16,11 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// PublicMetadata holds a JSON object whose fields X defines. Each value keeps its
+// raw JSON, so decode a key with [encoding/json.Unmarshal] into the type you
+// expect.
+type PublicMetadata = shared.PublicMetadata
+
 // Public X Community, as every Community read returns it.
 type Community = shared.Community
 
