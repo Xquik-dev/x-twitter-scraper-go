@@ -3,7 +3,7 @@
 
 /**
  * @name Code comment
- * @description Code has no comments. A comment needs a legal marker, a functional directive, an https link that proves it, the Go Authors license header of a forked file, a doc comment of the public API, or the 1 doc comment of a library package that staticcheck ST1000 requires.
+ * @description Code has no comments. A comment needs a legal marker in its file's first comment group, a functional directive, an https link that proves it, the Go Authors license header of a forked file, a doc comment of the public API, or the 1 doc comment of a library package that staticcheck ST1000 requires.
  * @kind problem
  * @problem.severity error
  * @id go/no-code-comments
@@ -15,7 +15,12 @@ predicate proven(Comment comment) {
   exists(CommentGroup group, int index, int later |
     comment = group.getComment(index) and
     later >= index and
-    group.getComment(later).getText().regexpMatch("(?s).*(https://|SPDX-|REUSE-Ignore).*")
+    (
+      group.getComment(later).getText().regexpMatch("(?s).*https://.*")
+      or
+      group = comment.getFile().getCommentGroup(0) and
+      group.getComment(later).getText().regexpMatch("(?s).*(SPDX-|REUSE-Ignore).*")
+    )
   )
 }
 

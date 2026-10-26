@@ -19,3 +19,8 @@ func Old() {}
 
 //go:noinline
 func Inline() {}
+
+func Marked() {
+	// A comment over a license marker, which the query flags.
+	// SPDX-License-Identifier: Apache-2.0
+}
