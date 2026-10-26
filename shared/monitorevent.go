@@ -12,8 +12,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
 )
 
-// MonitorEventDataVariant is a variant of [MonitorEventDataUnion]. Only the
-// variant types in this package implement it.
+// MonitorEventDataVariant is the sealed interface the 7 variants implement.
 type MonitorEventDataVariant interface {
 	implMonitorEventDataUnion()
 }
