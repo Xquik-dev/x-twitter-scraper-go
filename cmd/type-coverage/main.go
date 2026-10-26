@@ -34,6 +34,8 @@ var directive = regexp.MustCompile(`^//\s*(nolint\b|lint:ignore\b|lint:file-igno
 
 var unsafeReflect = map[string]bool{"NewAt": true, "UnsafeAddr": true, "UnsafePointer": true}
 
+var setIntoPointee = hatch{"unchecked assertion", "reflect.Value.Set into reflect.ValueOf(pointer).Elem() panics on a type mismatch"}
+
 type hatch struct {
 	kind    string
 	message string
@@ -228,6 +230,7 @@ func (a *audit) inspectFile(file *ast.File, info *types.Info, at func(token.Pos)
 		}
 	}
 	constraints := map[ast.Expr]bool{}
+	values := assignedValues(file, info)
 	ast.Inspect(file, func(node ast.Node) bool {
 		if expression, ok := node.(ast.Expr); ok && constraints[expression] {
 			return false
@@ -242,8 +245,9 @@ func (a *audit) inspectFile(file *ast.File, info *types.Info, at func(token.Pos)
 				a.hatches[at(node.Lparen)] = hatch{"unchecked assertion", "type assertion without the comma-ok form"}
 			}
 		case *ast.CallExpr:
-			if setsThroughValueOf(info, node) {
-				a.hatches[at(node.Lparen)] = hatch{"unchecked assertion", "reflect.Value.Set into reflect.ValueOf(&x).Elem() panics on a type mismatch"}
+			if method, ok := ast.Unparen(node.Fun).(*ast.SelectorExpr); ok && selects(info, method, types.MethodExpr, "(reflect.Value).Set") &&
+				values.pointee(info, node.Args[0]) {
+				a.hatches[at(method.Sel.Pos())] = setIntoPointee
 			}
 		case *ast.AssignStmt:
 			a.discardedAssertion(node.Lhs, node.Rhs, info, at)
@@ -254,6 +258,9 @@ func (a *audit) inspectFile(file *ast.File, info *types.Info, at func(token.Pos)
 			}
 			a.discardedAssertion(names, node.Values, info, at)
 		case *ast.SelectorExpr:
+			if selects(info, node, types.MethodVal, "(reflect.Value).Set") && values.pointee(info, node.X) {
+				a.hatches[at(node.Sel.Pos())] = setIntoPointee
+			}
 			if function, ok := info.Uses[node.Sel].(*types.Func); ok && function.Pkg() != nil &&
 				function.Pkg().Path() == "reflect" && unsafeReflect[function.Name()] {
 				a.hatches[at(node.Sel.Pos())] = hatch{"unsafe", "reflect " + function.Name() + " bypasses type safety"}
@@ -288,26 +295,80 @@ func (a *audit) discardedAssertion(targets, values []ast.Expr, info *types.Info,
 	}
 }
 
-func setsThroughValueOf(info *types.Info, set *ast.CallExpr) bool {
-	elem, ok := receiverCall(info, set, "(reflect.Value).Set")
+type assignments map[*types.Var][]ast.Expr
+
+func assignedValues(file *ast.File, info *types.Info) assignments {
+	values := assignments{}
+	assign := func(targets, sources []ast.Expr) {
+		for i, target := range targets {
+			identifier, ok := ast.Unparen(target).(*ast.Ident)
+			if !ok {
+				continue
+			}
+			if variable, ok := info.ObjectOf(identifier).(*types.Var); ok {
+				var source ast.Expr
+				if len(sources) == len(targets) {
+					source = sources[i]
+				}
+				values[variable] = append(values[variable], source)
+			}
+		}
+	}
+	ast.Inspect(file, func(node ast.Node) bool {
+		switch node := node.(type) {
+		case *ast.AssignStmt:
+			assign(node.Lhs, node.Rhs)
+		case *ast.ValueSpec:
+			names := make([]ast.Expr, len(node.Names))
+			for i, name := range node.Names {
+				names[i] = name
+			}
+			assign(names, node.Values)
+		}
+		return true
+	})
+	return values
+}
+
+func (values assignments) origin(info *types.Info, expression ast.Expr) ast.Expr {
+	expression = ast.Unparen(expression)
+	if identifier, ok := expression.(*ast.Ident); ok {
+		if variable, ok := info.Uses[identifier].(*types.Var); ok && len(values[variable]) == 1 {
+			return ast.Unparen(values[variable][0])
+		}
+	}
+	return expression
+}
+
+func (values assignments) pointee(info *types.Info, receiver ast.Expr) bool {
+	call, ok := values.origin(info, receiver).(*ast.CallExpr)
 	if !ok {
 		return false
 	}
-	valueOf, ok := receiverCall(info, elem, "(reflect.Value).Elem")
+	var value ast.Expr
+	switch method, ok := ast.Unparen(call.Fun).(*ast.SelectorExpr); {
+	case ok && selects(info, method, types.MethodVal, "(reflect.Value).Elem"):
+		value = method.X
+	case calls(info, call, "reflect.Indirect"):
+		value = call.Args[0]
+	default:
+		return false
+	}
+	valueOf, ok := values.origin(info, value).(*ast.CallExpr)
 	if !ok || !calls(info, valueOf, "reflect.ValueOf") {
 		return false
 	}
-	address, ok := ast.Unparen(valueOf.Args[0]).(*ast.UnaryExpr)
-	return ok && address.Op == token.AND
+	_, pointer := info.TypeOf(valueOf.Args[0]).Underlying().(*types.Pointer)
+	return pointer
 }
 
-func receiverCall(info *types.Info, call *ast.CallExpr, method string) (*ast.CallExpr, bool) {
-	selector, ok := ast.Unparen(call.Fun).(*ast.SelectorExpr)
-	if !ok || !calls(info, call, method) {
-		return nil, false
+func selects(info *types.Info, selector *ast.SelectorExpr, kind types.SelectionKind, method string) bool {
+	selection, ok := info.Selections[selector]
+	if !ok || selection.Kind() != kind {
+		return false
 	}
-	receiver, ok := ast.Unparen(selector.X).(*ast.CallExpr)
-	return receiver, ok
+	function, ok := selection.Obj().(*types.Func)
+	return ok && function.FullName() == method
 }
 
 func calls(info *types.Info, call *ast.CallExpr, name string) bool {
