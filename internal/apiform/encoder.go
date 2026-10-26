@@ -329,7 +329,8 @@ func (e *encoder) newStructUnionTypeEncoder(t reflect.Type) encoderFunc {
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
 	return func(key string, value reflect.Value, writer *multipart.Writer) error {
-		t, _ := reflect.TypeAssert[time.Time](value.Convert(reflect.TypeFor[time.Time]()))
+		var t time.Time
+		reflect.ValueOf(&t).Elem().Set(value.Convert(reflect.TypeFor[time.Time]()))
 		return writer.WriteField(key, t.Format(format))
 	}
 }

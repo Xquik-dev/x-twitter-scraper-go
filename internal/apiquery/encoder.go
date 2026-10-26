@@ -374,7 +374,8 @@ func (e *encoder) newTimeTypeEncoder(_ reflect.Type) encoderFunc {
 }
 
 func formatTime(value reflect.Value, format string) string {
-	t, _ := reflect.TypeAssert[time.Time](value.Convert(reflect.TypeFor[time.Time]()))
+	var t time.Time
+	reflect.ValueOf(&t).Elem().Set(value.Convert(reflect.TypeFor[time.Time]()))
 	return t.Format(format)
 }
 

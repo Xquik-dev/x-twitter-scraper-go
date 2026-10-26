@@ -27,7 +27,8 @@ func TimeLayout(fmt string) string {
 var timeType = reflect.TypeFor[time.Time]()
 
 func timeEncoder(e *encodeState, v reflect.Value, opts encOpts) {
-	t, _ := reflect.TypeAssert[time.Time](v)
+	var t time.Time
+	reflect.ValueOf(&t).Elem().Set(v)
 	stringEncoder(e, reflect.ValueOf(t.Format(TimeLayout(opts.timefmt))), opts)
 }
 

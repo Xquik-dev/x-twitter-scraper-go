@@ -287,7 +287,8 @@ func (e *encoder) newStructTypeEncoder(t reflect.Type) encoderFunc {
 func (e *encoder) newTimeTypeEncoder() encoderFunc {
 	format := e.dateFormat
 	return func(value reflect.Value) (json []byte, err error) {
-		t, _ := reflect.TypeAssert[time.Time](value.Convert(reflect.TypeFor[time.Time]()))
+		var t time.Time
+		reflect.ValueOf(&t).Elem().Set(value.Convert(reflect.TypeFor[time.Time]()))
 		return []byte(`"` + t.Format(format) + `"`), nil
 	}
 }

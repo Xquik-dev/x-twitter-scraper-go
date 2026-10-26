@@ -25,7 +25,8 @@ func NewNullSentinel[T any](mk func() T) T {
 		null = reflect.ValueOf(mk())
 		nullCache.m[t] = null
 	}
-	x, _ := reflect.TypeAssert[T](null)
+	var x T
+	reflect.ValueOf(&x).Elem().Set(null)
 	return x
 }
 

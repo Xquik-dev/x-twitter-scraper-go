@@ -938,7 +938,8 @@ var isZeroerType = reflect.TypeFor[isZeroer]()
 // callIsZero calls the IsZero method of v, whose type typeFields
 // checked implements isZeroer.
 func callIsZero(v reflect.Value) bool {
-	z, _ := reflect.TypeAssert[isZeroer](v)
+	var z isZeroer
+	reflect.ValueOf(&z).Elem().Set(v)
 	return z.IsZero()
 }
 
