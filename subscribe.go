@@ -46,17 +46,23 @@ func (r *SubscribeService) New(ctx context.Context, body SubscribeNewParams, opt
 }
 
 type SubscribeNewResponse struct {
-	Message string `json:"message" api:"required"`
+	// Currency the checkout charges. Only a checkout_created answer has it.
+	//
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
+	// "MXN".
+	ChargedCurrency Currency `json:"chargedCurrency"`
+	Message         string   `json:"message" api:"required"`
 	// Any of "checkout_created", "already_subscribed", "payment_issue".
 	Status SubscribeNewResponseStatus `json:"status" api:"required"`
 	URL    string                     `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Message     respjson.Field
-		Status      respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ChargedCurrency respjson.Field
+		Message         respjson.Field
+		Status          respjson.Field
+		URL             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -75,6 +81,15 @@ const (
 )
 
 type SubscribeNewParams struct {
+	// Currency to pay in. Lowercase codes work too. Xquik converts the USD plan
+	// price at the latest daily ECB rate. Each renewal charges the same amount
+	// before tax. An account that already pays in USD gets a USD checkout. With
+	// rates over 3 ECB working days old, the checkout charges USD.
+	// `chargedCurrency` shows the currency charged.
+	//
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
+	// "MXN".
+	Currency Currency `json:"currency,omitzero"`
 	// Subscription tier to pre-select.
 	//
 	// Any of "starter", "pro", "business".
