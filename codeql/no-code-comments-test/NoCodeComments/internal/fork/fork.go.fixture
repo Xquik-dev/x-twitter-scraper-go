@@ -6,3 +6,8 @@ package fork
 
 // Marshal has a forked comment, which the query flags.
 func Marshal() {}
+
+func Retry() {
+	// Copyright 2010 The Go Authors. All rights reserved.
+	// Retry twice because the server drops the first call.
+}

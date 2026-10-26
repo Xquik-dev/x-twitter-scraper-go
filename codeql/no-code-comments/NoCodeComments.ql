@@ -70,8 +70,10 @@ predicate packageDoc(Comment comment) {
 
 predicate goAuthorsLicense(Comment comment) {
   exists(CommentGroup header |
+    header = comment.getFile().getCommentGroup(0) and
     comment = header.getAComment() and
-    header.getAComment().getText().regexpMatch("\\s*Copyright \\d{4} The Go Authors\\. All rights reserved\\.\\s*")
+    header.getAComment().getText().regexpMatch("\\s*Copyright \\d{4} The Go Authors\\. All rights reserved\\.\\s*") and
+    comment.getText().regexpMatch("\\s*(Copyright \\d{4} The Go Authors\\. All rights reserved\\.|Use of this source code is governed by a BSD-style|license that can be found in the LICENSE file\\.)\\s*")
   )
 }
 

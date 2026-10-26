@@ -6,4 +6,6 @@
 | internal/docs/second.go:4:1:4:45 | comment | Code has no comments. Put the meaning in names, types and tests. |
 | internal/docs/third_test.go:1:1:1:69 | comment | Code has no comments. Put the meaning in names, types and tests. |
 | internal/fork/fork.go:7:1:7:55 | comment | Code has no comments. Put the meaning in names, types and tests. |
+| internal/fork/fork.go:11:2:11:55 | comment | Code has no comments. Put the meaning in names, types and tests. |
+| internal/fork/fork.go:12:2:12:56 | comment | Code has no comments. Put the meaning in names, types and tests. |
 | public/second.go:1:1:1:73 | comment | Code has no comments. Put the meaning in names, types and tests. |
