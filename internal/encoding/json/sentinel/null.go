@@ -9,30 +9,29 @@ import (
 	"sync"
 )
 
-type cacheEntry struct {
-	x    any
-	ptr  uintptr
-	kind reflect.Kind
-}
-
-var nullCache sync.Map
+// nullCache holds the sentinel of each map or slice type, keyed by that type.
+var nullCache = struct {
+	sync.RWMutex
+	m map[reflect.Type]reflect.Value
+}{m: map[reflect.Type]reflect.Value{}}
 
 func NewNullSentinel[T any](mk func() T) T {
 	t := reflect.TypeFor[T]()
-	entry, loaded := nullCache.Load(t)
-	if !loaded {
-		x := mk()
-		ptr := reflect.ValueOf(x).Pointer()
-		entry, _ = nullCache.LoadOrStore(t, cacheEntry{x, ptr, t.Kind()})
+	nullCache.Lock()
+	defer nullCache.Unlock()
+	null, ok := nullCache.m[t]
+	if !ok {
+		null = reflect.ValueOf(mk())
+		nullCache.m[t] = null
 	}
-	return entry.(cacheEntry).x.(T)
+	x, _ := reflect.TypeAssert[T](null)
+	return x
 }
 
 func IsValueNull(v reflect.Value) bool {
 	switch v.Kind() {
 	case reflect.Map, reflect.Slice:
-		null, ok := nullCache.Load(v.Type())
-		return ok && v.Pointer() == null.(cacheEntry).ptr
+		return isNull(v.Type(), v)
 	}
 	return false
 }
@@ -41,8 +40,15 @@ func IsNull[T any](v T) bool {
 	t := reflect.TypeFor[T]()
 	switch t.Kind() {
 	case reflect.Map, reflect.Slice:
-		null, ok := nullCache.Load(t)
-		return ok && reflect.ValueOf(v).Pointer() == null.(cacheEntry).ptr
+		return isNull(t, reflect.ValueOf(v))
 	}
 	return false
+}
+
+// isNull reports whether v, a map or slice of type t, is the sentinel of t.
+func isNull(t reflect.Type, v reflect.Value) bool {
+	nullCache.RLock()
+	defer nullCache.RUnlock()
+	null, ok := nullCache.m[t]
+	return ok && v.Pointer() == null.Pointer()
 }
