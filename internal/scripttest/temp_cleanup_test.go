@@ -225,7 +225,7 @@ func TestInterruptStopsBashParent(t *testing.T) {
 func startRelease(t *testing.T, fixture *releaseFixture, checkLocal string, args ...string) (*exec.Cmd, string) {
 	t.Helper()
 	checkLocal = "#!/bin/sh\nmktemp \"${GOTMPDIR:-$TMPDIR}/go-build.XXXXXX\" >/dev/null || exit 1\n" + checkLocal
-	if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o755); err != nil {
+	if err := os.WriteFile(filepath.Join(fixture.repo, "bin", "check-local"), []byte(checkLocal), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	fixture.git(fixture.repo, "commit", "--quiet", "--all", "--message", "check-local")
