@@ -22,6 +22,8 @@ type Client struct {
 	options []option.RequestOption
 	// Account info and settings
 	Account AccountService
+	// Activity log of the account
+	Activity ActivityService
 	// Subscription, billing, and credits
 	Subscribe SubscribeService
 	// AI tweet composition, drafts, writing styles, and radar
@@ -88,6 +90,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r = Client{options: opts}
 
 	r.Account = NewAccountService(opts...)
+	r.Activity = NewActivityService(opts...)
 	r.Subscribe = NewSubscribeService(opts...)
 	r.Compose = NewComposeService(opts...)
 	r.Drafts = NewDraftService(opts...)

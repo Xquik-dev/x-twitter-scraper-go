@@ -33,6 +33,19 @@ Methods
 - <code title="put /account/x-identity">client.Account.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountService.SetXUsername">SetXUsername</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountSetXUsernameParams">AccountSetXUsernameParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountSetXUsernameResponse">AccountSetXUsernameResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="patch /account">client.Account.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountService.UpdateLocale">UpdateLocale</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountUpdateLocaleParams">AccountUpdateLocaleParams</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#AccountUpdateLocaleResponse">AccountUpdateLocaleResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# Activity
+
+Response Types
+
+- <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityLogRow">ActivityLogRow</a>
+- <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityRecord">ActivityRecord</a>
+
+Methods
+
+- <code title="get /activity">client.Activity.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityListParams">ActivityListParams</a>) (\*[]<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityLogRow">ActivityLogRow</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /activity">client.Activity.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityService.Export">Export</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityExportParams">ActivityExportParams</a>) (\*http.Response, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /activity/{id}">client.Activity.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go">xtwitterscraper</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go#ActivityRecord">ActivityRecord</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Subscribe
 
 Response Types

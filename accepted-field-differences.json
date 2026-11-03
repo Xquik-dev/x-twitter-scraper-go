@@ -82,6 +82,12 @@
     ]
   },
   {
+    "reason": "Activity.List always reads JSON rows, so its params leave out format. Activity.Export takes the format and returns the file.",
+    "differences": [
+      "GET /api/v1/activity request missing format"
+    ]
+  },
+  {
     "reason": "The SDK requires this param, which the API now treats as optional. Making it optional would change its Go type and break callers.",
     "differences": [
       "GET /api/v1/x/communities/search request required communityId",

@@ -15,6 +15,7 @@ func TestConstantsMarshalDefaults(t *testing.T) {
 		want  string
 	}{
 		{"guest wallet topups", APIV1GuestWalletsTopups(""), `"/api/v1/guest-wallets/topups"`},
+		{"activity", Activity(""), `"activity"`},
 		{"compose", Compose(""), `"compose"`},
 		{"wallet status", HTTPSXquikComAPIV1GuestWalletsStatus(""), `"https://xquik.com/api/v1/guest-wallets/status"`},
 		{"paid reads", PaidReads(""), `"paid_reads"`},
