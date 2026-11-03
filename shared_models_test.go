@@ -526,6 +526,7 @@ func TestReadsSendFieldsAndOmit(t *testing.T) {
 		"XTweetResolveLinksParams":             xtwitterscraper.XTweetResolveLinksParams{URLs: "nasa", Fields: fields, Omit: omit},
 		"XTweetSearchParams":                   xtwitterscraper.XTweetSearchParams{Q: "nasa", Fields: fields, Omit: omit},
 		"XTweetTranslateParams":                xtwitterscraper.XTweetTranslateParams{Language: "nasa", Fields: fields, Omit: omit},
+		"XUserCheckShadowbanParams":            xtwitterscraper.XUserCheckShadowbanParams{Fields: fields, Omit: omit},
 		"XUserGetAffiliatesParams":             xtwitterscraper.XUserGetAffiliatesParams{Fields: fields, Omit: omit},
 		"XUserGetArticlesParams":               xtwitterscraper.XUserGetArticlesParams{Fields: fields, Omit: omit},
 		"XUserGetBatchParams":                  xtwitterscraper.XUserGetBatchParams{IDs: "nasa", Fields: fields, Omit: omit},

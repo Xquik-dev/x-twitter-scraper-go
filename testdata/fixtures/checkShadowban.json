@@ -1,0 +1,64 @@
+{
+  "username": "NASA",
+  "userId": "11348282",
+  "account": "active",
+  "checks": {
+    "account": {
+      "verdict": "pass",
+      "reason": "active",
+      "evidence": {
+        "profileUrl": "https://x.com/NASA"
+      }
+    },
+    "search": {
+      "verdict": "pass",
+      "reason": "listed",
+      "evidence": {
+        "query": "from:NASA",
+        "searchUrl": "https://x.com/search?q=from%3ANASA&f=live",
+        "recentPostIds": [
+          "2103610284464316469",
+          "2103583087540003274"
+        ],
+        "foundPostIds": [
+          "2103610284464316469",
+          "2103583087540003274"
+        ]
+      }
+    },
+    "suggestion": {
+      "verdict": "pass",
+      "reason": "suggested",
+      "evidence": {
+        "query": "NASA",
+        "suggestedUsernames": [
+          "NASA",
+          "NASAHubble",
+          "NASAEarth"
+        ]
+      }
+    },
+    "replies": {
+      "verdict": "unknown",
+      "reason": "more_replies",
+      "evidence": {
+        "replies": [
+          {
+            "replyId": "2103589735449141451",
+            "replyUrl": "https://x.com/i/status/2103589735449141451",
+            "parentId": "2102883223948628205",
+            "parentUrl": "https://x.com/i/status/2102883223948628205",
+            "placement": "more_replies"
+          },
+          {
+            "replyId": "2103215186870239252",
+            "replyUrl": "https://x.com/i/status/2103215186870239252",
+            "parentId": "2102924351171670302",
+            "parentUrl": "https://x.com/i/status/2102924351171670302",
+            "placement": "thread"
+          }
+        ]
+      }
+    }
+  }
+}
