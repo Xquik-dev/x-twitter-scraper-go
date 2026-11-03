@@ -13,6 +13,48 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 )
 
+func TestXUserCheckShadowbanFixture(t *testing.T) {
+	client, request := fixtureClient(t, "checkShadowban.json")
+	res, err := client.X.Users.CheckShadowban(context.Background(), "NASA", xtwitterscraper.XUserCheckShadowbanParams{
+		Fields: xtwitterscraper.String("checks.search"),
+		Omit:   xtwitterscraper.String("checks.replies.evidence"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodGet, "/api/v1/x/users/NASA/shadowban", "fields=checks.search&omit=checks.replies.evidence")
+	expectDecoded(t, res)
+	checks := res.Checks
+	if len(checks.Replies.Evidence.Replies) != 2 {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+	reply := checks.Replies.Evidence.Replies[1]
+	if res.Username != "NASA" ||
+		res.UserID != "11348282" ||
+		res.Account != xtwitterscraper.ShadowbanReportAccountActive ||
+		checks.Account.Verdict != xtwitterscraper.ShadowbanVerdictPass ||
+		checks.Account.Reason != xtwitterscraper.ShadowbanReportChecksAccountReasonActive ||
+		checks.Account.Evidence.ProfileURL != "https://x.com/NASA" ||
+		checks.Search.Reason != xtwitterscraper.ShadowbanReportChecksSearchReasonListed ||
+		checks.Search.Evidence.Query != "from:NASA" ||
+		checks.Search.Evidence.SearchURL != "https://x.com/search?q=from%3ANASA&f=live" ||
+		checks.Search.Evidence.RecentPostIDs[1] != "2103583087540003274" ||
+		checks.Search.Evidence.FoundPostIDs[0] != "2103610284464316469" ||
+		checks.Suggestion.Reason != xtwitterscraper.ShadowbanReportChecksSuggestionReasonSuggested ||
+		checks.Suggestion.Evidence.Query != "NASA" ||
+		checks.Suggestion.Evidence.SuggestedUsernames[2] != "NASAEarth" ||
+		checks.Replies.Verdict != xtwitterscraper.ShadowbanVerdictUnknown ||
+		checks.Replies.Reason != xtwitterscraper.ShadowbanReportChecksRepliesReasonMoreReplies ||
+		checks.Replies.Evidence.Replies[0].Placement != xtwitterscraper.ShadowbanReportChecksRepliesEvidenceReplyPlacementMoreReplies ||
+		reply.ReplyID != "2103215186870239252" ||
+		reply.ReplyURL != "https://x.com/i/status/2103215186870239252" ||
+		reply.ParentID != "2102924351171670302" ||
+		reply.ParentURL != "https://x.com/i/status/2102924351171670302" ||
+		reply.Placement != xtwitterscraper.ShadowbanReportChecksRepliesEvidenceReplyPlacementThread {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+}
+
 func TestXUserGetAffiliatesFixture(t *testing.T) {
 	client, request := fixtureClient(t, "PaginatedUsers.json")
 	res, err := client.X.Users.GetAffiliates(context.Background(), "nasa", xtwitterscraper.XUserGetAffiliatesParams{

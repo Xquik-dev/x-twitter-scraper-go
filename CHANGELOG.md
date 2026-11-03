@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+The SDK catches up with the API again. It adds the activity log, the shadowban check, 3 game reads and the fields the API added since 0.22.0. It covers 197 of the 212 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
+
+- The new `Activity` service reads the account's activity log. `List` returns its rows as `[]ActivityLogRow`, `Export` returns the same rows as a CSV, Excel, Markdown, PDF or text file, and `Get` returns the full `ActivityRecord` of 1 activity.
+- `ActivityLogRow` types `Results` and `Credits` as unions, since each holds a number or an empty string. Read them with `AsInt` and `AsString`.
+- `X.Users.CheckShadowban` checks 1 account for a search ban, a search suggestion ban & reply deboosting. It returns a `ShadowbanReport` with the account's state and each check's verdict, reason & evidence.
+- `X.Sports` adds `GetRoster`, `GetPlayerProps` and `GetPosts`, which return a game's rosters, player props and posts.
+- `SportsTeam` adds `RecentGames`, the recent games X sends with college football teams. `FootballPlayerXUser` adds `Protected`, `SuperFollowEligible` and `LabelType`.
+- Posts and embedded posts at every depth carry `LiveEventContext`, the live event a post belongs to. It is 1 shared `shared.LiveEventContext` type with `Title`, `URL` and `ImageURL`.
+- Posts and embedded posts at every depth carry `UnknownFields`, the fields X did not send. `TweetMedia` adds `EditedWithNativeEditor`, and each reaction context adds `ReactedToPost`.
+- Affiliate labels on profiles and Space accounts carry `AuxiliaryLabels`, the labels X shows beside the affiliation, as `shared.UserAuxiliaryLabel`.
+- `PostMonitor` adds `AuthorAvatarURL`, `AuthorVerified`, `Media` and `Baseline`.
+- The top-up and subscribe params take a `Currency`, 1 of the 32 currencies Xquik charges in. The top-up, top-up status and subscribe responses add `ChargedCurrency`, and the top-up responses add `ChargedMinorUnits`.
+- `CreditTopupBalanceParams` adds `ReturnPath`, the Xquik tool page Checkout returns to.
+- `AccountUpdateLocaleParamsLocale` adds `ja`, `ko` and `zh`.
+- `EventStreamParams` adds `Include` and `LookBack`, and `Events.StreamStreaming` now sends its params.
+- `XMediaDownloadResponse` adds `Items`, the files a single media download saved.
+- Extraction results add `VerifiedType`, and `XTweetGetRepliesResponse` adds `UnreachedReplies`.
+
 ## 0.22.0 (2026-10-23)
 
 [Full changelog from v0.21.0 to v0.22.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.21.0...v0.22.0)

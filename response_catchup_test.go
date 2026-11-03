@@ -74,7 +74,9 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
-			nil,
+			[]fieldValue{
+				{"Results[0].VerifiedType", "Business"},
+			},
 		},
 		{
 			"getMonitor.json",
@@ -258,7 +260,9 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 				err := v.UnmarshalJSON(data)
 				return v, err
 			},
-			nil,
+			[]fieldValue{
+				{"UnreachedReplies", int64(120)},
+			},
 		},
 		{
 			"getBatchUsers.json",

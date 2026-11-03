@@ -257,8 +257,11 @@ func (r *XSpaceGetResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
 
 // Organization affiliation label shown on an X profile.
 type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
+	// More labels X shows beside the affiliation, such as an automated account's
+	// owner.
+	AuxiliaryLabels []shared.UserAuxiliaryLabel `json:"auxiliaryLabels"`
+	BadgeURL        string                      `json:"badgeUrl"`
+	Description     string                      `json:"description"`
 	// Public text, ranges, references, and mention data.
 	LongDescription      map[string]any `json:"longDescription"`
 	URL                  string         `json:"url"`
@@ -267,6 +270,7 @@ type XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	UserLabelType        string         `json:"userLabelType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AuxiliaryLabels      respjson.Field
 		BadgeURL             respjson.Field
 		Description          respjson.Field
 		LongDescription      respjson.Field
@@ -339,8 +343,11 @@ func (r *XSpaceGetResponseSpaceListener) UnmarshalJSON(data []byte) error {
 
 // Organization affiliation label shown on an X profile.
 type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
+	// More labels X shows beside the affiliation, such as an automated account's
+	// owner.
+	AuxiliaryLabels []shared.UserAuxiliaryLabel `json:"auxiliaryLabels"`
+	BadgeURL        string                      `json:"badgeUrl"`
+	Description     string                      `json:"description"`
 	// Public text, ranges, references, and mention data.
 	LongDescription      map[string]any `json:"longDescription"`
 	URL                  string         `json:"url"`
@@ -349,6 +356,7 @@ type XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	UserLabelType        string         `json:"userLabelType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AuxiliaryLabels      respjson.Field
 		BadgeURL             respjson.Field
 		Description          respjson.Field
 		LongDescription      respjson.Field
@@ -421,8 +429,11 @@ func (r *XSpaceGetResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
 
 // Organization affiliation label shown on an X profile.
 type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
+	// More labels X shows beside the affiliation, such as an automated account's
+	// owner.
+	AuxiliaryLabels []shared.UserAuxiliaryLabel `json:"auxiliaryLabels"`
+	BadgeURL        string                      `json:"badgeUrl"`
+	Description     string                      `json:"description"`
 	// Public text, ranges, references, and mention data.
 	LongDescription      map[string]any `json:"longDescription"`
 	URL                  string         `json:"url"`
@@ -431,6 +442,7 @@ type XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	UserLabelType        string         `json:"userLabelType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AuxiliaryLabels      respjson.Field
 		BadgeURL             respjson.Field
 		Description          respjson.Field
 		LongDescription      respjson.Field
@@ -699,8 +711,11 @@ func (r *XSpaceSearchResponseSpaceAdmin) UnmarshalJSON(data []byte) error {
 
 // Organization affiliation label shown on an X profile.
 type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
+	// More labels X shows beside the affiliation, such as an automated account's
+	// owner.
+	AuxiliaryLabels []shared.UserAuxiliaryLabel `json:"auxiliaryLabels"`
+	BadgeURL        string                      `json:"badgeUrl"`
+	Description     string                      `json:"description"`
 	// Public text, ranges, references, and mention data.
 	LongDescription      map[string]any `json:"longDescription"`
 	URL                  string         `json:"url"`
@@ -709,6 +724,7 @@ type XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel struct {
 	UserLabelType        string         `json:"userLabelType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AuxiliaryLabels      respjson.Field
 		BadgeURL             respjson.Field
 		Description          respjson.Field
 		LongDescription      respjson.Field
@@ -781,8 +797,11 @@ func (r *XSpaceSearchResponseSpaceListener) UnmarshalJSON(data []byte) error {
 
 // Organization affiliation label shown on an X profile.
 type XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
+	// More labels X shows beside the affiliation, such as an automated account's
+	// owner.
+	AuxiliaryLabels []shared.UserAuxiliaryLabel `json:"auxiliaryLabels"`
+	BadgeURL        string                      `json:"badgeUrl"`
+	Description     string                      `json:"description"`
 	// Public text, ranges, references, and mention data.
 	LongDescription      map[string]any `json:"longDescription"`
 	URL                  string         `json:"url"`
@@ -791,6 +810,7 @@ type XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel struct {
 	UserLabelType        string         `json:"userLabelType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AuxiliaryLabels      respjson.Field
 		BadgeURL             respjson.Field
 		Description          respjson.Field
 		LongDescription      respjson.Field
@@ -865,8 +885,11 @@ func (r *XSpaceSearchResponseSpaceSpeaker) UnmarshalJSON(data []byte) error {
 
 // Organization affiliation label shown on an X profile.
 type XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
+	// More labels X shows beside the affiliation, such as an automated account's
+	// owner.
+	AuxiliaryLabels []shared.UserAuxiliaryLabel `json:"auxiliaryLabels"`
+	BadgeURL        string                      `json:"badgeUrl"`
+	Description     string                      `json:"description"`
 	// Public text, ranges, references, and mention data.
 	LongDescription      map[string]any `json:"longDescription"`
 	URL                  string         `json:"url"`
@@ -875,6 +898,7 @@ type XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel struct {
 	UserLabelType        string         `json:"userLabelType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AuxiliaryLabels      respjson.Field
 		BadgeURL             respjson.Field
 		Description          respjson.Field
 		LongDescription      respjson.Field

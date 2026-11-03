@@ -11,15 +11,16 @@ import (
 func TestCreditTopupBalanceFixture(t *testing.T) {
 	client, request := fixtureClient(t, "topUpCredits.json")
 	res, err := client.Credits.TopupBalance(context.Background(), xtwitterscraper.CreditTopupBalanceParams{
-		Currency: "EUR",
-		Dollars:  10,
-		Locale:   xtwitterscraper.String("en"),
+		Currency:   "EUR",
+		Dollars:    10,
+		Locale:     xtwitterscraper.String("en"),
+		ReturnPath: xtwitterscraper.String("/en/x-article-reader"),
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 	request.expect(t, http.MethodPost, "/api/v1/credits/topup", "")
-	request.expectBody(t, `{"currency":"EUR","dollars":10,"locale":"en"}`)
+	request.expectBody(t, `{"currency":"EUR","dollars":10,"locale":"en","returnPath":"/en/x-article-reader"}`)
 	expectDecoded(t, res)
 	if res.ChargedCurrency != "EUR" || res.ChargedMinorUnits != 892 ||
 		res.URL != "https://xquik.com/api/v1/credits/topup/redirect?session_id=checkout_example" {

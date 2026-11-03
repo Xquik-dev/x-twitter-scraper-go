@@ -107,6 +107,17 @@
   ],
   "advertiserAccountType": "none",
   "affiliateUsername": "BBCNews",
+  "affiliatesHighlightedLabel": {
+    "auxiliaryLabels": [
+      {
+        "badgeUrl": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_bigger.jpg",
+        "description": "Automated by @NASA",
+        "url": "https://x.com/NASA",
+        "userLabelDisplayType": "Badge",
+        "userLabelType": "AutomatedLabel"
+      }
+    ]
+  },
   "businessProfileState": "none",
   "connectedVia": "United States App Store",
   "email": "press@example.com",

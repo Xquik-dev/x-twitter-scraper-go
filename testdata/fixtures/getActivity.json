@@ -1,0 +1,49 @@
+{
+  "object": "activity",
+  "id": "naF3xqHLWDTs",
+  "kind": "monitor_change",
+  "type": "pause",
+  "status": "completed",
+  "url": "https://dashboard.xquik.com/activity/naF3xqHLWDTs",
+  "requestId": "9f2c1d7e4b8a4c55a1e0d3b2c6f7a8e9",
+  "timestamps": {
+    "createdAt": "2026-10-28T20:22:13.481Z"
+  },
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/monitors/42",
+    "httpStatus": 200,
+    "durationMs": 37,
+    "ipAddress": "203.0.113.9",
+    "userAgent": "my-agent/1.0",
+    "at": "2026-10-28T20:22:13.519Z"
+  },
+  "caller": {
+    "authMethod": "api_key",
+    "apiKey": {
+      "name": "Production",
+      "prefix": "xq_ab12"
+    },
+    "oauthClient": null
+  },
+  "charge": null,
+  "details": {
+    "monitorKind": "account",
+    "monitorId": "42",
+    "subjectUsername": "elonmusk",
+    "subjectQuery": null,
+    "subjectName": null,
+    "subjectXId": "44196397",
+    "subjectAvatar": null,
+    "surface": "rest"
+  },
+  "related": [
+    {
+      "id": "Q7wErTyUiOpA",
+      "type": "create",
+      "status": "completed",
+      "createdAt": "2026-10-21T09:12:40.002Z",
+      "url": "https://dashboard.xquik.com/activity/Q7wErTyUiOpA"
+    }
+  ]
+}

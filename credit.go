@@ -118,8 +118,9 @@ type CreditGetTopupStatusResponse struct {
 	AmountDollars int64 `json:"amount_dollars" api:"nullable"`
 	// Currency the checkout charged.
 	//
-	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
-	// "MXN".
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD", "MXN",
+	// "AED", "BRL", "CHF", "CZK", "DKK", "HKD", "HUF", "IDR", "ILS", "INR", "MYR",
+	// "NOK", "NZD", "PHP", "PLN", "QAR", "RON", "SAR", "SEK", "SGD", "THB", "ZAR".
 	ChargedCurrency Currency `json:"chargedCurrency"`
 	// Amount the checkout charged before tax, in the currency's smallest unit.
 	// JPY and KRW have no decimals, so 1580 JPY is ¥1,580.
@@ -156,8 +157,9 @@ const (
 type CreditTopupBalanceResponse struct {
 	// Currency the checkout charges.
 	//
-	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
-	// "MXN".
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD", "MXN",
+	// "AED", "BRL", "CHF", "CZK", "DKK", "HKD", "HUF", "IDR", "ILS", "INR", "MYR",
+	// "NOK", "NZD", "PHP", "PLN", "QAR", "RON", "SAR", "SEK", "SGD", "THB", "ZAR".
 	ChargedCurrency Currency `json:"chargedCurrency" api:"required"`
 	// Amount the checkout charges before tax, in the currency's smallest unit.
 	// JPY and KRW have no decimals, so 1580 JPY is ¥1,580.
@@ -221,13 +223,17 @@ type CreditTopupBalanceParams struct {
 	// `chargedCurrency` shows the currency charged. Credits always match the
 	// dollar amount. Lowercase codes work too.
 	//
-	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
-	// "MXN".
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD", "MXN",
+	// "AED", "BRL", "CHF", "CZK", "DKK", "HKD", "HUF", "IDR", "ILS", "INR", "MYR",
+	// "NOK", "NZD", "PHP", "PLN", "QAR", "RON", "SAR", "SEK", "SGD", "THB", "ZAR".
 	Currency Currency `json:"currency,omitzero"`
 	// Amount to top up in US dollars. Minimum 10.
 	Dollars int64 `json:"dollars" api:"required"`
 	// Optional checkout locale. Defaults to en.
 	Locale param.Opt[string] `json:"locale,omitzero"`
+	// Optional Xquik tool page to return to after Checkout, such as
+	// /en/x-article-reader.
+	ReturnPath param.Opt[string] `json:"returnPath,omitzero"`
 	paramObj
 }
 
@@ -239,7 +245,7 @@ func (r *CreditTopupBalanceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Currency is an ISO 4217 code of 1 of the 10 currencies Xquik charges in.
+// Currency is an ISO 4217 code of 1 of the 32 currencies Xquik charges in.
 type Currency string
 
 const (
@@ -253,4 +259,26 @@ const (
 	CurrencyCAD Currency = "CAD"
 	CurrencyAUD Currency = "AUD"
 	CurrencyMXN Currency = "MXN"
+	CurrencyAED Currency = "AED"
+	CurrencyBRL Currency = "BRL"
+	CurrencyCHF Currency = "CHF"
+	CurrencyCZK Currency = "CZK"
+	CurrencyDKK Currency = "DKK"
+	CurrencyHKD Currency = "HKD"
+	CurrencyHUF Currency = "HUF"
+	CurrencyIDR Currency = "IDR"
+	CurrencyILS Currency = "ILS"
+	CurrencyINR Currency = "INR"
+	CurrencyMYR Currency = "MYR"
+	CurrencyNOK Currency = "NOK"
+	CurrencyNZD Currency = "NZD"
+	CurrencyPHP Currency = "PHP"
+	CurrencyPLN Currency = "PLN"
+	CurrencyQAR Currency = "QAR"
+	CurrencyRON Currency = "RON"
+	CurrencySAR Currency = "SAR"
+	CurrencySEK Currency = "SEK"
+	CurrencySGD Currency = "SGD"
+	CurrencyTHB Currency = "THB"
+	CurrencyZAR Currency = "ZAR"
 )

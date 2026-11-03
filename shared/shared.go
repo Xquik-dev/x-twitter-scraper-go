@@ -1039,6 +1039,8 @@ type EmbeddedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -1133,6 +1135,7 @@ type EmbeddedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -2213,6 +2216,8 @@ type EmbeddedTweetQuotedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -2307,6 +2312,7 @@ type EmbeddedTweetQuotedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -3395,6 +3401,8 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetQuotedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -3489,6 +3497,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -4609,6 +4618,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -4699,6 +4710,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -6119,6 +6131,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -6209,6 +6223,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -7839,6 +7854,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -7933,6 +7950,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -9071,6 +9089,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -9161,6 +9181,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -10587,6 +10608,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -10677,6 +10700,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -12511,6 +12535,8 @@ type EmbeddedTweetRetweetedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -12605,6 +12631,7 @@ type EmbeddedTweetRetweetedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -13697,6 +13724,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetQuotedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -13791,6 +13820,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -14929,6 +14959,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -15019,6 +15051,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -16445,6 +16478,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -16535,6 +16570,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -18171,6 +18207,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -18265,6 +18303,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -19411,6 +19450,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -19501,6 +19542,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -20931,6 +20973,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -21021,6 +21065,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -23011,6 +23056,30 @@ const (
 	EventTypeProfileFollowingChanged   EventType = "profile.following.changed"
 )
 
+// The live event the post belongs to, such as an election.
+type LiveEventContext struct {
+	// Event name.
+	Title string `json:"title"`
+	// The event's page on X.
+	URL string `json:"url"`
+	// The event's image.
+	ImageURL string `json:"imageUrl"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Title       respjson.Field
+		URL         respjson.Field
+		ImageURL    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LiveEventContext) RawJSON() string { return r.JSON.raw }
+func (r *LiveEventContext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Automatic search, user Tweet, and reply coverage preserves shape, filters,
 // aliases, and billing. Follow next_cursor while the response reports more pages.
 // An empty filtered page can still require continuation. Unprefixed cursors are
@@ -23195,6 +23264,8 @@ type SearchTweet struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []SearchTweetLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -23300,6 +23371,7 @@ type SearchTweet struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -25314,6 +25386,31 @@ const (
 	TweetUnknownCountBookmarkCount TweetUnknownCount = "bookmarkCount"
 )
 
+// A label X shows on an X profile beside its affiliation label.
+type UserAuxiliaryLabel struct {
+	BadgeURL             string `json:"badgeUrl"`
+	Description          string `json:"description"`
+	URL                  string `json:"url"`
+	UserLabelDisplayType string `json:"userLabelDisplayType"`
+	UserLabelType        string `json:"userLabelType"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BadgeURL             respjson.Field
+		Description          respjson.Field
+		URL                  respjson.Field
+		UserLabelDisplayType respjson.Field
+		UserLabelType        respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserAuxiliaryLabel) RawJSON() string { return r.JSON.raw }
+func (r *UserAuxiliaryLabel) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Public X profile.
 type UserProfile struct {
 	ID       string `json:"id" api:"required"`
@@ -25779,8 +25876,11 @@ func (r *UserProfileAccountBasedIn) UnmarshalJSON(data []byte) error {
 
 // Organization affiliation label shown on an X profile.
 type UserProfileAffiliatesHighlightedLabel struct {
-	BadgeURL    string `json:"badgeUrl"`
-	Description string `json:"description"`
+	// More labels X shows beside the affiliation, such as an automated account's
+	// owner.
+	AuxiliaryLabels []UserAuxiliaryLabel `json:"auxiliaryLabels"`
+	BadgeURL        string               `json:"badgeUrl"`
+	Description     string               `json:"description"`
 	// Public text, ranges, references, and mention data.
 	LongDescription      map[string]any `json:"longDescription"`
 	URL                  string         `json:"url"`
@@ -25789,6 +25889,7 @@ type UserProfileAffiliatesHighlightedLabel struct {
 	UserLabelType        string         `json:"userLabelType"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AuxiliaryLabels      respjson.Field
 		BadgeURL             respjson.Field
 		Description          respjson.Field
 		LongDescription      respjson.Field

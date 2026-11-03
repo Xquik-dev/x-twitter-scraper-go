@@ -2196,6 +2196,9 @@ const EventTypeProfileFollowersChanged = shared.EventTypeProfileFollowersChanged
 // Equals "profile.following.changed"
 const EventTypeProfileFollowingChanged = shared.EventTypeProfileFollowingChanged
 
+// The live event the post belongs to, such as an election.
+type LiveEventContext = shared.LiveEventContext
+
 // Automatic search, user Tweet, and reply coverage preserves shape, filters,
 // aliases, and billing. Follow next_cursor while the response reports more pages.
 // An empty filtered page can still require continuation. Unprefixed cursors are
@@ -2463,6 +2466,9 @@ const TweetUnknownCountViewCount = shared.TweetUnknownCountViewCount
 
 // Equals "bookmarkCount"
 const TweetUnknownCountBookmarkCount = shared.TweetUnknownCountBookmarkCount
+
+// A label X shows on an X profile beside its affiliation label.
+type UserAuxiliaryLabel = shared.UserAuxiliaryLabel
 
 // Public X profile.
 type UserProfile = shared.UserProfile

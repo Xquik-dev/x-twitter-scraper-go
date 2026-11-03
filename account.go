@@ -273,7 +273,7 @@ func (r *AccountSetXUsernameParams) UnmarshalJSON(data []byte) error {
 }
 
 type AccountUpdateLocaleParams struct {
-	// Any of "en", "tr", "es".
+	// Any of "en", "tr", "es", "ja", "ko", "zh".
 	Locale AccountUpdateLocaleParamsLocale `json:"locale,omitzero" api:"required"`
 	paramObj
 }
@@ -292,4 +292,7 @@ const (
 	AccountUpdateLocaleParamsLocaleEn AccountUpdateLocaleParamsLocale = "en"
 	AccountUpdateLocaleParamsLocaleTr AccountUpdateLocaleParamsLocale = "tr"
 	AccountUpdateLocaleParamsLocaleEs AccountUpdateLocaleParamsLocale = "es"
+	AccountUpdateLocaleParamsLocaleJa AccountUpdateLocaleParamsLocale = "ja"
+	AccountUpdateLocaleParamsLocaleKo AccountUpdateLocaleParamsLocale = "ko"
+	AccountUpdateLocaleParamsLocaleZh AccountUpdateLocaleParamsLocale = "zh"
 )

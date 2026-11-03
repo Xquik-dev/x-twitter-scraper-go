@@ -22,6 +22,7 @@ func ValueOf[T Constant[T]]() T {
 
 type APIV1GuestWalletsTopups string
 type Active string
+type Activity string
 type Canceled string
 type Compose string
 type Deleting string
@@ -48,6 +49,7 @@ func (c APIV1GuestWalletsTopups) Default() APIV1GuestWalletsTopups {
 	return "/api/v1/guest-wallets/topups"
 }
 func (c Active) Default() Active     { return "active" }
+func (c Activity) Default() Activity { return "activity" }
 func (c Canceled) Default() Canceled { return "canceled" }
 func (c Compose) Default() Compose   { return "compose" }
 func (c Deleting) Default() Deleting { return "deleting" }
@@ -82,6 +84,7 @@ func (c XWriteAction) Default() XWriteAction { return "x_write_action" }
 
 func (c APIV1GuestWalletsTopups) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c Active) MarshalJSON() ([]byte, error)                               { return marshalString(c) }
+func (c Activity) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c Canceled) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c Compose) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
 func (c Deleting) MarshalJSON() ([]byte, error)                             { return marshalString(c) }

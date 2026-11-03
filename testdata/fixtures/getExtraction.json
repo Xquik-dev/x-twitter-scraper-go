@@ -3,11 +3,19 @@
     "id": "ext_123",
     "toolType": "follower_explorer",
     "status": "completed",
-    "totalResults": 0,
+    "totalResults": 1,
     "createdAt": "2026-08-23T10:00:00Z",
     "completedAt": "2026-08-23T10:00:05Z"
   },
-  "results": [],
+  "results": [
+    {
+      "id": "res_1",
+      "createdAt": "2026-08-23T10:00:04Z",
+      "xUserId": "11348282",
+      "xUsername": "NASA",
+      "verifiedType": "Business"
+    }
+  ],
   "hasMore": false,
   "pollAfterMs": 0,
   "waitUrl": "/api/v1/extractions/ext_123?wait=10&limit=1&outputMode=compact"

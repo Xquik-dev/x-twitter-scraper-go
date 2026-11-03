@@ -12,7 +12,18 @@
         {
           "id": "951329744804392960",
           "username": "solana",
-          "name": "Solana"
+          "name": "Solana",
+          "affiliatesHighlightedLabel": {
+            "auxiliaryLabels": [
+              {
+                "badgeUrl": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_bigger.jpg",
+                "description": "Automated by @NASA",
+                "url": "https://x.com/NASA",
+                "userLabelDisplayType": "Badge",
+                "userLabelType": "AutomatedLabel"
+              }
+            ]
+          }
         }
       ],
       "speakers": [],

@@ -386,6 +386,11 @@
       }
     ]
   },
+  "liveEventContext": {
+    "title": "US Midterm Elections",
+    "url": "https://x.com/i/election/104725482743328773",
+    "imageUrl": "https://pbs.twimg.com/media/election-2026.jpg"
+  },
   "tombstone": {
     "type": "Unavailable",
     "text": {
