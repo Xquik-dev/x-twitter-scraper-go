@@ -80,7 +80,7 @@ import (
 Or pin the version.
 
 ```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.22.0'
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
 ```
 
 ## Verify a release

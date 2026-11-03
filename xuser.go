@@ -1496,8 +1496,8 @@ func (r *XUserGetInsightsResponseInsightsSample) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Says whether X limits 1 account in search, search suggestions or reply
-// threads. Each check holds a verdict, its reason & the evidence it read.
+// Says whether X limits 1 account in search, search suggestions, reply threads or
+// its timeline. Each check holds a verdict, its reason & the evidence it read.
 // Evidence is null for a check that couldn't read the account.
 type ShadowbanReport struct {
 	// Username of the account. Null for a suspended account asked for by ID.
@@ -1508,13 +1508,23 @@ type ShadowbanReport struct {
 	//
 	// Any of "active", "protected", "suspended".
 	Account ShadowbanReportAccount `json:"account" api:"required"`
-	// The 4 checks, each with a verdict, a reason & evidence.
+	// When the check ran.
+	CheckedAt time.Time `json:"checkedAt" api:"required" format:"date-time"`
+	// `suspended` means X suspended the account. `limited` means at least 1 check
+	// failed. `clear` means search & suggestions passed with no fail. `unclear`
+	// means neither of those.
+	//
+	// Any of "clear", "limited", "unclear", "suspended".
+	Overall ShadowbanReportOverall `json:"overall" api:"required"`
+	// The 9 checks, each with a verdict, a reason & evidence.
 	Checks ShadowbanReportChecks `json:"checks" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Username    respjson.Field
 		UserID      respjson.Field
 		Account     respjson.Field
+		CheckedAt   respjson.Field
+		Overall     respjson.Field
 		Checks      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1536,6 +1546,18 @@ const (
 	ShadowbanReportAccountSuspended ShadowbanReportAccount = "suspended"
 )
 
+// `suspended` means X suspended the account. `limited` means at least 1 check
+// failed. `clear` means search & suggestions passed with no fail. `unclear`
+// means neither of those.
+type ShadowbanReportOverall string
+
+const (
+	ShadowbanReportOverallClear     ShadowbanReportOverall = "clear"
+	ShadowbanReportOverallLimited   ShadowbanReportOverall = "limited"
+	ShadowbanReportOverallUnclear   ShadowbanReportOverall = "unclear"
+	ShadowbanReportOverallSuspended ShadowbanReportOverall = "suspended"
+)
+
 // Pass means X shows the account there, and fail means it doesn't. Unknown
 // means the check had nothing to test or X didn't answer.
 type ShadowbanVerdict string
@@ -1546,7 +1568,7 @@ const (
 	ShadowbanVerdictUnknown ShadowbanVerdict = "unknown"
 )
 
-// The 4 checks, each with a verdict, a reason & evidence.
+// The 9 checks, each with a verdict, a reason & evidence.
 type ShadowbanReportChecks struct {
 	// Passes an active or protected account & fails a suspended one.
 	Account ShadowbanReportChecksAccount `json:"account" api:"required"`
@@ -1559,12 +1581,34 @@ type ShadowbanReportChecks struct {
 	// Opens the threads of up to 3 recent replies to other accounts. `in_thread`
 	// passes. X ranks replies for each viewer, so `more_replies` can't tell.
 	Replies ShadowbanReportChecksReplies `json:"replies" api:"required"`
+	// Reads the same reply threads as `replies`. `replies_show` passes when any
+	// checked reply shows. X ranks replies for each viewer, so `replies_missing`
+	// can't tell.
+	ReplyLock ShadowbanReportChecksReplyLock `json:"replyLock" api:"required"`
+	// Looks for the account's posts on its profile timeline. `visible` passes &
+	// `hidden` fails.
+	Timeline ShadowbanReportChecksTimeline `json:"timeline" api:"required"`
+	// Compares the newest 5 of the account's own posts older than 24 hours with its
+	// earlier posts, by the median of likes, replies, reposts & quotes. `typical`
+	// passes at 25% or more. A drop alone proves nothing, so `low` can't tell.
+	Engagement ShadowbanReportChecksEngagement `json:"engagement" api:"required"`
+	// Reads X's sensitive flag on the profile. `not_flagged` passes & `flagged`
+	// fails.
+	Sensitive ShadowbanReportChecksSensitive `json:"sensitive" api:"required"`
+	// Reads the countries where X withholds the account. `none` passes &
+	// `countries` fails.
+	Withheld ShadowbanReportChecksWithheld `json:"withheld" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Account     respjson.Field
 		Search      respjson.Field
 		Suggestion  respjson.Field
 		Replies     respjson.Field
+		ReplyLock   respjson.Field
+		Timeline    respjson.Field
+		Engagement  respjson.Field
+		Sensitive   respjson.Field
+		Withheld    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1874,6 +1918,306 @@ const (
 	ShadowbanReportChecksRepliesEvidenceReplyPlacementMoreReplies ShadowbanReportChecksRepliesEvidenceReplyPlacement = "more_replies"
 	ShadowbanReportChecksRepliesEvidenceReplyPlacementNotFound    ShadowbanReportChecksRepliesEvidenceReplyPlacement = "not_found"
 )
+
+// Reads the same reply threads as `replies`. `replies_show` passes when any
+// checked reply shows. X ranks replies for each viewer, so `replies_missing`
+// can't tell.
+type ShadowbanReportChecksReplyLock struct {
+	// Pass means X shows the account there, and fail means it doesn't. Unknown
+	// means the check had nothing to test or X didn't answer.
+	//
+	// Any of "pass", "fail", "unknown".
+	Verdict ShadowbanVerdict `json:"verdict" api:"required"`
+	// `replies_show` means X showed at least 1 checked reply. `replies_missing`
+	// means it showed none on the pages read.
+	//
+	// Any of "replies_show", "replies_missing", "no_recent_replies", "unavailable", "protected", "suspended".
+	Reason ShadowbanReportChecksReplyLockReason `json:"reason" api:"required"`
+	// How many replies it opened & how many showed.
+	Evidence ShadowbanReportChecksReplyLockEvidence `json:"evidence" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Verdict     respjson.Field
+		Reason      respjson.Field
+		Evidence    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksReplyLock) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksReplyLock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// `replies_show` means X showed at least 1 checked reply. `replies_missing`
+// means it showed none on the pages read.
+type ShadowbanReportChecksReplyLockReason string
+
+const (
+	ShadowbanReportChecksReplyLockReasonRepliesShow     ShadowbanReportChecksReplyLockReason = "replies_show"
+	ShadowbanReportChecksReplyLockReasonRepliesMissing  ShadowbanReportChecksReplyLockReason = "replies_missing"
+	ShadowbanReportChecksReplyLockReasonNoRecentReplies ShadowbanReportChecksReplyLockReason = "no_recent_replies"
+	ShadowbanReportChecksReplyLockReasonUnavailable     ShadowbanReportChecksReplyLockReason = "unavailable"
+	ShadowbanReportChecksReplyLockReasonProtected       ShadowbanReportChecksReplyLockReason = "protected"
+	ShadowbanReportChecksReplyLockReasonSuspended       ShadowbanReportChecksReplyLockReason = "suspended"
+)
+
+// How many replies it opened & how many showed.
+type ShadowbanReportChecksReplyLockEvidence struct {
+	// Replies it looked for, up to 3.
+	CheckedReplies int64 `json:"checkedReplies" api:"required"`
+	// Replies that showed in their thread.
+	ShownReplies int64 `json:"shownReplies" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CheckedReplies respjson.Field
+		ShownReplies   respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksReplyLockEvidence) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksReplyLockEvidence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Looks for the account's posts on its profile timeline. `visible` passes &
+// `hidden` fails.
+type ShadowbanReportChecksTimeline struct {
+	// Pass means X shows the account there, and fail means it doesn't. Unknown
+	// means the check had nothing to test or X didn't answer.
+	//
+	// Any of "pass", "fail", "unknown".
+	Verdict ShadowbanVerdict `json:"verdict" api:"required"`
+	// `visible` means the timeline shows posts. `hidden` means X counts posts but
+	// shows none. `no_posts` means the account has none to show.
+	//
+	// Any of "visible", "hidden", "no_posts", "unavailable", "protected", "suspended".
+	Reason ShadowbanReportChecksTimelineReason `json:"reason" api:"required"`
+	// The post count on the profile & the posts read.
+	Evidence ShadowbanReportChecksTimelineEvidence `json:"evidence" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Verdict     respjson.Field
+		Reason      respjson.Field
+		Evidence    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksTimeline) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksTimeline) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// `visible` means the timeline shows posts. `hidden` means X counts posts but
+// shows none. `no_posts` means the account has none to show.
+type ShadowbanReportChecksTimelineReason string
+
+const (
+	ShadowbanReportChecksTimelineReasonVisible     ShadowbanReportChecksTimelineReason = "visible"
+	ShadowbanReportChecksTimelineReasonHidden      ShadowbanReportChecksTimelineReason = "hidden"
+	ShadowbanReportChecksTimelineReasonNoPosts     ShadowbanReportChecksTimelineReason = "no_posts"
+	ShadowbanReportChecksTimelineReasonUnavailable ShadowbanReportChecksTimelineReason = "unavailable"
+	ShadowbanReportChecksTimelineReasonProtected   ShadowbanReportChecksTimelineReason = "protected"
+	ShadowbanReportChecksTimelineReasonSuspended   ShadowbanReportChecksTimelineReason = "suspended"
+)
+
+// The post count on the profile & the posts read.
+type ShadowbanReportChecksTimelineEvidence struct {
+	// Posts X counts on the profile.
+	PostCount int64 `json:"postCount" api:"required"`
+	// Posts the timeline read returned, up to 20.
+	TimelinePosts int64 `json:"timelinePosts" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PostCount     respjson.Field
+		TimelinePosts respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksTimelineEvidence) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksTimelineEvidence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Compares the newest 5 of the account's own posts older than 24 hours with its
+// earlier posts, by the median of likes, replies, reposts & quotes. `typical`
+// passes at 25% or more. A drop alone proves nothing, so `low` can't tell.
+type ShadowbanReportChecksEngagement struct {
+	// Pass means X shows the account there, and fail means it doesn't. Unknown
+	// means the check had nothing to test or X didn't answer.
+	//
+	// Any of "pass", "fail", "unknown".
+	Verdict ShadowbanVerdict `json:"verdict" api:"required"`
+	// `too_few_posts` means fewer than 8 posts to compare, or earlier posts with no
+	// engagement.
+	//
+	// Any of "typical", "low", "too_few_posts", "unavailable", "protected", "suspended".
+	Reason ShadowbanReportChecksEngagementReason `json:"reason" api:"required"`
+	// The 2 medians & how many posts each one covers.
+	Evidence ShadowbanReportChecksEngagementEvidence `json:"evidence" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Verdict     respjson.Field
+		Reason      respjson.Field
+		Evidence    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksEngagement) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksEngagement) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// `too_few_posts` means fewer than 8 posts to compare, or earlier posts with no
+// engagement.
+type ShadowbanReportChecksEngagementReason string
+
+const (
+	ShadowbanReportChecksEngagementReasonTypical     ShadowbanReportChecksEngagementReason = "typical"
+	ShadowbanReportChecksEngagementReasonLow         ShadowbanReportChecksEngagementReason = "low"
+	ShadowbanReportChecksEngagementReasonTooFewPosts ShadowbanReportChecksEngagementReason = "too_few_posts"
+	ShadowbanReportChecksEngagementReasonUnavailable ShadowbanReportChecksEngagementReason = "unavailable"
+	ShadowbanReportChecksEngagementReasonProtected   ShadowbanReportChecksEngagementReason = "protected"
+	ShadowbanReportChecksEngagementReasonSuspended   ShadowbanReportChecksEngagementReason = "suspended"
+)
+
+// The 2 medians & how many posts each one covers.
+type ShadowbanReportChecksEngagementEvidence struct {
+	// Median engagement of the newest posts.
+	NewestMedian float64 `json:"newestMedian" api:"required"`
+	// Posts in the newest group, up to 5.
+	NewestPosts int64 `json:"newestPosts" api:"required"`
+	// Median engagement of the earlier posts.
+	EarlierMedian float64 `json:"earlierMedian" api:"required"`
+	// Posts in the earlier group.
+	EarlierPosts int64 `json:"earlierPosts" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NewestMedian  respjson.Field
+		NewestPosts   respjson.Field
+		EarlierMedian respjson.Field
+		EarlierPosts  respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksEngagementEvidence) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksEngagementEvidence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reads X's sensitive flag on the profile. `not_flagged` passes & `flagged`
+// fails.
+type ShadowbanReportChecksSensitive struct {
+	// Pass means X shows the account there, and fail means it doesn't. Unknown
+	// means the check had nothing to test or X didn't answer.
+	//
+	// Any of "pass", "fail", "unknown".
+	Verdict ShadowbanVerdict `json:"verdict" api:"required"`
+	// `unknown` means X left the flag out of the profile.
+	//
+	// Any of "not_flagged", "flagged", "unknown", "suspended".
+	Reason ShadowbanReportChecksSensitiveReason `json:"reason" api:"required"`
+	// Always null, since the reason holds the answer.
+	Evidence any `json:"evidence" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Verdict     respjson.Field
+		Reason      respjson.Field
+		Evidence    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksSensitive) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksSensitive) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// `unknown` means X left the flag out of the profile.
+type ShadowbanReportChecksSensitiveReason string
+
+const (
+	ShadowbanReportChecksSensitiveReasonNotFlagged ShadowbanReportChecksSensitiveReason = "not_flagged"
+	ShadowbanReportChecksSensitiveReasonFlagged    ShadowbanReportChecksSensitiveReason = "flagged"
+	ShadowbanReportChecksSensitiveReasonUnknown    ShadowbanReportChecksSensitiveReason = "unknown"
+	ShadowbanReportChecksSensitiveReasonSuspended  ShadowbanReportChecksSensitiveReason = "suspended"
+)
+
+// Reads the countries where X withholds the account. `none` passes &
+// `countries` fails.
+type ShadowbanReportChecksWithheld struct {
+	// Pass means X shows the account there, and fail means it doesn't. Unknown
+	// means the check had nothing to test or X didn't answer.
+	//
+	// Any of "pass", "fail", "unknown".
+	Verdict ShadowbanVerdict `json:"verdict" api:"required"`
+	// `countries` means X lists at least 1 country.
+	//
+	// Any of "none", "countries", "suspended".
+	Reason ShadowbanReportChecksWithheldReason `json:"reason" api:"required"`
+	// The countries X lists.
+	Evidence ShadowbanReportChecksWithheldEvidence `json:"evidence" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Verdict     respjson.Field
+		Reason      respjson.Field
+		Evidence    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksWithheld) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksWithheld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// `countries` means X lists at least 1 country.
+type ShadowbanReportChecksWithheldReason string
+
+const (
+	ShadowbanReportChecksWithheldReasonNone      ShadowbanReportChecksWithheldReason = "none"
+	ShadowbanReportChecksWithheldReasonCountries ShadowbanReportChecksWithheldReason = "countries"
+	ShadowbanReportChecksWithheldReasonSuspended ShadowbanReportChecksWithheldReason = "suspended"
+)
+
+// The countries X lists.
+type ShadowbanReportChecksWithheldEvidence struct {
+	// Country codes as X gives them.
+	Countries []string `json:"countries" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Countries   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShadowbanReportChecksWithheldEvidence) RawJSON() string { return r.JSON.raw }
+func (r *ShadowbanReportChecksWithheldEvidence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // 1 page of public X Lists. Follow next_cursor while the response reports more
 // pages. Each returned List costs 1 credit.

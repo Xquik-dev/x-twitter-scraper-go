@@ -1,12 +1,14 @@
 # Changelog
 
-## Unreleased
+## 0.23.0 (2026-11-03)
+
+[Full changelog from v0.22.0 to v0.23.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.22.0...v0.23.0)
 
 The SDK catches up with the API again. It adds the activity log, the shadowban check, 3 game reads and the fields the API added since 0.22.0. It covers 197 of the 212 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
 
 - The new `Activity` service reads the account's activity log. `List` returns its rows as `[]ActivityLogRow`, `Export` returns the same rows as a CSV, Excel, Markdown, PDF or text file, and `Get` returns the full `ActivityRecord` of 1 activity.
 - `ActivityLogRow` types `Results` and `Credits` as unions, since each holds a number or an empty string. Read them with `AsInt` and `AsString`.
-- `X.Users.CheckShadowban` checks 1 account for a search ban, a search suggestion ban & reply deboosting. It returns a `ShadowbanReport` with the account's state and each check's verdict, reason & evidence.
+- `X.Users.CheckShadowban` runs 9 checks on 1 account, for search, suggestions, replies, a reply lock, its timeline, engagement, the sensitive flag & withheld countries. It returns a `ShadowbanReport` with the account's state, `CheckedAt`, `Overall` and each check's verdict, reason & evidence.
 - `X.Sports` adds `GetRoster`, `GetPlayerProps` and `GetPosts`, which return a game's rosters, player props and posts.
 - `SportsTeam` adds `RecentGames`, the recent games X sends with college football teams. `FootballPlayerXUser` adds `Protected`, `SuperFollowEligible` and `LabelType`.
 - Posts and embedded posts at every depth carry `LiveEventContext`, the live event a post belongs to. It is 1 shared `shared.LiveEventContext` type with `Title`, `URL` and `ImageURL`.
