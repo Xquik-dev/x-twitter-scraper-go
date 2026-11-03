@@ -53,6 +53,28 @@ func TestXUserCheckShadowbanFixture(t *testing.T) {
 		reply.Placement != xtwitterscraper.ShadowbanReportChecksRepliesEvidenceReplyPlacementThread {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
+	if !res.CheckedAt.Equal(time.Date(2026, time.November, 3, 2, 15, 0, 0, time.UTC)) ||
+		res.Overall != xtwitterscraper.ShadowbanReportOverallClear ||
+		checks.ReplyLock.Verdict != xtwitterscraper.ShadowbanVerdictPass ||
+		checks.ReplyLock.Reason != xtwitterscraper.ShadowbanReportChecksReplyLockReasonRepliesShow ||
+		checks.ReplyLock.Evidence.CheckedReplies != 2 ||
+		checks.ReplyLock.Evidence.ShownReplies != 2 ||
+		checks.Timeline.Reason != xtwitterscraper.ShadowbanReportChecksTimelineReasonVisible ||
+		checks.Timeline.Evidence.PostCount != 74486 ||
+		checks.Timeline.Evidence.TimelinePosts != 20 ||
+		checks.Engagement.Reason != xtwitterscraper.ShadowbanReportChecksEngagementReasonTypical ||
+		checks.Engagement.Evidence.NewestMedian != 4268 ||
+		checks.Engagement.Evidence.NewestPosts != 5 ||
+		checks.Engagement.Evidence.EarlierMedian != 2773.5 ||
+		checks.Engagement.Evidence.EarlierPosts != 7 ||
+		checks.Sensitive.Reason != xtwitterscraper.ShadowbanReportChecksSensitiveReasonNotFlagged ||
+		checks.Sensitive.Evidence != nil ||
+		checks.Withheld.Verdict != xtwitterscraper.ShadowbanVerdictFail ||
+		checks.Withheld.Reason != xtwitterscraper.ShadowbanReportChecksWithheldReasonCountries ||
+		len(checks.Withheld.Evidence.Countries) != 2 ||
+		checks.Withheld.Evidence.Countries[1] != "TR" {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
 }
 
 func TestXUserGetAffiliatesFixture(t *testing.T) {
