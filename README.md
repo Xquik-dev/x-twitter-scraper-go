@@ -4,6 +4,7 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
 
 <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/Xquik-dev/x-twitter-scraper-go.svg" alt="Go Reference"></a>
+<a href="https://www.convex.dev/components/convex-xquik"><img src="https://www.convex.dev/components/badge/convex-xquik" alt="Convex Component"></a>
 
 Use this X API & Twitter API SDK to work with X from Go.
 It works as a Twitter scraper & tweet scraper for search, profiles & followers.
