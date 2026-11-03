@@ -2,6 +2,8 @@
   "username": "NASA",
   "userId": "11348282",
   "account": "active",
+  "checkedAt": "2026-11-03T02:15:00.000Z",
+  "overall": "clear",
   "checks": {
     "account": {
       "verdict": "pass",
@@ -57,6 +59,47 @@
             "parentUrl": "https://x.com/i/status/2102924351171670302",
             "placement": "thread"
           }
+        ]
+      }
+    },
+    "replyLock": {
+      "verdict": "pass",
+      "reason": "replies_show",
+      "evidence": {
+        "checkedReplies": 2,
+        "shownReplies": 2
+      }
+    },
+    "timeline": {
+      "verdict": "pass",
+      "reason": "visible",
+      "evidence": {
+        "postCount": 74486,
+        "timelinePosts": 20
+      }
+    },
+    "engagement": {
+      "verdict": "pass",
+      "reason": "typical",
+      "evidence": {
+        "newestMedian": 4268,
+        "newestPosts": 5,
+        "earlierMedian": 2773.5,
+        "earlierPosts": 7
+      }
+    },
+    "sensitive": {
+      "verdict": "pass",
+      "reason": "not_flagged",
+      "evidence": null
+    },
+    "withheld": {
+      "verdict": "fail",
+      "reason": "countries",
+      "evidence": {
+        "countries": [
+          "DE",
+          "TR"
         ]
       }
     }
