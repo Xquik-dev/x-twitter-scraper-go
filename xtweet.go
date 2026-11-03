@@ -381,6 +381,8 @@ type TweetDetail struct {
 	Lang              string         `json:"lang"`
 	// Public interaction restrictions and user-facing prompts.
 	LimitedActions []TweetDetailLimitedAction `json:"limitedActions"`
+	// The live event the post belongs to, such as an election.
+	LiveEventContext shared.LiveEventContext `json:"liveEventContext"`
 	// Attached media items, omitted when unavailable.
 	Media []shared.TweetMedia `json:"media"`
 	// Complete Note Tweet content and rich-text metadata.
@@ -486,6 +488,7 @@ type TweetDetail struct {
 		JetfuelAttachment      respjson.Field
 		Lang                   respjson.Field
 		LimitedActions         respjson.Field
+		LiveEventContext       respjson.Field
 		Media                  respjson.Field
 		NoteTweet              respjson.Field
 		ParentTweet            respjson.Field
@@ -2804,17 +2807,23 @@ type XTweetGetRepliesResponse struct {
 	// time. X shows only part of the replies older than 7 days. A retry returns about
 	// the same replies.
 	PartialBefore time.Time `json:"partialBefore" format:"date-time"`
+	// Present on automatic pages without filters while X counts replies the read
+	// hasn't reached. If a reply that belongs in your rows is missing, it's among
+	// them. The count drops as you read more pages. On the last page, it counts the
+	// replies the read can't reach.
+	UnreachedReplies int64 `json:"unreachedReplies"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Diagnostic    respjson.Field
-		HiddenReplies respjson.Field
-		LimitReached  respjson.Field
-		Message       respjson.Field
-		NestedReplies respjson.Field
-		OrderPartial  respjson.Field
-		PartialBefore respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		Diagnostic       respjson.Field
+		HiddenReplies    respjson.Field
+		LimitReached     respjson.Field
+		Message          respjson.Field
+		NestedReplies    respjson.Field
+		OrderPartial     respjson.Field
+		PartialBefore    respjson.Field
+		UnreachedReplies respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 	shared.PaginatedTweets
 }

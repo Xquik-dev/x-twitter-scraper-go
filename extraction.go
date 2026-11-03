@@ -257,21 +257,27 @@ type ExtractionGetResponseResult struct {
 	LikeCount      int64          `json:"likeCount"`
 	// Attached media with outputPreset=flat. Default nested output uses
 	// enrichmentData.tweet.media.
-	Media            []shared.TweetMedia `json:"media"`
-	QuoteCount       int64               `json:"quoteCount"`
-	ReplyCount       int64               `json:"replyCount"`
-	RetweetCount     int64               `json:"retweetCount"`
-	TweetCreatedAt   time.Time           `json:"tweetCreatedAt" format:"date-time"`
-	TweetID          string              `json:"tweetId"`
-	TweetText        string              `json:"tweetText"`
-	TweetURL         string              `json:"tweetUrl" format:"uri"`
-	ViewCount        int64               `json:"viewCount"`
-	XDisplayName     string              `json:"xDisplayName"`
-	XFollowersCount  int64               `json:"xFollowersCount"`
-	XProfileImageURL string              `json:"xProfileImageUrl" format:"uri"`
-	XUsername        string              `json:"xUsername"`
-	XVerified        bool                `json:"xVerified"`
-	ExtraFields      map[string]any      `json:"" api:"extrafields"`
+	Media          []shared.TweetMedia `json:"media"`
+	QuoteCount     int64               `json:"quoteCount"`
+	ReplyCount     int64               `json:"replyCount"`
+	RetweetCount   int64               `json:"retweetCount"`
+	TweetCreatedAt time.Time           `json:"tweetCreatedAt" format:"date-time"`
+	TweetID        string              `json:"tweetId"`
+	TweetText      string              `json:"tweetText"`
+	TweetURL       string              `json:"tweetUrl" format:"uri"`
+	// Badge type X shows on the account, with outputPreset=flat. Business is the
+	// gold badge of a verified organization. Government is the grey badge of a
+	// government or multilateral account. Blue is the badge of X Premium. Default
+	// nested output uses enrichmentData.user.verifiedType. Absent when the account
+	// has none of these badges.
+	VerifiedType     string         `json:"verifiedType"`
+	ViewCount        int64          `json:"viewCount"`
+	XDisplayName     string         `json:"xDisplayName"`
+	XFollowersCount  int64          `json:"xFollowersCount"`
+	XProfileImageURL string         `json:"xProfileImageUrl" format:"uri"`
+	XUsername        string         `json:"xUsername"`
+	XVerified        bool           `json:"xVerified"`
+	ExtraFields      map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -289,6 +295,7 @@ type ExtractionGetResponseResult struct {
 		TweetID          respjson.Field
 		TweetText        respjson.Field
 		TweetURL         respjson.Field
+		VerifiedType     respjson.Field
 		ViewCount        respjson.Field
 		XDisplayName     respjson.Field
 		XFollowersCount  respjson.Field

@@ -12,11 +12,13 @@
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#ContentDisclosure">ContentDisclosure</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#EmbeddedTweet">EmbeddedTweet</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#EventType">EventType</a>
+- <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#LiveEventContext">LiveEventContext</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedTweets">PaginatedTweets</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#PaginatedUsers">PaginatedUsers</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#SearchTweet">SearchTweet</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#SoftIntervention">SoftIntervention</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#TweetMedia">TweetMedia</a>
+- <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#UserAuxiliaryLabel">UserAuxiliaryLabel</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#UserProfile">UserProfile</a>
 
 # Account

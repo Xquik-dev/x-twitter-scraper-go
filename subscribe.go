@@ -48,8 +48,9 @@ func (r *SubscribeService) New(ctx context.Context, body SubscribeNewParams, opt
 type SubscribeNewResponse struct {
 	// Currency the checkout charges. Only a checkout_created answer has it.
 	//
-	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
-	// "MXN".
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD", "MXN",
+	// "AED", "BRL", "CHF", "CZK", "DKK", "HKD", "HUF", "IDR", "ILS", "INR", "MYR",
+	// "NOK", "NZD", "PHP", "PLN", "QAR", "RON", "SAR", "SEK", "SGD", "THB", "ZAR".
 	ChargedCurrency Currency `json:"chargedCurrency"`
 	Message         string   `json:"message" api:"required"`
 	// Any of "checkout_created", "already_subscribed", "payment_issue".
@@ -87,8 +88,9 @@ type SubscribeNewParams struct {
 	// rates over 3 ECB working days old, the checkout charges USD.
 	// `chargedCurrency` shows the currency charged.
 	//
-	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD",
-	// "MXN".
+	// Any of "USD", "EUR", "GBP", "TRY", "JPY", "CNY", "KRW", "CAD", "AUD", "MXN",
+	// "AED", "BRL", "CHF", "CZK", "DKK", "HKD", "HUF", "IDR", "ILS", "INR", "MYR",
+	// "NOK", "NZD", "PHP", "PLN", "QAR", "RON", "SAR", "SEK", "SGD", "THB", "ZAR".
 	Currency Currency `json:"currency,omitzero"`
 	// Subscription tier to pre-select.
 	//

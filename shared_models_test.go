@@ -78,6 +78,11 @@ func TestUserProfileDecodesEveryField(t *testing.T) {
 		{"AdvertiserAccountServiceLevels", []string{"smb", "media_studio"}},
 		{"AdvertiserAccountType", "none"},
 		{"AffiliateUsername", "BBCNews"},
+		{"AffiliatesHighlightedLabel.AuxiliaryLabels[0].BadgeURL", "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_bigger.jpg"},
+		{"AffiliatesHighlightedLabel.AuxiliaryLabels[0].Description", "Automated by @NASA"},
+		{"AffiliatesHighlightedLabel.AuxiliaryLabels[0].URL", "https://x.com/NASA"},
+		{"AffiliatesHighlightedLabel.AuxiliaryLabels[0].UserLabelDisplayType", "Badge"},
+		{"AffiliatesHighlightedLabel.AuxiliaryLabels[0].UserLabelType", "AutomatedLabel"},
 		{"Birthdate.Day", int64(1)},
 		{"Birthdate.Month", int64(10)},
 		{"Birthdate.Year", int64(1958)},
@@ -160,6 +165,9 @@ var tweetFields = []fieldValue{
 	{"Interstitial.Text.Text", "This Post violated the X Rules about glorifying violence. However, X has determined that it may be in the public's interest for the Post to remain accessible. Learn more"},
 	{"IsPinned", true},
 	{"IsRetweet", true},
+	{"LiveEventContext.ImageURL", "https://pbs.twimg.com/media/election-2026.jpg"},
+	{"LiveEventContext.Title", "US Midterm Elections"},
+	{"LiveEventContext.URL", "https://x.com/i/election/104725482743328773"},
 	{"Media[0].EditedWithNativeEditor", true},
 	{"Media[0].GrokImageAnnotation.Prompt", "A spiral galaxy"},
 	{"Media[0].GrokImageAnnotation.UpsampledPrompt", "A detailed spiral galaxy with blue and red arms"},
@@ -214,6 +222,36 @@ var _ = []shared.SoftIntervention{
 	shared.EmbeddedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
 	shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet{}.SoftIntervention,
 	shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{}.SoftIntervention,
+}
+
+var _ = []shared.LiveEventContext{
+	xtwitterscraper.TweetDetail{}.LiveEventContext,
+	shared.SearchTweet{}.LiveEventContext,
+	shared.EmbeddedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetQuotedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetQuotedTweetQuotedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetQuotedTweetRetweetedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetRetweetedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetRetweetedTweetQuotedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetRetweetedTweetRetweetedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet{}.LiveEventContext,
+	shared.EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet{}.LiveEventContext,
+}
+
+var _ = [][]shared.UserAuxiliaryLabel{
+	shared.UserProfileAffiliatesHighlightedLabel{}.AuxiliaryLabels,
+	xtwitterscraper.XSpaceGetResponseSpaceAdminAffiliatesHighlightedLabel{}.AuxiliaryLabels,
+	xtwitterscraper.XSpaceGetResponseSpaceListenerAffiliatesHighlightedLabel{}.AuxiliaryLabels,
+	xtwitterscraper.XSpaceGetResponseSpaceSpeakerAffiliatesHighlightedLabel{}.AuxiliaryLabels,
+	xtwitterscraper.XSpaceSearchResponseSpaceAdminAffiliatesHighlightedLabel{}.AuxiliaryLabels,
+	xtwitterscraper.XSpaceSearchResponseSpaceListenerAffiliatesHighlightedLabel{}.AuxiliaryLabels,
+	xtwitterscraper.XSpaceSearchResponseSpaceSpeakerAffiliatesHighlightedLabel{}.AuxiliaryLabels,
 }
 
 var _ shared.SoftInterventionText = shared.SoftIntervention{}.Text

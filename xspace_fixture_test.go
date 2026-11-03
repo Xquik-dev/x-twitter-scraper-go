@@ -39,7 +39,10 @@ func TestXSpaceGetFixture(t *testing.T) {
 		res.Space.Creator.Name != "Solana" ||
 		res.Space.Admins[0].ID != "951329744804392960" ||
 		res.Space.Admins[0].Username != "solana" ||
-		res.Space.Admins[0].Name != "Solana" {
+		res.Space.Admins[0].Name != "Solana" ||
+		len(res.Space.Admins[0].AffiliatesHighlightedLabel.AuxiliaryLabels) != 1 ||
+		res.Space.Admins[0].AffiliatesHighlightedLabel.AuxiliaryLabels[0].Description != "Automated by @NASA" ||
+		res.Space.Admins[0].AffiliatesHighlightedLabel.AuxiliaryLabels[0].UserLabelType != "AutomatedLabel" {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 }
@@ -92,7 +95,10 @@ func TestXSpaceSearchFixture(t *testing.T) {
 		len(res.Spaces[0].Listeners) != 0 ||
 		res.Spaces[0].Admins[0].ID != "951329744804392960" ||
 		res.Spaces[0].Admins[0].Username != "solana" ||
-		res.Spaces[0].Admins[0].Name != "Solana" {
+		res.Spaces[0].Admins[0].Name != "Solana" ||
+		len(res.Spaces[0].Admins[0].AffiliatesHighlightedLabel.AuxiliaryLabels) != 1 ||
+		res.Spaces[0].Admins[0].AffiliatesHighlightedLabel.AuxiliaryLabels[0].URL != "https://x.com/NASA" ||
+		res.Spaces[0].Admins[0].AffiliatesHighlightedLabel.AuxiliaryLabels[0].UserLabelDisplayType != "Badge" {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 }
