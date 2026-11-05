@@ -6,7 +6,7 @@
 <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/Xquik-dev/x-twitter-scraper-go.svg" alt="Go Reference"></a>
 <a href="https://www.convex.dev/components/convex-xquik"><img src="https://www.convex.dev/components/badge/convex-xquik" alt="Convex Component"></a>
 
-Use this X API & Twitter API SDK to work with X from Go.
+Use the Xquik X API & Twitter API SDK to work with X from Go.
 It works as a Twitter scraper & tweet scraper for search, profiles & followers.
 Scrape Twitter timelines, lists, communities & trends into typed Go structs.
 Manage media, webhooks, monitors & X automation with typed Go methods.
@@ -17,6 +17,52 @@ Xquik charges only for delivered, unique, filter-matching results and never pads
 
 > Xquik is an independent third-party service. Not affiliated with X Corp.
 > "Twitter" and "X" are trademarks of X Corp.
+
+## Install the Go Twitter API & scraper SDK
+
+```go
+import (
+	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
+)
+```
+
+Or pin the version.
+
+```sh
+go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
+```
+
+## Scrape tweets with the Golang Twitter API
+
+Search takes the same operators as X search & returns typed tweets.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/Xquik-dev/x-twitter-scraper-go"
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+)
+
+func main() {
+	client := xtwitterscraper.NewClient(
+		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
+	)
+	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+		Q:     "from:elonmusk",
+		Limit: xtwitterscraper.Int(10),
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%+v\n", response)
+}
+
+```
 
 <!-- trust:start -->
 
@@ -69,20 +115,6 @@ Use it when the official X API does not fit your workflow.
 | Monitor an account | `POST /monitors` | Deliver events through HMAC webhooks. |
 | Post or reply | `POST /x/tweets` | Confirm the account and payload. |
 
-## Installation
-
-```go
-import (
-	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
-)
-```
-
-Or pin the version.
-
-```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
-```
-
 ## Verify a release
 
 Go checks every module download against the public checksum database.
@@ -121,34 +153,6 @@ Use Go 1.27.3 or newer.
 ## Usage
 
 See [api.md](api.md) for the complete API.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-)
-
-func main() {
-	client := xtwitterscraper.NewClient(
-		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
-	)
-	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
-		Q:     "from:elonmusk",
-		Limit: xtwitterscraper.Int(10),
-	})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", response)
-}
-
-```
 
 ### Request fields
 
@@ -583,12 +587,25 @@ Open an [issue](https://github.com/Xquik-dev/x-twitter-scraper-go/issues) before
 
 Read the [contribution guide](CONTRIBUTING.md).
 
+## Questions
+
+### Do I need an X developer account?
+
+No. Public reads need only an Xquik API key. Private reads & X account actions
+need a connected X account.
+
+### Is this the official X API?
+
+No. Xquik is an independent third-party service with its own REST API. This SDK
+calls that API, not the official X API.
+
 ## More Xquik tools
 
 - [X (Twitter) scraper API & Twitter MCP server](https://github.com/Xquik-dev/x-twitter-scraper) with REST, MCP & Skill setup.
 - Twitter API SDKs for [TypeScript](https://github.com/Xquik-dev/x-twitter-scraper-typescript), [Python](https://github.com/Xquik-dev/x-twitter-scraper-python), [Ruby](https://github.com/Xquik-dev/x-twitter-scraper-ruby), [Java](https://github.com/Xquik-dev/x-twitter-scraper-java), [Kotlin](https://github.com/Xquik-dev/x-twitter-scraper-kotlin), [C#](https://github.com/Xquik-dev/x-twitter-scraper-csharp) & [PHP](https://github.com/Xquik-dev/x-twitter-scraper-php).
 - [Twitter CLI & X CLI](https://github.com/Xquik-dev/x-twitter-scraper-cli) for terminal workflows.
 - [Twitter advanced search operators](https://github.com/Xquik-dev/x-twitter-advanced-search) with tested examples.
+- Twitter agent plugins for [OpenClaw](https://github.com/Xquik-dev/tweetclaw) & [Hermes Agent](https://github.com/Xquik-dev/hermes-tweet), and the [Twitter API documentation source](https://github.com/Xquik-dev/xquik-docs).
 - [Xquik X API & Twitter scraper](https://xquik.com) and the [Twitter API documentation](https://docs.xquik.com/api-reference/overview).
 
 ## Security & project health
