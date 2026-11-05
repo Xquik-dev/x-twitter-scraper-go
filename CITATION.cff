@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: If you use Xquik Go SDK for the Twitter API & X data, cite it using this metadata.
+title: Xquik Go SDK for the Twitter API & X data
+type: software
+abstract: >-
+  Twitter API Go SDK & Golang Twitter scraper for Xquik. Scrape tweets, read
+  profiles, export followers, manage media & webhooks from Go with typed
+  requests & responses.
+authors:
+  - name: Xquik
+    website: https://xquik.com
+url: https://github.com/Xquik-dev/x-twitter-scraper-go
+repository-code: https://github.com/Xquik-dev/x-twitter-scraper-go
+license: Apache-2.0
+keywords:
+  - Xquik
+  - Twitter API Go
+  - Twitter API Golang
+  - Twitter scraper
+  - scrape tweets
+  - X API
+  - Go SDK
+  - webhooks
