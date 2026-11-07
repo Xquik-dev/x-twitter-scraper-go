@@ -101,8 +101,15 @@ type XMediaDownloadResponseItem struct {
 	TweetID string `json:"tweetId" api:"required"`
 	// Any of "photo", "video", "animated_gif".
 	MediaType XMediaDownloadResponseItemMediaType `json:"mediaType" api:"required"`
-	// The saved copy of the file.
+	// Link to the file. It goes to X when X flagged the post or its media at save
+	// time, or sent no post flag. Xquik keeps no copy of those files.
 	MediaURL string `json:"mediaUrl" api:"required"`
+	// Cover image of a video or GIF. Null for photos & files first saved to Xquik
+	// before 2026-11-03.
+	PosterURL string `json:"posterUrl" api:"required"`
+	// The MP4 sizes X stores for a video, highest bitrate first. Empty for photos,
+	// GIFs & files first saved to Xquik before 2026-11-03.
+	Qualities []XMediaDownloadResponseItemQuality `json:"qualities" api:"required"`
 	// File size in bytes, as a string
 	FileSize string `json:"fileSize" api:"required"`
 	// When the file joined your gallery
@@ -120,6 +127,8 @@ type XMediaDownloadResponseItem struct {
 		TweetID           respjson.Field
 		MediaType         respjson.Field
 		MediaURL          respjson.Field
+		PosterURL         respjson.Field
+		Qualities         respjson.Field
 		FileSize          respjson.Field
 		CreatedAt         respjson.Field
 		AuthorUsername    respjson.Field
@@ -140,6 +149,29 @@ func (r *XMediaDownloadResponseItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// XMediaDownloadResponseItemQuality is 1 MP4 size X stores for a video.
+type XMediaDownloadResponseItemQuality struct {
+	Bitrate int64  `json:"bitrate" api:"required"`
+	Height  int64  `json:"height" api:"required"`
+	URL     string `json:"url" api:"required"`
+	Width   int64  `json:"width" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bitrate     respjson.Field
+		Height      respjson.Field
+		URL         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r XMediaDownloadResponseItemQuality) RawJSON() string { return r.JSON.raw }
+func (r *XMediaDownloadResponseItemQuality) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // XMediaDownloadResponseItemMediaType is the kind of saved file.
 type XMediaDownloadResponseItemMediaType string
 
@@ -157,7 +189,8 @@ type XMediaUploadResponse struct {
 	// Connected account selected for the write.
 	Account XMediaUploadResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XMediaUploadResponseAction `json:"action" api:"required"`
@@ -307,8 +340,14 @@ const (
 	XMediaUploadResponseActionUnlike          XMediaUploadResponseAction = "unlike"
 	XMediaUploadResponseActionRetweet         XMediaUploadResponseAction = "retweet"
 	XMediaUploadResponseActionUnretweet       XMediaUploadResponseAction = "unretweet"
+	XMediaUploadResponseActionBookmark        XMediaUploadResponseAction = "bookmark"
+	XMediaUploadResponseActionUnbookmark      XMediaUploadResponseAction = "unbookmark"
 	XMediaUploadResponseActionFollow          XMediaUploadResponseAction = "follow"
 	XMediaUploadResponseActionUnfollow        XMediaUploadResponseAction = "unfollow"
+	XMediaUploadResponseActionBlock           XMediaUploadResponseAction = "block"
+	XMediaUploadResponseActionUnblock         XMediaUploadResponseAction = "unblock"
+	XMediaUploadResponseActionMute            XMediaUploadResponseAction = "mute"
+	XMediaUploadResponseActionUnmute          XMediaUploadResponseAction = "unmute"
 	XMediaUploadResponseActionRemoveFollower  XMediaUploadResponseAction = "remove_follower"
 	XMediaUploadResponseActionSendDm          XMediaUploadResponseAction = "send_dm"
 	XMediaUploadResponseActionDeleteDm        XMediaUploadResponseAction = "delete_dm"

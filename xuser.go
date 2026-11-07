@@ -33,6 +33,10 @@ type XUserService struct {
 	options []option.RequestOption
 	// X write actions (tweets, likes, follows, DMs)
 	Follow XUserFollowService
+	// X write actions (tweets, likes, follows, DMs)
+	Block XUserBlockService
+	// X write actions (tweets, likes, follows, DMs)
+	Mute XUserMuteService
 }
 
 // NewXUserService generates a new service that applies the given options to each
@@ -42,6 +46,8 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	r = XUserService{}
 	r.options = opts
 	r.Follow = NewXUserFollowService(opts...)
+	r.Block = NewXUserBlockService(opts...)
+	r.Mute = NewXUserMuteService(opts...)
 	return
 }
 
@@ -399,7 +405,8 @@ type XUserRemoveFollowerResponse struct {
 	// Connected account selected for the write.
 	Account XUserRemoveFollowerResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XUserRemoveFollowerResponseAction `json:"action" api:"required"`
@@ -549,8 +556,14 @@ const (
 	XUserRemoveFollowerResponseActionUnlike          XUserRemoveFollowerResponseAction = "unlike"
 	XUserRemoveFollowerResponseActionRetweet         XUserRemoveFollowerResponseAction = "retweet"
 	XUserRemoveFollowerResponseActionUnretweet       XUserRemoveFollowerResponseAction = "unretweet"
+	XUserRemoveFollowerResponseActionBookmark        XUserRemoveFollowerResponseAction = "bookmark"
+	XUserRemoveFollowerResponseActionUnbookmark      XUserRemoveFollowerResponseAction = "unbookmark"
 	XUserRemoveFollowerResponseActionFollow          XUserRemoveFollowerResponseAction = "follow"
 	XUserRemoveFollowerResponseActionUnfollow        XUserRemoveFollowerResponseAction = "unfollow"
+	XUserRemoveFollowerResponseActionBlock           XUserRemoveFollowerResponseAction = "block"
+	XUserRemoveFollowerResponseActionUnblock         XUserRemoveFollowerResponseAction = "unblock"
+	XUserRemoveFollowerResponseActionMute            XUserRemoveFollowerResponseAction = "mute"
+	XUserRemoveFollowerResponseActionUnmute          XUserRemoveFollowerResponseAction = "unmute"
 	XUserRemoveFollowerResponseActionRemoveFollower  XUserRemoveFollowerResponseAction = "remove_follower"
 	XUserRemoveFollowerResponseActionSendDm          XUserRemoveFollowerResponseAction = "send_dm"
 	XUserRemoveFollowerResponseActionDeleteDm        XUserRemoveFollowerResponseAction = "delete_dm"
@@ -1395,6 +1408,9 @@ type XUserGetInsightsResponseInsights struct {
 	Followers float64 `json:"followers" api:"required"`
 	// Accounts the user follows.
 	Following float64 `json:"following" api:"required"`
+	// Middle view count of the sample, so 1 viral post moves it less than the average.
+	// Null without posts.
+	MedianViews float64 `json:"medianViews" api:"required"`
 	// Posts the user has made.
 	Posts float64 `json:"posts" api:"required"`
 	// Sampled posts per day, from the oldest one until now.
@@ -1418,6 +1434,7 @@ type XUserGetInsightsResponseInsights struct {
 		EngagementRate    respjson.Field
 		Followers         respjson.Field
 		Following         respjson.Field
+		MedianViews       respjson.Field
 		Posts             respjson.Field
 		PostsPerDay       respjson.Field
 		PostsPrivate      respjson.Field

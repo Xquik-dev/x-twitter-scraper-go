@@ -197,7 +197,8 @@ type XCommunityNewResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityNewResponseAction `json:"action" api:"required"`
@@ -347,8 +348,14 @@ const (
 	XCommunityNewResponseActionUnlike          XCommunityNewResponseAction = "unlike"
 	XCommunityNewResponseActionRetweet         XCommunityNewResponseAction = "retweet"
 	XCommunityNewResponseActionUnretweet       XCommunityNewResponseAction = "unretweet"
+	XCommunityNewResponseActionBookmark        XCommunityNewResponseAction = "bookmark"
+	XCommunityNewResponseActionUnbookmark      XCommunityNewResponseAction = "unbookmark"
 	XCommunityNewResponseActionFollow          XCommunityNewResponseAction = "follow"
 	XCommunityNewResponseActionUnfollow        XCommunityNewResponseAction = "unfollow"
+	XCommunityNewResponseActionBlock           XCommunityNewResponseAction = "block"
+	XCommunityNewResponseActionUnblock         XCommunityNewResponseAction = "unblock"
+	XCommunityNewResponseActionMute            XCommunityNewResponseAction = "mute"
+	XCommunityNewResponseActionUnmute          XCommunityNewResponseAction = "unmute"
 	XCommunityNewResponseActionRemoveFollower  XCommunityNewResponseAction = "remove_follower"
 	XCommunityNewResponseActionSendDm          XCommunityNewResponseAction = "send_dm"
 	XCommunityNewResponseActionDeleteDm        XCommunityNewResponseAction = "delete_dm"
@@ -493,7 +500,8 @@ type XCommunityDeleteResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityDeleteResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityDeleteResponseAction `json:"action" api:"required"`
@@ -643,8 +651,14 @@ const (
 	XCommunityDeleteResponseActionUnlike          XCommunityDeleteResponseAction = "unlike"
 	XCommunityDeleteResponseActionRetweet         XCommunityDeleteResponseAction = "retweet"
 	XCommunityDeleteResponseActionUnretweet       XCommunityDeleteResponseAction = "unretweet"
+	XCommunityDeleteResponseActionBookmark        XCommunityDeleteResponseAction = "bookmark"
+	XCommunityDeleteResponseActionUnbookmark      XCommunityDeleteResponseAction = "unbookmark"
 	XCommunityDeleteResponseActionFollow          XCommunityDeleteResponseAction = "follow"
 	XCommunityDeleteResponseActionUnfollow        XCommunityDeleteResponseAction = "unfollow"
+	XCommunityDeleteResponseActionBlock           XCommunityDeleteResponseAction = "block"
+	XCommunityDeleteResponseActionUnblock         XCommunityDeleteResponseAction = "unblock"
+	XCommunityDeleteResponseActionMute            XCommunityDeleteResponseAction = "mute"
+	XCommunityDeleteResponseActionUnmute          XCommunityDeleteResponseAction = "unmute"
 	XCommunityDeleteResponseActionRemoveFollower  XCommunityDeleteResponseAction = "remove_follower"
 	XCommunityDeleteResponseActionSendDm          XCommunityDeleteResponseAction = "send_dm"
 	XCommunityDeleteResponseActionDeleteDm        XCommunityDeleteResponseAction = "delete_dm"
