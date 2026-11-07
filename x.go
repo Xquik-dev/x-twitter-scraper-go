@@ -251,7 +251,9 @@ type XGetArticleResponseArticle struct {
 	// X's summary of the Article, when X has one
 	SummaryText string `json:"summaryText"`
 	Title       string `json:"title"`
-	ViewCount   int64  `json:"viewCount"`
+	// X did not send these counts, so treat each 0 as unknown.
+	UnknownCounts []TweetUnknownCount `json:"unknownCounts"`
+	ViewCount     int64               `json:"viewCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ArticleID      respjson.Field
@@ -271,6 +273,7 @@ type XGetArticleResponseArticle struct {
 		RetweetCount   respjson.Field
 		SummaryText    respjson.Field
 		Title          respjson.Field
+		UnknownCounts  respjson.Field
 		ViewCount      respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string

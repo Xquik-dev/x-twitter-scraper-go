@@ -88,7 +88,8 @@ type XProfileUpdateResponse struct {
 	// Connected account selected for the write.
 	Account XProfileUpdateResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XProfileUpdateResponseAction `json:"action" api:"required"`
@@ -238,8 +239,14 @@ const (
 	XProfileUpdateResponseActionUnlike          XProfileUpdateResponseAction = "unlike"
 	XProfileUpdateResponseActionRetweet         XProfileUpdateResponseAction = "retweet"
 	XProfileUpdateResponseActionUnretweet       XProfileUpdateResponseAction = "unretweet"
+	XProfileUpdateResponseActionBookmark        XProfileUpdateResponseAction = "bookmark"
+	XProfileUpdateResponseActionUnbookmark      XProfileUpdateResponseAction = "unbookmark"
 	XProfileUpdateResponseActionFollow          XProfileUpdateResponseAction = "follow"
 	XProfileUpdateResponseActionUnfollow        XProfileUpdateResponseAction = "unfollow"
+	XProfileUpdateResponseActionBlock           XProfileUpdateResponseAction = "block"
+	XProfileUpdateResponseActionUnblock         XProfileUpdateResponseAction = "unblock"
+	XProfileUpdateResponseActionMute            XProfileUpdateResponseAction = "mute"
+	XProfileUpdateResponseActionUnmute          XProfileUpdateResponseAction = "unmute"
 	XProfileUpdateResponseActionRemoveFollower  XProfileUpdateResponseAction = "remove_follower"
 	XProfileUpdateResponseActionSendDm          XProfileUpdateResponseAction = "send_dm"
 	XProfileUpdateResponseActionDeleteDm        XProfileUpdateResponseAction = "delete_dm"
@@ -384,7 +391,8 @@ type XProfileUpdateAvatarResponse struct {
 	// Connected account selected for the write.
 	Account XProfileUpdateAvatarResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XProfileUpdateAvatarResponseAction `json:"action" api:"required"`
@@ -534,8 +542,14 @@ const (
 	XProfileUpdateAvatarResponseActionUnlike          XProfileUpdateAvatarResponseAction = "unlike"
 	XProfileUpdateAvatarResponseActionRetweet         XProfileUpdateAvatarResponseAction = "retweet"
 	XProfileUpdateAvatarResponseActionUnretweet       XProfileUpdateAvatarResponseAction = "unretweet"
+	XProfileUpdateAvatarResponseActionBookmark        XProfileUpdateAvatarResponseAction = "bookmark"
+	XProfileUpdateAvatarResponseActionUnbookmark      XProfileUpdateAvatarResponseAction = "unbookmark"
 	XProfileUpdateAvatarResponseActionFollow          XProfileUpdateAvatarResponseAction = "follow"
 	XProfileUpdateAvatarResponseActionUnfollow        XProfileUpdateAvatarResponseAction = "unfollow"
+	XProfileUpdateAvatarResponseActionBlock           XProfileUpdateAvatarResponseAction = "block"
+	XProfileUpdateAvatarResponseActionUnblock         XProfileUpdateAvatarResponseAction = "unblock"
+	XProfileUpdateAvatarResponseActionMute            XProfileUpdateAvatarResponseAction = "mute"
+	XProfileUpdateAvatarResponseActionUnmute          XProfileUpdateAvatarResponseAction = "unmute"
 	XProfileUpdateAvatarResponseActionRemoveFollower  XProfileUpdateAvatarResponseAction = "remove_follower"
 	XProfileUpdateAvatarResponseActionSendDm          XProfileUpdateAvatarResponseAction = "send_dm"
 	XProfileUpdateAvatarResponseActionDeleteDm        XProfileUpdateAvatarResponseAction = "delete_dm"
@@ -680,7 +694,8 @@ type XProfileUpdateBannerResponse struct {
 	// Connected account selected for the write.
 	Account XProfileUpdateBannerResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XProfileUpdateBannerResponseAction `json:"action" api:"required"`
@@ -830,8 +845,14 @@ const (
 	XProfileUpdateBannerResponseActionUnlike          XProfileUpdateBannerResponseAction = "unlike"
 	XProfileUpdateBannerResponseActionRetweet         XProfileUpdateBannerResponseAction = "retweet"
 	XProfileUpdateBannerResponseActionUnretweet       XProfileUpdateBannerResponseAction = "unretweet"
+	XProfileUpdateBannerResponseActionBookmark        XProfileUpdateBannerResponseAction = "bookmark"
+	XProfileUpdateBannerResponseActionUnbookmark      XProfileUpdateBannerResponseAction = "unbookmark"
 	XProfileUpdateBannerResponseActionFollow          XProfileUpdateBannerResponseAction = "follow"
 	XProfileUpdateBannerResponseActionUnfollow        XProfileUpdateBannerResponseAction = "unfollow"
+	XProfileUpdateBannerResponseActionBlock           XProfileUpdateBannerResponseAction = "block"
+	XProfileUpdateBannerResponseActionUnblock         XProfileUpdateBannerResponseAction = "unblock"
+	XProfileUpdateBannerResponseActionMute            XProfileUpdateBannerResponseAction = "mute"
+	XProfileUpdateBannerResponseActionUnmute          XProfileUpdateBannerResponseAction = "unmute"
 	XProfileUpdateBannerResponseActionRemoveFollower  XProfileUpdateBannerResponseAction = "remove_follower"
 	XProfileUpdateBannerResponseActionSendDm          XProfileUpdateBannerResponseAction = "send_dm"
 	XProfileUpdateBannerResponseActionDeleteDm        XProfileUpdateBannerResponseAction = "delete_dm"

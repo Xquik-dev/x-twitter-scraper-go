@@ -1,87 +1,97 @@
-# X API & Twitter API Go SDK by Xquik
+# Twitter scraper & X API Go SDK by Xquik
 
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13734/badge)](https://www.bestpractices.dev/projects/13734)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg?url=https%3A%2F%2Fgithub.com%2FXquik-dev%2Fx-twitter-scraper-go)](https://deepwiki.com/Xquik-dev/x-twitter-scraper-go)
+Use this Twitter scraper Go SDK by Xquik to read tweets into Go structs.
+Every call takes a `context.Context`.
+Public reads need no X developer account.
 
-<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go"><img src="https://pkg.go.dev/badge/github.com/Xquik-dev/x-twitter-scraper-go.svg" alt="Go Reference"></a>
-<a href="https://www.convex.dev/components/convex-xquik"><img src="https://www.convex.dev/components/badge/convex-xquik" alt="Convex Component"></a>
-
-Use this X API & Twitter API SDK to work with X from Go.
-It works as a Twitter scraper & tweet scraper for search, profiles & followers.
-Scrape Twitter timelines, lists, communities & trends into typed Go structs.
-Manage media, webhooks, monitors & X automation with typed Go methods.
-It provides a Twitter API alternative through documented Xquik REST routes.
-
-Xquik is the world's fastest and cheapest X Twitter scraper service with the most complete X data.
+Xquik is the world's fastest and cheapest X (Twitter) scraper service with the most complete X (Twitter) data.
+Most other Apify Actors charge before filtering or deduplication.
 Xquik charges only for delivered, unique, filter-matching results and never pads rows.
+Xquik is independent and not affiliated with X Corp.
 
-> Xquik is an independent third-party service. Not affiliated with X Corp.
-> "Twitter" and "X" are trademarks of X Corp.
+<!-- trust:win:start -->
+
+The Xquik REST API read 45 tweets per second on 2026-10-15. That cost $0.15 per 1,000. The fastest of 4 rival Actors read 12.5 per second. The cheapest cost $0.173 per 1,000. [Compare each run](https://xquik.com/benchmarks#benchmark-x-tweet-scraper).
+
+<!-- trust:win:end -->
+
+## Install the Go Twitter API & scraper SDK
+
+The SDK requires Go 1.27.3 or later.
+
+```sh
+go get 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
+```
+
+## Scrape tweets with the Golang Twitter API
+
+Set `X_TWITTER_SCRAPER_API_KEY`, then run this search.
+Search takes the same operators as X search & returns typed tweets.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
+	"github.com/Xquik-dev/x-twitter-scraper-go/option"
+)
+
+func main() {
+	client := xtwitterscraper.NewClient(
+		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
+	)
+	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
+		Q:     "from:elonmusk",
+		Limit: xtwitterscraper.Int(10),
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%+v\n", response)
+}
+```
+
+Next, read the [Go SDK guide](https://docs.xquik.com/sdks/go), [Go reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) or [REST API reference](https://docs.xquik.com/api-reference/overview).
 
 <!-- trust:start -->
 
-## Trust & usage
+## Benchmarks & usage
 
-[![Twitter API package downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fdownloads.json)](https://xquik.com/trust#downloads)
-[![Twitter scraper users on Apify](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fapify-users.json)](https://apify.com/xquik)
-[![Twitter scraper runs on Apify](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fapify-runs.json)](https://apify.com/xquik)
-[![Tweet scraper rating on Apify](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fapify-rating.json)](https://apify.com/xquik/x-tweet-scraper/reviews)
-[![Xquik Twitter API accounts](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Faccounts.json)](https://xquik.com/trust#accounts)
-[![Twitter Skill installs](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fskill-installs.json)](https://xquik.com/trust#skill-installs)
-[![Xquik verified revenue on TrustMRR](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Frevenue.json)](https://trustmrr.com/startup/xquik)
-[![Twitter API median response time](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Frest-p50.json)](https://xquik.com/trust#speed)
-[![Xquik GitHub stars](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fgithub-stars.json)](https://github.com/Xquik-dev)
+[![X (Twitter) API package downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fdownloads.json)](https://xquik.com/benchmarks#downloads)
+[![X (Twitter) API p99 server read time](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Frest-p99.json)](https://xquik.com/benchmarks#speed)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13734/badge)](https://www.bestpractices.dev/projects/13734)
 
-- 51,000+ downloads of Xquik's Twitter API packages on npm, PyPI, RubyGems, NuGet, Packagist & Terraform ([source](https://xquik.com/trust#downloads)) <!-- trust:downloads 51020 -->
-- 7,800+ users of Xquik's Twitter scraper Actors on Apify ([source](https://apify.com/xquik)) <!-- trust:apify-users 7800 -->
-- 5,700,000+ runs of Xquik's Twitter scraper Actors on Apify ([source](https://apify.com/xquik)) <!-- trust:apify-runs 5704701 -->
-- 4.66 of 5 for the X Tweet Scraper from 16 Apify reviews ([source](https://apify.com/xquik/x-tweet-scraper/reviews)) <!-- trust:apify-rating 4.66 16 -->
-- 3,900+ accounts on xquik.com ([source](https://xquik.com/trust#accounts)) <!-- trust:accounts 3924 -->
-- 1,600+ installs of Xquik's Twitter Skills on skills.sh ([source](https://xquik.com/trust#skill-installs)) <!-- trust:skill-installs 1612 -->
-- $38,000+ in revenue verified by TrustMRR ([source](https://trustmrr.com/startup/xquik)) <!-- trust:revenue 38115 -->
-- 501 ms median REST API read time over the last 7 days ([source](https://xquik.com/trust#speed)) <!-- trust:rest-p50 501 -->
-- 370+ GitHub stars across Xquik's repos ([source](https://github.com/Xquik-dev)) <!-- trust:github-stars 374 -->
+- 63,000+ downloads of Xquik's X (Twitter) API packages across 6 registries ([source](https://xquik.com/benchmarks#downloads)) <!-- trust:downloads 63829 -->
+- 5.8 s p99 REST server read time over 7 days, failures included ([source](https://xquik.com/benchmarks#speed)) <!-- trust:rest-p99 5793 -->
 - This repo meets the OpenSSF Best Practices passing criteria ([source](https://www.bestpractices.dev/projects/13734)) <!-- trust:openssf-x-twitter-scraper-go 1 -->
 
-Checked on 2026-10-15. See each number with its date & source on [xquik.com/trust](https://xquik.com/trust) or as [JSON](https://xquik.com/trust.json).
+Checked on 2026-11-07. See each number with its date & source on [xquik.com/benchmarks](https://xquik.com/benchmarks) or as [JSON](https://xquik.com/trust.json).
 
 <!-- trust:end -->
 
 ## Twitter API alternative
 
 This package does not call or emulate the official X API.
-Use it when the official X API does not fit your workflow.
-
-[Go reference](https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go) | [REST API docs](https://docs.xquik.com/api-reference/overview) | [OpenAPI spec](https://xquik.com/openapi.json) | [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go) | [Webhooks](https://docs.xquik.com/api-reference/webhooks/create) | [OAuth-first MCP guide](https://docs.xquik.com/mcp/overview)
+Build on the [OpenAPI spec](https://xquik.com/openapi.json), [webhooks](https://docs.xquik.com/api-reference/webhooks/create) or [MCP guide](https://docs.xquik.com/mcp/overview).
+AI coding tools can read this SDK through [Context7](https://context7.com/xquik-dev/x-twitter-scraper-go).
 
 ## Common Twitter & X tasks
 
 | Task | REST route | Workflow note |
 | --- | --- | --- |
 | Search tweets without the X API | `GET /x/tweets/search` | Use keyword or advanced operator queries. |
-| Read an X profile timeline | `GET /x/users/{id}/tweets` | Paginate bounded results. |
+| Read an X profile timeline | `GET /x/users/{id}/tweets` | Pass the cursor to read the next page. |
 | Scrape Twitter followers | `GET /x/users/{id}/followers` | Use an extraction for complete datasets. |
 | Scrape following accounts | `GET /x/users/{id}/following` | Use an extraction for complete datasets. |
-| Read a home timeline | `GET /x/timeline` | Approve this private read. |
+| Read a home timeline | `GET /x/timeline` | Connect an X account first. |
 | Export large X datasets | `POST /extractions` | Poll status, then download results. |
 | Download or upload media | `/x/media/*` | Use typed file helpers. |
 | Monitor an account | `POST /monitors` | Deliver events through HMAC webhooks. |
 | Post or reply | `POST /x/tweets` | Confirm the account and payload. |
-
-## Installation
-
-```go
-import (
-	"github.com/Xquik-dev/x-twitter-scraper-go" // imported as xtwitterscraper
-)
-```
-
-Or pin the version.
-
-```sh
-go get -u 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
-```
 
 ## Verify a release
 
@@ -114,41 +124,9 @@ gh attestation verify "$archive" \
 
 GitHub verifies the digest, signer identity, and transparency proof.
 
-## Requirements
-
-Use Go 1.27.3 or newer.
-
 ## Usage
 
 See [api.md](api.md) for the complete API.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-
-	"github.com/Xquik-dev/x-twitter-scraper-go"
-	"github.com/Xquik-dev/x-twitter-scraper-go/option"
-)
-
-func main() {
-	client := xtwitterscraper.NewClient(
-		option.WithAPIKey(os.Getenv("X_TWITTER_SCRAPER_API_KEY")),
-	)
-	response, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{
-		Q:     "from:elonmusk",
-		Limit: xtwitterscraper.Int(10),
-	})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", response)
-}
-
-```
 
 ### Request fields
 
@@ -206,15 +184,15 @@ The SDK serializes the nonzero field. Getter methods return mutable pointers whe
 ```go
 // Set only one variant.
 type AnimalUnionParam struct {
-	OfCat *Cat `json:",omitzero,inline`
-	OfDog *Dog `json:",omitzero,inline`
+	OfCat *Cat `json:",omitzero,inline"`
+	OfDog *Dog `json:",omitzero,inline"`
 }
 
 animal := AnimalUnionParam{
 	OfCat: &Cat{
 		Name: "Whiskers",
 		Owner: PersonParam{
-			Address: AddressParam{Street: "3333 Coyote Hill Rd", Zip: 0},
+			Address: AddressParam{Street: "3333 Coyote Hill Rd", ZipCode: 0},
 		},
 	},
 }
@@ -236,14 +214,14 @@ type Animal struct {
 	Age    int    `json:"age"`
 	JSON   struct {
 		Name        respjson.Field
-		Owner       respjson.Field
+		Owners      respjson.Field
 		Age         respjson.Field
 		ExtraFields map[string]respjson.Field
 	} `json:"-"`
 }
 ```
 
-`.Valid()` reports whether a field was present, non-null & decoded successfully.
+`.Valid()` reports whether a field was present, non-null & decoded without error.
 Invalid or omitted fields keep their zero value.
 
 ```go
@@ -414,7 +392,8 @@ Other errors remain unwrapped. Transport failures may return `*url.Error` wrappi
 
 ### Timeouts
 
-Requests have no default timeout. Use a context for the full request lifecycle.
+The default client waits up to 10 minutes for response headers.
+It sets no other timeout. Use a context for the full request lifecycle.
 Retries share that context deadline. Use `option.WithRequestTimeout()` to limit each attempt.
 
 ```go
@@ -579,23 +558,35 @@ This package follows [SemVer](https://semver.org/spec/v2.0.0.html).
 Before v1.0, minor releases may change undocumented internals.
 Open an [issue](https://github.com/Xquik-dev/x-twitter-scraper-go/issues) before depending on them.
 
-## Contributing
+## Questions
 
-Read the [contribution guide](CONTRIBUTING.md).
+### Do I need an X developer account?
+
+No. Public reads need only an Xquik API key.
+Private reads & X account actions need a connected X account.
+
+### Is this the official X API?
+
+No. Xquik runs its own REST API. This SDK calls that API, not the official X API.
 
 ## More Xquik tools
 
 - [X (Twitter) scraper API & Twitter MCP server](https://github.com/Xquik-dev/x-twitter-scraper) with REST, MCP & Skill setup.
-- Twitter API SDKs for [TypeScript](https://github.com/Xquik-dev/x-twitter-scraper-typescript), [Python](https://github.com/Xquik-dev/x-twitter-scraper-python), [Ruby](https://github.com/Xquik-dev/x-twitter-scraper-ruby), [Java](https://github.com/Xquik-dev/x-twitter-scraper-java), [Kotlin](https://github.com/Xquik-dev/x-twitter-scraper-kotlin), [C#](https://github.com/Xquik-dev/x-twitter-scraper-csharp) & [PHP](https://github.com/Xquik-dev/x-twitter-scraper-php).
+- Twitter API SDKs for [TypeScript](https://github.com/Xquik-dev/x-twitter-scraper-typescript), [Python](https://github.com/Xquik-dev/x-twitter-scraper-python), [Ruby](https://github.com/Xquik-dev/x-twitter-scraper-ruby) & [Java](https://github.com/Xquik-dev/x-twitter-scraper-java).
+- More Twitter API SDKs for [Kotlin](https://github.com/Xquik-dev/x-twitter-scraper-kotlin), [C#](https://github.com/Xquik-dev/x-twitter-scraper-csharp) & [PHP](https://github.com/Xquik-dev/x-twitter-scraper-php).
 - [Twitter CLI & X CLI](https://github.com/Xquik-dev/x-twitter-scraper-cli) for terminal workflows.
 - [Twitter advanced search operators](https://github.com/Xquik-dev/x-twitter-advanced-search) with tested examples.
-- [Xquik X API & Twitter scraper](https://xquik.com) and the [Twitter API documentation](https://docs.xquik.com/api-reference/overview).
+- Twitter agent plugins for [OpenClaw](https://github.com/Xquik-dev/tweetclaw) & [Hermes Agent](https://github.com/Xquik-dev/hermes-tweet).
+- Twitter integrations for [n8n](https://github.com/Xquik-dev/n8n-nodes-xquik), [Prefect](https://github.com/Xquik-dev/prefect-xquik), [Haystack](https://github.com/Xquik-dev/xquik-haystack) & [Paperclip](https://github.com/Xquik-dev/paperclip-plugin-xquik).
+- More Twitter integrations for [Terraform](https://github.com/Xquik-dev/terraform-provider-x-twitter-scraper), [Convex](https://github.com/Xquik-dev/xquik-convex), [Supabase](https://github.com/Xquik-dev/xquik-supabase) & [Strapi](https://github.com/Xquik-dev/strapi-plugin-xquik).
+- Twitter MCP for [AI agents](https://github.com/Xquik-dev/xquik-mcp), [VS Code](https://github.com/Xquik-dev/xquik-vscode) & [Raycast](https://github.com/Xquik-dev/xquik-raycast).
+- [Xquik X API & Twitter scraper](https://xquik.com), [Twitter API docs](https://docs.xquik.com/api-reference/overview) & [docs source](https://github.com/Xquik-dev/xquik-docs).
 
-## Security & project health
+## Help & contributing
 
-- [Security policy](SECURITY.md)
-- [Governance](GOVERNANCE.md)
-- [OpenSSF evidence](OPENSSF.md)
-- [Changelog](CHANGELOG.md)
+- Report vulnerabilities through the [security policy](SECURITY.md).
+- Ask usage questions through the [organization support policy](https://github.com/Xquik-dev/.github/blob/main/SUPPORT.md).
+- Read the [contribution guide](CONTRIBUTING.md) & [governance policy](GOVERNANCE.md).
+- Read the [OpenSSF evidence](OPENSSF.md), [changelog](CHANGELOG.md) & [citation metadata](CITATION.cff).
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.

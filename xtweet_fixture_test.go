@@ -265,3 +265,17 @@ func TestXTweetTranslateFixture(t *testing.T) {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 }
+
+func TestXTweetSearchSendsNoQWhenAnotherFieldFormsTheSearch(t *testing.T) {
+	client, request := fixtureClient(t, "PaginatedTweets.json")
+	res, err := client.X.Tweets.Search(context.Background(), xtwitterscraper.XTweetSearchParams{
+		FromUser: xtwitterscraper.String("nasa"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodGet, "/api/v1/x/tweets/search", "fromUser=nasa")
+	if len(res.Tweets) == 0 {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+}

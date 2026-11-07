@@ -23,6 +23,9 @@ func expectPostMonitor(t *testing.T, res *xtwitterscraper.PostMonitor) {
 		res.AuthorUsername != "xquik" ||
 		res.AuthorAvatarURL != "https://pbs.twimg.com/profile_images/1/xquik_normal.jpg" ||
 		res.AuthorVerified != "blue" ||
+		res.AuthorAffiliate.BadgeURL != "https://pbs.twimg.com/profile_images/1955359038532653056/OSHY3ewP_bigger.jpg" ||
+		res.AuthorAffiliate.Description != "X" ||
+		res.AuthorAffiliate.URL != "https://twitter.com/X" ||
 		len(res.Media) != 1 || res.Media[0].Kind != "photo" || res.Media[0].URL != "https://pbs.twimg.com/media/GxPhoto.jpg" ||
 		!res.Baseline.At.Equal(time.Date(2026, time.October, 22, 11, 0, 0, 0, time.UTC)) ||
 		res.Baseline.Views != 541100 || res.Baseline.Likes != 1885 || res.Baseline.Retweets != 112 ||
@@ -50,6 +53,18 @@ func TestMonitorPostNewFixture(t *testing.T) {
 	request.expect(t, http.MethodPost, "/api/v1/monitors/posts", "")
 	request.expectBody(t, `{"post":"https://x.com/xquik/status/2104984505677430978","name":"Launch post","eventTypes":["post.reply.new","post.likes.changed"]}`)
 	expectPostMonitor(t, res)
+}
+
+func TestMonitorPostNewCreatesAPausedMonitor(t *testing.T) {
+	client, request := fixtureClient(t, "getPostMonitor.json")
+	_, err := client.Monitors.Posts.New(context.Background(), xtwitterscraper.MonitorPostNewParams{
+		Post:     "https://x.com/NASA/status/2102882545427714266",
+		IsActive: xtwitterscraper.Bool(false),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expectBody(t, `{"post":"https://x.com/NASA/status/2102882545427714266","isActive":false}`)
 }
 
 func TestMonitorPostGetFixture(t *testing.T) {

@@ -191,6 +191,9 @@ type PostMonitor struct {
 	//
 	// Any of "blue", "business", "government".
 	AuthorVerified PostMonitorAuthorVerified `json:"authorVerified"`
+	// The organization badge X shows beside the author's name. Omitted when X shows
+	// none.
+	AuthorAffiliate PostMonitorAuthorAffiliate `json:"authorAffiliate"`
 	// Photos, videos and GIFs on the post, in X's order.
 	Media []PostMonitorMedia `json:"media" api:"required"`
 	// Text of the newest version Xquik read.
@@ -226,6 +229,7 @@ type PostMonitor struct {
 		AuthorName      respjson.Field
 		AuthorAvatarURL respjson.Field
 		AuthorVerified  respjson.Field
+		AuthorAffiliate respjson.Field
 		Media           respjson.Field
 		Text            respjson.Field
 		PostedAt        respjson.Field
@@ -256,6 +260,31 @@ const (
 	PostMonitorAuthorVerifiedBusiness   PostMonitorAuthorVerified = "business"
 	PostMonitorAuthorVerifiedGovernment PostMonitorAuthorVerified = "government"
 )
+
+// PostMonitorAuthorAffiliate is the organization badge X shows beside the author's
+// name.
+type PostMonitorAuthorAffiliate struct {
+	// The organization's badge image.
+	BadgeURL string `json:"badgeUrl" api:"required" format:"uri"`
+	// The organization's name, as X shows it.
+	Description string `json:"description" api:"required"`
+	// The organization's X profile, when X links one.
+	URL string `json:"url" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BadgeURL    respjson.Field
+		Description respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// RawJSON returns the unmodified JSON received from the API.
+func (r PostMonitorAuthorAffiliate) RawJSON() string { return r.JSON.raw }
+func (r *PostMonitorAuthorAffiliate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // PostMonitorMedia holds 1 photo, video or GIF on the post.
 type PostMonitorMedia struct {
@@ -467,6 +496,9 @@ type MonitorPostNewParams struct {
 	// Post event types to send. Without it, a monitor sends new replies, new quotes,
 	// like & retweet changes, edits & deletion.
 	EventTypes []string `json:"eventTypes,omitzero"`
+	// Send false to create the monitor paused. A paused monitor reads nothing & costs
+	// nothing until a PATCH sets isActive to true.
+	IsActive param.Opt[bool] `json:"isActive,omitzero"`
 	paramObj
 }
 
