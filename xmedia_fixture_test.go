@@ -20,16 +20,27 @@ func TestXMediaDownloadFixture(t *testing.T) {
 	request.expect(t, http.MethodPost, "/api/v1/x/media/download", "")
 	request.expectBody(t, `{"tweetInput":"1234567890"}`)
 	expectDecoded(t, res)
-	if res.TweetID != "1234567890" || res.GalleryURL != "https://xquik.com/gallery/abc123" || res.CacheHit || len(res.Items) != 1 {
+	if res.TweetID != "1234567890" || res.GalleryURL != "https://xquik.com/gallery/abc123" || res.CacheHit || len(res.Items) != 2 {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 	item := res.Items[0]
 	if item.ID != "42" || item.TweetID != "1234567890" || item.MediaType != "photo" ||
 		item.MediaURL != "https://media.xquik.com/tweet_1234567890/0.jpg" || item.FileSize != "2097152" ||
+		item.PosterURL != "" || item.JSON.PosterURL.Raw() != "null" || len(item.Qualities) != 0 || !item.JSON.Qualities.Valid() ||
 		!item.CreatedAt.Equal(time.Date(2026, time.October, 16, 11, 0, 0, 0, time.UTC)) ||
 		item.AuthorUsername != "elonmusk" || item.AuthorDisplayName != "Elon Musk" ||
 		item.AuthorAvatar != "" || item.JSON.AuthorAvatar.Raw() != "null" ||
 		item.TweetText != "Launch day." || item.Likes != 1200 || item.Retweets != 340 || item.Views != 56000 {
 		t.Fatalf("decoded %s", item.RawJSON())
+	}
+	video := res.Items[1]
+	if video.MediaType != "video" ||
+		video.PosterURL != "https://media.xquik.com/tweet_1234567890/1.jpg" ||
+		len(video.Qualities) != 1 ||
+		video.Qualities[0].Bitrate != 2176000 ||
+		video.Qualities[0].Height != 720 ||
+		video.Qualities[0].Width != 1280 ||
+		video.Qualities[0].URL != "https://video.twimg.com/amplify_video/1/vid/avc1/1280x720/a.mp4" {
+		t.Fatalf("decoded %s", video.RawJSON())
 	}
 }

@@ -35,6 +35,8 @@ type XTweetService struct {
 	Like XTweetLikeService
 	// X write actions (tweets, likes, follows, DMs)
 	Retweet XTweetRetweetService
+	// X write actions (tweets, likes, follows, DMs)
+	Bookmark XTweetBookmarkService
 }
 
 // NewXTweetService generates a new service that applies the given options to each
@@ -45,6 +47,7 @@ func NewXTweetService(opts ...option.RequestOption) (r XTweetService) {
 	r.options = opts
 	r.Like = NewXTweetLikeService(opts...)
 	r.Retweet = NewXTweetRetweetService(opts...)
+	r.Bookmark = NewXTweetBookmarkService(opts...)
 	return
 }
 
@@ -2171,7 +2174,8 @@ type XTweetNewResponse struct {
 	// Connected account selected for the write.
 	Account XTweetNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetNewResponseAction `json:"action" api:"required"`
@@ -2321,8 +2325,14 @@ const (
 	XTweetNewResponseActionUnlike          XTweetNewResponseAction = "unlike"
 	XTweetNewResponseActionRetweet         XTweetNewResponseAction = "retweet"
 	XTweetNewResponseActionUnretweet       XTweetNewResponseAction = "unretweet"
+	XTweetNewResponseActionBookmark        XTweetNewResponseAction = "bookmark"
+	XTweetNewResponseActionUnbookmark      XTweetNewResponseAction = "unbookmark"
 	XTweetNewResponseActionFollow          XTweetNewResponseAction = "follow"
 	XTweetNewResponseActionUnfollow        XTweetNewResponseAction = "unfollow"
+	XTweetNewResponseActionBlock           XTweetNewResponseAction = "block"
+	XTweetNewResponseActionUnblock         XTweetNewResponseAction = "unblock"
+	XTweetNewResponseActionMute            XTweetNewResponseAction = "mute"
+	XTweetNewResponseActionUnmute          XTweetNewResponseAction = "unmute"
 	XTweetNewResponseActionRemoveFollower  XTweetNewResponseAction = "remove_follower"
 	XTweetNewResponseActionSendDm          XTweetNewResponseAction = "send_dm"
 	XTweetNewResponseActionDeleteDm        XTweetNewResponseAction = "delete_dm"
@@ -2489,7 +2499,8 @@ type XTweetDeleteResponse struct {
 	// Connected account selected for the write.
 	Account XTweetDeleteResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetDeleteResponseAction `json:"action" api:"required"`
@@ -2639,8 +2650,14 @@ const (
 	XTweetDeleteResponseActionUnlike          XTweetDeleteResponseAction = "unlike"
 	XTweetDeleteResponseActionRetweet         XTweetDeleteResponseAction = "retweet"
 	XTweetDeleteResponseActionUnretweet       XTweetDeleteResponseAction = "unretweet"
+	XTweetDeleteResponseActionBookmark        XTweetDeleteResponseAction = "bookmark"
+	XTweetDeleteResponseActionUnbookmark      XTweetDeleteResponseAction = "unbookmark"
 	XTweetDeleteResponseActionFollow          XTweetDeleteResponseAction = "follow"
 	XTweetDeleteResponseActionUnfollow        XTweetDeleteResponseAction = "unfollow"
+	XTweetDeleteResponseActionBlock           XTweetDeleteResponseAction = "block"
+	XTweetDeleteResponseActionUnblock         XTweetDeleteResponseAction = "unblock"
+	XTweetDeleteResponseActionMute            XTweetDeleteResponseAction = "mute"
+	XTweetDeleteResponseActionUnmute          XTweetDeleteResponseAction = "unmute"
 	XTweetDeleteResponseActionRemoveFollower  XTweetDeleteResponseAction = "remove_follower"
 	XTweetDeleteResponseActionSendDm          XTweetDeleteResponseAction = "send_dm"
 	XTweetDeleteResponseActionDeleteDm        XTweetDeleteResponseAction = "delete_dm"
@@ -4804,9 +4821,10 @@ const (
 )
 
 type XTweetSearchParams struct {
-	// Query, Tweet ID, or URL. Hyphens negate terms. Use exactPhrase for literals.
-	// Valid bounds apply per page.
-	Q string `query:"q" api:"required" json:"-"`
+	// Query, Tweet ID, or URL. Alias query. Optional when fromUser, keywords or
+	// another field forms the search. Without either, it answers 400 missing_query.
+	// Hyphens negate terms. Use exactPhrase for literals. Valid bounds apply per page.
+	Q string `query:"q,omitzero" json:"-"`
 	// Raw advanced search query appended as-is.
 	AdvancedQuery param.Opt[string] `query:"advancedQuery,omitzero" json:"-"`
 	// Words or quoted phrases where any one can match. Separate with spaces, commas,
@@ -4913,6 +4931,10 @@ type XTweetSearchParams struct {
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
+	// Keeps a post only when at least 1 of these words or quoted phrases appears
+	// outside the author's name and username, such as in its text, a link, its card or
+	// a quoted post.
+	TextOnlyTerms param.Opt[string] `query:"textOnlyTerms,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.

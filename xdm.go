@@ -144,7 +144,8 @@ type XDmSendResponse struct {
 	// Connected account selected for the write.
 	Account XDmSendResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XDmSendResponseAction `json:"action" api:"required"`
@@ -294,8 +295,14 @@ const (
 	XDmSendResponseActionUnlike          XDmSendResponseAction = "unlike"
 	XDmSendResponseActionRetweet         XDmSendResponseAction = "retweet"
 	XDmSendResponseActionUnretweet       XDmSendResponseAction = "unretweet"
+	XDmSendResponseActionBookmark        XDmSendResponseAction = "bookmark"
+	XDmSendResponseActionUnbookmark      XDmSendResponseAction = "unbookmark"
 	XDmSendResponseActionFollow          XDmSendResponseAction = "follow"
 	XDmSendResponseActionUnfollow        XDmSendResponseAction = "unfollow"
+	XDmSendResponseActionBlock           XDmSendResponseAction = "block"
+	XDmSendResponseActionUnblock         XDmSendResponseAction = "unblock"
+	XDmSendResponseActionMute            XDmSendResponseAction = "mute"
+	XDmSendResponseActionUnmute          XDmSendResponseAction = "unmute"
 	XDmSendResponseActionRemoveFollower  XDmSendResponseAction = "remove_follower"
 	XDmSendResponseActionSendDm          XDmSendResponseAction = "send_dm"
 	XDmSendResponseActionDeleteDm        XDmSendResponseAction = "delete_dm"
@@ -440,7 +447,8 @@ type XDmDeleteMessageResponse struct {
 	// Connected account selected for the write.
 	Account XDmDeleteMessageResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XDmDeleteMessageResponseAction `json:"action" api:"required"`
@@ -592,8 +600,14 @@ const (
 	XDmDeleteMessageResponseActionUnlike          XDmDeleteMessageResponseAction = "unlike"
 	XDmDeleteMessageResponseActionRetweet         XDmDeleteMessageResponseAction = "retweet"
 	XDmDeleteMessageResponseActionUnretweet       XDmDeleteMessageResponseAction = "unretweet"
+	XDmDeleteMessageResponseActionBookmark        XDmDeleteMessageResponseAction = "bookmark"
+	XDmDeleteMessageResponseActionUnbookmark      XDmDeleteMessageResponseAction = "unbookmark"
 	XDmDeleteMessageResponseActionFollow          XDmDeleteMessageResponseAction = "follow"
 	XDmDeleteMessageResponseActionUnfollow        XDmDeleteMessageResponseAction = "unfollow"
+	XDmDeleteMessageResponseActionBlock           XDmDeleteMessageResponseAction = "block"
+	XDmDeleteMessageResponseActionUnblock         XDmDeleteMessageResponseAction = "unblock"
+	XDmDeleteMessageResponseActionMute            XDmDeleteMessageResponseAction = "mute"
+	XDmDeleteMessageResponseActionUnmute          XDmDeleteMessageResponseAction = "unmute"
 	XDmDeleteMessageResponseActionRemoveFollower  XDmDeleteMessageResponseAction = "remove_follower"
 	XDmDeleteMessageResponseActionSendDm          XDmDeleteMessageResponseAction = "send_dm"
 	XDmDeleteMessageResponseActionDeleteDm        XDmDeleteMessageResponseAction = "delete_dm"

@@ -60,7 +60,8 @@ type XWriteActionGetResponse struct {
 	// Connected account selected for the write.
 	Account XWriteActionGetResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XWriteActionGetResponseAction `json:"action" api:"required"`
@@ -210,8 +211,14 @@ const (
 	XWriteActionGetResponseActionUnlike          XWriteActionGetResponseAction = "unlike"
 	XWriteActionGetResponseActionRetweet         XWriteActionGetResponseAction = "retweet"
 	XWriteActionGetResponseActionUnretweet       XWriteActionGetResponseAction = "unretweet"
+	XWriteActionGetResponseActionBookmark        XWriteActionGetResponseAction = "bookmark"
+	XWriteActionGetResponseActionUnbookmark      XWriteActionGetResponseAction = "unbookmark"
 	XWriteActionGetResponseActionFollow          XWriteActionGetResponseAction = "follow"
 	XWriteActionGetResponseActionUnfollow        XWriteActionGetResponseAction = "unfollow"
+	XWriteActionGetResponseActionBlock           XWriteActionGetResponseAction = "block"
+	XWriteActionGetResponseActionUnblock         XWriteActionGetResponseAction = "unblock"
+	XWriteActionGetResponseActionMute            XWriteActionGetResponseAction = "mute"
+	XWriteActionGetResponseActionUnmute          XWriteActionGetResponseAction = "unmute"
 	XWriteActionGetResponseActionRemoveFollower  XWriteActionGetResponseAction = "remove_follower"
 	XWriteActionGetResponseActionSendDm          XWriteActionGetResponseAction = "send_dm"
 	XWriteActionGetResponseActionDeleteDm        XWriteActionGetResponseAction = "delete_dm"

@@ -1,0 +1,43 @@
+{
+  "object": "x_write_action",
+  "id": "12345",
+  "writeActionId": "12345",
+  "action": "bookmark",
+  "status": "success",
+  "terminal": true,
+  "retryable": false,
+  "safeToRetry": false,
+  "statusUrl": "/api/v1/x/write-actions/12345",
+  "pollAfterMs": null,
+  "charged": true,
+  "chargedCredits": "10",
+  "billing": {
+    "status": "charged",
+    "charged": true,
+    "plannedCredits": "10",
+    "chargedCredits": "10"
+  },
+  "request": {
+    "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "payload": {
+      "target_id": "1234567890"
+    }
+  },
+  "account": {
+    "id": "42",
+    "username": "example"
+  },
+  "target": {
+    "type": "tweet",
+    "id": "1234567890"
+  },
+  "targetId": "1234567890",
+  "result": {
+    "type": "state_change",
+    "id": "1234567890",
+    "state": "bookmark"
+  },
+  "nextAction": null,
+  "sendDispatched": true,
+  "success": true
+}
