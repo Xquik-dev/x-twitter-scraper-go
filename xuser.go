@@ -33,6 +33,10 @@ type XUserService struct {
 	options []option.RequestOption
 	// X write actions (tweets, likes, follows, DMs)
 	Follow XUserFollowService
+	// X write actions (tweets, likes, follows, DMs)
+	Block XUserBlockService
+	// X write actions (tweets, likes, follows, DMs)
+	Mute XUserMuteService
 }
 
 // NewXUserService generates a new service that applies the given options to each
@@ -42,6 +46,8 @@ func NewXUserService(opts ...option.RequestOption) (r XUserService) {
 	r = XUserService{}
 	r.options = opts
 	r.Follow = NewXUserFollowService(opts...)
+	r.Block = NewXUserBlockService(opts...)
+	r.Mute = NewXUserMuteService(opts...)
 	return
 }
 
@@ -152,7 +158,7 @@ func (r *XUserService) GetHighlights(ctx context.Context, id string, query XUser
 }
 
 // Returns engagement insights for 1 profile. They are engagement rate, averages
-// per post and posting rate, from its counts and its last 20 posts. Reposts and
+// per post and posting rate, from its counts and its most recent posts. It reads 20 posts unless limit names another number. Reposts and
 // the pinned post stay out of the averages. Each report costs 1 credit, whatever
 // it reads.
 func (r *XUserService) GetInsights(ctx context.Context, id string, query XUserGetInsightsParams, opts ...option.RequestOption) (res *XUserGetInsightsResponse, err error) {
@@ -399,7 +405,8 @@ type XUserRemoveFollowerResponse struct {
 	// Connected account selected for the write.
 	Account XUserRemoveFollowerResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XUserRemoveFollowerResponseAction `json:"action" api:"required"`
@@ -549,8 +556,14 @@ const (
 	XUserRemoveFollowerResponseActionUnlike          XUserRemoveFollowerResponseAction = "unlike"
 	XUserRemoveFollowerResponseActionRetweet         XUserRemoveFollowerResponseAction = "retweet"
 	XUserRemoveFollowerResponseActionUnretweet       XUserRemoveFollowerResponseAction = "unretweet"
+	XUserRemoveFollowerResponseActionBookmark        XUserRemoveFollowerResponseAction = "bookmark"
+	XUserRemoveFollowerResponseActionUnbookmark      XUserRemoveFollowerResponseAction = "unbookmark"
 	XUserRemoveFollowerResponseActionFollow          XUserRemoveFollowerResponseAction = "follow"
 	XUserRemoveFollowerResponseActionUnfollow        XUserRemoveFollowerResponseAction = "unfollow"
+	XUserRemoveFollowerResponseActionBlock           XUserRemoveFollowerResponseAction = "block"
+	XUserRemoveFollowerResponseActionUnblock         XUserRemoveFollowerResponseAction = "unblock"
+	XUserRemoveFollowerResponseActionMute            XUserRemoveFollowerResponseAction = "mute"
+	XUserRemoveFollowerResponseActionUnmute          XUserRemoveFollowerResponseAction = "unmute"
 	XUserRemoveFollowerResponseActionRemoveFollower  XUserRemoveFollowerResponseAction = "remove_follower"
 	XUserRemoveFollowerResponseActionSendDm          XUserRemoveFollowerResponseAction = "send_dm"
 	XUserRemoveFollowerResponseActionDeleteDm        XUserRemoveFollowerResponseAction = "delete_dm"
@@ -1395,6 +1408,9 @@ type XUserGetInsightsResponseInsights struct {
 	Followers float64 `json:"followers" api:"required"`
 	// Accounts the user follows.
 	Following float64 `json:"following" api:"required"`
+	// Middle view count of the sample, so 1 viral post moves it less than the average.
+	// Null without posts.
+	MedianViews float64 `json:"medianViews" api:"required"`
 	// Posts the user has made.
 	Posts float64 `json:"posts" api:"required"`
 	// Sampled posts per day, from the oldest one until now.
@@ -1418,6 +1434,7 @@ type XUserGetInsightsResponseInsights struct {
 		EngagementRate    respjson.Field
 		Followers         respjson.Field
 		Following         respjson.Field
+		MedianViews       respjson.Field
 		Posts             respjson.Field
 		PostsPerDay       respjson.Field
 		PostsPrivate      respjson.Field
@@ -5270,6 +5287,9 @@ type XUserCheckShadowbanParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Recent posts to read for the timeline, engagement & reply checks. The read stops
+	// at this count, at the end of the timeline or after about 40 seconds.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Fields to drop from each row, comma-separated. It takes the same names as
 	// fields. With fields, it drops from the kept fields.
 	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
@@ -5293,6 +5313,10 @@ type XUserGetInsightsParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Recent posts to read for the averages and rates. The read stops at this count,
+	// at the end of the timeline or after about 40 seconds, and `sample.posts` says
+	// how many it read.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Fields to drop from each row, comma-separated. It takes the same names as
 	// fields. With fields, it drops from the kept fields.
 	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`

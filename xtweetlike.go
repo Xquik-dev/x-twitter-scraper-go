@@ -79,7 +79,8 @@ type XTweetLikeNewResponse struct {
 	// Connected account selected for the write.
 	Account XTweetLikeNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetLikeNewResponseAction `json:"action" api:"required"`
@@ -229,8 +230,14 @@ const (
 	XTweetLikeNewResponseActionUnlike          XTweetLikeNewResponseAction = "unlike"
 	XTweetLikeNewResponseActionRetweet         XTweetLikeNewResponseAction = "retweet"
 	XTweetLikeNewResponseActionUnretweet       XTweetLikeNewResponseAction = "unretweet"
+	XTweetLikeNewResponseActionBookmark        XTweetLikeNewResponseAction = "bookmark"
+	XTweetLikeNewResponseActionUnbookmark      XTweetLikeNewResponseAction = "unbookmark"
 	XTweetLikeNewResponseActionFollow          XTweetLikeNewResponseAction = "follow"
 	XTweetLikeNewResponseActionUnfollow        XTweetLikeNewResponseAction = "unfollow"
+	XTweetLikeNewResponseActionBlock           XTweetLikeNewResponseAction = "block"
+	XTweetLikeNewResponseActionUnblock         XTweetLikeNewResponseAction = "unblock"
+	XTweetLikeNewResponseActionMute            XTweetLikeNewResponseAction = "mute"
+	XTweetLikeNewResponseActionUnmute          XTweetLikeNewResponseAction = "unmute"
 	XTweetLikeNewResponseActionRemoveFollower  XTweetLikeNewResponseAction = "remove_follower"
 	XTweetLikeNewResponseActionSendDm          XTweetLikeNewResponseAction = "send_dm"
 	XTweetLikeNewResponseActionDeleteDm        XTweetLikeNewResponseAction = "delete_dm"
@@ -375,7 +382,8 @@ type XTweetLikeDeleteResponse struct {
 	// Connected account selected for the write.
 	Account XTweetLikeDeleteResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetLikeDeleteResponseAction `json:"action" api:"required"`
@@ -525,8 +533,14 @@ const (
 	XTweetLikeDeleteResponseActionUnlike          XTweetLikeDeleteResponseAction = "unlike"
 	XTweetLikeDeleteResponseActionRetweet         XTweetLikeDeleteResponseAction = "retweet"
 	XTweetLikeDeleteResponseActionUnretweet       XTweetLikeDeleteResponseAction = "unretweet"
+	XTweetLikeDeleteResponseActionBookmark        XTweetLikeDeleteResponseAction = "bookmark"
+	XTweetLikeDeleteResponseActionUnbookmark      XTweetLikeDeleteResponseAction = "unbookmark"
 	XTweetLikeDeleteResponseActionFollow          XTweetLikeDeleteResponseAction = "follow"
 	XTweetLikeDeleteResponseActionUnfollow        XTweetLikeDeleteResponseAction = "unfollow"
+	XTweetLikeDeleteResponseActionBlock           XTweetLikeDeleteResponseAction = "block"
+	XTweetLikeDeleteResponseActionUnblock         XTweetLikeDeleteResponseAction = "unblock"
+	XTweetLikeDeleteResponseActionMute            XTweetLikeDeleteResponseAction = "mute"
+	XTweetLikeDeleteResponseActionUnmute          XTweetLikeDeleteResponseAction = "unmute"
 	XTweetLikeDeleteResponseActionRemoveFollower  XTweetLikeDeleteResponseAction = "remove_follower"
 	XTweetLikeDeleteResponseActionSendDm          XTweetLikeDeleteResponseAction = "send_dm"
 	XTweetLikeDeleteResponseActionDeleteDm        XTweetLikeDeleteResponseAction = "delete_dm"

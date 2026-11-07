@@ -7,7 +7,9 @@ package xtwitterscraper_test
 import (
 	"encoding/json"
 	"net/url"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go"
 )
@@ -40,6 +42,8 @@ func TestNewQueryParamsReachTheQuery(t *testing.T) {
 		"XUserGetSearchParams":                 {xtwitterscraper.XUserGetSearchParams{BlueVerifiedOnly: xtwitterscraper.Bool(true), BusinessEmailOnly: xtwitterscraper.Bool(true), EmailDomains: xtwitterscraper.String("emailDomains"), EnrichProfiles: xtwitterscraper.Bool(true), HasEmail: xtwitterscraper.Bool(true), Q: "q"}, "blueVerifiedOnly=true&businessEmailOnly=true&emailDomains=emailDomains&enrichProfiles=true&hasEmail=true&q=q"},
 		"XUserGetTweetsParams":                 {xtwitterscraper.XUserGetTweetsParams{AdvancedQuery: xtwitterscraper.String("advancedQuery"), BoundingBox: xtwitterscraper.String("boundingBox"), Keywords: xtwitterscraper.String("keywords"), ListID: xtwitterscraper.String("listId"), Mode: xtwitterscraper.XUserGetTweetsParamsModeStandard, Place: xtwitterscraper.String("place"), PlaceCountry: xtwitterscraper.String("placeCountry"), PointRadius: xtwitterscraper.String("pointRadius"), SinceTime: xtwitterscraper.String("sinceTime"), UntilTime: xtwitterscraper.String("untilTime")}, "advancedQuery=advancedQuery&boundingBox=boundingBox&keywords=keywords&listId=listId&mode=standard&place=place&placeCountry=placeCountry&pointRadius=pointRadius&sinceTime=sinceTime&untilTime=untilTime"},
 		"XUserGetVerifiedFollowersParams":      {xtwitterscraper.XUserGetVerifiedFollowersParams{BlueVerifiedOnly: xtwitterscraper.Bool(true), BusinessEmailOnly: xtwitterscraper.Bool(true), EmailDomains: xtwitterscraper.String("emailDomains"), EnrichProfiles: xtwitterscraper.Bool(true), HasEmail: xtwitterscraper.Bool(true), MaxScan: xtwitterscraper.Int(2)}, "blueVerifiedOnly=true&businessEmailOnly=true&emailDomains=emailDomains&enrichProfiles=true&hasEmail=true&maxScan=2"},
+		"XUserCheckShadowbanParams":            {xtwitterscraper.XUserCheckShadowbanParams{Limit: xtwitterscraper.Int(50)}, "limit=50"},
+		"XUserGetInsightsParams":               {xtwitterscraper.XUserGetInsightsParams{Limit: xtwitterscraper.Int(50)}, "limit=50"},
 	}
 	for name, test := range cases {
 		t.Run(name, func(t *testing.T) {
@@ -79,5 +83,74 @@ func TestNewBodyParamsReachTheBody(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestSpecFieldsOf20261105ReachTheRequest(t *testing.T) {
+	day := time.Date(2020, 1, 2, 0, 0, 0, 0, time.UTC)
+	exportQuery, err := xtwitterscraper.ExtractionExportResultsParams{
+		Format:       xtwitterscraper.ExtractionExportResultsParamsFormatCsv,
+		Compare:      xtwitterscraper.String("run-0"),
+		Change:       xtwitterscraper.ExtractionExportResultsParamsChangeRemoved,
+		HasWebsite:   xtwitterscraper.Bool(true),
+		HideFake:     xtwitterscraper.Bool(true),
+		HideInactive: xtwitterscraper.Bool(false),
+		JoinedSince:  xtwitterscraper.Time(day),
+		JoinedUntil:  xtwitterscraper.Time(day.AddDate(4, 0, 0)),
+		Location:     xtwitterscraper.String("Berlin"),
+	}.URLQuery()
+	want := "change=removed&compare=run-0&format=csv&hasWebsite=true&hideFake=true&hideInactive=false&joinedSince=2020-01-02&joinedUntil=2024-01-02&location=Berlin"
+	if err != nil || exportQuery.Encode() != want {
+		t.Fatalf("export query = %s, %v, want %s", exportQuery.Encode(), err, want)
+	}
+	searchQuery, err := xtwitterscraper.XTweetSearchParams{Q: "launch", TextOnlyTerms: xtwitterscraper.String("rocket")}.URLQuery()
+	if err != nil || searchQuery.Get("textOnlyTerms") != "rocket" {
+		t.Fatalf("search query = %s, %v, want textOnlyTerms=rocket", searchQuery.Encode(), err)
+	}
+	bodies := map[string]interface{ MarshalJSON() ([]byte, error) }{
+		"textOnlyTerms run":      xtwitterscraper.ExtractionRunParams{TextOnlyTerms: xtwitterscraper.String("rocket")},
+		"textOnlyTerms estimate": xtwitterscraper.ExtractionEstimateCostParams{TextOnlyTerms: xtwitterscraper.String("rocket")},
+		"analysis images":        xtwitterscraper.XAnalysisSentimentParams{Analysis: xtwitterscraper.XAnalysisSentimentParamsAnalysis{Images: xtwitterscraper.Bool(false)}},
+	}
+	wants := map[string]string{
+		"textOnlyTerms run":      `"textOnlyTerms":"rocket"`,
+		"textOnlyTerms estimate": `"textOnlyTerms":"rocket"`,
+		"analysis images":        `"analysis":{"images":false}`,
+	}
+	for name, params := range bodies {
+		data, err := params.MarshalJSON()
+		if err != nil || !strings.Contains(string(data), wants[name]) {
+			t.Errorf("%s body = %s, %v, want %s", name, data, err, wants[name])
+		}
+	}
+}
+
+func TestSpecFieldsOf20261105DecodeFromTheResponse(t *testing.T) {
+	var job xtwitterscraper.ExtractionJob
+	if err := job.UnmarshalJSON([]byte(`{"id":"ext_1","url":"https://dashboard.xquik.com/activity/a1","toolType":"follower_explorer","status":"completed","totalResults":3,"createdAt":"2026-11-05T00:00:00Z"}`)); err != nil || job.URL != "https://dashboard.xquik.com/activity/a1" {
+		t.Fatalf("job url = %q, %v", job.URL, err)
+	}
+	var item xtwitterscraper.RadarItemMetadata
+	if err := item.UnmarshalJSON([]byte(`{"sentiment":"positive","windows":["now","day"]}`)); err != nil || item.Sentiment != "positive" || strings.Join(item.Windows, ",") != "now,day" {
+		t.Fatalf("radar metadata = %q %v, %v", item.Sentiment, item.Windows, err)
+	}
+	var insights xtwitterscraper.XUserGetInsightsResponseInsights
+	if err := insights.UnmarshalJSON([]byte(`{"medianViews":800791.5}`)); err != nil || insights.MedianViews != 800791.5 {
+		t.Fatalf("medianViews = %v, %v", insights.MedianViews, err)
+	}
+	var context xtwitterscraper.XAnalysisSentimentResponseResultAnalysisContextAvailability
+	if err := context.UnmarshalJSON([]byte(`{"media":"images"}`)); err != nil || context.Media != xtwitterscraper.XAnalysisSentimentResponseResultAnalysisContextAvailabilityMediaImages {
+		t.Fatalf("context media = %q, %v", context.Media, err)
+	}
+}
+
+func TestExtractionsTakeTheUserAffiliatesTool(t *testing.T) {
+	body, err := json.Marshal(xtwitterscraper.ExtractionRunParams{ToolType: xtwitterscraper.ExtractionRunParamsToolTypeUserAffiliates})
+	if err != nil || !strings.Contains(string(body), `"toolType":"user_affiliates"`) {
+		t.Fatalf("body = %s, %v", body, err)
+	}
+	var job xtwitterscraper.ExtractionJob
+	if err := job.UnmarshalJSON([]byte(`{"toolType":"user_affiliates"}`)); err != nil || job.ToolType != xtwitterscraper.ExtractionJobToolTypeUserAffiliates {
+		t.Fatalf("toolType = %q, %v", job.ToolType, err)
 	}
 }

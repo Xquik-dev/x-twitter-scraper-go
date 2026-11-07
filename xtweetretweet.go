@@ -79,7 +79,8 @@ type XTweetRetweetNewResponse struct {
 	// Connected account selected for the write.
 	Account XTweetRetweetNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetRetweetNewResponseAction `json:"action" api:"required"`
@@ -229,8 +230,14 @@ const (
 	XTweetRetweetNewResponseActionUnlike          XTweetRetweetNewResponseAction = "unlike"
 	XTweetRetweetNewResponseActionRetweet         XTweetRetweetNewResponseAction = "retweet"
 	XTweetRetweetNewResponseActionUnretweet       XTweetRetweetNewResponseAction = "unretweet"
+	XTweetRetweetNewResponseActionBookmark        XTweetRetweetNewResponseAction = "bookmark"
+	XTweetRetweetNewResponseActionUnbookmark      XTweetRetweetNewResponseAction = "unbookmark"
 	XTweetRetweetNewResponseActionFollow          XTweetRetweetNewResponseAction = "follow"
 	XTweetRetweetNewResponseActionUnfollow        XTweetRetweetNewResponseAction = "unfollow"
+	XTweetRetweetNewResponseActionBlock           XTweetRetweetNewResponseAction = "block"
+	XTweetRetweetNewResponseActionUnblock         XTweetRetweetNewResponseAction = "unblock"
+	XTweetRetweetNewResponseActionMute            XTweetRetweetNewResponseAction = "mute"
+	XTweetRetweetNewResponseActionUnmute          XTweetRetweetNewResponseAction = "unmute"
 	XTweetRetweetNewResponseActionRemoveFollower  XTweetRetweetNewResponseAction = "remove_follower"
 	XTweetRetweetNewResponseActionSendDm          XTweetRetweetNewResponseAction = "send_dm"
 	XTweetRetweetNewResponseActionDeleteDm        XTweetRetweetNewResponseAction = "delete_dm"
@@ -375,7 +382,8 @@ type XTweetRetweetDeleteResponse struct {
 	// Connected account selected for the write.
 	Account XTweetRetweetDeleteResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XTweetRetweetDeleteResponseAction `json:"action" api:"required"`
@@ -525,8 +533,14 @@ const (
 	XTweetRetweetDeleteResponseActionUnlike          XTweetRetweetDeleteResponseAction = "unlike"
 	XTweetRetweetDeleteResponseActionRetweet         XTweetRetweetDeleteResponseAction = "retweet"
 	XTweetRetweetDeleteResponseActionUnretweet       XTweetRetweetDeleteResponseAction = "unretweet"
+	XTweetRetweetDeleteResponseActionBookmark        XTweetRetweetDeleteResponseAction = "bookmark"
+	XTweetRetweetDeleteResponseActionUnbookmark      XTweetRetweetDeleteResponseAction = "unbookmark"
 	XTweetRetweetDeleteResponseActionFollow          XTweetRetweetDeleteResponseAction = "follow"
 	XTweetRetweetDeleteResponseActionUnfollow        XTweetRetweetDeleteResponseAction = "unfollow"
+	XTweetRetweetDeleteResponseActionBlock           XTweetRetweetDeleteResponseAction = "block"
+	XTweetRetweetDeleteResponseActionUnblock         XTweetRetweetDeleteResponseAction = "unblock"
+	XTweetRetweetDeleteResponseActionMute            XTweetRetweetDeleteResponseAction = "mute"
+	XTweetRetweetDeleteResponseActionUnmute          XTweetRetweetDeleteResponseAction = "unmute"
 	XTweetRetweetDeleteResponseActionRemoveFollower  XTweetRetweetDeleteResponseAction = "remove_follower"
 	XTweetRetweetDeleteResponseActionSendDm          XTweetRetweetDeleteResponseAction = "send_dm"
 	XTweetRetweetDeleteResponseActionDeleteDm        XTweetRetweetDeleteResponseAction = "delete_dm"

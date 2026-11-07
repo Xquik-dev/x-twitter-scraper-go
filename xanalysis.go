@@ -528,7 +528,10 @@ type XAnalysisBrandResponseResultAnalysisContextAvailability struct {
 	Article XAnalysisBrandResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
 	// Any of "available", "missing".
 	Author XAnalysisBrandResponseResultAnalysisContextAvailabilityAuthor `json:"author" api:"required"`
-	// Any of "text_descriptions_only", "not_supplied".
+	// images when the AI read the post's images. text_descriptions_only when it read
+	// only their alt text.
+	//
+	// Any of "images", "text_descriptions_only", "not_supplied".
 	Media XAnalysisBrandResponseResultAnalysisContextAvailabilityMedia `json:"media" api:"required"`
 	// truncated when the post was cut to fit.
 	//
@@ -575,6 +578,7 @@ const (
 type XAnalysisBrandResponseResultAnalysisContextAvailabilityMedia string
 
 const (
+	XAnalysisBrandResponseResultAnalysisContextAvailabilityMediaImages               XAnalysisBrandResponseResultAnalysisContextAvailabilityMedia = "images"
 	XAnalysisBrandResponseResultAnalysisContextAvailabilityMediaTextDescriptionsOnly XAnalysisBrandResponseResultAnalysisContextAvailabilityMedia = "text_descriptions_only"
 	XAnalysisBrandResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisBrandResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
@@ -1200,7 +1204,10 @@ type XAnalysisClassifyResponseResultAnalysisContextAvailability struct {
 	Article XAnalysisClassifyResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
 	// Any of "available", "missing".
 	Author XAnalysisClassifyResponseResultAnalysisContextAvailabilityAuthor `json:"author" api:"required"`
-	// Any of "text_descriptions_only", "not_supplied".
+	// images when the AI read the post's images. text_descriptions_only when it read
+	// only their alt text.
+	//
+	// Any of "images", "text_descriptions_only", "not_supplied".
 	Media XAnalysisClassifyResponseResultAnalysisContextAvailabilityMedia `json:"media" api:"required"`
 	// truncated when the post was cut to fit.
 	//
@@ -1249,6 +1256,7 @@ const (
 type XAnalysisClassifyResponseResultAnalysisContextAvailabilityMedia string
 
 const (
+	XAnalysisClassifyResponseResultAnalysisContextAvailabilityMediaImages               XAnalysisClassifyResponseResultAnalysisContextAvailabilityMedia = "images"
 	XAnalysisClassifyResponseResultAnalysisContextAvailabilityMediaTextDescriptionsOnly XAnalysisClassifyResponseResultAnalysisContextAvailabilityMedia = "text_descriptions_only"
 	XAnalysisClassifyResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisClassifyResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
@@ -1880,7 +1888,10 @@ type XAnalysisMarketSignalsResponseResultAnalysisContextAvailability struct {
 	Article XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
 	// Any of "available", "missing".
 	Author XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityAuthor `json:"author" api:"required"`
-	// Any of "text_descriptions_only", "not_supplied".
+	// images when the AI read the post's images. text_descriptions_only when it read
+	// only their alt text.
+	//
+	// Any of "images", "text_descriptions_only", "not_supplied".
 	Media XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMedia `json:"media" api:"required"`
 	// truncated when the post was cut to fit.
 	//
@@ -1929,6 +1940,7 @@ const (
 type XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMedia string
 
 const (
+	XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMediaImages               XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMedia = "images"
 	XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMediaTextDescriptionsOnly XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMedia = "text_descriptions_only"
 	XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisMarketSignalsResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
@@ -2552,7 +2564,10 @@ type XAnalysisNewsResponseResultAnalysisContextAvailability struct {
 	Article XAnalysisNewsResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
 	// Any of "available", "missing".
 	Author XAnalysisNewsResponseResultAnalysisContextAvailabilityAuthor `json:"author" api:"required"`
-	// Any of "text_descriptions_only", "not_supplied".
+	// images when the AI read the post's images. text_descriptions_only when it read
+	// only their alt text.
+	//
+	// Any of "images", "text_descriptions_only", "not_supplied".
 	Media XAnalysisNewsResponseResultAnalysisContextAvailabilityMedia `json:"media" api:"required"`
 	// truncated when the post was cut to fit.
 	//
@@ -2599,6 +2614,7 @@ const (
 type XAnalysisNewsResponseResultAnalysisContextAvailabilityMedia string
 
 const (
+	XAnalysisNewsResponseResultAnalysisContextAvailabilityMediaImages               XAnalysisNewsResponseResultAnalysisContextAvailabilityMedia = "images"
 	XAnalysisNewsResponseResultAnalysisContextAvailabilityMediaTextDescriptionsOnly XAnalysisNewsResponseResultAnalysisContextAvailabilityMedia = "text_descriptions_only"
 	XAnalysisNewsResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisNewsResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
@@ -3224,7 +3240,10 @@ type XAnalysisSentimentResponseResultAnalysisContextAvailability struct {
 	Article XAnalysisSentimentResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
 	// Any of "available", "missing".
 	Author XAnalysisSentimentResponseResultAnalysisContextAvailabilityAuthor `json:"author" api:"required"`
-	// Any of "text_descriptions_only", "not_supplied".
+	// images when the AI read the post's images. text_descriptions_only when it read
+	// only their alt text.
+	//
+	// Any of "images", "text_descriptions_only", "not_supplied".
 	Media XAnalysisSentimentResponseResultAnalysisContextAvailabilityMedia `json:"media" api:"required"`
 	// truncated when the post was cut to fit.
 	//
@@ -3273,6 +3292,7 @@ const (
 type XAnalysisSentimentResponseResultAnalysisContextAvailabilityMedia string
 
 const (
+	XAnalysisSentimentResponseResultAnalysisContextAvailabilityMediaImages               XAnalysisSentimentResponseResultAnalysisContextAvailabilityMedia = "images"
 	XAnalysisSentimentResponseResultAnalysisContextAvailabilityMediaTextDescriptionsOnly XAnalysisSentimentResponseResultAnalysisContextAvailabilityMedia = "text_descriptions_only"
 	XAnalysisSentimentResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisSentimentResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
@@ -3900,7 +3920,10 @@ type XAnalysisViralScoreResponseResultAnalysisContextAvailability struct {
 	Article XAnalysisViralScoreResponseResultAnalysisContextAvailabilityArticle `json:"article" api:"required"`
 	// Any of "available", "missing".
 	Author XAnalysisViralScoreResponseResultAnalysisContextAvailabilityAuthor `json:"author" api:"required"`
-	// Any of "text_descriptions_only", "not_supplied".
+	// images when the AI read the post's images. text_descriptions_only when it read
+	// only their alt text.
+	//
+	// Any of "images", "text_descriptions_only", "not_supplied".
 	Media XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMedia `json:"media" api:"required"`
 	// truncated when the post was cut to fit.
 	//
@@ -3949,6 +3972,7 @@ const (
 type XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMedia string
 
 const (
+	XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMediaImages               XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMedia = "images"
 	XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMediaTextDescriptionsOnly XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMedia = "text_descriptions_only"
 	XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMediaNotSupplied          XAnalysisViralScoreResponseResultAnalysisContextAvailabilityMedia = "not_supplied"
 )
@@ -4204,6 +4228,9 @@ type XAnalysisBrandParamsAnalysis struct {
 	Concurrency param.Opt[int64] `json:"concurrency,omitzero"`
 	// Background the AI reads with every post.
 	Context param.Opt[string] `json:"context,omitzero"`
+	// Reads up to 4 images per post with its text, at no extra cost. Images of posts X
+	// marks sensitive stay unread. Send false to analyze the text alone.
+	Images param.Opt[bool] `json:"images,omitzero"`
 	// Bytes of post, quote & settings the AI reads. Xquik cuts longer posts to fit.
 	// Empty settings take 219 bytes, so a smaller value gets a 400.
 	MaxContextBytes param.Opt[int64] `json:"maxContextBytes,omitzero"`
@@ -4468,6 +4495,9 @@ type XAnalysisClassifyParamsAnalysis struct {
 	Concurrency param.Opt[int64] `json:"concurrency,omitzero"`
 	// Background the AI reads with every post.
 	Context param.Opt[string] `json:"context,omitzero"`
+	// Reads up to 4 images per post with its text, at no extra cost. Images of posts X
+	// marks sensitive stay unread. Send false to analyze the text alone.
+	Images param.Opt[bool] `json:"images,omitzero"`
 	// Bytes of post, quote & settings the AI reads. Xquik cuts longer posts to fit.
 	// Empty settings take 219 bytes, so a smaller value gets a 400.
 	MaxContextBytes param.Opt[int64] `json:"maxContextBytes,omitzero"`
@@ -4732,6 +4762,9 @@ type XAnalysisMarketSignalsParamsAnalysis struct {
 	Concurrency param.Opt[int64] `json:"concurrency,omitzero"`
 	// Background the AI reads with every post.
 	Context param.Opt[string] `json:"context,omitzero"`
+	// Reads up to 4 images per post with its text, at no extra cost. Images of posts X
+	// marks sensitive stay unread. Send false to analyze the text alone.
+	Images param.Opt[bool] `json:"images,omitzero"`
 	// Bytes of post, quote & settings the AI reads. Xquik cuts longer posts to fit.
 	// Empty settings take 219 bytes, so a smaller value gets a 400.
 	MaxContextBytes param.Opt[int64] `json:"maxContextBytes,omitzero"`
@@ -4996,6 +5029,9 @@ type XAnalysisNewsParamsAnalysis struct {
 	Concurrency param.Opt[int64] `json:"concurrency,omitzero"`
 	// Background the AI reads with every post.
 	Context param.Opt[string] `json:"context,omitzero"`
+	// Reads up to 4 images per post with its text, at no extra cost. Images of posts X
+	// marks sensitive stay unread. Send false to analyze the text alone.
+	Images param.Opt[bool] `json:"images,omitzero"`
 	// Bytes of post, quote & settings the AI reads. Xquik cuts longer posts to fit.
 	// Empty settings take 219 bytes, so a smaller value gets a 400.
 	MaxContextBytes param.Opt[int64] `json:"maxContextBytes,omitzero"`
@@ -5260,6 +5296,9 @@ type XAnalysisSentimentParamsAnalysis struct {
 	Concurrency param.Opt[int64] `json:"concurrency,omitzero"`
 	// Background the AI reads with every post.
 	Context param.Opt[string] `json:"context,omitzero"`
+	// Reads up to 4 images per post with its text, at no extra cost. Images of posts X
+	// marks sensitive stay unread. Send false to analyze the text alone.
+	Images param.Opt[bool] `json:"images,omitzero"`
 	// Bytes of post, quote & settings the AI reads. Xquik cuts longer posts to fit.
 	// Empty settings take 219 bytes, so a smaller value gets a 400.
 	MaxContextBytes param.Opt[int64] `json:"maxContextBytes,omitzero"`
@@ -5524,6 +5563,9 @@ type XAnalysisViralScoreParamsAnalysis struct {
 	Concurrency param.Opt[int64] `json:"concurrency,omitzero"`
 	// Background the AI reads with every post.
 	Context param.Opt[string] `json:"context,omitzero"`
+	// Reads up to 4 images per post with its text, at no extra cost. Images of posts X
+	// marks sensitive stay unread. Send false to analyze the text alone.
+	Images param.Opt[bool] `json:"images,omitzero"`
 	// Bytes of post, quote & settings the AI reads. Xquik cuts longer posts to fit.
 	// Empty settings take 219 bytes, so a smaller value gets a 400.
 	MaxContextBytes param.Opt[int64] `json:"maxContextBytes,omitzero"`
