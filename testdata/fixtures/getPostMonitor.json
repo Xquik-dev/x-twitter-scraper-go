@@ -8,6 +8,11 @@
   "authorName": "Xquik",
   "authorAvatarUrl": "https://pbs.twimg.com/profile_images/1/xquik_normal.jpg",
   "authorVerified": "blue",
+  "authorAffiliate": {
+    "badgeUrl": "https://pbs.twimg.com/profile_images/1955359038532653056/OSHY3ewP_bigger.jpg",
+    "description": "X",
+    "url": "https://twitter.com/X"
+  },
   "media": [
     {
       "kind": "photo",

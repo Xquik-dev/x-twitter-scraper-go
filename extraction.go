@@ -126,7 +126,10 @@ type ExtractionJob struct {
 	// "verified_follower_explorer".
 	ToolType     ExtractionJobToolType `json:"toolType" api:"required"`
 	TotalResults int64                 `json:"totalResults" api:"required"`
-	CompletedAt  time.Time             `json:"completedAt" format:"date-time"`
+	// Dashboard page where a signed-in user follows this job & downloads its rows as
+	// CSV, XLSX, JSON, Markdown, PDF or text.
+	URL         string    `json:"url" api:"required" format:"uri"`
+	CompletedAt time.Time `json:"completedAt" format:"date-time"`
 	// Why a terminal job stopped.
 	//
 	// Any of "budget_limited", "canceled", "deadline_reached", "failed",
@@ -146,6 +149,7 @@ type ExtractionJob struct {
 		Status                respjson.Field
 		ToolType              respjson.Field
 		TotalResults          respjson.Field
+		URL                   respjson.Field
 		CompletedAt           respjson.Field
 		CompletionReason      respjson.Field
 		EffectiveResultsLimit respjson.Field
@@ -257,14 +261,26 @@ type ExtractionGetResponseResult struct {
 	LikeCount      int64          `json:"likeCount"`
 	// Attached media with outputPreset=flat. Default nested output uses
 	// enrichmentData.tweet.media.
-	Media          []shared.TweetMedia `json:"media"`
-	QuoteCount     int64               `json:"quoteCount"`
-	ReplyCount     int64               `json:"replyCount"`
-	RetweetCount   int64               `json:"retweetCount"`
-	TweetCreatedAt time.Time           `json:"tweetCreatedAt" format:"date-time"`
-	TweetID        string              `json:"tweetId"`
-	TweetText      string              `json:"tweetText"`
-	TweetURL       string              `json:"tweetUrl" format:"uri"`
+	Media []shared.TweetMedia `json:"media"`
+	// X's sensitive flag on the post with outputPreset=flat. Default nested output
+	// uses enrichmentData.tweet.possiblySensitive.
+	PossiblySensitive bool  `json:"possiblySensitive"`
+	QuoteCount        int64 `json:"quoteCount"`
+	// Media of the quoted post with outputPreset=flat. Default nested output uses
+	// enrichmentData.tweet.quotedMedia.
+	QuotedMedia []shared.TweetMedia `json:"quotedMedia"`
+	// X's sensitive flag on the quoted post with outputPreset=flat. Default nested
+	// output uses enrichmentData.tweet.quotedPossiblySensitive.
+	QuotedPossiblySensitive bool `json:"quotedPossiblySensitive"`
+	// The quoted post's ID, text, date & author with outputPreset=flat. Default nested
+	// output uses enrichmentData.tweet.quotedPost.
+	QuotedPost     ExtractionGetResponseResultQuotedPost `json:"quotedPost"`
+	ReplyCount     int64                                 `json:"replyCount"`
+	RetweetCount   int64                                 `json:"retweetCount"`
+	TweetCreatedAt time.Time                             `json:"tweetCreatedAt" format:"date-time"`
+	TweetID        string                                `json:"tweetId"`
+	TweetText      string                                `json:"tweetText"`
+	TweetURL       string                                `json:"tweetUrl" format:"uri"`
 	// Badge type X shows on the account, with outputPreset=flat. Business is the
 	// gold badge of a verified organization. Government is the grey badge of a
 	// government or multilateral account. Blue is the badge of X Premium. Default
@@ -280,36 +296,85 @@ type ExtractionGetResponseResult struct {
 	ExtraFields      map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		CreatedAt        respjson.Field
-		XUserID          respjson.Field
-		BookmarkCount    respjson.Field
-		Email            respjson.Field
-		EnrichmentData   respjson.Field
-		LikeCount        respjson.Field
-		Media            respjson.Field
-		QuoteCount       respjson.Field
-		ReplyCount       respjson.Field
-		RetweetCount     respjson.Field
-		TweetCreatedAt   respjson.Field
-		TweetID          respjson.Field
-		TweetText        respjson.Field
-		TweetURL         respjson.Field
-		VerifiedType     respjson.Field
-		ViewCount        respjson.Field
-		XDisplayName     respjson.Field
-		XFollowersCount  respjson.Field
-		XProfileImageURL respjson.Field
-		XUsername        respjson.Field
-		XVerified        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ID                      respjson.Field
+		CreatedAt               respjson.Field
+		XUserID                 respjson.Field
+		BookmarkCount           respjson.Field
+		Email                   respjson.Field
+		EnrichmentData          respjson.Field
+		LikeCount               respjson.Field
+		Media                   respjson.Field
+		PossiblySensitive       respjson.Field
+		QuoteCount              respjson.Field
+		QuotedMedia             respjson.Field
+		QuotedPossiblySensitive respjson.Field
+		QuotedPost              respjson.Field
+		ReplyCount              respjson.Field
+		RetweetCount            respjson.Field
+		TweetCreatedAt          respjson.Field
+		TweetID                 respjson.Field
+		TweetText               respjson.Field
+		TweetURL                respjson.Field
+		VerifiedType            respjson.Field
+		ViewCount               respjson.Field
+		XDisplayName            respjson.Field
+		XFollowersCount         respjson.Field
+		XProfileImageURL        respjson.Field
+		XUsername               respjson.Field
+		XVerified               respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExtractionGetResponseResult) RawJSON() string { return r.JSON.raw }
 func (r *ExtractionGetResponseResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The quoted post's ID, text, date & author with outputPreset=flat. Default nested
+// output uses enrichmentData.tweet.quotedPost.
+type ExtractionGetResponseResultQuotedPost struct {
+	ID        string                                      `json:"id"`
+	Author    ExtractionGetResponseResultQuotedPostAuthor `json:"author"`
+	CreatedAt string                                      `json:"createdAt"`
+	Text      string                                      `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Author      respjson.Field
+		CreatedAt   respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtractionGetResponseResultQuotedPost) RawJSON() string { return r.JSON.raw }
+func (r *ExtractionGetResponseResultQuotedPost) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The author of the quoted post.
+type ExtractionGetResponseResultQuotedPostAuthor struct {
+	Name           string `json:"name"`
+	ProfilePicture string `json:"profilePicture"`
+	UserName       string `json:"userName"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name           respjson.Field
+		ProfilePicture respjson.Field
+		UserName       respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtractionGetResponseResultQuotedPostAuthor) RawJSON() string { return r.JSON.raw }
+func (r *ExtractionGetResponseResultQuotedPostAuthor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -429,7 +494,11 @@ type ExtractionRunResponse struct {
 	// "tweet_search_extractor", "user_likes", "user_media",
 	// "verified_follower_explorer".
 	ToolType string `json:"toolType"`
-	WaitURL  string `json:"waitUrl"`
+	// Dashboard page of the job. A signed-in user follows its progress there and
+	// downloads every row as CSV, XLSX, JSON, Markdown, PDF or text, so give this link
+	// to a person who wants the whole list as a file.
+	URL     string `json:"url" format:"uri"`
+	WaitURL string `json:"waitUrl"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -443,6 +512,7 @@ type ExtractionRunResponse struct {
 		Status           respjson.Field
 		StatusURL        respjson.Field
 		ToolType         respjson.Field
+		URL              respjson.Field
 		WaitURL          respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
@@ -773,6 +843,9 @@ type ExtractionEstimateCostParams struct {
 	TargetSpaceID  param.Opt[string] `json:"targetSpaceId,omitzero"`
 	TargetTweetID  param.Opt[string] `json:"targetTweetId,omitzero"`
 	TargetUsername param.Opt[string] `json:"targetUsername,omitzero"`
+	// Collects a post only when 1 of these words or quoted phrases is in its text, a
+	// link, its card or a quoted post. The author's name and username don't count.
+	TextOnlyTerms param.Opt[string] `json:"textOnlyTerms,omitzero"`
 	// Replies to this username (tweet_search_extractor).
 	ToUser param.Opt[string] `json:"toUser,omitzero"`
 	// Tweet or Community search end date.
@@ -1077,6 +1150,10 @@ type ExtractionExportResultsParams struct {
 	Format ExtractionExportResultsParamsFormat `query:"format,omitzero" api:"required" json:"-"`
 	// Require an email outside free webmail, such as Gmail, in the row's Email column.
 	BusinessEmailOnly param.Opt[bool] `query:"businessEmailOnly,omitzero" json:"-"`
+	// ID of another run of this tool. For an earlier whole run of the same account, the
+	// export holds only the rows that differ. For a run of another account, it holds
+	// only this run's rows that the other run also lists.
+	Compare param.Opt[string] `query:"compare,omitzero" json:"-"`
 	// Require the row's email at one of these domains. Separate domains with commas.
 	// Subdomains match.
 	EmailDomains param.Opt[string] `query:"emailDomains,omitzero" json:"-"`
@@ -1088,8 +1165,22 @@ type ExtractionExportResultsParams struct {
 	HasLocation param.Opt[bool] `query:"hasLocation,omitzero" json:"-"`
 	// Require media.
 	HasMedia param.Opt[bool] `query:"hasMedia,omitzero" json:"-"`
+	// Require a website on the profile.
+	HasWebsite param.Opt[bool] `query:"hasWebsite,omitzero" json:"-"`
+	// Drop accounts with at least 3 of these signs. No posts, a default picture, an
+	// empty bio, or following at least 100 accounts and 10 times their followers.
+	HideFake param.Opt[bool] `query:"hideFake,omitzero" json:"-"`
+	// Drop accounts with under 1 post a month since joining that are at least 180
+	// days old.
+	HideInactive param.Opt[bool] `query:"hideInactive,omitzero" json:"-"`
+	// Keep accounts that joined X on this UTC day or later.
+	JoinedSince param.Opt[time.Time] `query:"joinedSince,omitzero" format:"date" json:"-"`
+	// Keep accounts that joined X before this UTC day.
+	JoinedUntil param.Opt[time.Time] `query:"joinedUntil,omitzero" format:"date" json:"-"`
 	// Filter by language code.
 	Lang param.Opt[string] `query:"lang,omitzero" json:"-"`
+	// Keep accounts whose location contains this text.
+	Location param.Opt[string] `query:"location,omitzero" json:"-"`
 	// Maximum follower count.
 	MaxFollowers param.Opt[int64] `query:"maxFollowers,omitzero" json:"-"`
 	// Maximum following count.
@@ -1118,6 +1209,12 @@ type ExtractionExportResultsParams struct {
 	UntilDate param.Opt[time.Time] `query:"untilDate,omitzero" format:"date" json:"-"`
 	// Filter by verified status.
 	Verified param.Opt[bool] `query:"verified,omitzero" json:"-"`
+	// With compare, `added` keeps this run's new rows and `removed` keeps the earlier
+	// run's rows that this run lacks. The default is `added`. A run of another account
+	// ignores it.
+	//
+	// Any of "added", "removed".
+	Change ExtractionExportResultsParamsChange `query:"change,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1129,6 +1226,16 @@ func (r ExtractionExportResultsParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// With compare, `added` keeps this run's new rows and `removed` keeps the earlier
+// run's rows that this run lacks. The default is `added`. A run of another account
+// ignores it.
+type ExtractionExportResultsParamsChange string
+
+const (
+	ExtractionExportResultsParamsChangeAdded   ExtractionExportResultsParamsChange = "added"
+	ExtractionExportResultsParamsChangeRemoved ExtractionExportResultsParamsChange = "removed"
+)
 
 // Export file format
 type ExtractionExportResultsParamsFormat string
@@ -1306,6 +1413,9 @@ type ExtractionRunParams struct {
 	TargetSpaceID  param.Opt[string] `json:"targetSpaceId,omitzero"`
 	TargetTweetID  param.Opt[string] `json:"targetTweetId,omitzero"`
 	TargetUsername param.Opt[string] `json:"targetUsername,omitzero"`
+	// Collects a post only when 1 of these words or quoted phrases is in its text, a
+	// link, its card or a quoted post. The author's name and username don't count.
+	TextOnlyTerms param.Opt[string] `json:"textOnlyTerms,omitzero"`
 	// Replies to this username (tweet_search_extractor).
 	ToUser param.Opt[string] `json:"toUser,omitzero"`
 	// Tweet or Community search end date.

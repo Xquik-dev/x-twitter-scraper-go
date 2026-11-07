@@ -162,13 +162,22 @@ type RadarItemMetadata struct {
 	NumberComments     int64  `json:"numberComments"`
 	Score              int64  `json:"score"`
 	Selftext           string `json:"selftext"`
+	// Tone of an English post title, from the VADER word list.
+	//
+	// Any of "positive", "neutral", "negative".
+	Sentiment string `json:"sentiment"`
 	// Current items use html. json and rss are retained for legacy rows.
 	//
 	// Any of "html", "json", "rss".
-	SourceFormat string         `json:"sourceFormat"`
-	Subreddit    string         `json:"subreddit"`
-	UpvoteRatio  float64        `json:"upvoteRatio"`
-	ExtraFields  map[string]any `json:"" api:"extrafields"`
+	SourceFormat string  `json:"sourceFormat"`
+	Subreddit    string  `json:"subreddit"`
+	UpvoteRatio  float64 `json:"upvoteRatio"`
+	// Reddit lists the post ranks in. now is the popular feed, and the rest are top
+	// lists of that window.
+	//
+	// Any of "now", "hour", "day", "week", "month", "year".
+	Windows     []string       `json:"windows"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Author             respjson.Field
@@ -178,9 +187,11 @@ type RadarItemMetadata struct {
 		NumberComments     respjson.Field
 		Score              respjson.Field
 		Selftext           respjson.Field
+		Sentiment          respjson.Field
 		SourceFormat       respjson.Field
 		Subreddit          respjson.Field
 		UpvoteRatio        respjson.Field
+		Windows            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`

@@ -8,7 +8,33 @@
       "tweetId": "1234567890",
       "mediaType": "photo",
       "mediaUrl": "https://media.xquik.com/tweet_1234567890/0.jpg",
+      "posterUrl": null,
+      "qualities": [],
       "fileSize": "2097152",
+      "createdAt": "2026-10-16T11:00:00.000Z",
+      "authorUsername": "elonmusk",
+      "authorDisplayName": "Elon Musk",
+      "authorAvatar": null,
+      "tweetText": "Launch day.",
+      "likes": 1200,
+      "retweets": 340,
+      "views": 56000
+    },
+    {
+      "id": "43",
+      "tweetId": "1234567890",
+      "mediaType": "video",
+      "mediaUrl": "https://media.xquik.com/tweet_1234567890/1.mp4",
+      "posterUrl": "https://media.xquik.com/tweet_1234567890/1.jpg",
+      "qualities": [
+        {
+          "bitrate": 2176000,
+          "height": 720,
+          "url": "https://video.twimg.com/amplify_video/1/vid/avc1/1280x720/a.mp4",
+          "width": 1280
+        }
+      ],
+      "fileSize": "4194304",
       "createdAt": "2026-10-16T11:00:00.000Z",
       "authorUsername": "elonmusk",
       "authorDisplayName": "Elon Musk",

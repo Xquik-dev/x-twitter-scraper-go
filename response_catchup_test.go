@@ -76,6 +76,15 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 			},
 			[]fieldValue{
 				{"Results[0].VerifiedType", "Business"},
+				{"Results[0].PossiblySensitive", true},
+				{"Results[0].QuotedPossiblySensitive", true},
+				{"Results[0].QuotedMedia[0].MediaURL", "https://pbs.twimg.com/media/GxQuoted.jpg"},
+				{"Results[0].QuotedPost.ID", "1900000000000000000"},
+				{"Results[0].QuotedPost.Text", "Liftoff."},
+				{"Results[0].QuotedPost.CreatedAt", "2026-08-22T10:00:00.000Z"},
+				{"Results[0].QuotedPost.Author.Name", "NASA"},
+				{"Results[0].QuotedPost.Author.UserName", "NASA"},
+				{"Results[0].QuotedPost.Author.ProfilePicture", "https://pbs.twimg.com/profile_images/1/nasa_normal.jpg"},
 			},
 		},
 		{

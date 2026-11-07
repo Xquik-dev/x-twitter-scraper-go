@@ -79,7 +79,8 @@ type XUserFollowNewResponse struct {
 	// Connected account selected for the write.
 	Account XUserFollowNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XUserFollowNewResponseAction `json:"action" api:"required"`
@@ -229,8 +230,14 @@ const (
 	XUserFollowNewResponseActionUnlike          XUserFollowNewResponseAction = "unlike"
 	XUserFollowNewResponseActionRetweet         XUserFollowNewResponseAction = "retweet"
 	XUserFollowNewResponseActionUnretweet       XUserFollowNewResponseAction = "unretweet"
+	XUserFollowNewResponseActionBookmark        XUserFollowNewResponseAction = "bookmark"
+	XUserFollowNewResponseActionUnbookmark      XUserFollowNewResponseAction = "unbookmark"
 	XUserFollowNewResponseActionFollow          XUserFollowNewResponseAction = "follow"
 	XUserFollowNewResponseActionUnfollow        XUserFollowNewResponseAction = "unfollow"
+	XUserFollowNewResponseActionBlock           XUserFollowNewResponseAction = "block"
+	XUserFollowNewResponseActionUnblock         XUserFollowNewResponseAction = "unblock"
+	XUserFollowNewResponseActionMute            XUserFollowNewResponseAction = "mute"
+	XUserFollowNewResponseActionUnmute          XUserFollowNewResponseAction = "unmute"
 	XUserFollowNewResponseActionRemoveFollower  XUserFollowNewResponseAction = "remove_follower"
 	XUserFollowNewResponseActionSendDm          XUserFollowNewResponseAction = "send_dm"
 	XUserFollowNewResponseActionDeleteDm        XUserFollowNewResponseAction = "delete_dm"
@@ -375,7 +382,8 @@ type XUserFollowDeleteAllResponse struct {
 	// Connected account selected for the write.
 	Account XUserFollowDeleteAllResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XUserFollowDeleteAllResponseAction `json:"action" api:"required"`
@@ -525,8 +533,14 @@ const (
 	XUserFollowDeleteAllResponseActionUnlike          XUserFollowDeleteAllResponseAction = "unlike"
 	XUserFollowDeleteAllResponseActionRetweet         XUserFollowDeleteAllResponseAction = "retweet"
 	XUserFollowDeleteAllResponseActionUnretweet       XUserFollowDeleteAllResponseAction = "unretweet"
+	XUserFollowDeleteAllResponseActionBookmark        XUserFollowDeleteAllResponseAction = "bookmark"
+	XUserFollowDeleteAllResponseActionUnbookmark      XUserFollowDeleteAllResponseAction = "unbookmark"
 	XUserFollowDeleteAllResponseActionFollow          XUserFollowDeleteAllResponseAction = "follow"
 	XUserFollowDeleteAllResponseActionUnfollow        XUserFollowDeleteAllResponseAction = "unfollow"
+	XUserFollowDeleteAllResponseActionBlock           XUserFollowDeleteAllResponseAction = "block"
+	XUserFollowDeleteAllResponseActionUnblock         XUserFollowDeleteAllResponseAction = "unblock"
+	XUserFollowDeleteAllResponseActionMute            XUserFollowDeleteAllResponseAction = "mute"
+	XUserFollowDeleteAllResponseActionUnmute          XUserFollowDeleteAllResponseAction = "unmute"
 	XUserFollowDeleteAllResponseActionRemoveFollower  XUserFollowDeleteAllResponseAction = "remove_follower"
 	XUserFollowDeleteAllResponseActionSendDm          XUserFollowDeleteAllResponseAction = "send_dm"
 	XUserFollowDeleteAllResponseActionDeleteDm        XUserFollowDeleteAllResponseAction = "delete_dm"
