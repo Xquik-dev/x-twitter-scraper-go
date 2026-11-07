@@ -76,6 +76,15 @@ func TestResponsesDecodeTheNewFields(t *testing.T) {
 			},
 			[]fieldValue{
 				{"Results[0].VerifiedType", "Business"},
+				{"Results[0].PossiblySensitive", true},
+				{"Results[0].QuotedPossiblySensitive", true},
+				{"Results[0].QuotedMedia[0].MediaURL", "https://pbs.twimg.com/media/GxQuoted.jpg"},
+				{"Results[0].QuotedPost.ID", "1900000000000000000"},
+				{"Results[0].QuotedPost.Text", "Liftoff."},
+				{"Results[0].QuotedPost.CreatedAt", "2026-08-22T10:00:00.000Z"},
+				{"Results[0].QuotedPost.Author.Name", "NASA"},
+				{"Results[0].QuotedPost.Author.UserName", "NASA"},
+				{"Results[0].QuotedPost.Author.ProfilePicture", "https://pbs.twimg.com/profile_images/1/nasa_normal.jpg"},
 			},
 		},
 		{
@@ -364,4 +373,14 @@ func TestCommunityInfoDecodesTheMembersFacepile(t *testing.T) {
 	preview := facepile[1].AsCommunityMembersFacepileCommunityMemberPreview()
 	expectValues(t, profile, []fieldValue{{"ID", "44196397"}, {"Username", "elonmusk"}, {"Followers", int64(150000000)}})
 	expectValues(t, preview, []fieldValue{{"ID", "11348282"}, {"ProfilePictureOriginal", "https://pbs.twimg.com/b.jpg"}})
+}
+
+func TestArticleDecodesTheCountsXDidNotSend(t *testing.T) {
+	var res xtwitterscraper.XGetArticleResponseArticle
+	if err := res.UnmarshalJSON([]byte(`{"unknownCounts":["viewCount"]}`)); err != nil {
+		t.Fatal(err)
+	}
+	if len(res.UnknownCounts) != 1 || res.UnknownCounts[0] != xtwitterscraper.TweetUnknownCountViewCount {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
 }

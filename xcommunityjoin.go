@@ -79,7 +79,8 @@ type XCommunityJoinNewResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityJoinNewResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityJoinNewResponseAction `json:"action" api:"required"`
@@ -229,8 +230,14 @@ const (
 	XCommunityJoinNewResponseActionUnlike          XCommunityJoinNewResponseAction = "unlike"
 	XCommunityJoinNewResponseActionRetweet         XCommunityJoinNewResponseAction = "retweet"
 	XCommunityJoinNewResponseActionUnretweet       XCommunityJoinNewResponseAction = "unretweet"
+	XCommunityJoinNewResponseActionBookmark        XCommunityJoinNewResponseAction = "bookmark"
+	XCommunityJoinNewResponseActionUnbookmark      XCommunityJoinNewResponseAction = "unbookmark"
 	XCommunityJoinNewResponseActionFollow          XCommunityJoinNewResponseAction = "follow"
 	XCommunityJoinNewResponseActionUnfollow        XCommunityJoinNewResponseAction = "unfollow"
+	XCommunityJoinNewResponseActionBlock           XCommunityJoinNewResponseAction = "block"
+	XCommunityJoinNewResponseActionUnblock         XCommunityJoinNewResponseAction = "unblock"
+	XCommunityJoinNewResponseActionMute            XCommunityJoinNewResponseAction = "mute"
+	XCommunityJoinNewResponseActionUnmute          XCommunityJoinNewResponseAction = "unmute"
 	XCommunityJoinNewResponseActionRemoveFollower  XCommunityJoinNewResponseAction = "remove_follower"
 	XCommunityJoinNewResponseActionSendDm          XCommunityJoinNewResponseAction = "send_dm"
 	XCommunityJoinNewResponseActionDeleteDm        XCommunityJoinNewResponseAction = "delete_dm"
@@ -375,7 +382,8 @@ type XCommunityJoinDeleteAllResponse struct {
 	// Connected account selected for the write.
 	Account XCommunityJoinDeleteAllResponseAccount `json:"account" api:"required"`
 	// Any of "create_tweet", "delete_tweet", "like", "unlike", "retweet", "unretweet",
-	// "follow", "unfollow", "remove_follower", "send_dm", "delete_dm", "upload_media",
+	// "bookmark", "unbookmark", "follow", "unfollow", "block", "unblock", "mute",
+	// "unmute", "remove_follower", "send_dm", "delete_dm", "upload_media",
 	// "update_profile", "update_avatar", "update_banner", "create_community",
 	// "delete_community", "join_community", "leave_community".
 	Action XCommunityJoinDeleteAllResponseAction `json:"action" api:"required"`
@@ -525,8 +533,14 @@ const (
 	XCommunityJoinDeleteAllResponseActionUnlike          XCommunityJoinDeleteAllResponseAction = "unlike"
 	XCommunityJoinDeleteAllResponseActionRetweet         XCommunityJoinDeleteAllResponseAction = "retweet"
 	XCommunityJoinDeleteAllResponseActionUnretweet       XCommunityJoinDeleteAllResponseAction = "unretweet"
+	XCommunityJoinDeleteAllResponseActionBookmark        XCommunityJoinDeleteAllResponseAction = "bookmark"
+	XCommunityJoinDeleteAllResponseActionUnbookmark      XCommunityJoinDeleteAllResponseAction = "unbookmark"
 	XCommunityJoinDeleteAllResponseActionFollow          XCommunityJoinDeleteAllResponseAction = "follow"
 	XCommunityJoinDeleteAllResponseActionUnfollow        XCommunityJoinDeleteAllResponseAction = "unfollow"
+	XCommunityJoinDeleteAllResponseActionBlock           XCommunityJoinDeleteAllResponseAction = "block"
+	XCommunityJoinDeleteAllResponseActionUnblock         XCommunityJoinDeleteAllResponseAction = "unblock"
+	XCommunityJoinDeleteAllResponseActionMute            XCommunityJoinDeleteAllResponseAction = "mute"
+	XCommunityJoinDeleteAllResponseActionUnmute          XCommunityJoinDeleteAllResponseAction = "unmute"
 	XCommunityJoinDeleteAllResponseActionRemoveFollower  XCommunityJoinDeleteAllResponseAction = "remove_follower"
 	XCommunityJoinDeleteAllResponseActionSendDm          XCommunityJoinDeleteAllResponseAction = "send_dm"
 	XCommunityJoinDeleteAllResponseActionDeleteDm        XCommunityJoinDeleteAllResponseAction = "delete_dm"

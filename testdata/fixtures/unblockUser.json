@@ -1,0 +1,43 @@
+{
+  "object": "x_write_action",
+  "id": "12345",
+  "writeActionId": "12345",
+  "action": "unblock",
+  "status": "success",
+  "terminal": true,
+  "retryable": false,
+  "safeToRetry": false,
+  "statusUrl": "/api/v1/x/write-actions/12345",
+  "pollAfterMs": null,
+  "charged": true,
+  "chargedCredits": "10",
+  "billing": {
+    "status": "charged",
+    "charged": true,
+    "plannedCredits": "10",
+    "chargedCredits": "10"
+  },
+  "request": {
+    "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "payload": {
+      "target_id": "44196397"
+    }
+  },
+  "account": {
+    "id": "42",
+    "username": "example"
+  },
+  "target": {
+    "type": "user",
+    "id": "44196397"
+  },
+  "targetId": "44196397",
+  "result": {
+    "type": "state_change",
+    "id": "44196397",
+    "state": "unblock"
+  },
+  "nextAction": null,
+  "sendDispatched": true,
+  "success": true
+}

@@ -13,7 +13,26 @@
       "createdAt": "2026-08-23T10:00:04Z",
       "xUserId": "11348282",
       "xUsername": "NASA",
-      "verifiedType": "Business"
+      "verifiedType": "Business",
+      "possiblySensitive": true,
+      "quotedPossiblySensitive": true,
+      "quotedMedia": [
+        {
+          "mediaUrl": "https://pbs.twimg.com/media/GxQuoted.jpg",
+          "type": "photo",
+          "url": "https://t.co/quoted"
+        }
+      ],
+      "quotedPost": {
+        "id": "1900000000000000000",
+        "text": "Liftoff.",
+        "createdAt": "2026-08-22T10:00:00.000Z",
+        "author": {
+          "name": "NASA",
+          "userName": "NASA",
+          "profilePicture": "https://pbs.twimg.com/profile_images/1/nasa_normal.jpg"
+        }
+      }
     }
   ],
   "hasMore": false,

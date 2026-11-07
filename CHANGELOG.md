@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+The SDK catches up with the API again. It adds the bookmark, block & mute writes and the fields the API added since 0.23.0. It covers 203 of the 218 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
+
+- `X.Tweets.Bookmark`, `X.Users.Block` & `X.Users.Mute` each add `New` & `Delete`. They take `Account`, `IdempotencyKey` & an optional `Prefer`, and return the `XWriteActionGetResponse` write record.
+- Every write record's `Action` adds `bookmark`, `unbookmark`, `block`, `unblock`, `mute` & `unmute`.
+- `X.Tweets.Search` no longer needs `Q` when `FromUser`, `Keywords` or another field forms the search. An empty `Q` stays out of the request.
+- `ExtractionGetResponseResult` returns `PossiblySensitive`, `QuotedPossiblySensitive`, `QuotedMedia` & `QuotedPost` with `outputPreset=flat`.
+- `PostMonitor` returns `AuthorAffiliate`, the organization badge beside the author's name.
+- `Monitors.Posts.New` takes `IsActive`, and `false` creates the monitor paused.
+- `XMediaDownloadResponseItem` returns `PosterURL` & `Qualities`, the cover image and MP4 sizes of a video.
+- `XGetArticleResponseArticle` returns `UnknownCounts`, the counts X did not send, so each 0 means unknown.
+- `Extractions.ExportResults` takes `Compare` & `Change` to keep only the rows that differ from another run. It also takes `HasWebsite`, `Location`, `JoinedSince`, `JoinedUntil`, `HideInactive` & `HideFake` to filter accounts.
+- `Extractions.Run`, `Extractions.EstimateCost` & `X.Tweets.Search` take `TextOnlyTerms`, which matches words outside the author's name and username.
+- `ExtractionJob` and the accepted `Extractions.Run` answer return `URL`, the job's dashboard page with every row as a file.
+- The 6 `X.Analysis` methods take `Images` in `Analysis`. The AI reads up to 4 images per post at no extra cost, and `false` keeps it to the text. `ContextAvailability.Media` returns `images` when it read them.
+- `RadarItemMetadata` returns `Sentiment` & `Windows` for Reddit items, and `X.Users.GetInsights` returns `MedianViews`.
+
 ## 0.23.0 (2026-11-03)
 
 [Full changelog from v0.22.0 to v0.23.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.22.0...v0.23.0)
