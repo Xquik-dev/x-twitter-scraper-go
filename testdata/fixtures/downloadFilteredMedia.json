@@ -1,0 +1,15 @@
+{
+  "tweetId": "1234567890",
+  "galleryUrl": "https://xquik.com/gallery/abc123",
+  "cacheHit": false,
+  "items": [],
+  "totalMedia": 0,
+  "imageFilter": {
+    "imageShows": "charts",
+    "question": "Does a picture attached to this post show a chart or graph that plots data, such as a line, bar, pie or candlestick chart? Judge the pictures in tweet.images.",
+    "cutoff": 0.5,
+    "checked": 1,
+    "kept": 0,
+    "unchecked": []
+  }
+}

@@ -3031,6 +3031,9 @@ type XTweetSearchResponseUnion struct {
 	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XTweetSearchResponseTweetSearchCoverageResponse].
 	Diagnostic XTweetSearchResponseTweetSearchCoverageResponseDiagnostic `json:"diagnostic"`
+	// This field is from variant [shared.PaginatedTweets]. Present when the search
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
 	// This field is from variant [shared.PaginatedTweets],
 	// [XTweetSearchResponseTweetSearchCoverageResponse].
 	ReadBackTo time.Time `json:"readBackTo"`
@@ -3040,6 +3043,9 @@ type XTweetSearchResponseUnion struct {
 	// This field is from variant [shared.PaginatedTweets],
 	// [XTweetSearchResponseTweetSearchCoverageResponse].
 	SearchedQuery string `json:"searchedQuery"`
+	// This field is from variant [shared.PaginatedTweets]. Present when the search
+	// sent topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// This field is from variant [shared.PaginatedTweets],
 	// [XTweetSearchResponseTweetSearchCoverageResponse].
 	WindowComplete bool `json:"windowComplete"`
@@ -3049,9 +3055,11 @@ type XTweetSearchResponseUnion struct {
 		Tweets         respjson.Field
 		FilteredCount  respjson.Field
 		Diagnostic     respjson.Field
+		ImageFilter    respjson.Field
 		ReadBackTo     respjson.Field
 		SearchContext  respjson.Field
 		SearchedQuery  respjson.Field
+		TopicFilter    respjson.Field
 		WindowComplete respjson.Field
 		raw            string
 	} `json:"-"`
@@ -4862,6 +4870,13 @@ type XTweetSearchParams struct {
 	Geocode param.Opt[string] `query:"geocode,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Keep only posts whose photos show this. Send charts, screenshots,
+	// product_photos, memes or people, or describe it in words, such as a rocket.
+	// AI-powered analysis checks posts with photos X doesn't mark sensitive & keeps
+	// scores of 0.5 or more. Other posts stay out at no charge. Each kept post costs 2
+	// credits, the AI analysis price, instead of the read price, & a post the filter
+	// drops costs nothing. imageFilter states the cutoff & counts.
+	ImageShows param.Opt[string] `query:"imageShows,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
 	// Words the Tweets must match, in X search syntax.
@@ -4935,6 +4950,12 @@ type XTweetSearchParams struct {
 	// outside the author's name and username, such as in its text, a link, its card or
 	// a quoted post.
 	TextOnlyTerms param.Opt[string] `query:"textOnlyTerms,omitzero" json:"-"`
+	// Keep only posts about this topic. AI-powered analysis asks "Is this post about
+	// <topic>?" of each post & keeps scores of 0.5 or more. It reads post text & safe
+	// photos. Each kept post costs 2 credits, the AI analysis price, instead of the
+	// read price, & a post the filter drops costs nothing. limit counts checked posts,
+	// & only kept posts come back. topicFilter states the cutoff & counts.
+	Topic param.Opt[string] `query:"topic,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.

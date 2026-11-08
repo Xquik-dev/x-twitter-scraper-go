@@ -6,6 +6,8 @@ The SDK catches up with the API again. It adds the bookmark, block & mute writes
 
 - `X.Tweets.Bookmark`, `X.Users.Block` & `X.Users.Mute` each add `New` & `Delete`. They take `Account`, `IdempotencyKey` & an optional `Prefer`, and return the `XWriteActionGetResponse` write record.
 - Every write record's `Action` adds `bookmark`, `unbookmark`, `block`, `unblock`, `mute` & `unmute`.
+- `X.Tweets.Search`, `X.Users.GetTweets`, `GetReplies` & `GetMedia` take `Topic` & `ImageShows`. AI analysis keeps only the posts about the topic or whose photos show it. The page returns `TopicFilter` or `ImageFilter` with the cutoff & counts, and each kept post returns `TopicScore` or `ImageScore`.
+- `Extractions.Run` & `Extractions.EstimateCost` take `Topic` & `ImageShows`, and `ExtractionJob` returns `TopicFilter` or `ImageFilter`. `X.Media.Download` takes `ImageShows` and returns `ImageFilter`.
 - `X.Tweets.Search` no longer needs `Q` when `FromUser`, `Keywords` or another field forms the search. An empty `Q` stays out of the request.
 - `ExtractionGetResponseResult` returns `PossiblySensitive`, `QuotedPossiblySensitive`, `QuotedMedia` & `QuotedPost` with `outputPreset=flat`.
 - `PostMonitor` returns `AuthorAffiliate`, the organization badge beside the author's name.
