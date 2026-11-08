@@ -140,8 +140,14 @@ type ExtractionJob struct {
 	EffectiveResultsLimit int64 `json:"effectiveResultsLimit"`
 	// Safe error code for a failed job.
 	ErrorMessage string `json:"errorMessage"`
+	// What the image filter asked & how many posts it kept. Present on jobs that sent
+	// imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
 	// Requested result limit.
 	ResultsLimit int64 `json:"resultsLimit"`
+	// What the topic filter asked & how many posts it kept. Present on jobs that sent
+	// topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -154,7 +160,9 @@ type ExtractionJob struct {
 		CompletionReason      respjson.Field
 		EffectiveResultsLimit respjson.Field
 		ErrorMessage          respjson.Field
+		ImageFilter           respjson.Field
 		ResultsLimit          respjson.Field
+		TopicFilter           respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
 	} `json:"-"`
@@ -751,6 +759,13 @@ type ExtractionEstimateCostParams struct {
 	HasMediaOnly param.Opt[bool] `json:"hasMediaOnly,omitzero"`
 	// Require a profile website.
 	HasWebsite param.Opt[bool] `json:"hasWebsite,omitzero"`
+	// Keep only the posts whose photos show this. Use charts, screenshots,
+	// product_photos, memes or people, or describe it in your own words. Each post
+	// with a safe photo is checked, & each stored post costs 2 credits instead of its
+	// read price. Posts without a safe photo aren't checked, billed or stored, & a
+	// post the filter drops costs nothing. resultsLimit caps the posts read. Works
+	// with tools that return posts. Send topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Include the source post in reply results.
 	IncludeOriginalPost param.Opt[bool] `json:"includeOriginalPost,omitzero"`
 	// Add matching search terms to collection metadata.
@@ -854,6 +869,12 @@ type ExtractionEstimateCostParams struct {
 	// Collects a post only when 1 of these words or quoted phrases is in its text, a
 	// link, its card or a quoted post. The author's name and username don't count.
 	TextOnlyTerms param.Opt[string] `json:"textOnlyTerms,omitzero"`
+	// Keep only the posts about this topic, such as "the Rust programming language".
+	// Each post the job reads is checked, only matching posts are stored, & each
+	// stored post costs 2 credits instead of its read price. A post the filter drops
+	// costs nothing. resultsLimit caps the posts read & checked. Works with tools that
+	// return posts. Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Replies to this username (tweet_search_extractor).
 	ToUser param.Opt[string] `json:"toUser,omitzero"`
 	// Tweet or Community search end date.
@@ -1322,6 +1343,13 @@ type ExtractionRunParams struct {
 	HasMediaOnly param.Opt[bool] `json:"hasMediaOnly,omitzero"`
 	// Require a profile website.
 	HasWebsite param.Opt[bool] `json:"hasWebsite,omitzero"`
+	// Keep only the posts whose photos show this. Use charts, screenshots,
+	// product_photos, memes or people, or describe it in your own words. Each post
+	// with a safe photo is checked, & each stored post costs 2 credits instead of its
+	// read price. Posts without a safe photo aren't checked, billed or stored, & a
+	// post the filter drops costs nothing. resultsLimit caps the posts read. Works
+	// with tools that return posts. Send topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Include the source post in reply results.
 	IncludeOriginalPost param.Opt[bool] `json:"includeOriginalPost,omitzero"`
 	// Add matching search terms to collection metadata.
@@ -1425,6 +1453,12 @@ type ExtractionRunParams struct {
 	// Collects a post only when 1 of these words or quoted phrases is in its text, a
 	// link, its card or a quoted post. The author's name and username don't count.
 	TextOnlyTerms param.Opt[string] `json:"textOnlyTerms,omitzero"`
+	// Keep only the posts about this topic, such as "the Rust programming language".
+	// Each post the job reads is checked, only matching posts are stored, & each
+	// stored post costs 2 credits instead of its read price. A post the filter drops
+	// costs nothing. resultsLimit caps the posts read & checked. Works with tools that
+	// return posts. Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Replies to this username (tweet_search_extractor).
 	ToUser param.Opt[string] `json:"toUser,omitzero"`
 	// Tweet or Community search end date.

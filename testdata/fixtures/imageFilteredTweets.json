@@ -1,0 +1,37 @@
+{
+  "tweets": [
+    {
+      "id": "1234567890",
+      "text": "Weekly active users, up 40% since March.",
+      "createdAt": "2025-01-15T12:00:00Z",
+      "likeCount": 42,
+      "retweetCount": 5,
+      "replyCount": 3,
+      "quoteCount": 1,
+      "viewCount": 1500,
+      "bookmarkCount": 2,
+      "author": {
+        "id": "9876543210",
+        "username": "elonmusk",
+        "name": "Elon Musk",
+        "verified": true
+      },
+      "imageScore": 0.88
+    }
+  ],
+  "has_next_page": false,
+  "next_cursor": "",
+  "imageFilter": {
+    "imageShows": "charts",
+    "question": "Does a picture attached to this post show a chart or graph that plots data, such as a line, bar, pie or candlestick chart? Judge the pictures in tweet.images.",
+    "cutoff": 0.5,
+    "checked": 16,
+    "kept": 4,
+    "unchecked": [
+      {
+        "id": "1234567891",
+        "reason": "no_safe_photos"
+      }
+    ]
+  }
+}

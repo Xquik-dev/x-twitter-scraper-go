@@ -1,0 +1,37 @@
+{
+  "tweets": [
+    {
+      "id": "1234567890",
+      "text": "Rust 1.92 is out, with faster compile times.",
+      "createdAt": "2025-01-15T12:00:00Z",
+      "likeCount": 42,
+      "retweetCount": 5,
+      "replyCount": 3,
+      "quoteCount": 1,
+      "viewCount": 1500,
+      "bookmarkCount": 2,
+      "author": {
+        "id": "9876543210",
+        "username": "elonmusk",
+        "name": "Elon Musk",
+        "verified": true
+      },
+      "topicScore": 0.93
+    }
+  ],
+  "has_next_page": true,
+  "next_cursor": "DAACCgACGRElMJcAAA",
+  "topicFilter": {
+    "topic": "the Rust programming language",
+    "question": "Is this post about the Rust programming language?",
+    "cutoff": 0.5,
+    "checked": 20,
+    "kept": 1,
+    "unchecked": [
+      {
+        "id": "1234567891",
+        "reason": "check_failed"
+      }
+    ]
+  }
+}

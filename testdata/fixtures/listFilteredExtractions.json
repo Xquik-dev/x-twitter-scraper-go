@@ -1,0 +1,44 @@
+{
+  "extractions": [
+    {
+      "id": "a1b2c3d4e5f6",
+      "toolType": "tweet_search_extractor",
+      "status": "completed",
+      "totalResults": 1,
+      "createdAt": "2026-11-07T10:00:00Z",
+      "completedAt": "2026-11-07T10:00:09Z",
+      "url": "https://dashboard.xquik.com/activity/a1b2c3d4e5f6",
+      "topicFilter": {
+        "topic": "the Rust programming language",
+        "question": "Is this post about the Rust programming language?",
+        "cutoff": 0.5,
+        "checked": 20,
+        "kept": 1,
+        "unchecked": []
+      }
+    },
+    {
+      "id": "b2c3d4e5f6a1",
+      "toolType": "user_media",
+      "status": "completed",
+      "totalResults": 4,
+      "createdAt": "2026-11-07T11:00:00Z",
+      "completedAt": "2026-11-07T11:00:12Z",
+      "url": "https://dashboard.xquik.com/activity/b2c3d4e5f6a1",
+      "imageFilter": {
+        "imageShows": "charts",
+        "question": "Does a picture attached to this post show a chart or graph that plots data, such as a line, bar, pie or candlestick chart? Judge the pictures in tweet.images.",
+        "cutoff": 0.5,
+        "checked": 16,
+        "kept": 4,
+        "unchecked": [
+          {
+            "id": "1234567890",
+            "reason": "no_safe_photos"
+          }
+        ]
+      }
+    }
+  ],
+  "hasMore": false
+}

@@ -1,0 +1,8 @@
+{
+  "id": "ext_123",
+  "pollAfterMs": 1000,
+  "status": "running",
+  "statusUrl": "/api/v1/extractions/a1b2c3d4",
+  "toolType": "tweet_search_extractor",
+  "waitUrl": "/api/v1/extractions/id?wait=10&limit=1&outputMode=compact"
+}

@@ -3978,6 +3978,13 @@ type XUserGetMediaParams struct {
 	Geocode param.Opt[string] `query:"geocode,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Keep only posts whose photos show this. Send charts, screenshots,
+	// product_photos, memes or people, or describe it in words, such as a rocket.
+	// AI-powered analysis checks posts with photos X doesn't mark sensitive & keeps
+	// scores of 0.5 or more. Other posts stay out at no charge. Each kept post costs 2
+	// credits, the AI analysis price, instead of the read price, & a post the filter
+	// drops costs nothing. imageFilter states the cutoff & counts.
+	ImageShows param.Opt[string] `query:"imageShows,omitzero" json:"-"`
 	// Only replies to this tweet ID.
 	InReplyToTweetID param.Opt[string] `query:"inReplyToTweetId,omitzero" json:"-"`
 	// Filter by language. Alias `lang` is accepted.
@@ -4034,6 +4041,12 @@ type XUserGetMediaParams struct {
 	SinceID param.Opt[string] `query:"sinceId,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
+	// Keep only posts about this topic. AI-powered analysis asks "Is this post about
+	// <topic>?" of each post & keeps scores of 0.5 or more. It reads post text & safe
+	// photos. Each kept post costs 2 credits, the AI analysis price, instead of the
+	// read price, & a post the filter drops costs nothing. limit counts checked posts,
+	// & only kept posts come back. topicFilter states the cutoff & counts.
+	Topic param.Opt[string] `query:"topic,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
@@ -4321,6 +4334,13 @@ type XUserGetRepliesParams struct {
 	Geocode param.Opt[string] `query:"geocode,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Keep only posts whose photos show this. Send charts, screenshots,
+	// product_photos, memes or people, or describe it in words, such as a rocket.
+	// AI-powered analysis checks posts with photos X doesn't mark sensitive & keeps
+	// scores of 0.5 or more. Other posts stay out at no charge. Each kept post costs 2
+	// credits, the AI analysis price, instead of the read price, & a post the filter
+	// drops costs nothing. imageFilter states the cutoff & counts.
+	ImageShows param.Opt[string] `query:"imageShows,omitzero" json:"-"`
 	// Include each reply's parent tweet.
 	IncludeParentTweet param.Opt[bool] `query:"includeParentTweet,omitzero" json:"-"`
 	// Only replies to this tweet ID.
@@ -4392,6 +4412,12 @@ type XUserGetRepliesParams struct {
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
+	// Keep only posts about this topic. AI-powered analysis asks "Is this post about
+	// <topic>?" of each post & keeps scores of 0.5 or more. It reads post text & safe
+	// photos. Each kept post costs 2 credits, the AI analysis price, instead of the
+	// read price, & a post the filter drops costs nothing. limit counts checked posts,
+	// & only kept posts come back. topicFilter states the cutoff & counts.
+	Topic param.Opt[string] `query:"topic,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.
@@ -4587,6 +4613,13 @@ type XUserGetTweetsParams struct {
 	Geocode param.Opt[string] `query:"geocode,omitzero" json:"-"`
 	// Hashtags separated by spaces, commas, or lines.
 	Hashtags param.Opt[string] `query:"hashtags,omitzero" json:"-"`
+	// Keep only posts whose photos show this. Send charts, screenshots,
+	// product_photos, memes or people, or describe it in words, such as a rocket.
+	// AI-powered analysis checks posts with photos X doesn't mark sensitive & keeps
+	// scores of 0.5 or more. Other posts stay out at no charge. Each kept post costs 2
+	// credits, the AI analysis price, instead of the read price, & a post the filter
+	// drops costs nothing. imageFilter states the cutoff & counts.
+	ImageShows param.Opt[string] `query:"imageShows,omitzero" json:"-"`
 	// Include parent tweet for replies
 	IncludeParentTweet param.Opt[bool] `query:"includeParentTweet,omitzero" json:"-"`
 	// Include reply tweets unless replies specifies another mode.
@@ -4660,6 +4693,12 @@ type XUserGetTweetsParams struct {
 	SinceTime param.Opt[string] `query:"sinceTime,omitzero" json:"-"`
 	// Match the source application.
 	Source param.Opt[string] `query:"source,omitzero" json:"-"`
+	// Keep only posts about this topic. AI-powered analysis asks "Is this post about
+	// <topic>?" of each post & keeps scores of 0.5 or more. It reads post text & safe
+	// photos. Each kept post costs 2 credits, the AI analysis price, instead of the
+	// read price, & a post the filter drops costs nothing. limit counts checked posts,
+	// & only kept posts come back. topicFilter states the cutoff & counts.
+	Topic param.Opt[string] `query:"topic,omitzero" json:"-"`
 	// Filter replies sent to a username.
 	ToUser param.Opt[string] `query:"toUser,omitzero" json:"-"`
 	// End date in YYYY-MM-DD format.

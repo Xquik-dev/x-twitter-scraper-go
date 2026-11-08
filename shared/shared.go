@@ -23056,6 +23056,60 @@ const (
 	EventTypeProfileFollowingChanged   EventType = "profile.following.changed"
 )
 
+// What the image filter asked & how many posts it kept.
+type ImageFilterSummary struct {
+	// Posts whose photos were checked. Only kept posts are billed.
+	Checked int64 `json:"checked" api:"required"`
+	// The lowest imageScore a kept post has.
+	Cutoff float64 `json:"cutoff" api:"required"`
+	// What you asked the photos to show.
+	ImageShows string `json:"imageShows" api:"required"`
+	// Posts whose photos show it, all returned & billed at 2 credits each.
+	Kept int64 `json:"kept" api:"required"`
+	// The question asked of each post's photos.
+	Question string `json:"question" api:"required"`
+	// Posts without a safe photo & posts the check couldn't answer. They aren't
+	// billed or returned.
+	Unchecked []ImageFilterSummaryUnchecked `json:"unchecked" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Checked     respjson.Field
+		Cutoff      respjson.Field
+		ImageShows  respjson.Field
+		Kept        respjson.Field
+		Question    respjson.Field
+		Unchecked   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageFilterSummary) RawJSON() string { return r.JSON.raw }
+func (r *ImageFilterSummary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A post the image filter didn't check, with the reason, such as
+// no_safe_photos.
+type ImageFilterSummaryUnchecked struct {
+	ID     string `json:"id" api:"required"`
+	Reason string `json:"reason" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageFilterSummaryUnchecked) RawJSON() string { return r.JSON.raw }
+func (r *ImageFilterSummaryUnchecked) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The live event the post belongs to, such as an election.
 type LiveEventContext struct {
 	// Event name.
@@ -23089,6 +23143,9 @@ type PaginatedTweets struct {
 	NextCursor    string        `json:"next_cursor" api:"required"`
 	Tweets        []SearchTweet `json:"tweets" api:"required"`
 	FilteredCount int64         `json:"filtered_count"`
+	// What the image filter asked & how many posts it kept. Present when the read
+	// sent imageShows.
+	ImageFilter ImageFilterSummary `json:"imageFilter"`
 	// How far back a filtered Latest search has read, in UTC. Xquik checked every
 	// newer post, so an empty page still moves this time back.
 	ReadBackTo time.Time `json:"readBackTo" format:"date-time"`
@@ -23097,6 +23154,9 @@ type PaginatedTweets struct {
 	SearchContext PaginatedTweetsSearchContext `json:"searchContext"`
 	// Search q as X ran it, when Xquik fixed it.
 	SearchedQuery string `json:"searchedQuery"`
+	// What the topic filter asked & how many posts it kept. Present when the read
+	// sent topic.
+	TopicFilter TopicFilterSummary `json:"topicFilter"`
 	// Present on a last page whose sources all read past its start time.
 	//
 	// Any of true.
@@ -23107,9 +23167,11 @@ type PaginatedTweets struct {
 		NextCursor     respjson.Field
 		Tweets         respjson.Field
 		FilteredCount  respjson.Field
+		ImageFilter    respjson.Field
 		ReadBackTo     respjson.Field
 		SearchContext  respjson.Field
 		SearchedQuery  respjson.Field
+		TopicFilter    respjson.Field
 		WindowComplete respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
@@ -23245,10 +23307,13 @@ type SearchTweet struct {
 	// Grok's translation of the post, as X shows it.
 	GrokTranslatedPost map[string]any `json:"grokTranslatedPost"`
 	// Whether X holds Community Notes on the post, shown or not.
-	HasCommunityNotes bool   `json:"hasCommunityNotes"`
-	InReplyToID       string `json:"inReplyToId"`
-	InReplyToUserID   string `json:"inReplyToUserId"`
-	InReplyToUsername string `json:"inReplyToUsername"`
+	HasCommunityNotes bool `json:"hasCommunityNotes"`
+	// How likely a photo shows what imageShows asked for, from 0.5 to 1. Present on
+	// pages the image filter kept.
+	ImageScore        float64 `json:"imageScore"`
+	InReplyToID       string  `json:"inReplyToId"`
+	InReplyToUserID   string  `json:"inReplyToUserId"`
+	InReplyToUsername string  `json:"inReplyToUsername"`
 	// The notice x.com covers the post with until the reader views it, such as X's
 	// public interest notice on a post that broke its rules but stays up.
 	Interstitial   SearchTweetInterstitial `json:"interstitial"`
@@ -23312,7 +23377,10 @@ type SearchTweet struct {
 	TextHighlights []SearchTweetTextHighlight `json:"textHighlights"`
 	// Public visibility notice attached to an available tweet.
 	Tombstone SearchTweetTombstone `json:"tombstone"`
-	Type      string               `json:"type"`
+	// How likely the post is about the topic, from 0.5 to 1. Present on pages the
+	// topic filter kept.
+	TopicScore float64 `json:"topicScore"`
+	Type       string  `json:"type"`
 	// The author's ID when X withholds the author's profile.
 	UnavailableAuthorID string `json:"unavailableAuthorId"`
 	// X did not send these counts for this post, so treat each 0 as unknown.
@@ -23357,6 +23425,7 @@ type SearchTweet struct {
 		GrokShareAttachment    respjson.Field
 		GrokTranslatedPost     respjson.Field
 		HasCommunityNotes      respjson.Field
+		ImageScore             respjson.Field
 		InReplyToID            respjson.Field
 		InReplyToUserID        respjson.Field
 		InReplyToUsername      respjson.Field
@@ -23393,6 +23462,7 @@ type SearchTweet struct {
 		SubscriberBadge        respjson.Field
 		TextHighlights         respjson.Field
 		Tombstone              respjson.Field
+		TopicScore             respjson.Field
 		Type                   respjson.Field
 		UnavailableAuthorID    respjson.Field
 		UnknownCounts          respjson.Field
@@ -25112,6 +25182,58 @@ type SoftInterventionURL struct {
 // Returns the unmodified JSON received from the API
 func (r SoftInterventionURL) RawJSON() string { return r.JSON.raw }
 func (r *SoftInterventionURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// What the topic filter asked & how many posts it kept.
+type TopicFilterSummary struct {
+	// Posts checked. Only kept posts are billed.
+	Checked int64 `json:"checked" api:"required"`
+	// The lowest topicScore a kept post has.
+	Cutoff float64 `json:"cutoff" api:"required"`
+	// Posts about the topic, all returned & billed at 2 credits each.
+	Kept int64 `json:"kept" api:"required"`
+	// The question asked of each post.
+	Question string `json:"question" api:"required"`
+	// The topic you sent.
+	Topic string `json:"topic" api:"required"`
+	// Posts the check couldn't answer. They aren't billed or returned.
+	Unchecked []TopicFilterSummaryUnchecked `json:"unchecked" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Checked     respjson.Field
+		Cutoff      respjson.Field
+		Kept        respjson.Field
+		Question    respjson.Field
+		Topic       respjson.Field
+		Unchecked   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TopicFilterSummary) RawJSON() string { return r.JSON.raw }
+func (r *TopicFilterSummary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A post the topic filter couldn't answer, with the reason.
+type TopicFilterSummaryUnchecked struct {
+	ID     string `json:"id" api:"required"`
+	Reason string `json:"reason" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TopicFilterSummaryUnchecked) RawJSON() string { return r.JSON.raw }
+func (r *TopicFilterSummaryUnchecked) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

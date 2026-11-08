@@ -21,6 +21,7 @@ import (
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/respjson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/shared"
 	"github.com/Xquik-dev/x-twitter-scraper-go/shared/constant"
 )
 
@@ -70,7 +71,11 @@ func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, o
 type XMediaDownloadResponse struct {
 	CacheHit   bool   `json:"cacheHit"`
 	GalleryURL string `json:"galleryUrl"`
-	// The post's files saved to your gallery. Single downloads only.
+	// What the image filter asked & how many posts it kept. Present when the download
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
+	// The post's files saved to your gallery. Single downloads only. Empty when
+	// imageShows kept no photo.
 	Items       []XMediaDownloadResponseItem `json:"items"`
 	TotalMedia  int64                        `json:"totalMedia"`
 	TotalTweets int64                        `json:"totalTweets"`
@@ -79,6 +84,7 @@ type XMediaDownloadResponse struct {
 	JSON struct {
 		CacheHit    respjson.Field
 		GalleryURL  respjson.Field
+		ImageFilter respjson.Field
 		Items       respjson.Field
 		TotalMedia  respjson.Field
 		TotalTweets respjson.Field
@@ -485,6 +491,13 @@ func (r *XMediaUploadResponseTarget) UnmarshalJSON(data []byte) error {
 }
 
 type XMediaDownloadParams struct {
+	// Save only posts whose photos show this. Send charts, screenshots,
+	// product_photos, memes or people, or describe it in words, such as a rocket.
+	// AI-powered analysis checks posts with photos X doesn't mark sensitive & keeps
+	// scores of 0.5 or more. Each post saved costs 2 credits, the AI analysis price,
+	// on top of its save price, & a post the filter drops costs nothing. imageFilter
+	// states the cutoff & counts.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Numeric tweet ID alias for tweetInput
 	TweetID param.Opt[string] `json:"tweetId,omitzero"`
 	// Tweet URL or ID (single tweet)

@@ -2196,6 +2196,13 @@ const EventTypeProfileFollowersChanged = shared.EventTypeProfileFollowersChanged
 // Equals "profile.following.changed"
 const EventTypeProfileFollowingChanged = shared.EventTypeProfileFollowingChanged
 
+// What the image filter asked & how many posts it kept.
+type ImageFilterSummary = shared.ImageFilterSummary
+
+// A post the image filter didn't check, with the reason, such as
+// no_safe_photos.
+type ImageFilterSummaryUnchecked = shared.ImageFilterSummaryUnchecked
+
 // The live event the post belongs to, such as an election.
 type LiveEventContext = shared.LiveEventContext
 
@@ -2418,6 +2425,12 @@ type SoftInterventionText = shared.SoftInterventionText
 
 // The page that explains the label.
 type SoftInterventionURL = shared.SoftInterventionURL
+
+// What the topic filter asked & how many posts it kept.
+type TopicFilterSummary = shared.TopicFilterSummary
+
+// A post the topic filter couldn't answer, with the reason.
+type TopicFilterSummaryUnchecked = shared.TopicFilterSummaryUnchecked
 
 // Tweet media.
 type TweetMedia = shared.TweetMedia
