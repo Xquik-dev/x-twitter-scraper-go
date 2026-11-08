@@ -62,6 +62,9 @@ func (r *XMediaService) Upload(ctx context.Context, params XMediaUploadParams, o
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
 	}
+	if !param.IsOmitted(params.Prefer) {
+		opts = append(opts, option.WithHeader("Prefer", fmt.Sprintf("%v", params.Prefer.Value)))
+	}
 	opts = slices.Concat(r.options, opts)
 	path := "x/media"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
@@ -533,6 +536,11 @@ type XMediaUploadParams struct {
 	// HTTPS URL to download and upload as media
 	URL            param.Opt[string] `json:"url,omitzero" format:"uri"`
 	IdempotencyKey string            `header:"Idempotency-Key" api:"required" json:"-"`
+	// A long write answers 202 with a status link, then lands on X. wait=<seconds>
+	// asks for the answer within that many seconds, up to 85. If the write is still
+	// running then, the API answers 202 with Location. Poll Location until terminal
+	// is true, and don't send the write again.
+	Prefer param.Opt[string] `header:"Prefer,omitzero" json:"-"`
 	paramObj
 }
 

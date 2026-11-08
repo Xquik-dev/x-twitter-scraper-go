@@ -77,6 +77,9 @@ func (r *DrawService) Export(ctx context.Context, id string, query DrawExportPar
 // Checks credits, then draws winners from inspected replies and reposters.
 // Remaining credits cap inspected candidates.
 func (r *DrawService) Run(ctx context.Context, body DrawRunParams, opts ...option.RequestOption) (res *DrawRunResponse, err error) {
+	if !param.IsOmitted(body.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", body.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.options, opts)
 	path := "draws"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -303,9 +306,12 @@ type DrawRunParams struct {
 	MustRetweet          param.Opt[bool]   `json:"mustRetweet,omitzero"`
 	UniqueAuthorsOnly    param.Opt[bool]   `json:"uniqueAuthorsOnly,omitzero"`
 	WinnerCount          param.Opt[int64]  `json:"winnerCount,omitzero"`
-	RequiredHashtags     []string          `json:"requiredHashtags,omitzero"`
-	RequiredKeywords     []string          `json:"requiredKeywords,omitzero"`
-	RequiredMentions     []string          `json:"requiredMentions,omitzero"`
+	// Generate 1 unique value per intended request. Reuse it only to retry the same
+	// request. Exact retries return the original result & charge nothing.
+	IdempotencyKey   param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	RequiredHashtags []string          `json:"requiredHashtags,omitzero"`
+	RequiredKeywords []string          `json:"requiredKeywords,omitzero"`
+	RequiredMentions []string          `json:"requiredMentions,omitzero"`
 	paramObj
 }
 
