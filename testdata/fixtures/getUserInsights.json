@@ -9,6 +9,7 @@
     "postsPrivate": false,
     "sample": {
       "posts": 10,
+      "read": 12,
       "oldestAt": "2026-09-23T13:15:28.000Z",
       "newestAt": "2026-09-28T22:12:05.000Z"
     },

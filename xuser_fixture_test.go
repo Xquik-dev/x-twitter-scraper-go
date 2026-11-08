@@ -321,6 +321,7 @@ func TestXUserGetInsightsFixture(t *testing.T) {
 		res.Insights.PostsPerDay != 1.6814 ||
 		res.Insights.TopPostID != "2102761519985332442" ||
 		res.Insights.Sample.Posts != 10 ||
+		res.Insights.Sample.Read != 12 ||
 		!res.Insights.Sample.OldestAt.Equal(time.Date(2026, time.September, 23, 13, 15, 28, 0, time.UTC)) ||
 		!res.Insights.Sample.NewestAt.Equal(time.Date(2026, time.September, 28, 22, 12, 5, 0, time.UTC)) ||
 		res.Insights.Averages.Likes != 3684.2 ||

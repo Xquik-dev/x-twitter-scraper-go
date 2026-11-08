@@ -25,7 +25,7 @@ func TestXUserGetFollowerAuditFixture(t *testing.T) {
 	request.expect(t, http.MethodGet, "/api/v1/x/users/nasa/follower-audit", "fields=audit&limit=200&omit=followers")
 	expectDecoded(t, res)
 	audit := res.Audit
-	if audit.Account.UserName != "NASA" || audit.Account.Followers != 92376187 || audit.Account.Sample.Posts != 20 ||
+	if audit.Account.Sample.Read != 20 || audit.Account.UserName != "NASA" || audit.Account.Followers != 92376187 || audit.Account.Sample.Posts != 20 ||
 		audit.Coverage.Percent != 0.0002 || audit.Coverage.Read != 200 || audit.Coverage.Total != 92376187 ||
 		audit.Quality.Grade != xtwitterscraper.FollowerAuditQualityGradeB || audit.Quality.Score != 71 ||
 		audit.Verified.Count != 9 || audit.Verified.Percent != 4.5 {
