@@ -2,9 +2,10 @@
 
 ## Unreleased
 
-The SDK catches up with the API again. It adds the bookmark, block & mute writes and the fields the API added since 0.23.0. It covers 203 of the 218 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
+The SDK catches up with the API again. It adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 204 of the 219 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
 
 - `X.Tweets.Bookmark`, `X.Users.Block` & `X.Users.Mute` each add `New` & `Delete`. They take `Account`, `IdempotencyKey` & an optional `Prefer`, and return the `XWriteActionGetResponse` write record.
+- `X.Users.GetFollowerAudit` reads the newest followers of a public account and returns a `FollowerAudit`. It gives each follower a `FollowerClass` with its score & signals, and adds coverage, a quality grade, signal counts, arrival bands, join cohorts, languages, places, top followers & the account's engagement. Each follower read costs 1 credit, and the engagement adds 1 credit.
 - Every write record's `Action` adds `bookmark`, `unbookmark`, `block`, `unblock`, `mute` & `unmute`.
 - `X.Tweets.Search`, `X.Users.GetTweets`, `GetReplies` & `GetMedia` take `Topic` & `ImageShows`. AI analysis keeps only the posts about the topic or whose photos show it. The page returns `TopicFilter` or `ImageFilter` with the cutoff & counts, and each kept post returns `TopicScore` or `ImageScore`.
 - `Extractions.Run` & `Extractions.EstimateCost` take `Topic` & `ImageShows`, and `ExtractionJob` returns `TopicFilter` or `ImageFilter`. `X.Media.Download` takes `ImageShows` and returns `ImageFilter`.
