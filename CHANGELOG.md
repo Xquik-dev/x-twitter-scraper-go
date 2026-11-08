@@ -5,6 +5,7 @@
 The SDK catches up with the API again. It adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 205 of the 220 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
 
 - `X.Tweets.Bookmark`, `X.Users.Block` & `X.Users.Mute` each add `New` & `Delete`. They take `Account`, `IdempotencyKey` & an optional `Prefer`, and return the `XWriteActionGetResponse` write record.
+- The docs of `X.Tweets.List`, `X.Users.GetBatch` and `X.Users.GetBatchTweets` drop the limits the API removed, and `GetBatchTweets` now takes a `PageSize` up to 300.
 - `Monitors.Upsert` creates the monitor of an account or updates it, so the same call twice still leaves 1 monitor. `Created` says which one ran.
 - `X.Media.Download` returns `UnprocessedTweetIDs`, the posts Xquik had no time to read, at no charge. Send them again.
 - A user insights sample adds `Read`, the posts the read covered with reposts and the pinned post included. `Posts` counts only those the averages used.

@@ -108,9 +108,9 @@ func (r *XUserService) GetArticles(ctx context.Context, id string, query XUserGe
 	return res, err
 }
 
-// Returns the newest posts of up to 20 users, named by user ID, username or
-// profile link, in the order named. Send ids or usernames, not both. Each post
-// costs 1 credit. A user in unavailable_ids or unprocessed_ids costs nothing.
+// Returns the newest posts of users named by user ID, username or profile link, in
+// the order named. Send ids or usernames, not both. Each post costs 1 credit. A
+// user in unavailable_ids or unprocessed_ids costs nothing.
 func (r *XUserService) GetBatchTweets(ctx context.Context, query XUserGetBatchTweetsParams, opts ...option.RequestOption) (res *XUserGetBatchTweetsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "x/users/batch/tweets"
@@ -3800,8 +3800,8 @@ func (r *XUserRemoveFollowerParams) UnmarshalJSON(data []byte) error {
 }
 
 type XUserGetBatchParams struct {
-	// Comma-separated numeric user IDs (1-100 values). Duplicate IDs are ignored while
-	// preserving first-seen order.
+	// Comma-separated numeric user IDs. Duplicate IDs are ignored while preserving
+	// first-seen order.
 	IDs string `query:"ids" api:"required" json:"-"`
 	// Match any comma-separated or line-separated bio term, ignoring case.
 	BioContains param.Opt[string] `query:"bioContains,omitzero" json:"-"`
@@ -3848,8 +3848,7 @@ type XUserGetBatchParams struct {
 	// Match a username substring, ignoring case.
 	UsernameContains param.Opt[string] `query:"usernameContains,omitzero" json:"-"`
 	// Comma-separated X usernames, with or without @, or profile links such as
-	// x.com/nasa (1-100 values), in place of ids. A name in another case is the same
-	// account.
+	// x.com/nasa, in place of ids. A name in another case is the same account.
 	Usernames param.Opt[string] `query:"usernames,omitzero" json:"-"`
 	// Only return verified profiles.
 	VerifiedOnly param.Opt[bool] `query:"verifiedOnly,omitzero" json:"-"`
@@ -5452,18 +5451,18 @@ type XUserGetBatchTweetsParams struct {
 	// before any read. The price stays the same. SDK row types then hold only the
 	// named fields.
 	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
-	// Comma-separated numeric user IDs (1-20 values). Xquik ignores duplicate IDs and
-	// keeps the first-seen order.
+	// Comma-separated numeric IDs of the users to read posts from. Xquik ignores
+	// duplicate IDs and keeps the first-seen order.
 	IDs param.Opt[string] `query:"ids,omitzero" json:"-"`
 	// Fields to drop from each row, comma-separated. It takes the same names as
 	// fields. With fields, it drops from the kept fields.
 	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
-	// Posts per user (1-20, default 20). A low credit balance can return fewer. Its
+	// Posts per user (1-300, default 20). A low credit balance can return fewer. Its
 	// aliases are limit, count, max_results, maxItems, max_items & per_page.
 	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	// Comma-separated X usernames, with or without @, or profile links such as
-	// x.com/nasa (1-20 values), in place of ids. A name in another case is the same
-	// account. A number is a user ID.
+	// x.com/nasa, in place of ids. A name in another case is the same account. A
+	// number is a user ID.
 	Usernames param.Opt[string] `query:"usernames,omitzero" json:"-"`
 	paramObj
 }
