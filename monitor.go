@@ -83,6 +83,23 @@ func (r *MonitorService) Update(ctx context.Context, id string, body MonitorUpda
 	return res, err
 }
 
+// Creates the monitor if it does not exist, or updates it if it does. Send the same
+// call twice & you still have 1 monitor. A new monitor answers 201 & an update
+// answers 200. Both carry Created, so you know which one ran. Creating needs the
+// credits of the first hour, then costs 30 credits an hour. A stopped monitor turns
+// back on & counts as created. Updating is free & replaces the event types. It
+// changes the name only when you send one.
+func (r *MonitorService) Upsert(ctx context.Context, username string, body MonitorUpsertParams, opts ...option.RequestOption) (res *MonitorUpsertResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if username == "" {
+		err = errors.New("missing required username parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("monitors/username/%s", url.PathEscape(username))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return res, err
+}
+
 // Returns account monitors with their current operating states.
 func (r *MonitorService) List(ctx context.Context, opts ...option.RequestOption) (res *MonitorListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
@@ -185,6 +202,52 @@ func (r *MonitorNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The monitor this call created or updated.
+type MonitorUpsertResponse struct {
+	ID string `json:"id" api:"required"`
+	// True when this call created the monitor or turned it back on, false when it
+	// updated a running monitor.
+	Created   bool      `json:"created" api:"required"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes" api:"required"`
+	IsActive   bool               `json:"isActive" api:"required"`
+	// Next hourly credit charge time for this account monitor.
+	NextBillingAt time.Time `json:"nextBillingAt" api:"required" format:"date-time"`
+	Username      string    `json:"username" api:"required"`
+	XUserID       string    `json:"xUserId" api:"required"`
+	// Customer-set label of the account monitor, when set.
+	Name string `json:"name"`
+	// When Xquik automatically paused this monitor.
+	PausedAt time.Time `json:"pausedAt" format:"date-time"`
+	// Why Xquik automatically paused this monitor.
+	//
+	// Any of "insufficient_credits", "x_account_protected", "x_user_not_found".
+	PausedReason MonitorPausedReason `json:"pausedReason"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Created       respjson.Field
+		CreatedAt     respjson.Field
+		EventTypes    respjson.Field
+		IsActive      respjson.Field
+		NextBillingAt respjson.Field
+		Username      respjson.Field
+		XUserID       respjson.Field
+		Name          respjson.Field
+		PausedAt      respjson.Field
+		PausedReason  respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MonitorUpsertResponse) RawJSON() string { return r.JSON.raw }
+func (r *MonitorUpsertResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MonitorListResponse struct {
 	HasMore    bool      `json:"hasMore" api:"required"`
 	Monitors   []Monitor `json:"monitors" api:"required"`
@@ -261,5 +324,22 @@ func (r MonitorUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MonitorUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MonitorUpsertParams struct {
+	// Array of event types to subscribe to.
+	EventTypes []shared.EventType `json:"eventTypes,omitzero" api:"required"`
+	// Your label for the monitor. Its events carry it as monitorName. Leave it out to
+	// keep the current label, or send null to remove it.
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
+}
+
+func (r MonitorUpsertParams) MarshalJSON() (data []byte, err error) {
+	type shadow MonitorUpsertParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MonitorUpsertParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
