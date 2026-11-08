@@ -4073,7 +4073,10 @@ func (r *XTweetNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type XTweetListParams struct {
-	// Comma-separated tweet IDs (max 100)
+	// Posts, separated by commas. Each is a tweet ID or a tweet URL, such as
+	// x.com/nasa/status/20. Xquik reads a post named twice once. It skips any other
+	// entry & lists it under `skipped` with why. A batch without 1 post gets 400
+	// `invalid_tweet_id`.
 	IDs string `query:"ids" api:"required" json:"-"`
 	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
 	// author.username. A list keeps the field in each item. Case & underscores do not
