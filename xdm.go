@@ -47,6 +47,9 @@ func (r *XDmService) DeleteMessage(ctx context.Context, messageID string, params
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
 	}
+	if !param.IsOmitted(params.Prefer) {
+		opts = append(opts, option.WithHeader("Prefer", fmt.Sprintf("%v", params.Prefer.Value)))
+	}
 	opts = slices.Concat(r.options, opts)
 	if params.UserID == "" {
 		err = errors.New("missing required userId parameter")
@@ -77,6 +80,9 @@ func (r *XDmService) GetHistory(ctx context.Context, userID string, query XDmGet
 func (r *XDmService) Send(ctx context.Context, userID string, params XDmSendParams, opts ...option.RequestOption) (res *XDmSendResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey)))
+	}
+	if !param.IsOmitted(params.Prefer) {
+		opts = append(opts, option.WithHeader("Prefer", fmt.Sprintf("%v", params.Prefer.Value)))
 	}
 	opts = slices.Concat(r.options, opts)
 	if userID == "" {
@@ -806,6 +812,11 @@ type XDmSendParams struct {
 	Account        string `json:"account" api:"required"`
 	Text           string `json:"text" api:"required"`
 	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
+	// A long write answers 202 with a status link, then lands on X. wait=<seconds>
+	// asks for the answer within that many seconds, up to 85. If the write is still
+	// running then, the API answers 202 with Location. Poll Location until terminal
+	// is true, and don't send the write again.
+	Prefer param.Opt[string] `header:"Prefer,omitzero" json:"-"`
 	// Optional array containing exactly 1 uploaded media ID.
 	MediaIDs []string `json:"media_ids,omitzero"`
 	paramObj
@@ -832,6 +843,11 @@ type XDmDeleteMessageParams struct {
 	// nothing. While the first request runs, a retry returns 202 & the action.
 	// Different input returns 409. Protection lasts at least 90 days.
 	IdempotencyKey string `header:"Idempotency-Key" api:"required" json:"-"`
+	// A long write answers 202 with a status link, then lands on X. wait=<seconds>
+	// asks for the answer within that many seconds, up to 85. If the write is still
+	// running then, the API answers 202 with Location. Poll Location until terminal
+	// is true, and don't send the write again.
+	Prefer param.Opt[string] `header:"Prefer,omitzero" json:"-"`
 	paramObj
 }
 
