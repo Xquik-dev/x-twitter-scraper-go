@@ -44,3 +44,20 @@ func TestXMediaDownloadFixture(t *testing.T) {
 		t.Fatalf("decoded %s", video.RawJSON())
 	}
 }
+
+func TestXMediaDownloadReturnsThePostsItHadNoTimeToRead(t *testing.T) {
+	client, request := fixtureClient(t, "downloadUnprocessedMedia.json")
+	res, err := client.X.Media.Download(context.Background(), xtwitterscraper.XMediaDownloadParams{
+		TweetIDs: []string{"1234567890", "1234567891", "1234567892"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodPost, "/api/v1/x/media/download", "")
+	request.expectBody(t, `{"tweetIds":["1234567890","1234567891","1234567892"]}`)
+	expectDecoded(t, res)
+	if res.TotalTweets != 2 || res.TotalMedia != 5 || !res.JSON.UnprocessedTweetIDs.Valid() ||
+		len(res.UnprocessedTweetIDs) != 1 || res.UnprocessedTweetIDs[0] != "1234567892" {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+}

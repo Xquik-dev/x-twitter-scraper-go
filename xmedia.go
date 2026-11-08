@@ -83,17 +83,20 @@ type XMediaDownloadResponse struct {
 	TotalMedia  int64                        `json:"totalMedia"`
 	TotalTweets int64                        `json:"totalTweets"`
 	TweetID     string                       `json:"tweetId"`
+	// Posts Xquik had no time to read, at no charge. Send them again.
+	UnprocessedTweetIDs []string `json:"unprocessedTweetIds"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CacheHit    respjson.Field
-		GalleryURL  respjson.Field
-		ImageFilter respjson.Field
-		Items       respjson.Field
-		TotalMedia  respjson.Field
-		TotalTweets respjson.Field
-		TweetID     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		CacheHit            respjson.Field
+		GalleryURL          respjson.Field
+		ImageFilter         respjson.Field
+		Items               respjson.Field
+		TotalMedia          respjson.Field
+		TotalTweets         respjson.Field
+		TweetID             respjson.Field
+		UnprocessedTweetIDs respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
