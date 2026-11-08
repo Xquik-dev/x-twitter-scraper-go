@@ -4,8 +4,8 @@
 temp_paths=()
 
 temp_path() {
-  local name="$1" path
-  path="$(mktemp -d "${TMPDIR:-/tmp}/xquik-$2.XXXXXX")"
+  local name="$1" root="${TMPDIR:-/tmp}" path
+  path="$(mktemp -d "${root%/}/xquik-$2.XXXXXX")"
   temp_paths+=("$path")
   printf -v "$name" '%s' "$path"
   export GOTMPDIR="$path"
