@@ -1,0 +1,8 @@
+{
+  "id": "xatt_0123456789abcdef0123456789abcdef",
+  "expiresAt": "2026-11-08T12:30:00Z",
+  "message": "Enter the code X sent to your email.",
+  "object": "x_account_connection_challenge",
+  "status": "requires_email_code",
+  "username": "your_x_username"
+}

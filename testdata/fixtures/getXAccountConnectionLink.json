@@ -1,0 +1,16 @@
+{
+  "object": "x_account_connection_link",
+  "id": "xlink_AAAAAAAAAAAAAAAA",
+  "purpose": "connect",
+  "status": "connected",
+  "reference": "crm-user-7",
+  "returnUrl": "https://app.example.com/connected",
+  "accountId": "42",
+  "xUserId": "1234567890",
+  "xUsername": "your_x_username",
+  "health": "healthy",
+  "failure": null,
+  "createdAt": "2026-11-08T12:00:00Z",
+  "expiresAt": "2026-11-08T12:30:00Z",
+  "completedAt": "2026-11-08T12:04:00Z"
+}

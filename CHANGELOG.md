@@ -2,10 +2,13 @@
 
 ## Unreleased
 
-The SDK catches up with the API again. It adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 205 of the 220 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
+The SDK catches up with the API again. It adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 208 of the 223 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
 
 - `X.Tweets.Bookmark`, `X.Users.Block` & `X.Users.Mute` each add `New` & `Delete`. They take `Account`, `IdempotencyKey` & an optional `Prefer`, and return the `XWriteActionGetResponse` write record.
 - The docs of `X.Tweets.List`, `X.Users.GetBatch` and `X.Users.GetBatchTweets` drop the limits the API removed, and `GetBatchTweets` now takes a `PageSize` up to 300.
+- `X.AccountConnectionLinks` adds `New`, `Get` & `Delete`. `New` returns a link to a page Xquik hosts, where a person connects an X account with no Xquik signup, so your backend never receives their password or 2FA secret. Treat its `URL` as a secret, since it holds the token and appears only in that response.
+- `X.Accounts.New` & `X.Accounts.Reauth` take `ConnectionAttemptID`, an ID you generate to read the attempt's status even if the response never reaches you. `X.AccountConnectionAttempts.Get` returns `AccountID` once the account connects.
+- `X.Accounts.Reauth` now returns `XAccountReauthResponseUnion`, the same 3 answers as `X.Accounts.New`. A sign-in still running or waiting on an email code no longer reads as an active account, so check `Status` or use the `As` methods. This replaces `XAccountReauthResponse` and `XAccountReauthResponseHealth`.
 - `Monitors.Upsert` creates the monitor of an account or updates it, so the same call twice still leaves 1 monitor. `Created` says which one ran.
 - `X.Media.Download` returns `UnprocessedTweetIDs`, the posts Xquik had no time to read, at no charge. Send them again.
 - A user insights sample adds `Read`, the posts the read covered with reposts and the pinned post included. `Posts` counts only those the averages used.
