@@ -1755,7 +1755,7 @@ type XUserGetInsightsResponseInsights struct {
 	// True when only the account's followers see its posts. The report then has its
 	// counts only.
 	PostsPrivate bool `json:"postsPrivate" api:"required"`
-	// The recent posts the averages read.
+	// The recent posts the read covered.
 	Sample XUserGetInsightsResponseInsightsSample `json:"sample" api:"required"`
 	// The sampled post with the most engagements.
 	TopPostID string `json:"topPostId" api:"required"`
@@ -1826,19 +1826,23 @@ func (r *XUserGetInsightsResponseInsightsAverages) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The recent posts the averages read.
+// The recent posts the read covered.
 type XUserGetInsightsResponseInsightsSample struct {
-	// When the newest of them went up.
+	// When the newest post the averages used went up.
 	NewestAt time.Time `json:"newestAt" api:"required" format:"date-time"`
-	// When the oldest of them went up.
+	// When the oldest post the averages used went up.
 	OldestAt time.Time `json:"oldestAt" api:"required" format:"date-time"`
-	// Posts read.
+	// Posts the averages used. Reposts and the pinned post stay out, so this can be
+	// lower than Read.
 	Posts float64 `json:"posts" api:"required"`
+	// Posts read, reposts and the pinned post included.
+	Read float64 `json:"read" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		NewestAt    respjson.Field
 		OldestAt    respjson.Field
 		Posts       respjson.Field
+		Read        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
