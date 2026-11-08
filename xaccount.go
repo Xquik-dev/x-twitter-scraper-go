@@ -93,8 +93,9 @@ func (r *XAccountService) BulkRetry(ctx context.Context, body XAccountBulkRetryP
 	return res, err
 }
 
-// Starts re-authentication for an existing X account connection.
-func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountReauthParams, opts ...option.RequestOption) (res *XAccountReauthResponse, err error) {
+// Starts re-authentication for an existing X account connection. With an API key,
+// a sign-in still running after 75 seconds answers with a pending attempt to read.
+func (r *XAccountService) Reauth(ctx context.Context, id string, body XAccountReauthParams, opts ...option.RequestOption) (res *XAccountReauthResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -403,16 +404,81 @@ func (r *XAccountBulkRetryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// XAccountReauthResponseUnion contains all possible properties and values from
+// [XAccountReauthResponseSanitizedXAccount],
+// [XAccountReauthResponseXAccountConnectionAttemptPending],
+// [XAccountReauthResponseXAccountConnectionChallenge].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type XAccountReauthResponseUnion struct {
+	ID string `json:"id"`
+	// This field is from variant [XAccountReauthResponseSanitizedXAccount].
+	CreatedAt time.Time `json:"createdAt"`
+	// This field is from variant [XAccountReauthResponseSanitizedXAccount].
+	Health string `json:"health"`
+	Status string `json:"status"`
+	// This field is from variant [XAccountReauthResponseSanitizedXAccount].
+	XUserID string `json:"xUserId"`
+	// This field is from variant [XAccountReauthResponseSanitizedXAccount].
+	XUsername string `json:"xUsername"`
+	Object    string `json:"object"`
+	// This field is from variant
+	// [XAccountReauthResponseXAccountConnectionAttemptPending].
+	PollAfterMs int64 `json:"pollAfterMs"`
+	// This field is from variant [XAccountReauthResponseXAccountConnectionChallenge].
+	ExpiresAt time.Time `json:"expiresAt"`
+	// This field is from variant [XAccountReauthResponseXAccountConnectionChallenge].
+	Message string `json:"message"`
+	// This field is from variant [XAccountReauthResponseXAccountConnectionChallenge].
+	Username string `json:"username"`
+	JSON     struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Health      respjson.Field
+		Status      respjson.Field
+		XUserID     respjson.Field
+		XUsername   respjson.Field
+		Object      respjson.Field
+		PollAfterMs respjson.Field
+		ExpiresAt   respjson.Field
+		Message     respjson.Field
+		Username    respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u XAccountReauthResponseUnion) AsXAccountReauthResponseSanitizedXAccount() (v XAccountReauthResponseSanitizedXAccount) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u XAccountReauthResponseUnion) AsXAccountReauthResponseXAccountConnectionAttemptPending() (v XAccountReauthResponseXAccountConnectionAttemptPending) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u XAccountReauthResponseUnion) AsXAccountReauthResponseXAccountConnectionChallenge() (v XAccountReauthResponseXAccountConnectionChallenge) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u XAccountReauthResponseUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *XAccountReauthResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Sanitized X account summary returned by connect and reauth.
-type XAccountReauthResponse struct {
+type XAccountReauthResponseSanitizedXAccount struct {
 	ID        string    `json:"id" api:"required"`
 	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Any of "healthy", "locked", "needsReauth", "recovering", "suspended",
 	// "temporaryIssue".
-	Health    XAccountReauthResponseHealth `json:"health" api:"required"`
-	Status    constant.Active              `json:"status" default:"active"`
-	XUserID   string                       `json:"xUserId" api:"required"`
-	XUsername string                       `json:"xUsername" api:"required"`
+	Health    string          `json:"health" api:"required"`
+	Status    constant.Active `json:"status" default:"active"`
+	XUserID   string          `json:"xUserId" api:"required"`
+	XUsername string          `json:"xUsername" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -427,21 +493,61 @@ type XAccountReauthResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r XAccountReauthResponse) RawJSON() string { return r.JSON.raw }
-func (r *XAccountReauthResponse) UnmarshalJSON(data []byte) error {
+func (r XAccountReauthResponseSanitizedXAccount) RawJSON() string { return r.JSON.raw }
+func (r *XAccountReauthResponseSanitizedXAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type XAccountReauthResponseHealth string
+// The connection is still in progress.
+type XAccountReauthResponseXAccountConnectionAttemptPending struct {
+	ID          string                             `json:"id" api:"required"`
+	Object      constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
+	PollAfterMs int64                              `json:"pollAfterMs" api:"required"`
+	Status      constant.Pending                   `json:"status" default:"pending"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Object      respjson.Field
+		PollAfterMs respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	XAccountReauthResponseHealthHealthy        XAccountReauthResponseHealth = "healthy"
-	XAccountReauthResponseHealthLocked         XAccountReauthResponseHealth = "locked"
-	XAccountReauthResponseHealthNeedsReauth    XAccountReauthResponseHealth = "needsReauth"
-	XAccountReauthResponseHealthRecovering     XAccountReauthResponseHealth = "recovering"
-	XAccountReauthResponseHealthSuspended      XAccountReauthResponseHealth = "suspended"
-	XAccountReauthResponseHealthTemporaryIssue XAccountReauthResponseHealth = "temporaryIssue"
-)
+// Returns the unmodified JSON received from the API
+func (r XAccountReauthResponseXAccountConnectionAttemptPending) RawJSON() string { return r.JSON.raw }
+func (r *XAccountReauthResponseXAccountConnectionAttemptPending) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Resumable account connection challenge. Submit the email code to finish the same
+// connection attempt.
+type XAccountReauthResponseXAccountConnectionChallenge struct {
+	ID        string                               `json:"id" api:"required"`
+	ExpiresAt time.Time                            `json:"expiresAt" api:"required" format:"date-time"`
+	Message   string                               `json:"message" api:"required"`
+	Object    constant.XAccountConnectionChallenge `json:"object" default:"x_account_connection_challenge"`
+	Status    constant.RequiresEmailCode           `json:"status" default:"requires_email_code"`
+	Username  string                               `json:"username" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExpiresAt   respjson.Field
+		Message     respjson.Field
+		Object      respjson.Field
+		Status      respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountReauthResponseXAccountConnectionChallenge) RawJSON() string { return r.JSON.raw }
+func (r *XAccountReauthResponseXAccountConnectionChallenge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type XAccountNewParams struct {
 	// Account email
@@ -452,6 +558,9 @@ type XAccountNewParams struct {
 	TotpSecret string `json:"totp_secret" api:"required"`
 	// X username
 	Username string `json:"username" api:"required"`
+	// An ID you generate to read this attempt's status, even if the response never
+	// reaches you. Leave it out to get one in a pending response.
+	ConnectionAttemptID param.Opt[string] `json:"connection_attempt_id,omitzero"`
 	paramObj
 }
 
@@ -502,6 +611,9 @@ type XAccountReauthParams struct {
 	Email param.Opt[string] `json:"email,omitzero"`
 	// Replacement Authenticator App TOTP secret. Omit it to reuse the saved secret.
 	TotpSecret param.Opt[string] `json:"totp_secret,omitzero"`
+	// An ID you generate to read this reconnect's status, even if the response never
+	// reaches you. Leave it out to get one in a pending response.
+	ConnectionAttemptID param.Opt[string] `json:"connection_attempt_id,omitzero"`
 	paramObj
 }
 

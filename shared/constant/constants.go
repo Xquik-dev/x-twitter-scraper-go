@@ -43,6 +43,7 @@ type Succeeded string
 type Usd string
 type XAccountConnectionAttempt string
 type XAccountConnectionChallenge string
+type XAccountConnectionLink string
 type XWriteAction string
 
 func (c APIV1GuestWalletsTopups) Default() APIV1GuestWalletsTopups {
@@ -77,6 +78,9 @@ func (c Usd) Default() Usd             { return "usd" }
 func (c XAccountConnectionAttempt) Default() XAccountConnectionAttempt {
 	return "x_account_connection_attempt"
 }
+func (c XAccountConnectionLink) Default() XAccountConnectionLink {
+	return "x_account_connection_link"
+}
 func (c XAccountConnectionChallenge) Default() XAccountConnectionChallenge {
 	return "x_account_connection_challenge"
 }
@@ -106,6 +110,7 @@ func (c Success) MarshalJSON() ([]byte, error)                     { return mars
 func (c Succeeded) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Usd) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c XAccountConnectionAttempt) MarshalJSON() ([]byte, error)   { return marshalString(c) }
+func (c XAccountConnectionLink) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c XAccountConnectionChallenge) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c XWriteAction) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 

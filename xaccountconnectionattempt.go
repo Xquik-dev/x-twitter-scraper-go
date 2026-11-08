@@ -62,6 +62,8 @@ func (r *XAccountConnectionAttemptService) Get(ctx context.Context, id string, o
 type XAccountConnectionAttemptGetResponseUnion struct {
 	ID     string `json:"id"`
 	Object string `json:"object"`
+	// This field is from variant [XAccountConnectionAttemptGetResponseSuccess].
+	AccountID string `json:"accountId"`
 	// This field is from variant [XAccountConnectionAttemptGetResponsePending].
 	PollAfterMs int64 `json:"pollAfterMs"`
 	// Any of "pending", "success", "failed", "requires_email_code".
@@ -83,6 +85,7 @@ type XAccountConnectionAttemptGetResponseUnion struct {
 	Username string `json:"username"`
 	JSON     struct {
 		ID          respjson.Field
+		AccountID   respjson.Field
 		Object      respjson.Field
 		PollAfterMs respjson.Field
 		Status      respjson.Field
@@ -185,9 +188,12 @@ type XAccountConnectionAttemptGetResponseSuccess struct {
 	ID     string                             `json:"id" api:"required"`
 	Object constant.XAccountConnectionAttempt `json:"object" default:"x_account_connection_attempt"`
 	Status constant.Success                   `json:"status" default:"success"`
+	// The connected account's ID.
+	AccountID string `json:"accountId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		AccountID   respjson.Field
 		Object      respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
