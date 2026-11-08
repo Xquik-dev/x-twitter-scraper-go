@@ -37,6 +37,8 @@ func TestConstantsMarshalDefaults(t *testing.T) {
 		{"insufficient credits", InsufficientCredits(""), `"insufficient_credits"`},
 		{"insufficient credits", InsufficientCredits(""), `"insufficient_credits"`},
 		{"write action", XWriteAction(""), `"x_write_action"`},
+		{"connection attempt", XAccountConnectionAttempt(""), `"x_account_connection_attempt"`},
+		{"connection link", XAccountConnectionLink(""), `"x_account_connection_link"`},
 	}
 
 	for _, test := range tests {
