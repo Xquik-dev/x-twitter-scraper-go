@@ -1,8 +1,8 @@
-# Twitter scraper & X API Go SDK by Xquik
+# X (Twitter) API Golang SDK & Scraper by Xquik
 
 Use this Twitter scraper Go SDK by Xquik to read tweets into Go structs.
 Every call takes a `context.Context`.
-Public reads need no X developer account.
+Public reads need no X (Twitter) developer account.
 
 Xquik is the world's fastest and cheapest X (Twitter) scraper service with the most complete X (Twitter) data.
 Most other Apify Actors charge before filtering or deduplication.
@@ -15,7 +15,7 @@ The Xquik REST API read 45 tweets per second on 2026-10-15. That cost $0.15 per 
 
 <!-- trust:win:end -->
 
-## Install the Go Twitter API & scraper SDK
+## Install the Go X (Twitter) API & scraper SDK
 
 The SDK requires Go 1.27.3 or later.
 
@@ -23,10 +23,10 @@ The SDK requires Go 1.27.3 or later.
 go get 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
 ```
 
-## Scrape tweets with the Golang Twitter API
+## Scrape tweets with the Golang X (Twitter) API
 
 Set `X_TWITTER_SCRAPER_API_KEY`, then run this search.
-Search takes the same operators as X search & returns typed tweets.
+Search takes the same operators as X (Twitter) search & returns typed tweets.
 
 ```go
 package main
@@ -73,7 +73,7 @@ Checked on 2026-11-07. See each number with its date & source on [xquik.com/benc
 
 <!-- trust:end -->
 
-## Twitter API alternative
+## X (Twitter) API alternative
 
 This package does not call or emulate the official X API.
 Build on the [OpenAPI spec](https://xquik.com/openapi.json), [webhooks](https://docs.xquik.com/api-reference/webhooks/create) or [MCP guide](https://docs.xquik.com/mcp/overview).
@@ -560,7 +560,7 @@ Open an [issue](https://github.com/Xquik-dev/x-twitter-scraper-go/issues) before
 
 ## Questions
 
-### Do I need an X developer account?
+### Do I need an X (Twitter) developer account?
 
 No. Public reads need only an Xquik API key.
 Private reads & X account actions need a connected X account.
@@ -571,16 +571,16 @@ No. Xquik runs its own REST API. This SDK calls that API, not the official X API
 
 ## More Xquik tools
 
-- [X (Twitter) scraper API & Twitter MCP server](https://github.com/Xquik-dev/x-twitter-scraper) with REST, MCP & Skill setup.
-- Twitter API SDKs for [TypeScript](https://github.com/Xquik-dev/x-twitter-scraper-typescript), [Python](https://github.com/Xquik-dev/x-twitter-scraper-python), [Ruby](https://github.com/Xquik-dev/x-twitter-scraper-ruby) & [Java](https://github.com/Xquik-dev/x-twitter-scraper-java).
-- More Twitter API SDKs for [Kotlin](https://github.com/Xquik-dev/x-twitter-scraper-kotlin), [C#](https://github.com/Xquik-dev/x-twitter-scraper-csharp) & [PHP](https://github.com/Xquik-dev/x-twitter-scraper-php).
+- [X (Twitter) scraper API & X (Twitter) MCP server](https://github.com/Xquik-dev/x-twitter-scraper) with REST, MCP & Skill setup.
+- X (Twitter) API SDKs for [TypeScript](https://github.com/Xquik-dev/x-twitter-scraper-typescript), [Python](https://github.com/Xquik-dev/x-twitter-scraper-python), [Ruby](https://github.com/Xquik-dev/x-twitter-scraper-ruby) & [Java](https://github.com/Xquik-dev/x-twitter-scraper-java).
+- More X (Twitter) API SDKs for [Kotlin](https://github.com/Xquik-dev/x-twitter-scraper-kotlin), [C#](https://github.com/Xquik-dev/x-twitter-scraper-csharp) & [PHP](https://github.com/Xquik-dev/x-twitter-scraper-php).
 - [Twitter CLI & X CLI](https://github.com/Xquik-dev/x-twitter-scraper-cli) for terminal workflows.
 - [Twitter advanced search operators](https://github.com/Xquik-dev/x-twitter-advanced-search) with tested examples.
 - Twitter agent plugins for [OpenClaw](https://github.com/Xquik-dev/tweetclaw) & [Hermes Agent](https://github.com/Xquik-dev/hermes-tweet).
 - Twitter integrations for [n8n](https://github.com/Xquik-dev/n8n-nodes-xquik), [Prefect](https://github.com/Xquik-dev/prefect-xquik), [Haystack](https://github.com/Xquik-dev/xquik-haystack) & [Paperclip](https://github.com/Xquik-dev/paperclip-plugin-xquik).
 - More Twitter integrations for [Terraform](https://github.com/Xquik-dev/terraform-provider-x-twitter-scraper), [Convex](https://github.com/Xquik-dev/xquik-convex), [Supabase](https://github.com/Xquik-dev/xquik-supabase) & [Strapi](https://github.com/Xquik-dev/strapi-plugin-xquik).
-- Twitter MCP for [AI agents](https://github.com/Xquik-dev/xquik-mcp), [VS Code](https://github.com/Xquik-dev/xquik-vscode) & [Raycast](https://github.com/Xquik-dev/xquik-raycast).
-- [Xquik X API & Twitter scraper](https://xquik.com), [Twitter API docs](https://docs.xquik.com/api-reference/overview) & [docs source](https://github.com/Xquik-dev/xquik-docs).
+- X (Twitter) MCP for [AI agents](https://github.com/Xquik-dev/xquik-mcp), [VS Code](https://github.com/Xquik-dev/xquik-vscode) & [Raycast](https://github.com/Xquik-dev/xquik-raycast).
+- [Xquik X API & Twitter scraper](https://xquik.com), [X (Twitter) API docs](https://docs.xquik.com/api-reference/overview) & [docs source](https://github.com/Xquik-dev/xquik-docs).
 
 ## Help & contributing
 
