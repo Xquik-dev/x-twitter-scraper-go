@@ -118,6 +118,23 @@ func (r *XUserService) GetBatchTweets(ctx context.Context, query XUserGetBatchTw
 	return res, err
 }
 
+// Reads the newest followers of a public account & returns a follower audit. It
+// gives each follower 1 class with its score & signals, then adds coverage, a
+// quality score, signal counts, arrival bands, join cohorts, countries, top
+// followers & the account's engagement. Each follower read costs 1 credit, and the
+// engagement adds 1 credit. Signals come from public profiles, so a real person can
+// match. Older followers may differ from the newest ones.
+func (r *XUserService) GetFollowerAudit(ctx context.Context, id string, query XUserGetFollowerAuditParams, opts ...option.RequestOption) (res *XUserGetFollowerAuditResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("x/users/%s/follower-audit", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Returns the user IDs of the selected user's followers, newest first, up to 5,000
 // a page. Use it when you need IDs only. Each ID costs 1 credit.
 func (r *XUserService) GetFollowerIDs(ctx context.Context, id string, query XUserGetFollowerIDsParams, opts ...option.RequestOption) (res *XUserGetFollowerIDsResponse, err error) {
@@ -1321,6 +1338,323 @@ type XUserGetBatchTweetsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r XUserGetBatchTweetsResponse) RawJSON() string { return r.JSON.raw }
 func (r *XUserGetBatchTweetsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A follower audit of 1 public account.
+type XUserGetFollowerAuditResponse struct {
+	// Report on the followers read. Classes rest on public profile signals, so they
+	// say what a profile looks like, never who runs it.
+	Audit FollowerAudit `json:"audit" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Audit       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XUserGetFollowerAuditResponse) RawJSON() string { return r.JSON.raw }
+func (r *XUserGetFollowerAuditResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Report on the followers read. Classes rest on public profile signals, so they
+// say what a profile looks like, never who runs it.
+type FollowerAudit struct {
+	// Engagement insights of the audited account.
+	Account XUserGetInsightsResponseInsights `json:"account" api:"required"`
+	// Likely fake share by position in the newest-first list.
+	ArrivalBands []FollowerAuditArrivalBand `json:"arrivalBands" api:"required"`
+	// How many followers each class holds.
+	Classes []FollowerAuditClass `json:"classes" api:"required"`
+	// Followers who joined X in the same UTC week.
+	Cohorts []FollowerAuditCohort `json:"cohorts" api:"required"`
+	// How many of the account's followers the audit read.
+	Coverage FollowerAuditCoverage `json:"coverage" api:"required"`
+	// Every follower the audit read, newest first.
+	Followers []AuditedFollower `json:"followers" api:"required"`
+	// How many followers share each profile language.
+	Languages []FollowerValueCount `json:"languages" api:"required"`
+	// How many followers share each profile place.
+	Places []FollowerValueCount `json:"places" api:"required"`
+	// The audit's quality grade & score.
+	Quality FollowerAuditQuality `json:"quality" api:"required"`
+	// How many followers matched each signal.
+	Signals []FollowerAuditSignal `json:"signals" api:"required"`
+	// The followers with the most followers of their own.
+	TopFollowers []AuditedFollower `json:"topFollowers" api:"required"`
+	// How many followers X verifies.
+	Verified FollowerAuditVerified `json:"verified" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Account      respjson.Field
+		ArrivalBands respjson.Field
+		Classes      respjson.Field
+		Cohorts      respjson.Field
+		Coverage     respjson.Field
+		Followers    respjson.Field
+		Languages    respjson.Field
+		Places       respjson.Field
+		Quality      respjson.Field
+		Signals      respjson.Field
+		TopFollowers respjson.Field
+		Verified     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAudit) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAudit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The likely fake share of the followers at positions From to To in the
+// newest-first list.
+type FollowerAuditArrivalBand struct {
+	Count   int64   `json:"count" api:"required"`
+	From    int64   `json:"from" api:"required"`
+	Percent float64 `json:"percent" api:"required"`
+	Read    int64   `json:"read" api:"required"`
+	To      int64   `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		From        respjson.Field
+		Percent     respjson.Field
+		Read        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAuditArrivalBand) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAuditArrivalBand) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How many followers 1 class holds.
+type FollowerAuditClass struct {
+	// What 1 follower looks like from its public profile.
+	//
+	// Any of "automated", "inactive", "likelyFake", "likelyReal", "tooNew".
+	Class   FollowerClass `json:"class" api:"required"`
+	Count   int64         `json:"count" api:"required"`
+	Percent float64       `json:"percent" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Class       respjson.Field
+		Count       respjson.Field
+		Percent     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAuditClass) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAuditClass) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Followers who joined X in the UTC week that starts at WeekStartMs.
+type FollowerAuditCohort struct {
+	Count       int64   `json:"count" api:"required"`
+	LikelyFake  int64   `json:"likelyFake" api:"required"`
+	Percent     float64 `json:"percent" api:"required"`
+	WeekStartMs int64   `json:"weekStartMs" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		LikelyFake  respjson.Field
+		Percent     respjson.Field
+		WeekStartMs respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAuditCohort) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAuditCohort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How many of the account's followers the audit read.
+type FollowerAuditCoverage struct {
+	Percent float64 `json:"percent" api:"required"`
+	Read    int64   `json:"read" api:"required"`
+	Total   int64   `json:"total" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Percent     respjson.Field
+		Read        respjson.Field
+		Total       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAuditCoverage) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAuditCoverage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The audit's quality grade & score.
+type FollowerAuditQuality struct {
+	// Any of "A", "B", "C", "D", "F".
+	Grade FollowerAuditQualityGrade `json:"grade" api:"required"`
+	Score int64                     `json:"score" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Grade       respjson.Field
+		Score       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAuditQuality) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAuditQuality) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FollowerAuditQualityGrade string
+
+const (
+	FollowerAuditQualityGradeA FollowerAuditQualityGrade = "A"
+	FollowerAuditQualityGradeB FollowerAuditQualityGrade = "B"
+	FollowerAuditQualityGradeC FollowerAuditQualityGrade = "C"
+	FollowerAuditQualityGradeD FollowerAuditQualityGrade = "D"
+	FollowerAuditQualityGradeF FollowerAuditQualityGrade = "F"
+)
+
+// How many followers matched 1 signal, and the points it adds to a follower's
+// score.
+type FollowerAuditSignal struct {
+	Count   int64   `json:"count" api:"required"`
+	ID      string  `json:"id" api:"required"`
+	Percent float64 `json:"percent" api:"required"`
+	Points  int64   `json:"points" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		ID          respjson.Field
+		Percent     respjson.Field
+		Points      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAuditSignal) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAuditSignal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How many followers X verifies.
+type FollowerAuditVerified struct {
+	Count   int64   `json:"count" api:"required"`
+	Percent float64 `json:"percent" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Percent     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerAuditVerified) RawJSON() string { return r.JSON.raw }
+func (r *FollowerAuditVerified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// 1 follower the audit read, with its class, score & signals.
+type AuditedFollower struct {
+	// What 1 follower looks like from its public profile.
+	//
+	// Any of "automated", "inactive", "likelyFake", "likelyReal", "tooNew".
+	Class      FollowerClass `json:"class" api:"required"`
+	Followers  int64         `json:"followers" api:"required"`
+	Following  int64         `json:"following" api:"required"`
+	ID         string        `json:"id" api:"required"`
+	Likes      int64         `json:"likes" api:"required"`
+	Name       string        `json:"name" api:"required"`
+	Position   int64         `json:"position" api:"required"`
+	Posts      int64         `json:"posts" api:"required"`
+	Score      int64         `json:"score" api:"required"`
+	Signals    []string      `json:"signals" api:"required"`
+	UserName   string        `json:"userName" api:"required"`
+	JoinedAtMs int64         `json:"joinedAtMs"`
+	// Account that runs an automated follower, when X names it.
+	Owner      string `json:"owner"`
+	PictureURL string `json:"pictureUrl"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Class       respjson.Field
+		Followers   respjson.Field
+		Following   respjson.Field
+		ID          respjson.Field
+		Likes       respjson.Field
+		Name        respjson.Field
+		Position    respjson.Field
+		Posts       respjson.Field
+		Score       respjson.Field
+		Signals     respjson.Field
+		UserName    respjson.Field
+		JoinedAtMs  respjson.Field
+		Owner       respjson.Field
+		PictureURL  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AuditedFollower) RawJSON() string { return r.JSON.raw }
+func (r *AuditedFollower) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// What 1 follower looks like from its public profile.
+type FollowerClass string
+
+const (
+	FollowerClassAutomated  FollowerClass = "automated"
+	FollowerClassInactive   FollowerClass = "inactive"
+	FollowerClassLikelyFake FollowerClass = "likelyFake"
+	FollowerClassLikelyReal FollowerClass = "likelyReal"
+	FollowerClassTooNew     FollowerClass = "tooNew"
+)
+
+// How many followers share 1 value, such as a language or place.
+type FollowerValueCount struct {
+	Count   int64   `json:"count" api:"required"`
+	Percent float64 `json:"percent" api:"required"`
+	Value   string  `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Percent     respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FollowerValueCount) RawJSON() string { return r.JSON.raw }
+func (r *FollowerValueCount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5124,6 +5458,34 @@ type XUserGetBatchTweetsParams struct {
 
 // URLQuery serializes [XUserGetBatchTweetsParams]'s query parameters as `url.Values`.
 func (r XUserGetBatchTweetsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type XUserGetFollowerAuditParams struct {
+	// Fields to keep in each row, comma-separated. Use dots for nested fields, such as
+	// author.username. A list keeps the field in each item. Case & underscores do not
+	// matter. A row that lacks a field leaves it out. Cursors, counts & diagnostics
+	// always stay. An unknown name answers 400 unknown_field with the valid names,
+	// before any read. The price stays the same. SDK row types then hold only the
+	// named fields.
+	Fields param.Opt[string] `query:"fields,omitzero" json:"-"`
+	// Most followers to read, newest first. Left out, a read takes up to 200 and a low
+	// balance reads fewer. A very long read returns what it finished, & coverage shows
+	// how many. Its aliases are pageSize, count, max_results, maxItems, max_items &
+	// per_page.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Fields to drop from each row, comma-separated. It takes the same names as
+	// fields. With fields, it drops from the kept fields.
+	Omit param.Opt[string] `query:"omit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XUserGetFollowerAuditParams]'s query parameters as
+// `url.Values`.
+func (r XUserGetFollowerAuditParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
