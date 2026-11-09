@@ -28,6 +28,8 @@ On 2026-11-08, the image and topic filters moved 46 findings the same way, 36 in
 On 2026-11-08, the follower audit moved 6 findings in `xuser.go` the same way. Their code & reasons are unchanged.
 On 2026-11-08, the `Prefer` header on every write moved 10 findings the same way, 4 in `xtweet.go` and 6 in `xuser.go`. Their code & reasons are unchanged.
 On 2026-11-08, the likers and batch comments moved 10 findings the same way, 4 in `xtweet.go` and 6 in `xuser.go`. Their code & reasons are unchanged.
+On 2026-11-09, the X account connect links moved 7 findings the same way, 4 in `xaccountconnectionattempt.go` and 3 in `xaccount.go`. Their code & reasons are unchanged.
+On 2026-11-09, 3 findings in `xaccount.go` were reviewed and added. They are the As variant conversions of `XAccountReauthResponseUnion`, with the reason the other generated As methods carry.
 The temp cleanup tests have 6 reviewed findings for test-controlled script runners, executable fixtures, retained coverage files and restoring owner access to isolated module caches. Their records match the current source hashes and line numbers.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
@@ -650,102 +652,144 @@ Finding: Errors unhandled
 139: 	return
 ```
 
-## G104 in xaccountconnectionattempt.go:149
+## G104 in xaccountconnectionattempt.go:152
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `ae5dbdc3272542e5b9e00beb62980fa94068c4ccc76a091825f935407f29c25c`
+Source SHA-256: `f033ef2a3d7e7f4381a11f30b624c1f273e89792fe8c688b37b8667f49e342b3`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-148: func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAccountConnectionAttemptGetResponseRequiresEmailCode) {
-149: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-150: 	return
+151: func (u XAccountConnectionAttemptGetResponseUnion) AsRequiresEmailCode() (v XAccountConnectionAttemptGetResponseRequiresEmailCode) {
+152: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+153: 	return
 ```
 
-## G104 in xaccountconnectionattempt.go:144
+## G104 in xaccountconnectionattempt.go:147
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `ae5dbdc3272542e5b9e00beb62980fa94068c4ccc76a091825f935407f29c25c`
+Source SHA-256: `f033ef2a3d7e7f4381a11f30b624c1f273e89792fe8c688b37b8667f49e342b3`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-143: func (u XAccountConnectionAttemptGetResponseUnion) AsFailed() (v XAccountConnectionAttemptGetResponseFailed) {
-144: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-145: 	return
+146: func (u XAccountConnectionAttemptGetResponseUnion) AsFailed() (v XAccountConnectionAttemptGetResponseFailed) {
+147: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+148: 	return
 ```
 
-## G104 in xaccountconnectionattempt.go:139
+## G104 in xaccountconnectionattempt.go:142
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `ae5dbdc3272542e5b9e00beb62980fa94068c4ccc76a091825f935407f29c25c`
+Source SHA-256: `f033ef2a3d7e7f4381a11f30b624c1f273e89792fe8c688b37b8667f49e342b3`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-138: func (u XAccountConnectionAttemptGetResponseUnion) AsSuccess() (v XAccountConnectionAttemptGetResponseSuccess) {
-139: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-140: 	return
+141: func (u XAccountConnectionAttemptGetResponseUnion) AsSuccess() (v XAccountConnectionAttemptGetResponseSuccess) {
+142: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+143: 	return
 ```
 
-## G104 in xaccountconnectionattempt.go:134
+## G104 in xaccountconnectionattempt.go:137
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `ae5dbdc3272542e5b9e00beb62980fa94068c4ccc76a091825f935407f29c25c`
+Source SHA-256: `f033ef2a3d7e7f4381a11f30b624c1f273e89792fe8c688b37b8667f49e342b3`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-133: func (u XAccountConnectionAttemptGetResponseUnion) AsPending() (v XAccountConnectionAttemptGetResponsePending) {
-134: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-135: 	return
+136: func (u XAccountConnectionAttemptGetResponseUnion) AsPending() (v XAccountConnectionAttemptGetResponsePending) {
+137: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+138: 	return
 ```
 
-## G104 in xaccount.go:260
+## G104 in xaccount.go:461
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `30474186c364fd2486942d12b57ef44b36c5f8ae374a9f95556246463607f62a`
+Source SHA-256: `ff5eca87f765b5e33c517c66ceb8abd42ac884011e415d57baab5337ba8317dc`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-259: func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionChallenge() (v XAccountNewResponseXAccountConnectionChallenge) {
-260: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-261: 	return
+460: func (u XAccountReauthResponseUnion) AsXAccountReauthResponseXAccountConnectionChallenge() (v XAccountReauthResponseXAccountConnectionChallenge) {
+461: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+462: 	return
 ```
 
-## G104 in xaccount.go:255
+## G104 in xaccount.go:456
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `30474186c364fd2486942d12b57ef44b36c5f8ae374a9f95556246463607f62a`
+Source SHA-256: `ff5eca87f765b5e33c517c66ceb8abd42ac884011e415d57baab5337ba8317dc`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-254: func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionAttemptPending() (v XAccountNewResponseXAccountConnectionAttemptPending) {
-255: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-256: 	return
+455: func (u XAccountReauthResponseUnion) AsXAccountReauthResponseXAccountConnectionAttemptPending() (v XAccountReauthResponseXAccountConnectionAttemptPending) {
+456: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+457: 	return
 ```
 
-## G104 in xaccount.go:250
+## G104 in xaccount.go:451
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `30474186c364fd2486942d12b57ef44b36c5f8ae374a9f95556246463607f62a`
+Source SHA-256: `ff5eca87f765b5e33c517c66ceb8abd42ac884011e415d57baab5337ba8317dc`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-249: func (u XAccountNewResponseUnion) AsXAccountNewResponseSanitizedXAccount() (v XAccountNewResponseSanitizedXAccount) {
-250: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-251: 	return
+450: func (u XAccountReauthResponseUnion) AsXAccountReauthResponseSanitizedXAccount() (v XAccountReauthResponseSanitizedXAccount) {
+451: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+452: 	return
+```
+
+## G104 in xaccount.go:261
+
+Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
+
+Source SHA-256: `ff5eca87f765b5e33c517c66ceb8abd42ac884011e415d57baab5337ba8317dc`
+Severity: LOW. Confidence: HIGH.
+Finding: Errors unhandled
+
+```go
+260: func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionChallenge() (v XAccountNewResponseXAccountConnectionChallenge) {
+261: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+262: 	return
+```
+
+## G104 in xaccount.go:256
+
+Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
+
+Source SHA-256: `ff5eca87f765b5e33c517c66ceb8abd42ac884011e415d57baab5337ba8317dc`
+Severity: LOW. Confidence: HIGH.
+Finding: Errors unhandled
+
+```go
+255: func (u XAccountNewResponseUnion) AsXAccountNewResponseXAccountConnectionAttemptPending() (v XAccountNewResponseXAccountConnectionAttemptPending) {
+256: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+257: 	return
+```
+
+## G104 in xaccount.go:251
+
+Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
+
+Source SHA-256: `ff5eca87f765b5e33c517c66ceb8abd42ac884011e415d57baab5337ba8317dc`
+Severity: LOW. Confidence: HIGH.
+Finding: Errors unhandled
+
+```go
+250: func (u XAccountNewResponseUnion) AsXAccountNewResponseSanitizedXAccount() (v XAccountNewResponseSanitizedXAccount) {
+251: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+252: 	return
 ```
 
 ## G104 in supportattachment_test.go:19
