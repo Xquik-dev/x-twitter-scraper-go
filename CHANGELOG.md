@@ -32,6 +32,7 @@ The SDK catches up with the API again. It adds the bookmark, block & mute writes
 - `ExtractionJob` and the accepted `Extractions.Run` answer return `URL`, the job's dashboard page with every row as a file.
 - The 6 `X.Analysis` methods take `Images` in `Analysis`. The AI reads up to 4 images per post at no extra cost, and `false` keeps it to the text. `ContextAvailability.Media` returns `images` when it read them.
 - `RadarItemMetadata` returns `Sentiment` & `Windows` for Reddit items, and `X.Users.GetInsights` returns `MedianViews`.
+- `X.Tweets.New` takes `MediaIDs`, the IDs that `X.Media.Upload` returns. Send `Media` or `MediaIDs`, not both.
 
 ## 0.23.0 (2026-11-03)
 
