@@ -160,7 +160,7 @@ params.Limit = param.Null[int64]()
 fmt.Println(param.IsNull(params.Limit)) // true
 ```
 
-Use `option.WithQuerySet()` or `option.WithJSONSet()` to send a field the struct lacks.
+Use `option.WithQuery()` or `option.WithJSONSet()` to send a field the struct lacks.
 To send a custom value instead of a struct, use `param.Override[T](value)`.
 
 ### Response objects
@@ -239,7 +239,7 @@ response, err := client.X.Tweets.Search(
 	// Override the client header.
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add a query field the params struct lacks.
-	option.WithQuerySet("queryType", "Latest"),
+	option.WithQuery("queryType", "Latest"),
 )
 if err != nil {
 	panic(err)
@@ -464,21 +464,21 @@ if err != nil {
 fmt.Println(result.StatusCode)
 ```
 
-Use `option.WithQuerySet()` or `option.WithJSONSet()` for undocumented parameters.
+Use `option.WithQuery()` or `option.WithJSONSet()` for undocumented parameters.
 
 ```go
 response, err := client.X.Tweets.Search(
 	context.Background(),
 	xtwitterscraper.XTweetSearchParams{Q: "from:NASA", Limit: xtwitterscraper.Int(1)},
-	option.WithQuerySet("queryType", "Top"),
+	option.WithQuery("queryType", "Top"),
 )
 if err != nil {
 	panic(err)
 }
-fmt.Println(len(response.JSON.RawJSON()) > 0)
+fmt.Println(len(response.RawJSON()) > 0)
 ```
 
-Use `result.JSON.RawJSON()` for the full body and `.Foo.Raw()` for one field.
+Use `result.RawJSON()` for the full body and `.Foo.Raw()` for one field.
 `result.JSON.ExtraFields` returns fields absent from the response struct.
 
 ### Middleware
