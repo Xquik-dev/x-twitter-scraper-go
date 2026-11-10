@@ -544,7 +544,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `c3e909ca469111be17f881438df7697320af9de452c735d4523308088f01738b`
+Source SHA-256: `169fa652dab927335433f1d636430e94a123e5db6ec47969e133246f016d7a79`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -558,7 +558,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `c3e909ca469111be17f881438df7697320af9de452c735d4523308088f01738b`
+Source SHA-256: `169fa652dab927335433f1d636430e94a123e5db6ec47969e133246f016d7a79`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -572,7 +572,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `c3e909ca469111be17f881438df7697320af9de452c735d4523308088f01738b`
+Source SHA-256: `169fa652dab927335433f1d636430e94a123e5db6ec47969e133246f016d7a79`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -586,7 +586,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `c3e909ca469111be17f881438df7697320af9de452c735d4523308088f01738b`
+Source SHA-256: `169fa652dab927335433f1d636430e94a123e5db6ec47969e133246f016d7a79`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 

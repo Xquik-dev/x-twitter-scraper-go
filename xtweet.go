@@ -4055,12 +4055,16 @@ type XTweetNewParams struct {
 	CommunityID    param.Opt[string] `json:"community_id,omitzero"`
 	IsNoteTweet    param.Opt[bool]   `json:"is_note_tweet,omitzero"`
 	ReplyToTweetID param.Opt[string] `json:"reply_to_tweet_id,omitzero"`
-	// Tweet text (optional when media is provided)
+	// Tweet text. Optional with Media or MediaIDs.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Array of public media URLs to attach. Supports up to 4 images or exactly 1 MP4
 	// video up to 100 MB. Each URL must be publicly reachable. Attached media adds 2
 	// credits per started MB across all files.
 	Media []string `json:"media,omitzero"`
+	// Media IDs from POST /x/media, uploaded with this account. IDs last 24 hours.
+	// Send up to 4 image IDs or exactly 1 video ID. Send Media or MediaIDs, not both.
+	// Media adds 2 credits per started MB across all files.
+	MediaIDs []string `json:"media_ids,omitzero"`
 	paramObj
 }
 
