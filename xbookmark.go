@@ -183,6 +183,9 @@ type XBookmarkListParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Optional bookmark folder ID
 	FolderID param.Opt[string] `query:"folderId,omitzero" json:"-"`
+	// Items per page, 1 to 100, default 20. Source, filters or credits can return
+	// fewer. Follow next_cursor for more pages.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
