@@ -21,7 +21,7 @@ The Xquik REST API read 45 tweets per second on 2026-10-15. That cost $0.15 per 
 
 ## Install the Go X (Twitter) API & scraper SDK
 
-The SDK requires Go 1.27.3 or later.
+The SDK requires Go 1.27.4 or later.
 
 ```sh
 go get 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
