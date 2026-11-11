@@ -1309,6 +1309,9 @@ type XGetHomeTimelineParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Comma-separated tweet IDs to exclude from results. Empty entries are ignored.
 	SeenTweetIDs param.Opt[string] `query:"seenTweetIds,omitzero" json:"-"`
+	// Items per page, 1 to 100, default 20. Source, filters or credits can return
+	// fewer. Follow next_cursor for more pages.
+	PageSize param.Opt[int64] `query:"pageSize,omitzero" json:"-"`
 	paramObj
 }
 
