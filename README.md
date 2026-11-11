@@ -103,7 +103,7 @@ Go checks every module download against the public checksum database.
 Run this command to see the commit behind a release.
 
 ```sh
-go mod download -json github.com/Xquik-dev/x-twitter-scraper-go@vVERSION
+go mod download -json github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0
 ```
 
 `Origin.Hash` names the tagged commit.
@@ -141,156 +141,84 @@ Maps, slices, structs & enums tagged <code>\`json:"...,omitzero"\`</code> omit z
 Use `param.IsOmitted(any)` to test any `omitzero` field.
 
 ```go
-p := xtwitterscraper.ExampleParams{
-	ID:   "id_xxx",                      // Required.
-	Name: xtwitterscraper.String("..."), // Optional.
-
-	Point: xtwitterscraper.Point{
-		X: 0,                      // Serializes as 0.
-		Y: xtwitterscraper.Int(1), // Serializes as 1.
-	},
-
-	Origin: xtwitterscraper.Origin{}, // Omitted because it is zero.
+params := xtwitterscraper.XTweetSearchParams{
+	Q:                "from:NASA",                 // Required.
+	Limit:            xtwitterscraper.Int(10),     // Optional.
+	BlueVerifiedOnly: xtwitterscraper.Bool(false), // Optional, and sends false.
 }
+
+fmt.Println(param.IsOmitted(params.AdvancedQuery)) // true
 ```
 
 To send `null` instead of a `param.Opt[T]`, use `param.Null[T]()`.
 To send `null` instead of a struct `T`, use `param.NullStruct[T]()`.
 
 ```go
-p.Name = param.Null[string]()       // 'null' instead of string
-p.Point = param.NullStruct[Point]() // 'null' instead of struct
+params := xtwitterscraper.XTweetSearchParams{Q: "from:NASA"}
+params.Limit = param.Null[int64]()
 
-param.IsNull(p.Name)  // true
-param.IsNull(p.Point) // true
+fmt.Println(param.IsNull(params.Limit)) // true
 ```
 
-Use `.SetExtraFields(map[string]any)` only with trusted data.
-Extra fields can overwrite matching struct fields.
-
+Use `option.WithQuery()` or `option.WithJSONSet()` to send a field the struct lacks.
 To send a custom value instead of a struct, use `param.Override[T](value)`.
-
-```go
-// Override the documented integer type.
-p.SetExtraFields(map[string]any{
-	"x": 0.01,
-})
-
-// Send a number instead of an object.
-custom := param.Override[xtwitterscraper.FooParams](12)
-```
-
-### Request unions
-
-Each union variant uses an `Of`-prefixed field. Set only one field.
-The SDK serializes the nonzero field. Getter methods return mutable pointers when the field is present.
-
-```go
-// Set only one variant.
-type AnimalUnionParam struct {
-	OfCat *Cat `json:",omitzero,inline"`
-	OfDog *Dog `json:",omitzero,inline"`
-}
-
-animal := AnimalUnionParam{
-	OfCat: &Cat{
-		Name: "Whiskers",
-		Owner: PersonParam{
-			Address: AddressParam{Street: "3333 Coyote Hill Rd", ZipCode: 0},
-		},
-	},
-}
-
-// Mutate a present field.
-if address := animal.GetOwner().GetAddress(); address != nil {
-	address.ZipCode = 94304
-}
-```
 
 ### Response objects
 
-Response fields use value types. The `JSON` field records decoding metadata.
-
-```go
-type Animal struct {
-	Name   string `json:"name,nullable"`
-	Owners int    `json:"owners"`
-	Age    int    `json:"age"`
-	JSON   struct {
-		Name        respjson.Field
-		Owners      respjson.Field
-		Age         respjson.Field
-		ExtraFields map[string]respjson.Field
-	} `json:"-"`
-}
-```
-
+Response fields use value types. Each struct's `JSON` field records decoding metadata.
 `.Valid()` reports whether a field was present, non-null & decoded without error.
 Invalid or omitted fields keep their zero value.
-
-```go
-raw := `{"owners": 1, "name": null}`
-
-var res Animal
-json.Unmarshal([]byte(raw), &res)
-
-// Values.
-res.Owners // 1
-res.Name   // ""
-res.Age    // 0
-
-// Presence checks.
-res.JSON.Owners.Valid() // true
-res.JSON.Name.Valid()   // false
-res.JSON.Age.Valid()    // false
-
-// Raw JSON.
-res.JSON.Owners.Raw()                  // "1"
-res.JSON.Name.Raw() == "null"          // true
-res.JSON.Name.Raw() == respjson.Null   // true
-res.JSON.Age.Raw() == ""               // true
-res.JSON.Age.Raw() == respjson.Omitted // true
-```
-
 `JSON.ExtraFields` retains response properties absent from the response struct.
 
 ```go
-body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
+raw := `{"id": "1", "text": "Launch day.", "likeCount": 1200, "communityId": null, "source": "web"}`
+
+var tweet xtwitterscraper.SearchTweet
+if err := json.Unmarshal([]byte(raw), &tweet); err != nil {
+	panic(err)
+}
+
+// Values.
+fmt.Println(tweet.LikeCount)   // 1200
+fmt.Println(tweet.CommunityID) // ""
+fmt.Println(tweet.ViewCount)   // 0
+
+// Presence checks.
+fmt.Println(tweet.JSON.LikeCount.Valid())   // true
+fmt.Println(tweet.JSON.CommunityID.Valid()) // false
+fmt.Println(tweet.JSON.ViewCount.Valid())   // false
+
+// Raw JSON.
+fmt.Println(tweet.JSON.LikeCount.Raw())                       // 1200
+fmt.Println(tweet.JSON.CommunityID.Raw() == respjson.Null)    // true
+fmt.Println(tweet.JSON.ViewCount.Raw() == respjson.Omitted)   // true
+fmt.Println(tweet.JSON.ExtraFields["source"].Raw())           // "web"
 ```
 
 ### Response unions
 
 Response unions flatten fields from every object variant.
 Use `.AsFooVariant()` or `.AsAny()` to select a variant.
-Primitive variants use `Of`-prefixed fields tagged `json:"...,inline"`.
 
 ```go
-type AnimalUnion struct {
-	// From variants [Dog], [Cat]
-	Owner Person `json:"owner"`
-	// From variant [Dog]
-	DogBreed string `json:"dog_breed"`
-	// From variant [Cat]
-	CatBreed string `json:"cat_breed"`
-	// ...
+raw := `{"id": "xatt_1", "object": "x_account_connection_attempt", "status": "failed", "error": "Wrong password."}`
 
-	JSON struct {
-		Owner respjson.Field
-		// ...
-	} `json:"-"`
+var attempt xtwitterscraper.XAccountConnectionAttemptGetResponseUnion
+if err := json.Unmarshal([]byte(raw), &attempt); err != nil {
+	panic(err)
 }
 
-// Validate a shared field.
-if animal.Owner.Address.ZipCode == "" {
-	panic("missing zip code")
-}
+// Read a shared field.
+fmt.Println(attempt.Status) // failed
 
 // Select the variant.
-switch variant := animal.AsAny().(type) {
-case Dog:
-case Cat:
+switch variant := attempt.AsAny().(type) {
+case xtwitterscraper.XAccountConnectionAttemptGetResponseFailed:
+	fmt.Println(variant.Error) // Wrong password.
+case xtwitterscraper.XAccountConnectionAttemptGetResponseSuccess:
+	fmt.Println(variant.ID)
 default:
-	panic("unexpected type")
+	fmt.Println("still pending")
 }
 ```
 
@@ -305,12 +233,18 @@ client := xtwitterscraper.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.X.Tweets.Search(context.TODO(), ...,
+response, err := client.X.Tweets.Search(
+	context.TODO(),
+	xtwitterscraper.XTweetSearchParams{Q: "from:NASA", Limit: xtwitterscraper.Int(10)},
 	// Override the client header.
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
-	// Add a request field with sjson syntax.
-	option.WithJSONSet("some.json.path", map[string]string{"my": "object"}),
+	// Add a query field the params struct lacks.
+	option.WithQuery("queryType", "Latest"),
 )
+if err != nil {
+	panic(err)
+}
+fmt.Println(len(response.Tweets))
 ```
 
 `option.WithDebugLog(nil)` writes request and response content to the default logger.
@@ -349,6 +283,8 @@ Call `Next` until it returns false, then check `Err`.
 Close the stream when you finish.
 
 ```go
+lastID := "" // The last event ID you saw, if any.
+
 params := xtwitterscraper.EventStreamParams{}
 if lastID != "" {
 	params.LastEventID = xtwitterscraper.String(lastID)
@@ -428,23 +364,37 @@ Implement `Name() string` or `ContentType() string` to override either value.
 Use `xtwitterscraper.File` to wrap any reader with explicit metadata.
 
 ```go
+download, err := http.Get("https://xquik.com/logo.png")
+if err != nil {
+	panic(err)
+}
+image, err := io.ReadAll(download.Body)
+download.Body.Close()
+if err != nil {
+	panic(err)
+}
+if err := os.WriteFile("logo.png", image, 0o600); err != nil {
+	panic(err)
+}
+
 // Read from disk.
-file, err := os.Open("/path/to/file")
-xtwitterscraper.XMediaUploadParams{
-	Account: "@elonmusk",
-	File:    file,
+file, err := os.Open("logo.png")
+if err != nil {
+	panic(err)
 }
+defer file.Close()
 
-// Read from a string.
-xtwitterscraper.XMediaUploadParams{
-	Account: "@elonmusk",
-	File:    strings.NewReader("my file contents"),
+uploads := []xtwitterscraper.XMediaUploadParams{
+	{Account: "@elonmusk", File: file, IdempotencyKey: "upload-disk"},
+	// Read from memory.
+	{Account: "@elonmusk", File: bytes.NewReader(image), IdempotencyKey: "upload-memory"},
+	// Set a filename and media type.
+	{Account: "@elonmusk", File: xtwitterscraper.File(bytes.NewReader(image), "logo.png", "image/png"), IdempotencyKey: "upload-named"},
 }
-
-// Set a filename and media type.
-xtwitterscraper.XMediaUploadParams{
-	Account: "@elonmusk",
-	File:    xtwitterscraper.File(strings.NewReader("my video bytes"), "clip.mp4", "video/mp4"),
+for _, params := range uploads {
+	if _, err := client.X.Media.Upload(context.TODO(), params); err != nil {
+		panic(err)
+	}
 }
 ```
 
@@ -507,49 +457,55 @@ var (
 	// Accepts []byte, *http.Response, JSON-compatible values, or SDK models.
 	result *http.Response
 )
-err := client.Post(context.Background(), "/unspecified", params, &result)
+err := client.Get(context.Background(), "x/tweets/search?q=from:NASA&limit=1", params, &result)
 if err != nil {
 	panic(err)
 }
+fmt.Println(result.StatusCode)
 ```
 
-Use `option.WithQuerySet()` or `option.WithJSONSet()` for undocumented parameters.
+Use `option.WithQuery()` or `option.WithJSONSet()` for undocumented parameters.
 
 ```go
-params := FooNewParams{
-	ID: "id_xxxx",
-	Data: FooNewParamsData{
-		FirstName: xtwitterscraper.String("John"),
-	},
+response, err := client.X.Tweets.Search(
+	context.Background(),
+	xtwitterscraper.XTweetSearchParams{Q: "from:NASA", Limit: xtwitterscraper.Int(1)},
+	option.WithQuery("queryType", "Top"),
+)
+if err != nil {
+	panic(err)
 }
-client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
+fmt.Println(len(response.RawJSON()) > 0)
 ```
 
-Use `result.JSON.RawJSON()` for the full body and `.Foo.Raw()` for one field.
-`result.JSON.ExtraFields()` returns fields absent from the response struct.
+Use `result.RawJSON()` for the full body and `.Foo.Raw()` for one field.
+`result.JSON.ExtraFields` returns fields absent from the response struct.
 
 ### Middleware
 
 Use `option.WithMiddleware` to wrap requests.
 
 ```go
-func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
+logger := func(req *http.Request, next option.MiddlewareNext) (*http.Response, error) {
 	// Before the request.
 	start := time.Now()
-	LogReq(req)
 
 	// Run the next handler.
-	res, err = next(req)
+	res, err := next(req)
 
 	// After the request.
-	LogRes(res, err, time.Since(start))
+	fmt.Println(req.Method, req.URL.Path, time.Since(start))
 
 	return res, err
 }
 
 client := xtwitterscraper.NewClient(
-	option.WithMiddleware(Logger),
+	option.WithMiddleware(logger),
 )
+
+if _, err := client.X.Tweets.Search(context.TODO(), xtwitterscraper.XTweetSearchParams{Q: "from:NASA", Limit: xtwitterscraper.Int(10)}); err != nil {
+	panic(err)
+}
 ```
 
 Middleware runs left to right. Client middleware runs before request middleware.
