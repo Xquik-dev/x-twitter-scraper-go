@@ -9,6 +9,7 @@ The SDK catches up with the API again. It adds the bookmark, block & mute writes
 - `X.AccountConnectionLinks` adds `New`, `Get` & `Delete`. `New` returns a link to a page Xquik hosts, where a person connects an X account with no Xquik signup, so your backend never receives their password or 2FA secret. Treat its `URL` as a secret, since it holds the token and appears only in that response.
 - `X.Accounts.New` & `X.Accounts.Reauth` take `ConnectionAttemptID`, an ID you generate to read the attempt's status even if the response never reaches you. `X.AccountConnectionAttempts.Get` returns `AccountID` once the account connects.
 - `X.Accounts.Reauth` now returns `XAccountReauthResponseUnion`, the same 3 answers as `X.Accounts.New`. A sign-in still running or waiting on an email code no longer reads as an active account, so check `Status` or use the `As` methods. This replaces `XAccountReauthResponse` and `XAccountReauthResponseHealth`.
+- The SDK requires Go 1.27.4 or newer. Go 1.27.4 fixes GO-2026-6859, where a race in `net/http` could crash an HTTP/1 server that used `MaxBytesReader`.
 - `Monitors.Upsert` creates the monitor of an account or updates it, so the same call twice still leaves 1 monitor. `Created` says which one ran.
 - `X.Media.Download` returns `UnprocessedTweetIDs`, the posts Xquik had no time to read, at no charge. Send them again.
 - A user insights sample adds `Read`, the posts the read covered with reposts and the pinned post included. `Posts` counts only those the averages used.
