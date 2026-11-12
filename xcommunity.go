@@ -1016,7 +1016,7 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 	UsernameChanges shared.UserProfileUsernameChanges `json:"usernameChanges"`
 	// X's text on why the profile is verified, with its links.
 	VerificationReason  shared.UserProfileVerificationReason `json:"verificationReason"`
-	Verified            bool                                 `json:"verified"`
+	Verified            bool                                 `json:"verified" api:"required"`
 	Name                string                               `json:"name"`
 	VerifiedType        string                               `json:"verifiedType"`
 	WithheldInCountries []string                             `json:"withheldInCountries"`
