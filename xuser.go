@@ -4597,6 +4597,11 @@ type XUserGetMentionsParams struct {
 	//
 	// Any of "images", "videos", "gifs", "media", "links", "none".
 	MediaType XUserGetMentionsParamsMediaType `query:"mediaType,omitzero" json:"-"`
+	// With replies=exclude, also leaves out replies to the author's own posts, so the
+	// search skips every reply.
+	//
+	// Any of "exclude".
+	OwnThreads XUserGetMentionsParamsOwnThreads `query:"ownThreads,omitzero" json:"-"`
 	// Only when the caller requests a quote mode.
 	//
 	// Any of "include", "exclude", "only".
@@ -4630,6 +4635,14 @@ const (
 	XUserGetMentionsParamsMediaTypeMedia  XUserGetMentionsParamsMediaType = "media"
 	XUserGetMentionsParamsMediaTypeLinks  XUserGetMentionsParamsMediaType = "links"
 	XUserGetMentionsParamsMediaTypeNone   XUserGetMentionsParamsMediaType = "none"
+)
+
+// With replies=exclude, also leaves out replies to the author's own posts, so the
+// search skips every reply.
+type XUserGetMentionsParamsOwnThreads string
+
+const (
+	XUserGetMentionsParamsOwnThreadsExclude XUserGetMentionsParamsOwnThreads = "exclude"
 )
 
 // Only when the caller requests a quote mode.
