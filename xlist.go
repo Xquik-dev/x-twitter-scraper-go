@@ -115,6 +115,11 @@ type XListGetFollowersResponseUnion struct {
 	// the list scanned 100,000 profiles across its pages. That page is the list's
 	// last.
 	ScanLimit XListGetFollowersResponseScanLimit `json:"scanLimit"`
+	// Present on the last page of an empty list whose profile counts 0 accounts in
+	// it.
+	//
+	// Any of true.
+	WindowComplete bool `json:"windowComplete"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XListGetFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -124,13 +129,14 @@ type XListGetFollowersResponseUnion struct {
 	// This field is from variant [XListGetFollowersResponseUserListCoverageResponse].
 	Diagnostic XListGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage   respjson.Field
-		NextCursor    respjson.Field
-		ScanLimit     respjson.Field
-		Users         respjson.Field
-		FilteredCount respjson.Field
-		Diagnostic    respjson.Field
-		raw           string
+		HasNextPage    respjson.Field
+		NextCursor     respjson.Field
+		ScanLimit      respjson.Field
+		WindowComplete respjson.Field
+		Users          respjson.Field
+		FilteredCount  respjson.Field
+		Diagnostic     respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -294,6 +300,11 @@ type XListGetMembersResponseUnion struct {
 	// the list scanned 100,000 profiles across its pages. That page is the list's
 	// last.
 	ScanLimit XListGetMembersResponseScanLimit `json:"scanLimit"`
+	// Present on the last page of an empty list whose profile counts 0 accounts in
+	// it.
+	//
+	// Any of true.
+	WindowComplete bool `json:"windowComplete"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XListGetMembersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -303,13 +314,14 @@ type XListGetMembersResponseUnion struct {
 	// This field is from variant [XListGetMembersResponseUserListCoverageResponse].
 	Diagnostic XListGetMembersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage   respjson.Field
-		NextCursor    respjson.Field
-		ScanLimit     respjson.Field
-		Users         respjson.Field
-		FilteredCount respjson.Field
-		Diagnostic    respjson.Field
-		raw           string
+		HasNextPage    respjson.Field
+		NextCursor     respjson.Field
+		ScanLimit      respjson.Field
+		WindowComplete respjson.Field
+		Users          respjson.Field
+		FilteredCount  respjson.Field
+		Diagnostic     respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
