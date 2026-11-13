@@ -23143,6 +23143,12 @@ type PaginatedTweets struct {
 	NextCursor    string        `json:"next_cursor" api:"required"`
 	Tweets        []SearchTweet `json:"tweets" api:"required"`
 	FilteredCount int64         `json:"filtered_count"`
+	// Present on an empty last page when X shows this account's timeline to nobody.
+	// The page is empty because of that, so it doesn't mean the account posted
+	// nothing. A retry returns the same page.
+	//
+	// Any of true.
+	HiddenTimeline bool `json:"hiddenTimeline"`
 	// What the image filter asked & how many posts it kept. Present when the read
 	// sent imageShows.
 	ImageFilter ImageFilterSummary `json:"imageFilter"`
@@ -23167,6 +23173,7 @@ type PaginatedTweets struct {
 		NextCursor     respjson.Field
 		Tweets         respjson.Field
 		FilteredCount  respjson.Field
+		HiddenTimeline respjson.Field
 		ImageFilter    respjson.Field
 		ReadBackTo     respjson.Field
 		SearchContext  respjson.Field

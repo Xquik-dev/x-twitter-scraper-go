@@ -4,6 +4,8 @@
 
 The SDK catches up with the API again. It adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 208 of the 223 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
 
+- `X.Users.GetFollowers`, `GetFollowing`, `GetVerifiedFollowers`, `X.Lists.GetFollowers` & `GetMembers` add `WindowComplete`, true on the last page of an empty list whose profile counts 0 accounts in it.
+- `shared.PaginatedTweets` adds `HiddenTimeline`, true on an empty last page when X shows the account's timeline to nobody, so the page doesn't mean the account posted nothing.
 - `X.Tweets.Bookmark`, `X.Users.Block` & `X.Users.Mute` each add `New` & `Delete`. They take `Account`, `IdempotencyKey` & an optional `Prefer`, and return the `XWriteActionGetResponse` write record.
 - The docs of `X.Tweets.List`, `X.Users.GetBatch` and `X.Users.GetBatchTweets` drop the limits the API removed, and `GetBatchTweets` now takes a `PageSize` up to 300.
 - `X.AccountConnectionLinks` adds `New`, `Get` & `Delete`. `New` returns a link to a page Xquik hosts, where a person connects an X account with no Xquik signup, so your backend never receives their password or 2FA secret. Treat its `URL` as a secret, since it holds the token and appears only in that response.

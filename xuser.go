@@ -779,6 +779,11 @@ type XUserGetFollowersResponseUnion struct {
 	// the list scanned 100,000 profiles across its pages. That page is the list's
 	// last.
 	ScanLimit XUserGetFollowersResponseScanLimit `json:"scanLimit"`
+	// Present on the last page of an empty list whose profile counts 0 accounts in
+	// it.
+	//
+	// Any of true.
+	WindowComplete bool `json:"windowComplete"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -788,13 +793,14 @@ type XUserGetFollowersResponseUnion struct {
 	// This field is from variant [XUserGetFollowersResponseUserListCoverageResponse].
 	Diagnostic XUserGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage   respjson.Field
-		NextCursor    respjson.Field
-		ScanLimit     respjson.Field
-		Users         respjson.Field
-		FilteredCount respjson.Field
-		Diagnostic    respjson.Field
-		raw           string
+		HasNextPage    respjson.Field
+		NextCursor     respjson.Field
+		ScanLimit      respjson.Field
+		WindowComplete respjson.Field
+		Users          respjson.Field
+		FilteredCount  respjson.Field
+		Diagnostic     respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -958,6 +964,11 @@ type XUserGetFollowingResponseUnion struct {
 	// the list scanned 100,000 profiles across its pages. That page is the list's
 	// last.
 	ScanLimit XUserGetFollowingResponseScanLimit `json:"scanLimit"`
+	// Present on the last page of an empty list whose profile counts 0 accounts in
+	// it.
+	//
+	// Any of true.
+	WindowComplete bool `json:"windowComplete"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetFollowingResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -967,13 +978,14 @@ type XUserGetFollowingResponseUnion struct {
 	// This field is from variant [XUserGetFollowingResponseUserListCoverageResponse].
 	Diagnostic XUserGetFollowingResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage   respjson.Field
-		NextCursor    respjson.Field
-		ScanLimit     respjson.Field
-		Users         respjson.Field
-		FilteredCount respjson.Field
-		Diagnostic    respjson.Field
-		raw           string
+		HasNextPage    respjson.Field
+		NextCursor     respjson.Field
+		ScanLimit      respjson.Field
+		WindowComplete respjson.Field
+		Users          respjson.Field
+		FilteredCount  respjson.Field
+		Diagnostic     respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -1138,6 +1150,11 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 	// the list scanned 100,000 profiles across its pages. That page is the list's
 	// last.
 	ScanLimit XUserGetVerifiedFollowersResponseScanLimit `json:"scanLimit"`
+	// Present on the last page of an empty list whose profile counts 0 accounts in
+	// it.
+	//
+	// Any of true.
+	WindowComplete bool `json:"windowComplete"`
 	// This field is from variant [shared.PaginatedUsers],
 	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
 	Users []shared.UserProfile `json:"users"`
@@ -1148,13 +1165,14 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
 	Diagnostic XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
 	JSON       struct {
-		HasNextPage   respjson.Field
-		NextCursor    respjson.Field
-		ScanLimit     respjson.Field
-		Users         respjson.Field
-		FilteredCount respjson.Field
-		Diagnostic    respjson.Field
-		raw           string
+		HasNextPage    respjson.Field
+		NextCursor     respjson.Field
+		ScanLimit      respjson.Field
+		WindowComplete respjson.Field
+		Users          respjson.Field
+		FilteredCount  respjson.Field
+		Diagnostic     respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
