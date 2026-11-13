@@ -115,6 +115,12 @@ type XAnalysisBrandResponse struct {
 	Results []XAnalysisBrandResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisBrandResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// What the photo filter asked & how many posts it kept. Present when the call
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
+	// What the topic filter asked & how many posts it kept. Present when the call
+	// sent topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AnalysisSummary respjson.Field
@@ -122,6 +128,8 @@ type XAnalysisBrandResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		ImageFilter     respjson.Field
+		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -789,6 +797,12 @@ type XAnalysisClassifyResponse struct {
 	Results []XAnalysisClassifyResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisClassifyResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// What the photo filter asked & how many posts it kept. Present when the call
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
+	// What the topic filter asked & how many posts it kept. Present when the call
+	// sent topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AnalysisSummary respjson.Field
@@ -796,6 +810,8 @@ type XAnalysisClassifyResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		ImageFilter     respjson.Field
+		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -1467,6 +1483,12 @@ type XAnalysisMarketSignalsResponse struct {
 	Results []XAnalysisMarketSignalsResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisMarketSignalsResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// What the photo filter asked & how many posts it kept. Present when the call
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
+	// What the topic filter asked & how many posts it kept. Present when the call
+	// sent topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AnalysisSummary respjson.Field
@@ -1474,6 +1496,8 @@ type XAnalysisMarketSignalsResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		ImageFilter     respjson.Field
+		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -2151,6 +2175,12 @@ type XAnalysisNewsResponse struct {
 	Results []XAnalysisNewsResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisNewsResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// What the photo filter asked & how many posts it kept. Present when the call
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
+	// What the topic filter asked & how many posts it kept. Present when the call
+	// sent topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AnalysisSummary respjson.Field
@@ -2158,6 +2188,8 @@ type XAnalysisNewsResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		ImageFilter     respjson.Field
+		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -2825,6 +2857,12 @@ type XAnalysisSentimentResponse struct {
 	Results []XAnalysisSentimentResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisSentimentResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// What the photo filter asked & how many posts it kept. Present when the call
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
+	// What the topic filter asked & how many posts it kept. Present when the call
+	// sent topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AnalysisSummary respjson.Field
@@ -2832,6 +2870,8 @@ type XAnalysisSentimentResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		ImageFilter     respjson.Field
+		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -3503,6 +3543,12 @@ type XAnalysisViralScoreResponse struct {
 	Results []XAnalysisViralScoreResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisViralScoreResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// What the photo filter asked & how many posts it kept. Present when the call
+	// sent imageShows.
+	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
+	// What the topic filter asked & how many posts it kept. Present when the call
+	// sent topic.
+	TopicFilter shared.TopicFilterSummary `json:"topicFilter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AnalysisSummary respjson.Field
@@ -3510,6 +3556,8 @@ type XAnalysisViralScoreResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		ImageFilter     respjson.Field
+		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -4173,6 +4221,13 @@ const (
 type XAnalysisBrandParams struct {
 	// The next_cursor of the page before. Send the same search with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Keep only posts whose photos show this, the same as the Actors' imageShows
+	// input. Send charts, screenshots, product_photos, memes or people, or describe it
+	// in words, such as a rocket. AI-powered analysis checks posts with photos X
+	// doesn't mark sensitive & keeps scores of 0.5 or more. Only kept posts are
+	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
+	// topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Maximum posts to analyze from the search. A low credit balance can return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
@@ -4185,6 +4240,12 @@ type XAnalysisBrandParams struct {
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Keep only posts about this topic, the same as the Actors' topic input.
+	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
+	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
+	// post the filter drops costs nothing. topicFilter states the cutoff & counts.
+	// Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Analyze 1 account's posts. Send a handle, with or without @, or a profile URL.
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -4440,6 +4501,13 @@ func (u *XAnalysisBrandParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
 type XAnalysisClassifyParams struct {
 	// The next_cursor of the page before. Send the same search with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Keep only posts whose photos show this, the same as the Actors' imageShows
+	// input. Send charts, screenshots, product_photos, memes or people, or describe it
+	// in words, such as a rocket. AI-powered analysis checks posts with photos X
+	// doesn't mark sensitive & keeps scores of 0.5 or more. Only kept posts are
+	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
+	// topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Maximum posts to analyze from the search. A low credit balance can return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
@@ -4452,6 +4520,12 @@ type XAnalysisClassifyParams struct {
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Keep only posts about this topic, the same as the Actors' topic input.
+	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
+	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
+	// post the filter drops costs nothing. topicFilter states the cutoff & counts.
+	// Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Analyze 1 account's posts. Send a handle, with or without @, or a profile URL.
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -4707,6 +4781,13 @@ func (u *XAnalysisClassifyParamsUntilTimeUnion) UnmarshalJSON(data []byte) error
 type XAnalysisMarketSignalsParams struct {
 	// The next_cursor of the page before. Send the same search with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Keep only posts whose photos show this, the same as the Actors' imageShows
+	// input. Send charts, screenshots, product_photos, memes or people, or describe it
+	// in words, such as a rocket. AI-powered analysis checks posts with photos X
+	// doesn't mark sensitive & keeps scores of 0.5 or more. Only kept posts are
+	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
+	// topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Maximum posts to analyze from the search. A low credit balance can return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
@@ -4719,6 +4800,12 @@ type XAnalysisMarketSignalsParams struct {
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Keep only posts about this topic, the same as the Actors' topic input.
+	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
+	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
+	// post the filter drops costs nothing. topicFilter states the cutoff & counts.
+	// Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Analyze 1 account's posts. Send a handle, with or without @, or a profile URL.
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -4974,6 +5061,13 @@ func (u *XAnalysisMarketSignalsParamsUntilTimeUnion) UnmarshalJSON(data []byte) 
 type XAnalysisNewsParams struct {
 	// The next_cursor of the page before. Send the same search with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Keep only posts whose photos show this, the same as the Actors' imageShows
+	// input. Send charts, screenshots, product_photos, memes or people, or describe it
+	// in words, such as a rocket. AI-powered analysis checks posts with photos X
+	// doesn't mark sensitive & keeps scores of 0.5 or more. Only kept posts are
+	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
+	// topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Maximum posts to analyze from the search. A low credit balance can return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
@@ -4986,6 +5080,12 @@ type XAnalysisNewsParams struct {
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Keep only posts about this topic, the same as the Actors' topic input.
+	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
+	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
+	// post the filter drops costs nothing. topicFilter states the cutoff & counts.
+	// Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Analyze 1 account's posts. Send a handle, with or without @, or a profile URL.
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -5241,6 +5341,13 @@ func (u *XAnalysisNewsParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
 type XAnalysisSentimentParams struct {
 	// The next_cursor of the page before. Send the same search with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Keep only posts whose photos show this, the same as the Actors' imageShows
+	// input. Send charts, screenshots, product_photos, memes or people, or describe it
+	// in words, such as a rocket. AI-powered analysis checks posts with photos X
+	// doesn't mark sensitive & keeps scores of 0.5 or more. Only kept posts are
+	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
+	// topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Maximum posts to analyze from the search. A low credit balance can return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
@@ -5253,6 +5360,12 @@ type XAnalysisSentimentParams struct {
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Keep only posts about this topic, the same as the Actors' topic input.
+	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
+	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
+	// post the filter drops costs nothing. topicFilter states the cutoff & counts.
+	// Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Analyze 1 account's posts. Send a handle, with or without @, or a profile URL.
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
@@ -5508,6 +5621,13 @@ func (u *XAnalysisSentimentParamsUntilTimeUnion) UnmarshalJSON(data []byte) erro
 type XAnalysisViralScoreParams struct {
 	// The next_cursor of the page before. Send the same search with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
+	// Keep only posts whose photos show this, the same as the Actors' imageShows
+	// input. Send charts, screenshots, product_photos, memes or people, or describe it
+	// in words, such as a rocket. AI-powered analysis checks posts with photos X
+	// doesn't mark sensitive & keeps scores of 0.5 or more. Only kept posts are
+	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
+	// topic or imageShows, not both.
+	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
 	// Maximum posts to analyze from the search. A low credit balance can return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
@@ -5520,6 +5640,12 @@ type XAnalysisViralScoreParams struct {
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Keep only posts about this topic, the same as the Actors' topic input.
+	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
+	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
+	// post the filter drops costs nothing. topicFilter states the cutoff & counts.
+	// Send topic or imageShows, not both.
+	Topic param.Opt[string] `json:"topic,omitzero"`
 	// Analyze 1 account's posts. Send a handle, with or without @, or a profile URL.
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Analysis settings, the same as the analysis input of Xquik's AI Actors. Leave it
