@@ -432,6 +432,7 @@ func TestXUserGetMentionsWithOptionalParams(t *testing.T) {
 			Near:              xtwitterscraper.String("near"),
 			News:              xtwitterscraper.Bool(true),
 			PageSize:          xtwitterscraper.Int(1),
+			OwnThreads:        xtwitterscraper.XUserGetMentionsParamsOwnThreadsExclude,
 			Quotes:            xtwitterscraper.XUserGetMentionsParamsQuotesInclude,
 			QuotesOfTweetID:   xtwitterscraper.String("quotesOfTweetId"),
 			Replies:           xtwitterscraper.XUserGetMentionsParamsRepliesInclude,
