@@ -4219,7 +4219,7 @@ const (
 )
 
 type XAnalysisBrandParams struct {
-	// The next_cursor of the page before. Send the same search with it.
+	// The next_cursor of the page before. Send the same search or page with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
 	// Keep only posts whose photos show this, the same as the Actors' imageShows
 	// input. Send charts, screenshots, product_photos, memes or people, or describe it
@@ -4228,18 +4228,35 @@ type XAnalysisBrandParams struct {
 	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
 	// topic or imageShows, not both.
 	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
-	// Maximum posts to analyze from the search. A low credit balance can return fewer.
+	// Analyze the posts 1 account liked, as /x/users/{id}/likes reads them. Send a
+	// handle, with or without @, a user ID or a profile URL. Send no other posts
+	// or search with it.
+	LikedBy param.Opt[string] `json:"likedBy,omitzero"`
+	// Maximum posts to analyze from the search or page. A low credit balance can
+	// return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
 	ListID param.Opt[string] `json:"listId,omitzero"`
+	// Analyze 1 account's posts with photos or videos, as its Media tab shows
+	// them. /x/users/{id}/media reads the same posts. Send a handle, with or
+	// without @, a user ID or a profile URL. Send no other posts or search with
+	// it.
+	MediaBy param.Opt[string] `json:"mediaBy,omitzero"`
 	// X search to analyze, with the operators of /x/tweets/search, such as from:nasa
 	// or lang:en. X searches up to 512 characters, counted with the other search
 	// fields, as /x/tweets/search counts q.
 	Query param.Opt[string] `json:"query,omitzero"`
 	// Analyze the quotes of 1 post. Send its ID or URL.
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
+	// Analyze 1 account's posts & replies, as its Replies tab shows them.
+	// /x/users/{id}/replies reads the same posts. Send a handle, with or without
+	// @, a user ID or a profile URL. Send no other posts or search with it.
+	RepliesBy param.Opt[string] `json:"repliesBy,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Analyze 1 post's thread, as /x/tweets/{id}/thread reads it. Send the post's
+	// ID or URL. Send no other posts or search with it.
+	ThreadOf param.Opt[string] `json:"threadOf,omitzero"`
 	// Keep only posts about this topic, the same as the Actors' topic input.
 	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
 	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
@@ -4256,6 +4273,13 @@ type XAnalysisBrandParams struct {
 	// as not_comparable. Each result's monitor says whether the post is new, changed
 	// or unchanged. The comparison costs nothing extra.
 	Baseline []XAnalysisBrandParamsBaseline `json:"baseline,omitzero"`
+	// Analyze the posts of several public Lists in 1 search. Send their IDs or
+	// URLs. listId, when sent, joins them.
+	ListIDs []string `json:"listIds,omitzero"`
+	// X searches to analyze as 1 search. A post matching any of them counts. Each
+	// takes the operators of query. query, when sent, joins them. X searches up to
+	// 512 characters, counted with the other search fields.
+	Queries []string `json:"queries,omitzero"`
 	// Search order. Default Latest.
 	//
 	// Any of "Latest", "Top".
@@ -4271,6 +4295,9 @@ type XAnalysisBrandParams struct {
 	// Exclusive end of the search, such as 2026-09-26T00:00:00Z. Unix seconds also
 	// work. A time without an offset is UTC.
 	UntilTime XAnalysisBrandParamsUntilTimeUnion `json:"untilTime,omitzero"`
+	// Analyze the posts of several accounts in 1 search. Send handles, with or
+	// without @, or profile URLs. username, when sent, joins them.
+	Usernames []string `json:"usernames,omitzero"`
 	paramObj
 }
 
@@ -4499,7 +4526,7 @@ func (u *XAnalysisBrandParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
 }
 
 type XAnalysisClassifyParams struct {
-	// The next_cursor of the page before. Send the same search with it.
+	// The next_cursor of the page before. Send the same search or page with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
 	// Keep only posts whose photos show this, the same as the Actors' imageShows
 	// input. Send charts, screenshots, product_photos, memes or people, or describe it
@@ -4508,18 +4535,35 @@ type XAnalysisClassifyParams struct {
 	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
 	// topic or imageShows, not both.
 	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
-	// Maximum posts to analyze from the search. A low credit balance can return fewer.
+	// Analyze the posts 1 account liked, as /x/users/{id}/likes reads them. Send a
+	// handle, with or without @, a user ID or a profile URL. Send no other posts
+	// or search with it.
+	LikedBy param.Opt[string] `json:"likedBy,omitzero"`
+	// Maximum posts to analyze from the search or page. A low credit balance can
+	// return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
 	ListID param.Opt[string] `json:"listId,omitzero"`
+	// Analyze 1 account's posts with photos or videos, as its Media tab shows
+	// them. /x/users/{id}/media reads the same posts. Send a handle, with or
+	// without @, a user ID or a profile URL. Send no other posts or search with
+	// it.
+	MediaBy param.Opt[string] `json:"mediaBy,omitzero"`
 	// X search to analyze, with the operators of /x/tweets/search, such as from:nasa
 	// or lang:en. X searches up to 512 characters, counted with the other search
 	// fields, as /x/tweets/search counts q.
 	Query param.Opt[string] `json:"query,omitzero"`
 	// Analyze the quotes of 1 post. Send its ID or URL.
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
+	// Analyze 1 account's posts & replies, as its Replies tab shows them.
+	// /x/users/{id}/replies reads the same posts. Send a handle, with or without
+	// @, a user ID or a profile URL. Send no other posts or search with it.
+	RepliesBy param.Opt[string] `json:"repliesBy,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Analyze 1 post's thread, as /x/tweets/{id}/thread reads it. Send the post's
+	// ID or URL. Send no other posts or search with it.
+	ThreadOf param.Opt[string] `json:"threadOf,omitzero"`
 	// Keep only posts about this topic, the same as the Actors' topic input.
 	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
 	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
@@ -4536,6 +4580,13 @@ type XAnalysisClassifyParams struct {
 	// as not_comparable. Each result's monitor says whether the post is new, changed
 	// or unchanged. The comparison costs nothing extra.
 	Baseline []XAnalysisClassifyParamsBaseline `json:"baseline,omitzero"`
+	// Analyze the posts of several public Lists in 1 search. Send their IDs or
+	// URLs. listId, when sent, joins them.
+	ListIDs []string `json:"listIds,omitzero"`
+	// X searches to analyze as 1 search. A post matching any of them counts. Each
+	// takes the operators of query. query, when sent, joins them. X searches up to
+	// 512 characters, counted with the other search fields.
+	Queries []string `json:"queries,omitzero"`
 	// Search order. Default Latest.
 	//
 	// Any of "Latest", "Top".
@@ -4551,6 +4602,9 @@ type XAnalysisClassifyParams struct {
 	// Exclusive end of the search, such as 2026-09-26T00:00:00Z. Unix seconds also
 	// work. A time without an offset is UTC.
 	UntilTime XAnalysisClassifyParamsUntilTimeUnion `json:"untilTime,omitzero"`
+	// Analyze the posts of several accounts in 1 search. Send handles, with or
+	// without @, or profile URLs. username, when sent, joins them.
+	Usernames []string `json:"usernames,omitzero"`
 	paramObj
 }
 
@@ -4779,7 +4833,7 @@ func (u *XAnalysisClassifyParamsUntilTimeUnion) UnmarshalJSON(data []byte) error
 }
 
 type XAnalysisMarketSignalsParams struct {
-	// The next_cursor of the page before. Send the same search with it.
+	// The next_cursor of the page before. Send the same search or page with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
 	// Keep only posts whose photos show this, the same as the Actors' imageShows
 	// input. Send charts, screenshots, product_photos, memes or people, or describe it
@@ -4788,18 +4842,35 @@ type XAnalysisMarketSignalsParams struct {
 	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
 	// topic or imageShows, not both.
 	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
-	// Maximum posts to analyze from the search. A low credit balance can return fewer.
+	// Analyze the posts 1 account liked, as /x/users/{id}/likes reads them. Send a
+	// handle, with or without @, a user ID or a profile URL. Send no other posts
+	// or search with it.
+	LikedBy param.Opt[string] `json:"likedBy,omitzero"`
+	// Maximum posts to analyze from the search or page. A low credit balance can
+	// return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
 	ListID param.Opt[string] `json:"listId,omitzero"`
+	// Analyze 1 account's posts with photos or videos, as its Media tab shows
+	// them. /x/users/{id}/media reads the same posts. Send a handle, with or
+	// without @, a user ID or a profile URL. Send no other posts or search with
+	// it.
+	MediaBy param.Opt[string] `json:"mediaBy,omitzero"`
 	// X search to analyze, with the operators of /x/tweets/search, such as from:nasa
 	// or lang:en. X searches up to 512 characters, counted with the other search
 	// fields, as /x/tweets/search counts q.
 	Query param.Opt[string] `json:"query,omitzero"`
 	// Analyze the quotes of 1 post. Send its ID or URL.
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
+	// Analyze 1 account's posts & replies, as its Replies tab shows them.
+	// /x/users/{id}/replies reads the same posts. Send a handle, with or without
+	// @, a user ID or a profile URL. Send no other posts or search with it.
+	RepliesBy param.Opt[string] `json:"repliesBy,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Analyze 1 post's thread, as /x/tweets/{id}/thread reads it. Send the post's
+	// ID or URL. Send no other posts or search with it.
+	ThreadOf param.Opt[string] `json:"threadOf,omitzero"`
 	// Keep only posts about this topic, the same as the Actors' topic input.
 	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
 	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
@@ -4816,6 +4887,13 @@ type XAnalysisMarketSignalsParams struct {
 	// as not_comparable. Each result's monitor says whether the post is new, changed
 	// or unchanged. The comparison costs nothing extra.
 	Baseline []XAnalysisMarketSignalsParamsBaseline `json:"baseline,omitzero"`
+	// Analyze the posts of several public Lists in 1 search. Send their IDs or
+	// URLs. listId, when sent, joins them.
+	ListIDs []string `json:"listIds,omitzero"`
+	// X searches to analyze as 1 search. A post matching any of them counts. Each
+	// takes the operators of query. query, when sent, joins them. X searches up to
+	// 512 characters, counted with the other search fields.
+	Queries []string `json:"queries,omitzero"`
 	// Search order. Default Latest.
 	//
 	// Any of "Latest", "Top".
@@ -4831,6 +4909,9 @@ type XAnalysisMarketSignalsParams struct {
 	// Exclusive end of the search, such as 2026-09-26T00:00:00Z. Unix seconds also
 	// work. A time without an offset is UTC.
 	UntilTime XAnalysisMarketSignalsParamsUntilTimeUnion `json:"untilTime,omitzero"`
+	// Analyze the posts of several accounts in 1 search. Send handles, with or
+	// without @, or profile URLs. username, when sent, joins them.
+	Usernames []string `json:"usernames,omitzero"`
 	paramObj
 }
 
@@ -5059,7 +5140,7 @@ func (u *XAnalysisMarketSignalsParamsUntilTimeUnion) UnmarshalJSON(data []byte) 
 }
 
 type XAnalysisNewsParams struct {
-	// The next_cursor of the page before. Send the same search with it.
+	// The next_cursor of the page before. Send the same search or page with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
 	// Keep only posts whose photos show this, the same as the Actors' imageShows
 	// input. Send charts, screenshots, product_photos, memes or people, or describe it
@@ -5068,18 +5149,35 @@ type XAnalysisNewsParams struct {
 	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
 	// topic or imageShows, not both.
 	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
-	// Maximum posts to analyze from the search. A low credit balance can return fewer.
+	// Analyze the posts 1 account liked, as /x/users/{id}/likes reads them. Send a
+	// handle, with or without @, a user ID or a profile URL. Send no other posts
+	// or search with it.
+	LikedBy param.Opt[string] `json:"likedBy,omitzero"`
+	// Maximum posts to analyze from the search or page. A low credit balance can
+	// return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
 	ListID param.Opt[string] `json:"listId,omitzero"`
+	// Analyze 1 account's posts with photos or videos, as its Media tab shows
+	// them. /x/users/{id}/media reads the same posts. Send a handle, with or
+	// without @, a user ID or a profile URL. Send no other posts or search with
+	// it.
+	MediaBy param.Opt[string] `json:"mediaBy,omitzero"`
 	// X search to analyze, with the operators of /x/tweets/search, such as from:nasa
 	// or lang:en. X searches up to 512 characters, counted with the other search
 	// fields, as /x/tweets/search counts q.
 	Query param.Opt[string] `json:"query,omitzero"`
 	// Analyze the quotes of 1 post. Send its ID or URL.
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
+	// Analyze 1 account's posts & replies, as its Replies tab shows them.
+	// /x/users/{id}/replies reads the same posts. Send a handle, with or without
+	// @, a user ID or a profile URL. Send no other posts or search with it.
+	RepliesBy param.Opt[string] `json:"repliesBy,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Analyze 1 post's thread, as /x/tweets/{id}/thread reads it. Send the post's
+	// ID or URL. Send no other posts or search with it.
+	ThreadOf param.Opt[string] `json:"threadOf,omitzero"`
 	// Keep only posts about this topic, the same as the Actors' topic input.
 	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
 	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
@@ -5096,6 +5194,13 @@ type XAnalysisNewsParams struct {
 	// as not_comparable. Each result's monitor says whether the post is new, changed
 	// or unchanged. The comparison costs nothing extra.
 	Baseline []XAnalysisNewsParamsBaseline `json:"baseline,omitzero"`
+	// Analyze the posts of several public Lists in 1 search. Send their IDs or
+	// URLs. listId, when sent, joins them.
+	ListIDs []string `json:"listIds,omitzero"`
+	// X searches to analyze as 1 search. A post matching any of them counts. Each
+	// takes the operators of query. query, when sent, joins them. X searches up to
+	// 512 characters, counted with the other search fields.
+	Queries []string `json:"queries,omitzero"`
 	// Search order. Default Latest.
 	//
 	// Any of "Latest", "Top".
@@ -5111,6 +5216,9 @@ type XAnalysisNewsParams struct {
 	// Exclusive end of the search, such as 2026-09-26T00:00:00Z. Unix seconds also
 	// work. A time without an offset is UTC.
 	UntilTime XAnalysisNewsParamsUntilTimeUnion `json:"untilTime,omitzero"`
+	// Analyze the posts of several accounts in 1 search. Send handles, with or
+	// without @, or profile URLs. username, when sent, joins them.
+	Usernames []string `json:"usernames,omitzero"`
 	paramObj
 }
 
@@ -5339,7 +5447,7 @@ func (u *XAnalysisNewsParamsUntilTimeUnion) UnmarshalJSON(data []byte) error {
 }
 
 type XAnalysisSentimentParams struct {
-	// The next_cursor of the page before. Send the same search with it.
+	// The next_cursor of the page before. Send the same search or page with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
 	// Keep only posts whose photos show this, the same as the Actors' imageShows
 	// input. Send charts, screenshots, product_photos, memes or people, or describe it
@@ -5348,18 +5456,35 @@ type XAnalysisSentimentParams struct {
 	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
 	// topic or imageShows, not both.
 	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
-	// Maximum posts to analyze from the search. A low credit balance can return fewer.
+	// Analyze the posts 1 account liked, as /x/users/{id}/likes reads them. Send a
+	// handle, with or without @, a user ID or a profile URL. Send no other posts
+	// or search with it.
+	LikedBy param.Opt[string] `json:"likedBy,omitzero"`
+	// Maximum posts to analyze from the search or page. A low credit balance can
+	// return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
 	ListID param.Opt[string] `json:"listId,omitzero"`
+	// Analyze 1 account's posts with photos or videos, as its Media tab shows
+	// them. /x/users/{id}/media reads the same posts. Send a handle, with or
+	// without @, a user ID or a profile URL. Send no other posts or search with
+	// it.
+	MediaBy param.Opt[string] `json:"mediaBy,omitzero"`
 	// X search to analyze, with the operators of /x/tweets/search, such as from:nasa
 	// or lang:en. X searches up to 512 characters, counted with the other search
 	// fields, as /x/tweets/search counts q.
 	Query param.Opt[string] `json:"query,omitzero"`
 	// Analyze the quotes of 1 post. Send its ID or URL.
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
+	// Analyze 1 account's posts & replies, as its Replies tab shows them.
+	// /x/users/{id}/replies reads the same posts. Send a handle, with or without
+	// @, a user ID or a profile URL. Send no other posts or search with it.
+	RepliesBy param.Opt[string] `json:"repliesBy,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Analyze 1 post's thread, as /x/tweets/{id}/thread reads it. Send the post's
+	// ID or URL. Send no other posts or search with it.
+	ThreadOf param.Opt[string] `json:"threadOf,omitzero"`
 	// Keep only posts about this topic, the same as the Actors' topic input.
 	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
 	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
@@ -5376,6 +5501,13 @@ type XAnalysisSentimentParams struct {
 	// as not_comparable. Each result's monitor says whether the post is new, changed
 	// or unchanged. The comparison costs nothing extra.
 	Baseline []XAnalysisSentimentParamsBaseline `json:"baseline,omitzero"`
+	// Analyze the posts of several public Lists in 1 search. Send their IDs or
+	// URLs. listId, when sent, joins them.
+	ListIDs []string `json:"listIds,omitzero"`
+	// X searches to analyze as 1 search. A post matching any of them counts. Each
+	// takes the operators of query. query, when sent, joins them. X searches up to
+	// 512 characters, counted with the other search fields.
+	Queries []string `json:"queries,omitzero"`
 	// Search order. Default Latest.
 	//
 	// Any of "Latest", "Top".
@@ -5391,6 +5523,9 @@ type XAnalysisSentimentParams struct {
 	// Exclusive end of the search, such as 2026-09-26T00:00:00Z. Unix seconds also
 	// work. A time without an offset is UTC.
 	UntilTime XAnalysisSentimentParamsUntilTimeUnion `json:"untilTime,omitzero"`
+	// Analyze the posts of several accounts in 1 search. Send handles, with or
+	// without @, or profile URLs. username, when sent, joins them.
+	Usernames []string `json:"usernames,omitzero"`
 	paramObj
 }
 
@@ -5619,7 +5754,7 @@ func (u *XAnalysisSentimentParamsUntilTimeUnion) UnmarshalJSON(data []byte) erro
 }
 
 type XAnalysisViralScoreParams struct {
-	// The next_cursor of the page before. Send the same search with it.
+	// The next_cursor of the page before. Send the same search or page with it.
 	Cursor param.Opt[string] `json:"cursor,omitzero"`
 	// Keep only posts whose photos show this, the same as the Actors' imageShows
 	// input. Send charts, screenshots, product_photos, memes or people, or describe it
@@ -5628,18 +5763,35 @@ type XAnalysisViralScoreParams struct {
 	// analyzed & cost 2 credits each. imageFilter states the cutoff & counts. Send
 	// topic or imageShows, not both.
 	ImageShows param.Opt[string] `json:"imageShows,omitzero"`
-	// Maximum posts to analyze from the search. A low credit balance can return fewer.
+	// Analyze the posts 1 account liked, as /x/users/{id}/likes reads them. Send a
+	// handle, with or without @, a user ID or a profile URL. Send no other posts
+	// or search with it.
+	LikedBy param.Opt[string] `json:"likedBy,omitzero"`
+	// Maximum posts to analyze from the search or page. A low credit balance can
+	// return fewer.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// Analyze a public List's posts. Send its ID or URL.
 	ListID param.Opt[string] `json:"listId,omitzero"`
+	// Analyze 1 account's posts with photos or videos, as its Media tab shows
+	// them. /x/users/{id}/media reads the same posts. Send a handle, with or
+	// without @, a user ID or a profile URL. Send no other posts or search with
+	// it.
+	MediaBy param.Opt[string] `json:"mediaBy,omitzero"`
 	// X search to analyze, with the operators of /x/tweets/search, such as from:nasa
 	// or lang:en. X searches up to 512 characters, counted with the other search
 	// fields, as /x/tweets/search counts q.
 	Query param.Opt[string] `json:"query,omitzero"`
 	// Analyze the quotes of 1 post. Send its ID or URL.
 	QuotesOf param.Opt[string] `json:"quotesOf,omitzero"`
+	// Analyze 1 account's posts & replies, as its Replies tab shows them.
+	// /x/users/{id}/replies reads the same posts. Send a handle, with or without
+	// @, a user ID or a profile URL. Send no other posts or search with it.
+	RepliesBy param.Opt[string] `json:"repliesBy,omitzero"`
 	// Analyze the replies in 1 post's conversation. Send its ID or URL.
 	RepliesTo param.Opt[string] `json:"repliesTo,omitzero"`
+	// Analyze 1 post's thread, as /x/tweets/{id}/thread reads it. Send the post's
+	// ID or URL. Send no other posts or search with it.
+	ThreadOf param.Opt[string] `json:"threadOf,omitzero"`
 	// Keep only posts about this topic, the same as the Actors' topic input.
 	// AI-powered analysis asks "Is this post about <topic>?" of each post & keeps
 	// scores of 0.5 or more. Only kept posts are analyzed & cost 2 credits each, & a
@@ -5656,6 +5808,13 @@ type XAnalysisViralScoreParams struct {
 	// as not_comparable. Each result's monitor says whether the post is new, changed
 	// or unchanged. The comparison costs nothing extra.
 	Baseline []XAnalysisViralScoreParamsBaseline `json:"baseline,omitzero"`
+	// Analyze the posts of several public Lists in 1 search. Send their IDs or
+	// URLs. listId, when sent, joins them.
+	ListIDs []string `json:"listIds,omitzero"`
+	// X searches to analyze as 1 search. A post matching any of them counts. Each
+	// takes the operators of query. query, when sent, joins them. X searches up to
+	// 512 characters, counted with the other search fields.
+	Queries []string `json:"queries,omitzero"`
 	// Search order. Default Latest.
 	//
 	// Any of "Latest", "Top".
@@ -5671,6 +5830,9 @@ type XAnalysisViralScoreParams struct {
 	// Exclusive end of the search, such as 2026-09-26T00:00:00Z. Unix seconds also
 	// work. A time without an offset is UTC.
 	UntilTime XAnalysisViralScoreParamsUntilTimeUnion `json:"untilTime,omitzero"`
+	// Analyze the posts of several accounts in 1 search. Send handles, with or
+	// without @, or profile URLs. username, when sent, joins them.
+	Usernames []string `json:"usernames,omitzero"`
 	paramObj
 }
 
