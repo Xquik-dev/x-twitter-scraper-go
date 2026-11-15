@@ -3037,6 +3037,9 @@ type XTweetSearchResponseUnion struct {
 	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XTweetSearchResponseTweetSearchCoverageResponse].
 	Diagnostic XTweetSearchResponseTweetSearchCoverageResponseDiagnostic `json:"diagnostic"`
+	// This field is from variant [shared.PaginatedTweets],
+	// [XTweetSearchResponseTweetSearchCoverageResponse].
+	EndReason string `json:"endReason"`
 	// This field is from variant [shared.PaginatedTweets].
 	HiddenTimeline bool `json:"hiddenTimeline"`
 	// This field is from variant [shared.PaginatedTweets]. Present when the search
@@ -3063,6 +3066,7 @@ type XTweetSearchResponseUnion struct {
 		Tweets         respjson.Field
 		FilteredCount  respjson.Field
 		Diagnostic     respjson.Field
+		EndReason      respjson.Field
 		HiddenTimeline respjson.Field
 		ImageFilter    respjson.Field
 		ReadBackTo     respjson.Field
