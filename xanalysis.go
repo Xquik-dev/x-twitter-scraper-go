@@ -115,6 +115,9 @@ type XAnalysisBrandResponse struct {
 	Results []XAnalysisBrandResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisBrandResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// IDs of the posts or texts the time ran out for. Send them again in tweetIds,
+	// or those texts in texts. They cost nothing.
+	UnprocessedIDs []string `json:"unprocessed_ids" api:"required"`
 	// What the photo filter asked & how many posts it kept. Present when the call
 	// sent imageShows.
 	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
@@ -128,6 +131,7 @@ type XAnalysisBrandResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		UnprocessedIDs  respjson.Field
 		ImageFilter     respjson.Field
 		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -797,6 +801,9 @@ type XAnalysisClassifyResponse struct {
 	Results []XAnalysisClassifyResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisClassifyResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// IDs of the posts or texts the time ran out for. Send them again in tweetIds,
+	// or those texts in texts. They cost nothing.
+	UnprocessedIDs []string `json:"unprocessed_ids" api:"required"`
 	// What the photo filter asked & how many posts it kept. Present when the call
 	// sent imageShows.
 	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
@@ -810,6 +817,7 @@ type XAnalysisClassifyResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		UnprocessedIDs  respjson.Field
 		ImageFilter     respjson.Field
 		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -1483,6 +1491,9 @@ type XAnalysisMarketSignalsResponse struct {
 	Results []XAnalysisMarketSignalsResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisMarketSignalsResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// IDs of the posts or texts the time ran out for. Send them again in tweetIds,
+	// or those texts in texts. They cost nothing.
+	UnprocessedIDs []string `json:"unprocessed_ids" api:"required"`
 	// What the photo filter asked & how many posts it kept. Present when the call
 	// sent imageShows.
 	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
@@ -1496,6 +1507,7 @@ type XAnalysisMarketSignalsResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		UnprocessedIDs  respjson.Field
 		ImageFilter     respjson.Field
 		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -2175,6 +2187,9 @@ type XAnalysisNewsResponse struct {
 	Results []XAnalysisNewsResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisNewsResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// IDs of the posts or texts the time ran out for. Send them again in tweetIds,
+	// or those texts in texts. They cost nothing.
+	UnprocessedIDs []string `json:"unprocessed_ids" api:"required"`
 	// What the photo filter asked & how many posts it kept. Present when the call
 	// sent imageShows.
 	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
@@ -2188,6 +2203,7 @@ type XAnalysisNewsResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		UnprocessedIDs  respjson.Field
 		ImageFilter     respjson.Field
 		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -2857,6 +2873,9 @@ type XAnalysisSentimentResponse struct {
 	Results []XAnalysisSentimentResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisSentimentResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// IDs of the posts or texts the time ran out for. Send them again in tweetIds,
+	// or those texts in texts. They cost nothing.
+	UnprocessedIDs []string `json:"unprocessed_ids" api:"required"`
 	// What the photo filter asked & how many posts it kept. Present when the call
 	// sent imageShows.
 	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
@@ -2870,6 +2889,7 @@ type XAnalysisSentimentResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		UnprocessedIDs  respjson.Field
 		ImageFilter     respjson.Field
 		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -3543,6 +3563,9 @@ type XAnalysisViralScoreResponse struct {
 	Results []XAnalysisViralScoreResponseResult `json:"results" api:"required"`
 	// Each post without an analysis, by ID & reason. These cost nothing.
 	Unanalyzed []XAnalysisViralScoreResponseUnanalyzed `json:"unanalyzed" api:"required"`
+	// IDs of the posts or texts the time ran out for. Send them again in tweetIds,
+	// or those texts in texts. They cost nothing.
+	UnprocessedIDs []string `json:"unprocessed_ids" api:"required"`
 	// What the photo filter asked & how many posts it kept. Present when the call
 	// sent imageShows.
 	ImageFilter shared.ImageFilterSummary `json:"imageFilter"`
@@ -3556,6 +3579,7 @@ type XAnalysisViralScoreResponse struct {
 		NextCursor      respjson.Field
 		Results         respjson.Field
 		Unanalyzed      respjson.Field
+		UnprocessedIDs  respjson.Field
 		ImageFilter     respjson.Field
 		TopicFilter     respjson.Field
 		ExtraFields     map[string]respjson.Field
