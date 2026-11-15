@@ -23139,10 +23139,15 @@ func (r *LiveEventContext) UnmarshalJSON(data []byte) error {
 // An empty filtered page can still require continuation. Unprefixed cursors are
 // legacy.
 type PaginatedTweets struct {
-	HasNextPage   bool          `json:"has_next_page" api:"required"`
-	NextCursor    string        `json:"next_cursor" api:"required"`
-	Tweets        []SearchTweet `json:"tweets" api:"required"`
-	FilteredCount int64         `json:"filtered_count"`
+	HasNextPage bool          `json:"has_next_page" api:"required"`
+	NextCursor  string        `json:"next_cursor" api:"required"`
+	Tweets      []SearchTweet `json:"tweets" api:"required"`
+	// Present on a last page that X cut short. "stalled" means X returned no new
+	// results 2 times in a row, so the list may hold more.
+	//
+	// Any of "stalled".
+	EndReason     string `json:"endReason"`
+	FilteredCount int64  `json:"filtered_count"`
 	// Present on an empty last page when X shows this account's timeline to nobody.
 	// The page is empty because of that, so it doesn't mean the account posted
 	// nothing. A retry returns the same page.
@@ -23172,6 +23177,7 @@ type PaginatedTweets struct {
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
 		Tweets         respjson.Field
+		EndReason      respjson.Field
 		FilteredCount  respjson.Field
 		HiddenTimeline respjson.Field
 		ImageFilter    respjson.Field
@@ -23238,15 +23244,21 @@ func (r *PaginatedTweetsSearchContextSmartTag) UnmarshalJSON(data []byte) error 
 // next_cursor while the response reports more pages. Unprefixed cursors remain
 // legacy.
 type PaginatedUsers struct {
-	HasNextPage   bool          `json:"has_next_page" api:"required"`
-	NextCursor    string        `json:"next_cursor" api:"required"`
-	Users         []UserProfile `json:"users" api:"required"`
-	FilteredCount int64         `json:"filtered_count"`
+	HasNextPage bool          `json:"has_next_page" api:"required"`
+	NextCursor  string        `json:"next_cursor" api:"required"`
+	Users       []UserProfile `json:"users" api:"required"`
+	// Present on a last page that X cut short. "stalled" means X returned no new
+	// results 2 times in a row, so the list may hold more.
+	//
+	// Any of "stalled".
+	EndReason     string `json:"endReason"`
+	FilteredCount int64  `json:"filtered_count"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		HasNextPage   respjson.Field
 		NextCursor    respjson.Field
 		Users         respjson.Field
+		EndReason     respjson.Field
 		FilteredCount respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string

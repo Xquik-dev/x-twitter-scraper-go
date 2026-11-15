@@ -33,6 +33,7 @@ On 2026-11-09, 3 findings in `xaccount.go` were reviewed and added. They are the
 On 2026-11-13, the `hiddenTimeline` and `windowComplete` fields moved 50 findings the same way, 36 in `shared/shared.go`, 4 in `xtweet.go`, 6 in `xuser.go` and 4 in `xlist.go`, through a port of the same script whose fingerprints match all 170 records. Their code & reasons are unchanged.
 On 2026-11-13, the `OwnThreads` mentions param moved 6 findings in `xuser.go` the same way. Their code & reasons are unchanged.
 On 2026-11-13, the analysis `Topic`, `ImageShows`, `TopicFilter` and `ImageFilter` fields moved 24 findings in `xanalysis.go` the same way. Their code & reasons are unchanged.
+On 2026-11-16, the `endReason` field moved 50 findings the same way, 36 in `shared/shared.go`, 4 in `xtweet.go`, 6 in `xuser.go` and 4 in `xlist.go`. Their code & reasons are unchanged.
 The temp cleanup tests have 6 reviewed findings for test-controlled script runners, executable fixtures, retained coverage files and restoring owner access to isolated module caches. Their records match the current source hashes and line numbers.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
@@ -459,123 +460,123 @@ Finding: Use of unsafe calls should be audited
 604: }
 ```
 
-## G104 in xuser.go:1185
+## G104 in xuser.go:1197
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `52dd488230fb20264b574e8aded0150f604975c1c261459bfc2d55da31f95fad`
+Source SHA-256: `8724763c81a16c5785c9b216084aea6d4f8e2c3bdd872a74c9792cde392cc228`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-1184: func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse) {
-1185: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-1186: 	return
+1196: func (u XUserGetVerifiedFollowersResponseUnion) AsXUserGetVerifiedFollowersResponseUserListCoverageResponse() (v XUserGetVerifiedFollowersResponseUserListCoverageResponse) {
+1197: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+1198: 	return
 ```
 
-## G104 in xuser.go:1180
+## G104 in xuser.go:1192
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `52dd488230fb20264b574e8aded0150f604975c1c261459bfc2d55da31f95fad`
+Source SHA-256: `8724763c81a16c5785c9b216084aea6d4f8e2c3bdd872a74c9792cde392cc228`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-1179: func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-1180: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-1181: 	return
+1191: func (u XUserGetVerifiedFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+1192: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+1193: 	return
 ```
 
-## G104 in xuser.go:998
+## G104 in xuser.go:1006
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `52dd488230fb20264b574e8aded0150f604975c1c261459bfc2d55da31f95fad`
+Source SHA-256: `8724763c81a16c5785c9b216084aea6d4f8e2c3bdd872a74c9792cde392cc228`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-997: func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse) {
-998: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-999: 	return
+1005: func (u XUserGetFollowingResponseUnion) AsXUserGetFollowingResponseUserListCoverageResponse() (v XUserGetFollowingResponseUserListCoverageResponse) {
+1006: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+1007: 	return
 ```
 
-## G104 in xuser.go:993
+## G104 in xuser.go:1001
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `52dd488230fb20264b574e8aded0150f604975c1c261459bfc2d55da31f95fad`
+Source SHA-256: `8724763c81a16c5785c9b216084aea6d4f8e2c3bdd872a74c9792cde392cc228`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-992: func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-993: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-994: 	return
+1000: func (u XUserGetFollowingResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+1001: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+1002: 	return
 ```
 
-## G104 in xuser.go:813
+## G104 in xuser.go:817
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `52dd488230fb20264b574e8aded0150f604975c1c261459bfc2d55da31f95fad`
+Source SHA-256: `8724763c81a16c5785c9b216084aea6d4f8e2c3bdd872a74c9792cde392cc228`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-812: func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse) {
-813: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-814: 	return
+816: func (u XUserGetFollowersResponseUnion) AsXUserGetFollowersResponseUserListCoverageResponse() (v XUserGetFollowersResponseUserListCoverageResponse) {
+817: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+818: 	return
 ```
 
-## G104 in xuser.go:808
+## G104 in xuser.go:812
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `52dd488230fb20264b574e8aded0150f604975c1c261459bfc2d55da31f95fad`
+Source SHA-256: `8724763c81a16c5785c9b216084aea6d4f8e2c3bdd872a74c9792cde392cc228`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-807: func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-808: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-809: 	return
+811: func (u XUserGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+812: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+813: 	return
 ```
 
-## G104 in xtweet.go:3083
+## G104 in xtweet.go:3087
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `a8afc6410b015e3e895efe58c23f00aa84aa170fc146e3e10674cb1c1520e551`
+Source SHA-256: `ef0da09370042e56df1bf12993ab0d62a1805e88a5d250781d21ce0ce8693aeb`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-3082: func (u XTweetSearchResponseUnion) AsXTweetSearchResponseTweetSearchCoverageResponse() (v XTweetSearchResponseTweetSearchCoverageResponse) {
-3083: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-3084: 	return
+3086: func (u XTweetSearchResponseUnion) AsXTweetSearchResponseTweetSearchCoverageResponse() (v XTweetSearchResponseTweetSearchCoverageResponse) {
+3087: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+3088: 	return
 ```
 
-## G104 in xtweet.go:3078
+## G104 in xtweet.go:3082
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `a8afc6410b015e3e895efe58c23f00aa84aa170fc146e3e10674cb1c1520e551`
+Source SHA-256: `ef0da09370042e56df1bf12993ab0d62a1805e88a5d250781d21ce0ce8693aeb`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-3077: func (u XTweetSearchResponseUnion) AsPaginatedTweets() (v shared.PaginatedTweets) {
-3078: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-3079: 	return
+3081: func (u XTweetSearchResponseUnion) AsPaginatedTweets() (v shared.PaginatedTweets) {
+3082: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+3083: 	return
 ```
 
 ## G104 in xtweet.go:2078
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `a8afc6410b015e3e895efe58c23f00aa84aa170fc146e3e10674cb1c1520e551`
+Source SHA-256: `ef0da09370042e56df1bf12993ab0d62a1805e88a5d250781d21ce0ce8693aeb`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -589,7 +590,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `a8afc6410b015e3e895efe58c23f00aa84aa170fc146e3e10674cb1c1520e551`
+Source SHA-256: `ef0da09370042e56df1bf12993ab0d62a1805e88a5d250781d21ce0ce8693aeb`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -599,60 +600,60 @@ Finding: Errors unhandled
 2074: 	return
 ```
 
-## G104 in xlist.go:334
+## G104 in xlist.go:342
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `8e24739c3884685bdc113597fbdef764f54ef52fdb63fbc7912336bf19770375`
+Source SHA-256: `91a0eaa45b5d90f4b57d49c70f0d99f9e2931e3796f809bec22cf934b941bedc`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-333: func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageResponse() (v XListGetMembersResponseUserListCoverageResponse) {
-334: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-335: 	return
+341: func (u XListGetMembersResponseUnion) AsXListGetMembersResponseUserListCoverageResponse() (v XListGetMembersResponseUserListCoverageResponse) {
+342: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+343: 	return
 ```
 
-## G104 in xlist.go:329
+## G104 in xlist.go:337
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `8e24739c3884685bdc113597fbdef764f54ef52fdb63fbc7912336bf19770375`
+Source SHA-256: `91a0eaa45b5d90f4b57d49c70f0d99f9e2931e3796f809bec22cf934b941bedc`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-328: func (u XListGetMembersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-329: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-330: 	return
+336: func (u XListGetMembersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+337: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+338: 	return
 ```
 
-## G104 in xlist.go:149
+## G104 in xlist.go:153
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `8e24739c3884685bdc113597fbdef764f54ef52fdb63fbc7912336bf19770375`
+Source SHA-256: `91a0eaa45b5d90f4b57d49c70f0d99f9e2931e3796f809bec22cf934b941bedc`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-148: func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCoverageResponse() (v XListGetFollowersResponseUserListCoverageResponse) {
-149: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-150: 	return
+152: func (u XListGetFollowersResponseUnion) AsXListGetFollowersResponseUserListCoverageResponse() (v XListGetFollowersResponseUserListCoverageResponse) {
+153: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+154: 	return
 ```
 
-## G104 in xlist.go:144
+## G104 in xlist.go:148
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `8e24739c3884685bdc113597fbdef764f54ef52fdb63fbc7912336bf19770375`
+Source SHA-256: `91a0eaa45b5d90f4b57d49c70f0d99f9e2931e3796f809bec22cf934b941bedc`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-143: func (u XListGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
-144: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-145: 	return
+147: func (u XListGetFollowersResponseUnion) AsPaginatedUsers() (v shared.PaginatedUsers) {
+148: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+149: 	return
 ```
 
 ## G104 in xaccountconnectionattempt.go:152
@@ -809,39 +810,39 @@ Finding: Errors unhandled
 20: 	}))
 ```
 
-## G104 in shared/shared.go:25029
+## G104 in shared/shared.go:25041
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-25028: func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
-25029: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-25030: 	return
+25040: func (u SearchTweetSportsContextScheduledAtMsUnion) AsString() (v string) {
+25041: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+25042: 	return
 ```
 
-## G104 in shared/shared.go:25024
+## G104 in shared/shared.go:25036
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
 ```go
-25023: func (u SearchTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
-25024: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-25025: 	return
+25035: func (u SearchTweetSportsContextScheduledAtMsUnion) AsFloat() (v float64) {
+25036: 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+25037: 	return
 ```
 
 ## G104 in shared/shared.go:22926
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -855,7 +856,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -869,7 +870,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -883,7 +884,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -897,7 +898,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -911,7 +912,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -925,7 +926,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -939,7 +940,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -953,7 +954,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -967,7 +968,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -981,7 +982,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -995,7 +996,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1009,7 +1010,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1023,7 +1024,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1037,7 +1038,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1051,7 +1052,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1065,7 +1066,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1079,7 +1080,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1093,7 +1094,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1107,7 +1108,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1121,7 +1122,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1135,7 +1136,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1149,7 +1150,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1163,7 +1164,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1177,7 +1178,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1191,7 +1192,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1205,7 +1206,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1219,7 +1220,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1233,7 +1234,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1247,7 +1248,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1880,7 +1881,7 @@ Finding: Expect WriteFile permissions to be 0600 or less
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1894,7 +1895,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1908,7 +1909,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 
@@ -1922,7 +1923,7 @@ Finding: Errors unhandled
 
 Generated best-effort As variant conversion, signature returns a value without an error channel. README response union contract and numeric/string/connection variant regressions preserve this behavior. Successful network JSON responses are parsed by encoding/json decoder before model conversion.
 
-Source SHA-256: `acec7d6f807bb8dcc96563d73db5539c21830cc610024a580577731bbd7bcd18`
+Source SHA-256: `df7a48f60ffbde6e38b7dd7caa3695f1f098e8b98b09f8851c6fbb384ae50f08`
 Severity: LOW. Confidence: HIGH.
 Finding: Errors unhandled
 

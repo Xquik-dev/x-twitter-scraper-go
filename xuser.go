@@ -792,7 +792,10 @@ type XUserGetFollowersResponseUnion struct {
 	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XUserGetFollowersResponseUserListCoverageResponse].
 	Diagnostic XUserGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
-	JSON       struct {
+	// This field is from variant [shared.PaginatedUsers],
+	// [XUserGetFollowersResponseUserListCoverageResponse].
+	EndReason string `json:"endReason"`
+	JSON      struct {
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
 		ScanLimit      respjson.Field
@@ -800,6 +803,7 @@ type XUserGetFollowersResponseUnion struct {
 		Users          respjson.Field
 		FilteredCount  respjson.Field
 		Diagnostic     respjson.Field
+		EndReason      respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -977,7 +981,10 @@ type XUserGetFollowingResponseUnion struct {
 	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XUserGetFollowingResponseUserListCoverageResponse].
 	Diagnostic XUserGetFollowingResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
-	JSON       struct {
+	// This field is from variant [shared.PaginatedUsers],
+	// [XUserGetFollowingResponseUserListCoverageResponse].
+	EndReason string `json:"endReason"`
+	JSON      struct {
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
 		ScanLimit      respjson.Field
@@ -985,6 +992,7 @@ type XUserGetFollowingResponseUnion struct {
 		Users          respjson.Field
 		FilteredCount  respjson.Field
 		Diagnostic     respjson.Field
+		EndReason      respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -1164,7 +1172,10 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 	// This field is from variant
 	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
 	Diagnostic XUserGetVerifiedFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
-	JSON       struct {
+	// This field is from variant [shared.PaginatedUsers],
+	// [XUserGetVerifiedFollowersResponseUserListCoverageResponse].
+	EndReason string `json:"endReason"`
+	JSON      struct {
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
 		ScanLimit      respjson.Field
@@ -1172,6 +1183,7 @@ type XUserGetVerifiedFollowersResponseUnion struct {
 		Users          respjson.Field
 		FilteredCount  respjson.Field
 		Diagnostic     respjson.Field
+		EndReason      respjson.Field
 		raw            string
 	} `json:"-"`
 }
