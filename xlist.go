@@ -128,7 +128,10 @@ type XListGetFollowersResponseUnion struct {
 	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XListGetFollowersResponseUserListCoverageResponse].
 	Diagnostic XListGetFollowersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
-	JSON       struct {
+	// This field is from variant [shared.PaginatedUsers],
+	// [XListGetFollowersResponseUserListCoverageResponse].
+	EndReason string `json:"endReason"`
+	JSON      struct {
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
 		ScanLimit      respjson.Field
@@ -136,6 +139,7 @@ type XListGetFollowersResponseUnion struct {
 		Users          respjson.Field
 		FilteredCount  respjson.Field
 		Diagnostic     respjson.Field
+		EndReason      respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -313,7 +317,10 @@ type XListGetMembersResponseUnion struct {
 	FilteredCount int64 `json:"filtered_count"`
 	// This field is from variant [XListGetMembersResponseUserListCoverageResponse].
 	Diagnostic XListGetMembersResponseUserListCoverageResponseDiagnostic `json:"diagnostic"`
-	JSON       struct {
+	// This field is from variant [shared.PaginatedUsers],
+	// [XListGetMembersResponseUserListCoverageResponse].
+	EndReason string `json:"endReason"`
+	JSON      struct {
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
 		ScanLimit      respjson.Field
@@ -321,6 +328,7 @@ type XListGetMembersResponseUnion struct {
 		Users          respjson.Field
 		FilteredCount  respjson.Field
 		Diagnostic     respjson.Field
+		EndReason      respjson.Field
 		raw            string
 	} `json:"-"`
 }

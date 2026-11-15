@@ -6,6 +6,9 @@ The SDK catches up with the API again. It adds the bookmark, block & mute writes
 
 - `X.AccountConnectionLinks.List` pages through your connect links, newest first, as `XAccountConnectionLinkListResponse`. Pass `NextCursor` back as `Cursor` while `HasMore` is true. Each link's `APIKeyID` shows which key made it, so you can find and revoke the links a leaked key made.
 - `XAccountConnectionLink` & `XAccountConnectionLinkNewResponse` add `APIKeyID`, the API key that made the link, empty when a dashboard session made it. A link stops while that key is paused and ends once it's revoked.
+- The 6 `X.Analysis` methods take `ThreadOf`, `RepliesBy`, `MediaBy` & `LikedBy`, which read 1 post's thread or 1 account's Replies tab, Media tab or likes, and `Usernames`, `ListIDs` & `Queries`, which read several accounts, Lists or searches as 1 search.
+- The 6 analysis answers add `UnprocessedIDs`, the posts or texts the time ran out for. Send them again, and they cost nothing.
+- `shared.PaginatedTweets`, `shared.PaginatedUsers` & the unions of `X.Tweets.Search`, `X.Users.GetFollowers`, `GetFollowing`, `GetVerifiedFollowers`, `X.Lists.GetFollowers` & `GetMembers` add `EndReason`, present on a last page that X cut short. `stalled` means X returned no new results 2 times in a row, so the list may hold more.
 - `X.Users.GetMentions` adds `OwnThreads`, which with `Replies` set to exclude also leaves out replies to the author's own posts, so the search skips every reply.
 - `X.Users.GetFollowers`, `GetFollowing`, `GetVerifiedFollowers`, `X.Lists.GetFollowers` & `GetMembers` add `WindowComplete`, true on the last page of an empty list whose profile counts 0 accounts in it.
 - `shared.PaginatedTweets` adds `HiddenTimeline`, true on an empty last page when X shows the account's timeline to nobody, so the page doesn't mean the account posted nothing.
