@@ -5,6 +5,7 @@
   "status": "connected",
   "reference": "crm-user-7",
   "returnUrl": "https://app.example.com/connected",
+  "apiKeyId": null,
   "accountId": "42",
   "xUserId": "1234567890",
   "xUsername": "your_x_username",

@@ -30,7 +30,7 @@ func TestConnectionLinkNewSendsTheFieldsAndReturnsTheURL(t *testing.T) {
 		res.Purpose != xtwitterscraper.XAccountConnectionLinkPurposeConnect ||
 		res.Status != xtwitterscraper.XAccountConnectionLinkStatusPending ||
 		res.Reference != "crm-user-7" || res.ReturnURL != "https://app.example.com/connected" ||
-		string(res.Object) != "x_account_connection_link" {
+		res.APIKeyID != "17" || string(res.Object) != "x_account_connection_link" {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 	if res.JSON.AccountID.Valid() || res.JSON.CompletedAt.Valid() || res.JSON.Failure.Valid() {
@@ -59,7 +59,7 @@ func TestConnectionLinkGetReadsTheConnectedAccountWithNoURL(t *testing.T) {
 	expectDecoded(t, res)
 	if res.Status != xtwitterscraper.XAccountConnectionLinkStatusConnected || res.AccountID != "42" ||
 		res.XUserID != "1234567890" || res.XUsername != "your_x_username" || res.Health != "healthy" ||
-		res.CompletedAt.IsZero() || res.URL != "" {
+		res.CompletedAt.IsZero() || res.URL != "" || res.JSON.APIKeyID.Valid() {
 		t.Fatalf("decoded %s", res.RawJSON())
 	}
 }

@@ -83,8 +83,10 @@ func (r *XAccountConnectionLinkService) Delete(ctx context.Context, id string, o
 
 // A link where a person connects an X account on Xquik's page.
 type XAccountConnectionLink struct {
-	ID          string    `json:"id" api:"required"`
-	AccountID   string    `json:"accountId" api:"required,nullable"`
+	ID        string `json:"id" api:"required"`
+	AccountID string `json:"accountId" api:"required,nullable"`
+	// The API key that made the link, or empty when a dashboard session made it.
+	APIKeyID    string    `json:"apiKeyId" api:"required,nullable"`
 	CompletedAt time.Time `json:"completedAt" api:"required,nullable" format:"date-time"`
 	CreatedAt   time.Time `json:"createdAt" api:"required" format:"date-time"`
 	ExpiresAt   time.Time `json:"expiresAt" api:"required" format:"date-time"`
@@ -109,6 +111,7 @@ type XAccountConnectionLink struct {
 	JSON struct {
 		ID          respjson.Field
 		AccountID   respjson.Field
+		APIKeyID    respjson.Field
 		CompletedAt respjson.Field
 		CreatedAt   respjson.Field
 		ExpiresAt   respjson.Field
@@ -156,8 +159,10 @@ const (
 
 // The new link. It holds the only copy of URL.
 type XAccountConnectionLinkNewResponse struct {
-	ID          string    `json:"id" api:"required"`
-	AccountID   string    `json:"accountId" api:"required,nullable"`
+	ID        string `json:"id" api:"required"`
+	AccountID string `json:"accountId" api:"required,nullable"`
+	// The API key that made the link, or empty when a dashboard session made it.
+	APIKeyID    string    `json:"apiKeyId" api:"required,nullable"`
 	CompletedAt time.Time `json:"completedAt" api:"required,nullable" format:"date-time"`
 	CreatedAt   time.Time `json:"createdAt" api:"required" format:"date-time"`
 	ExpiresAt   time.Time `json:"expiresAt" api:"required" format:"date-time"`
@@ -183,6 +188,7 @@ type XAccountConnectionLinkNewResponse struct {
 	JSON struct {
 		ID          respjson.Field
 		AccountID   respjson.Field
+		APIKeyID    respjson.Field
 		CompletedAt respjson.Field
 		CreatedAt   respjson.Field
 		ExpiresAt   respjson.Field
