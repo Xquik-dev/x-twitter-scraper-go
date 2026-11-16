@@ -5,6 +5,7 @@
   "status": "pending",
   "reference": "crm-user-7",
   "returnUrl": "https://app.example.com/connected",
+  "apiKeyId": "17",
   "accountId": null,
   "xUserId": null,
   "xUsername": null,
