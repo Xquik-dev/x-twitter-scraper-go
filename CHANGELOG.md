@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-The SDK catches up with the API again. It adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 208 of the 223 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
+The SDK catches up with the API again. It adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 209 of the 224 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
 
+- `X.AccountConnectionLinks.List` pages through your connect links, newest first, as `XAccountConnectionLinkListResponse`. Pass `NextCursor` back as `Cursor` while `HasMore` is true. Each link's `APIKeyID` shows which key made it, so you can find and revoke the links a leaked key made.
 - `XAccountConnectionLink` & `XAccountConnectionLinkNewResponse` add `APIKeyID`, the API key that made the link, empty when a dashboard session made it. A link stops while that key is paused and ends once it's revoked.
 - `X.Users.GetMentions` adds `OwnThreads`, which with `Replies` set to exclude also leaves out replies to the author's own posts, so the search skips every reply.
 - `X.Users.GetFollowers`, `GetFollowing`, `GetVerifiedFollowers`, `X.Lists.GetFollowers` & `GetMembers` add `WindowComplete`, true on the last page of an empty list whose profile counts 0 accounts in it.
