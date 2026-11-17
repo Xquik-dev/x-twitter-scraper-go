@@ -15,7 +15,7 @@ import (
 
 const fakeCodeQL = `#!/bin/sh
 case "$1 $2" in
-  "version --format=terse") echo 2.27.2 ;;
+  "version --format=terse") echo "${FAKE_CODEQL_VERSION:-2.27.2}" ;;
   "pack install") ;;
   "database create") ;;
   "database analyze")
@@ -38,7 +38,7 @@ func codeqlReport(diagnostics string, notifications ...string) string {
 		`],"executionSuccessful":true}],"results":[]}]}`
 }
 
-func runCodeQLSecurity(t *testing.T, report string) auditResult {
+func runCodeQLSecurity(t *testing.T, report string, environment ...string) auditResult {
 	t.Helper()
 	script, err := filepath.Abs("../../scripts/codeql-security")
 	if err != nil {
@@ -55,6 +55,7 @@ func runCodeQLSecurity(t *testing.T, report string) auditResult {
 	}
 	command := exec.Command(script)
 	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "TMPDIR="+root)
+	command.Env = append(command.Env, environment...)
 	var stdout, stderr bytes.Buffer
 	command.Stdout, command.Stderr = &stdout, &stderr
 	result := auditResult{}
@@ -104,6 +105,37 @@ func TestCodeQLSecurity(t *testing.T) {
 			}
 			if !strings.Contains(result.stderr, test.stderr) {
 				t.Fatalf("stderr %q does not contain %q", result.stderr, test.stderr)
+			}
+		})
+	}
+}
+
+func TestCodeQLSecurityVersionFloor(t *testing.T) {
+	report := codeqlReport(extractionDiagnostic, extractedFile)
+	for _, test := range []struct {
+		name, version string
+		code          int
+		stderr        string
+	}{
+		{name: "the minimum CodeQL runs the scan", version: "2.27.2"},
+		{name: "a newer CodeQL runs the scan", version: "2.27.10"},
+		{
+			name:    "an older CodeQL is refused before the scan",
+			version: "2.27.1",
+			code:    1,
+			stderr:  "CodeQL 2.27.1 is older than 2.27.2. Install CodeQL 2.27.2 or newer as CONTRIBUTING.md says, or set XQUIK_CODEQL_BIN.\n",
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result := runCodeQLSecurity(t, report, "FAKE_CODEQL_VERSION="+test.version)
+			if result.code != test.code {
+				t.Fatalf("exit code %d, want %d\nstderr: %s", result.code, test.code, result.stderr)
+			}
+			if test.code == 0 && !strings.Contains(result.stdout, "CodeQL completed without findings") {
+				t.Fatalf("stdout %q lacks the scan result", result.stdout)
+			}
+			if test.stderr != "" && result.stderr != test.stderr {
+				t.Fatalf("stderr %q, want %q", result.stderr, test.stderr)
 			}
 		})
 	}
