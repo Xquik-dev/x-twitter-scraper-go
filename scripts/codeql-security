@@ -3,18 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
 cd "$(dirname "$0")/.."
-readonly pinned=2.27.2
-codeql="${XQUIK_CODEQL_BIN:-$HOME/.cache/xquik-codeql/$pinned/codeql/codeql}"
-if [[ ! -x "$codeql" ]]; then
-  codeql="$(command -v codeql || true)"
-fi
+readonly minimum=2.27.2
+codeql="${XQUIK_CODEQL_BIN:-$(command -v codeql || true)}"
 if [[ -z "$codeql" ]]; then
-  echo "CodeQL CLI is missing. Install CodeQL $pinned as CONTRIBUTING.md says, or set XQUIK_CODEQL_BIN." >&2
+  echo "CodeQL CLI is missing. Install CodeQL $minimum or newer as CONTRIBUTING.md says, or set XQUIK_CODEQL_BIN." >&2
   exit 1
 fi
 found="$("$codeql" version --format=terse)"
-if [[ "$found" != "$pinned" ]]; then
-  echo "CodeQL $found found, but this check pins $pinned. Set XQUIK_CODEQL_BIN to a $pinned CLI." >&2
+if [[ "$(printf '%s\n' "$minimum" "$found" | sort -V | head -n 1)" != "$minimum" ]]; then
+  echo "CodeQL $found is older than $minimum. Install CodeQL $minimum or newer as CONTRIBUTING.md says, or set XQUIK_CODEQL_BIN." >&2
   exit 1
 fi
 source scripts/temp-paths
