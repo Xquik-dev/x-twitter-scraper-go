@@ -106,7 +106,7 @@ func startCleanupCase(t *testing.T, test cleanupCase, started string) (*exec.Cmd
 			t.Fatal(err)
 		}
 	}
-	env := []string{"PATH=" + bin + string(os.PathListSeparator) + os.Getenv("PATH"), "TMPDIR=" + private, "GOTMPDIR=", "GOMODCACHE=" + moduleCache, "FUZZ_TIME=1s"}
+	env := []string{"PATH=" + bin + string(os.PathListSeparator) + os.Getenv("PATH"), "TMPDIR=" + private, "GOTMPDIR=", "GOMODCACHE=" + moduleCache, "FUZZ_TIME=1s", "CHECK_LOCAL_HERE=1"}
 	if started != "" {
 		env = append(env, "FAKE_STARTED="+started)
 	}
