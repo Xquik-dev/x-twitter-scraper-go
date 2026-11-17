@@ -4,7 +4,7 @@
 
 [Full changelog from v0.23.0 to v0.24.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.23.0...v0.24.0)
 
-The SDK catches up with the API again. It lists your X connect links with the API key that made each one, and adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 209 of the 224 API operations, and `excluded-operations.json` says why the other 15 stay out. Every change is additive.
+The SDK catches up with the API again. It lists your X connect links with the API key that made each one, and adds the bookmark, block & mute writes, the follower audit and the fields the API added since 0.23.0. It covers 209 of the 224 API operations, and `excluded-operations.json` says why the other 15 stay out. 2 changes need your attention. `X.Accounts.Reauth` now returns `XAccountReauthResponseUnion` in place of `XAccountReauthResponse`, so check `Status` or use the `As` methods, and the SDK requires Go 1.27.4 or newer. Every other change is additive.
 
 - `X.AccountConnectionLinks.List` pages through your connect links, newest first, as `XAccountConnectionLinkListResponse`. Pass `NextCursor` back as `Cursor` while `HasMore` is true. Each link's `APIKeyID` shows which key made it, so you can find and revoke the links a leaked key made.
 - `XAccountConnectionLink` & `XAccountConnectionLinkNewResponse` add `APIKeyID`, the API key that made the link, empty when a dashboard session made it. A link stops while that key is paused and ends once it's revoked.
