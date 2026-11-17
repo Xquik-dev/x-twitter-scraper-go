@@ -81,6 +81,9 @@ Every finding must match a reviewed record in `security/source-reviews.md` and `
 A new finding, or a reviewed one whose code or line moved, fails the run.
 
 Run `bin/check-local` before requesting review.
+When `git config checklocal.runner` names a command, `bin/check-local` runs that command with the checkout path and its own arguments instead.
+A maintainer can use it to run the checks on another machine, and `bin/release-local` runs its checks the same way.
+Set `CHECK_LOCAL_HERE=1` to run them here anyway.
 Run `scripts/fuzz` as well when you change `internal/apiform`.
 
 ```sh

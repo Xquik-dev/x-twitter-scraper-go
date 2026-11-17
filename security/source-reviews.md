@@ -34,6 +34,7 @@ On 2026-11-13, the `hiddenTimeline` and `windowComplete` fields moved 50 finding
 On 2026-11-13, the `OwnThreads` mentions param moved 6 findings in `xuser.go` the same way. Their code & reasons are unchanged.
 On 2026-11-13, the analysis `Topic`, `ImageShows`, `TopicFilter` and `ImageFilter` fields moved 24 findings in `xanalysis.go` the same way. Their code & reasons are unchanged.
 On 2026-11-17, the analysis sources, `UnprocessedIDs` and `EndReason` fields and the CodeQL version floor moved 76 findings the same way, 24 in `xanalysis.go`, 36 in `shared/shared.go`, 4 in `xtweet.go`, 6 in `xuser.go`, 4 in `xlist.go` and 2 in `internal/scripttest/codeql_security_test.go`. Their code & reasons are unchanged.
+On 2026-11-17, the release fixture's file overrides moved 8 findings in `internal/scripttest/release_local_test.go` and `internal/scripttest/temp_cleanup_test.go` the same way. Their code & reasons are unchanged.
 The temp cleanup tests have 6 reviewed findings for test-controlled script runners, executable fixtures, retained coverage files and restoring owner access to isolated module caches. Their records match the current source hashes and line numbers.
 The checker retains every report and rejects new or changed findings.
 The index contains SHA-256 digests of Go `%q` formatting for 8 strings.
@@ -1807,18 +1808,18 @@ Finding: Errors unhandled
 24: 	}))
 ```
 
-## G204 in internal/scripttest/release_local_test.go:139
+## G204 in internal/scripttest/release_local_test.go:145
 
 Test-only Git helper. The tests pass literal Git arguments, and the command runs in a temporary repository that the test created. No input comes from outside the test.
 
-Source SHA-256: `d289edf6535f40168caf005637e127ae3fac915934edfdcd9f4f4c4abb03c9d5`
+Source SHA-256: `6d1b837c6711591788603f40fad3d2e89637d2c2b1164f4a5e7e0c93110a62a1`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with variable
 
 ```go
-138: 	fixture.t.Helper()
-139: 	command := exec.Command("git", args...)
-140: 	command.Dir, command.Env = directory, fixture.env
+144: 	fixture.t.Helper()
+145: 	command := exec.Command("git", args...)
+146: 	command.Dir, command.Env = directory, fixture.env
 ```
 
 ## G204 in internal/scripttest/dependency_audit_test.go:110
@@ -1849,18 +1850,18 @@ Finding: Subprocess launched with variable
 57: 	command.Env = append(os.Environ(), "XQUIK_CODEQL_BIN="+codeql, "FAKE_REPORT="+reportPath, "TMPDIR="+root)
 ```
 
-## G204 in internal/scripttest/release_local_test.go:150
+## G204 in internal/scripttest/release_local_test.go:156
 
 Test-only runner for bin/release-local. The path points at the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake gh and curl commands stand in for GitHub and the module proxy.
 
-Source SHA-256: `d289edf6535f40168caf005637e127ae3fac915934edfdcd9f4f4c4abb03c9d5`
+Source SHA-256: `6d1b837c6711591788603f40fad3d2e89637d2c2b1164f4a5e7e0c93110a62a1`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 ```go
-149: 	fixture.t.Helper()
-150: 	command := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
-151: 	command.Dir, command.Env = fixture.t.TempDir(), fixture.env
+155: 	fixture.t.Helper()
+156: 	command := exec.Command(filepath.Join(fixture.repo, "bin", "release-local"), args...)
+157: 	command.Dir, command.Env = fixture.t.TempDir(), fixture.env
 ```
 
 ## G306 in internal/scripttest/codeql_security_test.go:50
@@ -2287,7 +2288,7 @@ Finding: Potential file inclusion via variable
 
 Test-only runner for the check scripts and bin/release-local. The paths point at this repository's scripts or the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake tools stand in for go, CodeQL, uv, gh and curl.
 
-Source SHA-256: `95ece5edfd423fb1f33178552182f255f623baa2657fdc2ec949b97f2e23ab04`
+Source SHA-256: `1ab98164c5d09c630870cf8a846dd23b907060e7769230570e58fb2c5284b55d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
@@ -2301,7 +2302,7 @@ Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 Test-only runner for the check scripts and bin/release-local. The paths point at this repository's scripts or the copy in the test's temporary repository, and the arguments are literal flags from each test case. Fake tools stand in for go, CodeQL, uv, gh and curl.
 
-Source SHA-256: `95ece5edfd423fb1f33178552182f255f623baa2657fdc2ec949b97f2e23ab04`
+Source SHA-256: `1ab98164c5d09c630870cf8a846dd23b907060e7769230570e58fb2c5284b55d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Subprocess launched with a potential tainted input or cmd arguments
 
@@ -2315,7 +2316,7 @@ Finding: Subprocess launched with a potential tainted input or cmd arguments
 
 Test-only stand-in for bin/check-local, written into the test's temporary repository. It must be executable, so it needs mode 0o755. Each test supplies its content.
 
-Source SHA-256: `95ece5edfd423fb1f33178552182f255f623baa2657fdc2ec949b97f2e23ab04`
+Source SHA-256: `1ab98164c5d09c630870cf8a846dd23b907060e7769230570e58fb2c5284b55d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Expect WriteFile permissions to be 0600 or less
 
@@ -2329,7 +2330,7 @@ Finding: Expect WriteFile permissions to be 0600 or less
 
 Test-only stand-ins for the check tools, written into the test's temporary folder. They must be executable, so they need mode 0o755. Their content is a literal in the test.
 
-Source SHA-256: `95ece5edfd423fb1f33178552182f255f623baa2657fdc2ec949b97f2e23ab04`
+Source SHA-256: `1ab98164c5d09c630870cf8a846dd23b907060e7769230570e58fb2c5284b55d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Expect WriteFile permissions to be 0600 or less
 
@@ -2343,7 +2344,7 @@ Finding: Expect WriteFile permissions to be 0600 or less
 
 Test-only cleanup restores owner access to directories in the fake module cache. The cache is inside the test's temporary root. Mode 0o700 lets the test remove its read-only fixture and grants no access to other users.
 
-Source SHA-256: `95ece5edfd423fb1f33178552182f255f623baa2657fdc2ec949b97f2e23ab04`
+Source SHA-256: `1ab98164c5d09c630870cf8a846dd23b907060e7769230570e58fb2c5284b55d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Expect file permissions to be 0600 or less
 
@@ -2357,7 +2358,7 @@ Finding: Expect file permissions to be 0600 or less
 
 Test-only read of retained coverage artifacts. The output directory comes from t.TempDir and the file names are the literal coverage.out and coverage.xml cases. No external input supplies either path.
 
-Source SHA-256: `95ece5edfd423fb1f33178552182f255f623baa2657fdc2ec949b97f2e23ab04`
+Source SHA-256: `1ab98164c5d09c630870cf8a846dd23b907060e7769230570e58fb2c5284b55d`
 Severity: MEDIUM. Confidence: HIGH.
 Finding: Potential file inclusion via variable
 
