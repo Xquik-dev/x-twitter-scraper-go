@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apijson"
+	"github.com/Xquik-dev/x-twitter-scraper-go/internal/apiquery"
 	"github.com/Xquik-dev/x-twitter-scraper-go/internal/requestconfig"
 	"github.com/Xquik-dev/x-twitter-scraper-go/option"
 	"github.com/Xquik-dev/x-twitter-scraper-go/packages/param"
@@ -65,6 +66,17 @@ func (r *XAccountConnectionLinkService) Get(ctx context.Context, id string, opts
 	}
 	path := fmt.Sprintf("x/account-connection-links/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Lists your connect links, newest first, with APIKeyID naming the API key that
+// made each one, empty for a dashboard session. Use it to find and revoke the links
+// a leaked key made. It never holds a token. Takes a Full access API key holding
+// connectsXAccounts, or a dashboard session.
+func (r *XAccountConnectionLinkService) List(ctx context.Context, query XAccountConnectionLinkListParams, opts ...option.RequestOption) (res *XAccountConnectionLinkListResponse, err error) {
+	opts = slices.Concat(r.options, opts)
+	path := "x/account-connection-links"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -213,6 +225,28 @@ func (r *XAccountConnectionLinkNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A page of your connect links, newest first.
+type XAccountConnectionLinkListResponse struct {
+	HasMore bool                     `json:"hasMore" api:"required"`
+	Links   []XAccountConnectionLink `json:"links" api:"required"`
+	// Pass unchanged as Cursor when HasMore is true.
+	NextCursor string `json:"nextCursor"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		Links       respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r XAccountConnectionLinkListResponse) RawJSON() string { return r.JSON.raw }
+func (r *XAccountConnectionLinkListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The answer to revoking a link.
 type XAccountConnectionLinkDeleteResponse struct {
 	Success bool `json:"success" api:"required"`
@@ -247,4 +281,23 @@ func (r XAccountConnectionLinkNewParams) MarshalJSON() (data []byte, err error) 
 }
 func (r *XAccountConnectionLinkNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type XAccountConnectionLinkListParams struct {
+	// Previous nextCursor. The after alias also works. Offset pagination is not
+	// supported.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Maximum items per page, from 1 to 10,000. Default 200. Pass nextCursor as cursor
+	// for the next page.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [XAccountConnectionLinkListParams]'s query parameters as
+// `url.Values`.
+func (r XAccountConnectionLinkListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }

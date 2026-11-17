@@ -64,6 +64,39 @@ func TestConnectionLinkGetReadsTheConnectedAccountWithNoURL(t *testing.T) {
 	}
 }
 
+func TestConnectionLinkListSendsTheCursorAndReadsEachLinkWithItsKey(t *testing.T) {
+	client, request := fixtureClient(t, "listXAccountConnectionLinks.json")
+	res, err := client.X.AccountConnectionLinks.List(context.Background(), xtwitterscraper.XAccountConnectionLinkListParams{
+		Cursor: xtwitterscraper.String("abc123"),
+		Limit:  xtwitterscraper.Int(20),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodGet, "/api/v1/x/account-connection-links", "cursor=abc123&limit=20")
+	expectDecoded(t, res)
+	if !res.HasMore || res.NextCursor != "def456" || len(res.Links) != 2 {
+		t.Fatalf("decoded %s", res.RawJSON())
+	}
+	byKey, byDashboard := res.Links[0], res.Links[1]
+	if byKey.ID != "xlink_BBBBBBBBBBBBBBBB" || byKey.APIKeyID != "17" ||
+		byKey.Status != xtwitterscraper.XAccountConnectionLinkStatusPending {
+		t.Fatalf("decoded %s", byKey.RawJSON())
+	}
+	if byDashboard.ID != "xlink_AAAAAAAAAAAAAAAA" || byDashboard.JSON.APIKeyID.Valid() ||
+		byDashboard.Status != xtwitterscraper.XAccountConnectionLinkStatusConnected || byDashboard.URL != "" {
+		t.Fatalf("decoded %s", byDashboard.RawJSON())
+	}
+}
+
+func TestConnectionLinkListTakesNoOptions(t *testing.T) {
+	client, request := fixtureClient(t, "listXAccountConnectionLinks.json")
+	if _, err := client.X.AccountConnectionLinks.List(context.Background(), xtwitterscraper.XAccountConnectionLinkListParams{}); err != nil {
+		t.Fatal(err)
+	}
+	request.expect(t, http.MethodGet, "/api/v1/x/account-connection-links", "")
+}
+
 func TestConnectionLinkDeleteRevokesTheLink(t *testing.T) {
 	client, request := fixtureClient(t, "revokeXAccountConnectionLink.json")
 	res, err := client.X.AccountConnectionLinks.Delete(context.Background(), "xlink_AAAAAAAAAAAAAAAA")
