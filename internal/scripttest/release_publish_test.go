@@ -39,7 +39,7 @@ func TestReleasePublishRefusesBeforeRunningChecks(t *testing.T) {
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			fixture := newReleaseFixture(t)
+			fixture := newReleaseFixture(t, nil)
 			script, err := os.ReadFile("../../scripts/release")
 			if err != nil {
 				t.Fatal(err)

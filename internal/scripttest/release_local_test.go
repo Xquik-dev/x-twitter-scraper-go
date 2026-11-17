@@ -57,7 +57,12 @@ type releaseFixture struct {
 	env                 []string
 }
 
-func newReleaseFixture(t *testing.T) *releaseFixture {
+type fixtureFile struct {
+	data string
+	mode os.FileMode
+}
+
+func newReleaseFixture(t *testing.T, overrides map[string]fixtureFile) *releaseFixture {
 	t.Helper()
 	script, err := os.ReadFile("../../bin/release-local")
 	if err != nil {
@@ -80,10 +85,7 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 	recorder := func(name string) string {
 		return "#!/bin/sh\necho " + name + " >>\"$FAKE_CALLS\"\n"
 	}
-	for name, file := range map[string]struct {
-		data string
-		mode os.FileMode
-	}{
+	files := map[string]fixtureFile{
 		"repo/go.mod":                        {"module github.com/Xquik-dev/x-twitter-scraper-go\n\ngo 1.24\n", 0o644},
 		"repo/lib.go":                        {"package xtwitterscraper\n", 0o644},
 		"repo/internal/version.go":           {"package internal\n\nconst PackageVersion = \"1.2.3\"\n", 0o644},
@@ -96,7 +98,11 @@ func newReleaseFixture(t *testing.T) *releaseFixture {
 		"tools/gh":                           {fakeGH, 0o755},
 		"tools/curl":                         {fakeCurl, 0o755},
 		"gh-settings/.keep":                  {"", 0o644},
-	} {
+	}
+	for name, file := range overrides {
+		files[name] = file
+	}
+	for name, file := range files {
 		path := filepath.Join(root, name)
 		if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 			t.Fatal(err)
@@ -171,7 +177,7 @@ func (fixture *releaseFixture) recorded() string {
 }
 
 func TestReleaseLocalDryRunPublishesNothing(t *testing.T) {
-	fixture := newReleaseFixture(t)
+	fixture := newReleaseFixture(t, nil)
 	revision := fixture.git(fixture.repo, "rev-parse", "HEAD")
 
 	code, stdout, stderr := fixture.release("--dry-run")
@@ -215,7 +221,7 @@ func TestReleaseLocalDryRunPublishesNothing(t *testing.T) {
 }
 
 func TestReleaseLocalTagsAndReleases(t *testing.T) {
-	fixture := newReleaseFixture(t)
+	fixture := newReleaseFixture(t, nil)
 	revision := fixture.git(fixture.repo, "rev-parse", "HEAD")
 
 	code, stdout, stderr := fixture.release()
@@ -242,7 +248,7 @@ func TestReleaseLocalTagsAndReleases(t *testing.T) {
 }
 
 func TestReleaseLocalRejectsUnknownOption(t *testing.T) {
-	fixture := newReleaseFixture(t)
+	fixture := newReleaseFixture(t, nil)
 
 	code, stdout, stderr := fixture.release("--dryrun")
 	want := "Unknown option --dryrun. Run bin/release-local or bin/release-local --dry-run.\n"
@@ -254,5 +260,34 @@ func TestReleaseLocalRejectsUnknownOption(t *testing.T) {
 	}
 	if tags := fixture.git(fixture.repo, "ls-remote", "--tags", "origin"); tags != "" {
 		t.Fatalf("an unknown option pushed a tag\n%s", tags)
+	}
+}
+
+func TestReleaseLocalRunsItsChecksOnTheConfiguredRunner(t *testing.T) {
+	checkLocal, err := os.ReadFile("../../bin/check-local")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixture := newReleaseFixture(t, map[string]fixtureFile{
+		"repo/bin/check-local": {string(checkLocal), 0o755},
+		"tools/runner":         {"#!/bin/sh\necho runner \"$@\" >>\"$FAKE_CALLS\"\n", 0o755},
+	})
+	runner, err := filepath.Abs(filepath.Join(fixture.repo, "..", "tools", "runner"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixture.git(fixture.repo, "config", "checklocal.runner", runner)
+	fixture.env = append(fixture.env, "CHECK_LOCAL_HERE=")
+	repo, err := filepath.EvalSymlinks(fixture.repo)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	code, stdout, stderr := fixture.release("--dry-run")
+	if code != 0 {
+		t.Fatalf("dry run exit %d\n%s\n%s", code, stdout, stderr)
+	}
+	if calls := fixture.recorded(); !strings.Contains(calls, "runner "+repo+"\n") {
+		t.Fatalf("release-local ran its checks without the runner\n%s", calls)
 	}
 }
