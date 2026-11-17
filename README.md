@@ -24,7 +24,7 @@ The Xquik REST API read 45 tweets per second on 2026-10-15. That cost $0.15 per 
 The SDK requires Go 1.27.4 or later.
 
 ```sh
-go get 'github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0'
+go get 'github.com/Xquik-dev/x-twitter-scraper-go@v0.24.0'
 ```
 
 ## Scrape tweets with the Golang X (Twitter) API
@@ -103,7 +103,7 @@ Go checks every module download against the public checksum database.
 Run this command to see the commit behind a release.
 
 ```sh
-go mod download -json github.com/Xquik-dev/x-twitter-scraper-go@v0.23.0
+go mod download -json github.com/Xquik-dev/x-twitter-scraper-go@v0.24.0
 ```
 
 `Origin.Hash` names the tagged commit.
