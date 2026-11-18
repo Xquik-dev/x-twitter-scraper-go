@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `X.Users.GetBatch` adds `NotFoundIDs` & `SuspendedIDs`, and `X.Users.GetBatchTweets` adds those & `ProtectedIDs`. They split `UnavailableIDs` by X's answer. `NotFoundIDs` names accounts that no longer exist, and `SuspendedIDs` names accounts X suspended.
+
 ## 0.24.0 (2026-11-17)
 
 [Full changelog from v0.23.0 to v0.24.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.23.0...v0.24.0)

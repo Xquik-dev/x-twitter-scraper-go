@@ -731,13 +731,19 @@ type XUserGetBatchResponse struct {
 	HasNextPage bool `json:"has_next_page" api:"required"`
 	// Empty because batch lookups never paginate.
 	NextCursor string `json:"next_cursor" api:"required"`
+	// The unavailable IDs no account holds, as X answers for an account that was
+	// deactivated or deleted, in first-seen request order.
+	NotFoundIDs []string `json:"not_found_ids" api:"required"`
 	// Number of requested IDs included in the lookup.
 	ProcessedCount int64 `json:"processed_count" api:"required"`
 	// Number of unique IDs requested.
 	RequestedCount int64 `json:"requested_count" api:"required"`
 	// Number of user profiles returned and charged.
 	ReturnedCount int64 `json:"returned_count" api:"required"`
+	// The unavailable IDs of accounts X suspended, in first-seen request order.
+	SuspendedIDs []string `json:"suspended_ids" api:"required"`
 	// Processed IDs with no returned profile, in first-seen request order.
+	// NotFoundIDs and SuspendedIDs split them by X's answer.
 	UnavailableIDs []string `json:"unavailable_ids" api:"required"`
 	// Requested IDs skipped because available credits limited processing. Retry these
 	// IDs after adding credits.
@@ -750,9 +756,11 @@ type XUserGetBatchResponse struct {
 		FailedIDs      respjson.Field
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
+		NotFoundIDs    respjson.Field
 		ProcessedCount respjson.Field
 		RequestedCount respjson.Field
 		ReturnedCount  respjson.Field
+		SuspendedIDs   respjson.Field
 		UnavailableIDs respjson.Field
 		UnprocessedIDs respjson.Field
 		Users          respjson.Field
@@ -1348,10 +1356,19 @@ type XUserGetBatchTweetsResponse struct {
 	// Any of false.
 	HasNextPage bool `json:"has_next_page" api:"required"`
 	// Always empty. The answer holds every post in 1 page.
-	NextCursor string               `json:"next_cursor" api:"required"`
-	Tweets     []shared.SearchTweet `json:"tweets" api:"required"`
+	NextCursor string `json:"next_cursor" api:"required"`
+	// The unavailable users no account holds, as X answers for an account that was
+	// deactivated or deleted, in first-seen request order.
+	NotFoundIDs []string `json:"not_found_ids" api:"required"`
+	// The unavailable users whose posts only approved followers see, in first-seen
+	// request order.
+	ProtectedIDs []string `json:"protected_ids" api:"required"`
+	// The unavailable users X suspended, in first-seen request order.
+	SuspendedIDs []string             `json:"suspended_ids" api:"required"`
+	Tweets       []shared.SearchTweet `json:"tweets" api:"required"`
 	// Users with no account on X or with protected posts, in first-seen request order.
-	// They cost nothing.
+	// They cost nothing. NotFoundIDs, SuspendedIDs and ProtectedIDs split them by X's
+	// answer.
 	UnavailableIDs []string `json:"unavailable_ids" api:"required"`
 	// Users the call did not read, in first-seen request order. Their read failed, the
 	// call ran out of time or credits ran out. They cost nothing. Send them again.
@@ -1360,6 +1377,9 @@ type XUserGetBatchTweetsResponse struct {
 	JSON struct {
 		HasNextPage    respjson.Field
 		NextCursor     respjson.Field
+		NotFoundIDs    respjson.Field
+		ProtectedIDs   respjson.Field
+		SuspendedIDs   respjson.Field
 		Tweets         respjson.Field
 		UnavailableIDs respjson.Field
 		UnprocessedIDs respjson.Field

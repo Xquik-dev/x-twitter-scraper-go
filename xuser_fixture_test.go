@@ -190,6 +190,10 @@ func TestXUserGetBatchTweetsFixture(t *testing.T) {
 		len(res.UnavailableIDs) != 1 ||
 		len(res.UnprocessedIDs) != 0 ||
 		res.UnavailableIDs[0] != "1234567890" ||
+		len(res.NotFoundIDs) != 1 ||
+		res.NotFoundIDs[0] != "1234567890" ||
+		len(res.SuspendedIDs) != 0 ||
+		len(res.ProtectedIDs) != 0 ||
 		res.Tweets[0].ID != "1234567890" ||
 		res.Tweets[0].Text != "Just launched our new feature!" ||
 		res.Tweets[0].CreatedAt != "2025-01-15T12:00:00Z" ||

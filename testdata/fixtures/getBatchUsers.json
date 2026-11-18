@@ -14,6 +14,10 @@
   "unavailable_ids": [
     "1234567890"
   ],
+  "not_found_ids": [
+    "1234567890"
+  ],
+  "suspended_ids": [],
   "failed_ids": [],
   "unprocessed_ids": []
 }
