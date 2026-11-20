@@ -3,6 +3,7 @@
 ## Unreleased
 
 - A post adds `CommunityUnavailable` when X shows no Community for it. Its `Reason` is X's reason, as X writes it. Embedded posts carry it too.
+- `X.Sports.ListGames` adds `Rankings` to each game, the teams X ranks in its college football poll with their `Rank`. It is empty when X ranks neither team, & for the NFL.
 - `X.Users.GetBatch` adds `NotFoundIDs` & `SuspendedIDs`, and `X.Users.GetBatchTweets` adds those & `ProtectedIDs`. They split `UnavailableIDs` by X's answer. `NotFoundIDs` names accounts that no longer exist, and `SuspendedIDs` names accounts X suspended.
 
 ## 0.24.0 (2026-11-17)
