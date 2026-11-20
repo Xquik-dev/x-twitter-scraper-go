@@ -37,6 +37,9 @@ func TestXSportListGamesFixture(t *testing.T) {
 		game.TeamIDs[1] != "689566304366292992" ||
 		game.Periods[0].Type != "Quarter" ||
 		game.Odds.Away.Spread != "text" ||
+		len(game.Rankings) != 1 ||
+		game.Rankings[0].TeamID != "689566294702555136" ||
+		game.Rankings[0].Rank != 5 ||
 		team.Abbreviation != "SF" ||
 		team.Colors[0].R != 170 ||
 		team.XUserID != "43403778" {
