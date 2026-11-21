@@ -924,6 +924,24 @@ func (r *CommunityTopicSubtopic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Why X shows no Community for the post.
+type CommunityUnavailable struct {
+	// X's reason, as X writes it.
+	Reason string `json:"reason" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommunityUnavailable) RawJSON() string { return r.JSON.raw }
+func (r *CommunityUnavailable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Content disclosure metadata shown by X when a tweet is labeled as paid
 // partnership content or AI-generated media.
 type ContentDisclosure struct {
@@ -1002,6 +1020,8 @@ type EmbeddedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -1107,6 +1127,7 @@ type EmbeddedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -2179,6 +2200,8 @@ type EmbeddedTweetQuotedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -2284,6 +2307,7 @@ type EmbeddedTweetQuotedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -3364,6 +3388,8 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -3469,6 +3495,7 @@ type EmbeddedTweetQuotedTweetQuotedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -4581,6 +4608,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetQuotedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -4682,6 +4711,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetQuotedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -6094,6 +6124,8 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -6195,6 +6227,7 @@ type EmbeddedTweetQuotedTweetQuotedTweetRetweetedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -7817,6 +7850,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -7922,6 +7957,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -9052,6 +9088,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -9153,6 +9191,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetQuotedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -10571,6 +10610,8 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -10672,6 +10713,7 @@ type EmbeddedTweetQuotedTweetRetweetedTweetRetweetedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -12498,6 +12540,8 @@ type EmbeddedTweetRetweetedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -12603,6 +12647,7 @@ type EmbeddedTweetRetweetedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -13687,6 +13732,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -13792,6 +13839,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -14922,6 +14970,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -15023,6 +15073,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetQuotedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -16441,6 +16492,8 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -16542,6 +16595,7 @@ type EmbeddedTweetRetweetedTweetQuotedTweetRetweetedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -18170,6 +18224,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -18275,6 +18331,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -19413,6 +19470,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -19514,6 +19573,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetQuotedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -20936,6 +20996,8 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 	// Community ID.
 	CommunityID   string `json:"communityId"`
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -21037,6 +21099,7 @@ type EmbeddedTweetRetweetedTweetRetweetedTweetRetweetedTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field
@@ -23299,6 +23362,8 @@ type SearchTweet struct {
 	CommunityID string `json:"communityId"`
 	// Community name. Present when X sends it with the post.
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote SearchTweetCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -23430,6 +23495,7 @@ type SearchTweet struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field

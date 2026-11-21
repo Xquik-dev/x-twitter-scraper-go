@@ -9,6 +9,7 @@
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#CommunityAnalyticsMetric">CommunityAnalyticsMetric</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#CommunityPage">CommunityPage</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#CommunityTopic">CommunityTopic</a>
+- <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#CommunityUnavailable">CommunityUnavailable</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#ContentDisclosure">ContentDisclosure</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#EmbeddedTweet">EmbeddedTweet</a>
 - <a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/Xquik-dev/x-twitter-scraper-go/shared#EventType">EventType</a>
