@@ -231,6 +231,9 @@
       }
     ],
     "communityName": "Build in Public",
+    "communityUnavailable": {
+      "reason": "Suspended"
+    },
     "coordinates": {
       "coordinates": [
         -122.4194,

@@ -132,6 +132,7 @@ var tweetFields = []fieldValue{
 	{"CashtagAttachments[0].StartTime", "2026-10-09T13:30:00Z"},
 	{"CashtagAttachments[0].Timeframe", "1D"},
 	{"CommunityName", "Build in Public"},
+	{"CommunityUnavailable.Reason", "Suspended"},
 	{"ConversationControl.AllowedCountryCodes", []string{"US", "CA"}},
 	{"ConversationControl.Mode", "Community"},
 	{"ConversationControl.OwnerID", "11348282"},

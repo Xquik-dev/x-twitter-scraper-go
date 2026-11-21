@@ -344,6 +344,8 @@ type TweetDetail struct {
 	CommunityID string `json:"communityId"`
 	// Community name. Present when X sends it with the post.
 	CommunityName string `json:"communityName"`
+	// Why X shows no Community for the post. Omitted when X names no reason.
+	CommunityUnavailable shared.CommunityUnavailable `json:"communityUnavailable"`
 	// Community Note presentation metadata returned by X.
 	CommunityNote TweetDetailCommunityNote `json:"communityNote"`
 	// Content disclosure metadata shown by X when a tweet is labeled as paid
@@ -469,6 +471,7 @@ type TweetDetail struct {
 		CashtagAttachments     respjson.Field
 		CommunityID            respjson.Field
 		CommunityName          respjson.Field
+		CommunityUnavailable   respjson.Field
 		CommunityNote          respjson.Field
 		ContentDisclosure      respjson.Field
 		ConversationControl    respjson.Field

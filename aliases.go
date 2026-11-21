@@ -70,6 +70,9 @@ type CommunityTopic = shared.CommunityTopic
 
 type CommunityTopicSubtopic = shared.CommunityTopicSubtopic
 
+// Why X shows no Community for the post.
+type CommunityUnavailable = shared.CommunityUnavailable
+
 // Content disclosure metadata shown by X when a tweet is labeled as paid
 // partnership content or AI-generated media.
 type ContentDisclosure = shared.ContentDisclosure
