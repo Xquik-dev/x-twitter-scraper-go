@@ -43,7 +43,7 @@ func NewExtractionService(opts ...option.RequestOption) (r ExtractionService) {
 	return
 }
 
-// Returns status and up to 1,000 results. Follow nextCursor when hasMore is true.
+// Returns status and up to 10,000 results. Follow nextCursor when hasMore is true.
 func (r *ExtractionService) Get(ctx context.Context, id string, query ExtractionGetParams, opts ...option.RequestOption) (res *ExtractionGetResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	if id == "" {
@@ -570,7 +570,7 @@ type ExtractionGetParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Use outputMode=raw instead.
 	IncludeRaw param.Opt[bool] `query:"includeRaw,omitzero" json:"-"`
-	// Maximum results per page (1-1000, default 100).
+	// Maximum results per page (1-10000, default 100).
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Wait up to this many seconds when the job is active.
 	Wait param.Opt[int64] `query:"wait,omitzero" json:"-"`
