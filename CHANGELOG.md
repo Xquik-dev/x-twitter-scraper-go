@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The docs of the extraction results call say a page holds up to 10,000 results, as the API serves. They said 1,000.
 - `X.Users.GetBatch` adds `NotFoundIDs` & `SuspendedIDs`, and `X.Users.GetBatchTweets` adds those & `ProtectedIDs`. They split `UnavailableIDs` by X's answer. `NotFoundIDs` names accounts that no longer exist, and `SuspendedIDs` names accounts X suspended.
 
 ## 0.24.0 (2026-11-17)
