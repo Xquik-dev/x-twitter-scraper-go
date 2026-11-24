@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.25.0 (2026-11-24)
+
+[Full changelog from v0.24.0 to v0.25.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.24.0...v0.25.0)
+
+A post says why X shows no Community for it, each college football game carries X's poll rankings, and the batch user reads split their unavailable IDs by X's answer. Every change is additive.
 
 - A post adds `CommunityUnavailable` when X shows no Community for it. Its `Reason` is X's reason, as X writes it. Embedded posts carry it too.
 - `X.Sports.ListGames` adds `Rankings` to each game, the teams X ranks in its college football poll with their `Rank`. It is empty when X ranks neither team, & for the NFL.
