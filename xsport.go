@@ -263,6 +263,27 @@ func (r *FootballScheduleGameOdds) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A team's rank in X's college football poll.
+type FootballPollRanking struct {
+	// The ranked team, a key of teams.
+	TeamID string `json:"teamId" api:"required"`
+	// The team's rank, where 1 is the top.
+	Rank int64 `json:"rank" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TeamID      respjson.Field
+		Rank        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FootballPollRanking) RawJSON() string { return r.JSON.raw }
+func (r *FootballPollRanking) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A listed game, with its teams & score.
 type FootballScheduleGame struct {
 	// The game ID the other sports routes take.
@@ -289,6 +310,9 @@ type FootballScheduleGame struct {
 	Periods []FootballSchedulePeriod `json:"periods" api:"required"`
 	// Betting odds for each team, or null when X has none.
 	Odds FootballScheduleGameOdds `json:"odds" api:"required"`
+	// Each team X ranks in its college football poll, with its rank. Empty when X
+	// ranks neither team, & for the NFL.
+	Rankings []FootballPollRanking `json:"rankings" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -303,6 +327,7 @@ type FootballScheduleGame struct {
 		TeamIDs     respjson.Field
 		Periods     respjson.Field
 		Odds        respjson.Field
+		Rankings    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

@@ -37,7 +37,13 @@
           "spread": "text",
           "total": "text"
         }
-      }
+      },
+      "rankings": [
+        {
+          "teamId": "689566294702555136",
+          "rank": 5
+        }
+      ]
     }
   ],
   "teams": {
