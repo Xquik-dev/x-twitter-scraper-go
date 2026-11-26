@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `UserProfile` adds `WorkExperience`, listing public work history entries shown on an X profile with role details, dates, `CompanyImage`, and `CompanyUser`.
+
 ## 0.25.0 (2026-11-24)
 
 [Full changelog from v0.24.0 to v0.25.0](https://github.com/Xquik-dev/x-twitter-scraper-go/compare/v0.24.0...v0.25.0)

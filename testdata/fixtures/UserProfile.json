@@ -137,5 +137,31 @@
   "hasExtendedProfile": true,
   "isTranslationEnabled": true,
   "normalFollowersCount": 92376175,
-  "subscribersCount": 7
+  "subscribersCount": 7,
+  "workExperience": [
+    {
+      "id": "work-1",
+      "title": "Engineer",
+      "companyName": "NASA",
+      "employmentType": "Full-time",
+      "location": "Washington, DC",
+      "description": "Flight software.",
+      "startMonth": 3,
+      "startYear": 2021,
+      "endMonth": 11,
+      "endYear": 2024,
+      "companyImage": {
+        "mediaId": "2001002003004005006",
+        "url": "https://pbs.twimg.com/media/company.png"
+      },
+      "companyUser": {
+        "id": "11348282",
+        "username": "NASA",
+        "name": "NASA",
+        "profilePicture": "https://pbs.twimg.com/profile_images/nasa_normal.jpg",
+        "profilePictureOriginal": "https://pbs.twimg.com/profile_images/nasa.jpg",
+        "verifiedType": "Government"
+      }
+    }
+  ]
 }
