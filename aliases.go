@@ -2562,3 +2562,12 @@ type UserProfileIdentityVerification = shared.UserProfileIdentityVerification
 
 // Public payment and creator-support handles shown on X.
 type UserProfileTipJar = shared.UserProfileTipJar
+
+// Company logo image attached to a work experience entry.
+type UserProfileWorkExperienceCompanyImage = shared.UserProfileWorkExperienceCompanyImage
+
+// X account linked to a work experience entry.
+type UserProfileWorkExperienceCompanyUser = shared.UserProfileWorkExperienceCompanyUser
+
+// Public work experience entry shown on an X profile.
+type UserProfileWorkExperienceEntry = shared.UserProfileWorkExperienceEntry

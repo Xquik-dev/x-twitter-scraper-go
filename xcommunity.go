@@ -1022,6 +1022,8 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 	WithheldInCountries []string                             `json:"withheldInCountries"`
 	// Whether X withholds a post or user
 	WithheldScope string `json:"withheldScope"`
+	// Public work history entries shown on the profile.
+	WorkExperience []shared.UserProfileWorkExperienceEntry `json:"workExperience"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                              respjson.Field
@@ -1101,6 +1103,7 @@ type XCommunityGetInfoResponseCommunityCreator struct {
 		VerifiedType                    respjson.Field
 		WithheldInCountries             respjson.Field
 		WithheldScope                   respjson.Field
+		WorkExperience                  respjson.Field
 		ExtraFields                     map[string]respjson.Field
 		raw                             string
 	} `json:"-"`

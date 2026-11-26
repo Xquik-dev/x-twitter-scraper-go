@@ -410,7 +410,9 @@ type CommunityCreatorUnion struct {
 	UsernameChanges UserProfileUsernameChanges `json:"usernameChanges"`
 	// This field is from variant [UserProfile].
 	VerificationReason UserProfileVerificationReason `json:"verificationReason"`
-	JSON               struct {
+	// This field is from variant [UserProfile].
+	WorkExperience []UserProfileWorkExperienceEntry `json:"workExperience"`
+	JSON           struct {
 		ID                              respjson.Field
 		Name                            respjson.Field
 		Username                        respjson.Field
@@ -488,6 +490,7 @@ type CommunityCreatorUnion struct {
 		SubscribersCount                respjson.Field
 		UsernameChanges                 respjson.Field
 		VerificationReason              respjson.Field
+		WorkExperience                  respjson.Field
 		raw                             string
 	} `json:"-"`
 }
@@ -688,7 +691,9 @@ type CommunityMembersFacepileUnion struct {
 	UsernameChanges UserProfileUsernameChanges `json:"usernameChanges"`
 	// This field is from variant [UserProfile].
 	VerificationReason UserProfileVerificationReason `json:"verificationReason"`
-	JSON               struct {
+	// This field is from variant [UserProfile].
+	WorkExperience []UserProfileWorkExperienceEntry `json:"workExperience"`
+	JSON           struct {
 		ID                              respjson.Field
 		Name                            respjson.Field
 		Username                        respjson.Field
@@ -766,6 +771,7 @@ type CommunityMembersFacepileUnion struct {
 		SubscribersCount                respjson.Field
 		UsernameChanges                 respjson.Field
 		VerificationReason              respjson.Field
+		WorkExperience                  respjson.Field
 		raw                             string
 	} `json:"-"`
 }
@@ -25750,6 +25756,8 @@ type UserProfile struct {
 	WithheldInCountries []string                      `json:"withheldInCountries"`
 	// Whether X withholds a post or user
 	WithheldScope string `json:"withheldScope"`
+	// Public work history entries shown on the profile.
+	WorkExperience []UserProfileWorkExperienceEntry `json:"workExperience"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                              respjson.Field
@@ -25829,6 +25837,7 @@ type UserProfile struct {
 		VerifiedType                    respjson.Field
 		WithheldInCountries             respjson.Field
 		WithheldScope                   respjson.Field
+		WorkExperience                  respjson.Field
 		ExtraFields                     map[string]respjson.Field
 		raw                             string
 	} `json:"-"`
@@ -26188,5 +26197,108 @@ type UserProfileTipJar struct {
 // Returns the unmodified JSON received from the API
 func (r UserProfileTipJar) RawJSON() string { return r.JSON.raw }
 func (r *UserProfileTipJar) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Company logo image attached to a work experience entry.
+type UserProfileWorkExperienceCompanyImage struct {
+	// X media ID of the company image.
+	MediaID string `json:"mediaId"`
+	// Full-size company image URL.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MediaID     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileWorkExperienceCompanyImage) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileWorkExperienceCompanyImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// X account linked to a work experience entry.
+type UserProfileWorkExperienceCompanyUser struct {
+	ID string `json:"id"`
+	// Display name of the linked company account.
+	Name string `json:"name"`
+	// Profile picture URL at 48 px.
+	ProfilePicture string `json:"profilePicture"`
+	// Full-size profile picture URL.
+	ProfilePictureOriginal string `json:"profilePictureOriginal"`
+	Username               string `json:"username"`
+	// Verification category, such as Business.
+	VerifiedType string `json:"verifiedType"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		Name                   respjson.Field
+		ProfilePicture         respjson.Field
+		ProfilePictureOriginal respjson.Field
+		Username               respjson.Field
+		VerifiedType           respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileWorkExperienceCompanyUser) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileWorkExperienceCompanyUser) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public work experience entry shown on an X profile.
+type UserProfileWorkExperienceEntry struct {
+	// Company logo image attached to a work experience entry.
+	CompanyImage UserProfileWorkExperienceCompanyImage `json:"companyImage"`
+	// Employer or organization name.
+	CompanyName string `json:"companyName"`
+	// X account linked to a work experience entry.
+	CompanyUser UserProfileWorkExperienceCompanyUser `json:"companyUser"`
+	// Role summary text.
+	Description string `json:"description"`
+	// Employment type reported by X.
+	EmploymentType string `json:"employmentType"`
+	// End month from 1 to 12. Omitted for current roles.
+	EndMonth int64 `json:"endMonth"`
+	// End year. Omitted for current roles.
+	EndYear int64 `json:"endYear"`
+	// Entry ID assigned by X.
+	ID string `json:"id"`
+	// Job location text.
+	Location string `json:"location"`
+	// Start month from 1 to 12.
+	StartMonth int64 `json:"startMonth"`
+	// Start year.
+	StartYear int64 `json:"startYear"`
+	// Job title or role.
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CompanyImage   respjson.Field
+		CompanyName    respjson.Field
+		CompanyUser    respjson.Field
+		Description    respjson.Field
+		EmploymentType respjson.Field
+		EndMonth       respjson.Field
+		EndYear        respjson.Field
+		ID             respjson.Field
+		Location       respjson.Field
+		StartMonth     respjson.Field
+		StartYear      respjson.Field
+		Title          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserProfileWorkExperienceEntry) RawJSON() string { return r.JSON.raw }
+func (r *UserProfileWorkExperienceEntry) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
